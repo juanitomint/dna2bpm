@@ -241,15 +241,14 @@ $code=md5( strtolower( trim( $email ) ) );
 if($str = file_get_contents( "http://www.gravatar.com/$code.php" )){
 $profile = unserialize( $str );
     // Chequeo en Gravatar.com
-    if ( is_array( $profile ) && isset( $profile['entry'] ) )
+    if ( is_array( $profile ) && isset( $profile['entry'] ) ){
         return($profile['entry'][0]['thumbnailUrl']);
     }else{
         // Devuelvo el default
-        return $str;
-       // return base_url() . 'genias/assets/images/avatar-hombre.jpg';
+       return base_url() . 'genias/assets/images/avatar-hombre.jpg';
     }
 }
-
+}
 
 }// close
 
