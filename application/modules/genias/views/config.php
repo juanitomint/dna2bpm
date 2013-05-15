@@ -19,8 +19,8 @@ Proyectos
 <div class="accordion-inner">
     <div class="form-inline">
     <input type="text" class="input-large" placeholder="Nombre">
-    <input type="password" class="input-small" placeholder="ID">
-    <button type="submit" class="btn btn-primary"><i class="icon-minus"></i> Borrar</button>
+    <input type="text" class="input-small" placeholder="ID">
+    <button type="submit" class="btn btn-primary"><i class="icon-minus"></i></button>
     </div>
 </div>
 </div>
