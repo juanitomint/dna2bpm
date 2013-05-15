@@ -1,0 +1,55 @@
+/* 
+    Document   : profile
+    Created on : Apr 22, 2013, 1:07:29 PM
+    Author     : astrid
+    Description:
+        Purpose of the stylesheet follows.
+*/
+form {
+    font-family: Verdana, Arial, Times;
+    font-size: 13px;
+    margin-top: 20px;
+}
+ 
+input[type=text], textarea  {
+    border: 1px solid #c3c3c3;
+    width: 220px;
+}
+ 
+textarea {
+    height: 60px;
+}
+ 
+.fila {
+  clear: both;
+  width: 400px;
+  height: 25px;
+}
+ 
+.fila span.etiqueta {
+  float: left;
+  width: 160px;
+  margin-right: 15px;
+  margin-top: 2px;
+  text-align: right;
+}
+ 
+.fila span.form-el {
+  float: right;
+  width: 220px;
+  text-align: left;
+  margin-bottom: 5px;
+}
+ 
+.fila span.error {
+  font-size: 11px;
+  color: red;
+  width: 210px;
+  float: left;
+  text-align: left;
+  margin-left: 180px;
+  padding-bottom: 12px;
+}
+
+
+
