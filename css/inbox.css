@@ -1,0 +1,33 @@
+.star_on
+{
+	background: url(./images/inbox/star_on.png) no-repeat 0px 4px !important;
+}
+.read_on
+{
+	background: url(./images/inbox/dot_off.png) no-repeat 0px 4px !important;
+}
+.star
+{
+	background: url(./images/inbox/star_off.png) no-repeat 0px 4px;
+	display: block;
+	width: 14px;
+	height: 16px;
+	display: inline-block;
+}
+.read
+{
+	background: url(./images/inbox/dot_on.png) no-repeat 0px 4px;
+	display: block;
+	width: 14px;
+	height: 16px;
+	display: inline-block;
+}
+.inbox_content
+{
+	padding: 0 0 0 10px;
+}
+#inbox_body H3
+{
+	padding: 10px;
+	border-bottom: 1px dotted #CACACA;
+}

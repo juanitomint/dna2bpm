@@ -1,0 +1,104 @@
+BODY, HTML
+{
+	width: 100%;
+	height: 100%;
+	margin: 0px;
+	overflow: hidden;
+}
+#header
+{
+	background: url(./images/login/logo2.png) no-repeat;
+	height: 46px;
+}
+#header-username
+{
+	float: right;
+	padding: 5px 0px 5px 23px;
+	color: #756B37;
+	background: url(../css/images/iconos/userboygirls.gif) no-repeat;
+	margin: 14px 0 0;
+}
+#bottom
+{
+	height: 25px;
+	padding: 5px;
+	color: #727272;
+	position: absolute;
+}
+#bottom .logo
+{
+	/*[disabled]float:left;*/
+	display: inline-block;
+}
+#bottom .bottom-text
+{
+	position: relative;
+	top: -7px;
+}
+/*// Menu Lateral*/
+#menu_aplicaciones LI
+{
+	list-style-type: none;
+	padding: 8px 8px 8px 5px;
+	margin: 0;
+	border-bottom: 1px dotted #CACACA;
+}
+#menu_aplicaciones LI A
+{
+	position: relative;
+	text-decoration: none;
+	padding: 3px 0 3px 35px;
+	display: inline-block;
+	min-height: 19px;
+}
+A:link, A:visited
+{
+	color: #756B37;
+}
+#menu_aplicaciones LI:hover
+{
+	background: #EAEAEA;
+}
+/*// Tasks*/
+#tasks_container #tasks_brief
+{
+	float: left;
+	min-width: 85px;
+	margin: 10px;
+}
+#tasks_container #tasks_by_status LI UL LI
+{
+	margin-left: 15px;
+}
+#tasks_container #tasks
+{
+	float: left;
+	border-left: 1px solid #9F9F9F;
+	padding-left: 10px;
+	margin: 10px 0 0;
+}
+.calendar1
+{
+	background: url(./images/agenda/calendar.gif) no-repeat;
+	padding-left: 21px;
+	font-size: 12px;
+	display: inline-block;
+	height: 18px;
+}
+/*// Tabs*/
+#tab
+{
+	padding: 10px;
+}
+#tab A, #tasks_container A
+{
+	line-height: 14px;
+	text-decoration: none;
+	border-bottom: 1px dotted #8A8A8A;
+}
+#tab A:hover, #tasks_container A:hover
+{
+	line-height: 14px;
+	text-decoration: none;
+	border-bottom: 1px dotted #383838;
+}

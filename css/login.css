@@ -1,0 +1,140 @@
+BODY, HTML
+{
+	padding: 0;
+	margin: 0;
+	background: #F2F2F2;
+	font-size: 100%;
+}
+.cb
+{
+	clear: both;
+}
+A:link, A:visited
+{
+	font-family: "Trebuchet MS", Verdana, Arial;
+	font-size: 12px;
+	text-decoration: none;
+	color: #0EAED1;
+}
+A:hover
+{
+	font-family: "Trebuchet MS";
+	font-size: 12px;
+	text-decoration: underline;
+	color: #0EAED1;
+}
+P, SPAN
+{
+	font-family: "Trebuchet MS";
+	font-size: 1.1em;
+	text-decoration: none;
+	color: #4F4F4F;
+}
+H1
+{
+	font-family: "Trebuchet MS";
+	font-size: 16px;
+	text-decoration: none;
+/*color: #4F4F4F;*/
+	margin: 0 0 5px;
+	padding: 0;
+}
+H2
+{
+	font-family: "Trebuchet MS";
+	font-size: 12px;
+	text-decoration: none;
+/*color: #6D6D6D;*/
+	margin: 0;
+	padding: 0;
+}
+/*Login*/
+#login
+{
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	width: 360px;
+	margin: -125px 0px 0px -180px;
+}
+#login-top
+{
+	background: url(images/login/logo.png) no-repeat 130px 18px;
+	width: 360px;
+	height: 86px;
+}
+#login-center
+{
+	/*[disabled]background:url(images/login/login_center.jpg) repeat-y;*/
+	width: 360px;
+	/*[disabled]height:155px;*/
+}
+#login INPUT
+{
+	height: 2em;
+	width: 280px;
+	margin: 0 0 10px 37px;
+}
+#login-center-submitArea
+{
+	height: 58px;
+	width: 283px;
+	margin: 10px 0 0 37px;
+	padding: 13px 0 0;
+	border-top: 1px solid #D1D1D1;
+	position: relative;
+	overflow: visible;
+}
+#box-username
+{
+	position: relative;
+}
+#label-username
+{
+	width: 278px;
+	height: 26px;
+	top: 0px;
+	left: 38px;
+	color: #D8D8D8;
+	position: absolute;
+	font-family: "Trebuchet MS";
+	font-size: medium;
+	font-weight: bold;
+	padding: 3px;
+}
+#box-password
+{
+	position: relative;
+}
+#label-password
+{
+	position: absolute;
+	width: 278px;
+	height: 26px;
+	top: 1px;
+	left: 38px;
+	color: #D8D8D8;
+	font-family: "Trebuchet MS";
+	font-size: medium;
+	font-weight: bold;
+	padding: 3px;
+}
+#msgbox
+{
+	width: 285px;
+	margin-left: 38px;
+	text-align: center;
+	font-size: 12px;
+}
+#login-center-submitArea BUTTON
+{
+	display: block;
+	position: absolute;
+	right: 0;
+	top: 15px;
+}
+#forgot-password
+{
+	width: 161px;
+	display: block;
+}

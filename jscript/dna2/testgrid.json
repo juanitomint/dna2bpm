@@ -1,0 +1,10 @@
+{
+                '(name)': 'Property Grid',
+                grouping: false,
+                autoFitColumns: true,
+                productionQuality: true,
+                created: new Date(),
+                tested: false,
+                version: 0.8,
+                borderWidth: 2
+}

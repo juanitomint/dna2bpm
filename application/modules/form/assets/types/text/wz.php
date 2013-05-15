@@ -1,0 +1,1 @@
+<label for="f[width]">Ancho</label><input name="f[width]" id="f[width]" size="4" maxlength="3" value="<?=$f['width'];?>" />

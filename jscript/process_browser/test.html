@@ -1,0 +1,96 @@
+<html>
+    <head>
+        <title>ExtJS Test Page</title>
+        <link rel="stylesheet" type="text/css" href="../../jscript/ext/resources/css/ext-all.css" />
+
+        <script type="text/javascript" src="../../jscript/ext/bootstrap.js"></script>
+        <script type="text/javascript">
+            //-----declare global vars
+            var base_url='http://localhost/ci2/';
+            var idapp='{idapp}';
+            Ext.Loader.setConfig({enabled: true}); 
+            Ext.Loader.setPath('Ext.ux', '../../jscript/ext/src/ux');
+            //--- this is 4 CodeIgniter smart urls
+            Ext.apply(Ext.data.AjaxProxy.prototype.actionMethods, {
+                read: 'POST'
+            });
+        </script>
+        <script type="text/javascript">
+            
+            Ext.require(['*']);
+
+            Ext.onReady(function() {
+                // create the Tree
+                var tree = Ext.create('Ext.tree.Panel', {
+                    //store: store,
+                    root: {
+                        name: 'Root',
+                        description: 'Root description',
+                        expanded: true,
+                        children: [{
+                                name: 'Child 1',
+                                description: 'Description 1',
+                                leaf: true
+                            }, {
+                                name: 'Child 2',
+                                description: 'Description 2',
+                                leaf: true
+                            }]
+                    },
+                    fields: ['name', 'description'],
+                    columns: [{
+                            xtype: 'treecolumn',
+                            text: 'Name',
+                            dataIndex: 'name',
+                            width: 150,
+                            sortable: true
+                        }, {
+                            text: 'Description',
+                            dataIndex: 'description',
+                            flex: 1,
+                            sortable: true
+                        }],
+                    height: 350,
+                    width: 600,
+                    title: '',
+                    rootVisible: false,
+                    useArrows: true,
+                    viewConfig: {
+                        plugins: {
+                            ptype: 'treeviewdragdrop'
+                        }, 
+                        listeners : {
+                            drop: function (node, data, view, ddel, item) {
+                                folder=view.data.id;
+                            
+                            }
+                        }
+                        
+                    },
+                    renderTo: Ext.getBody(),
+                    plugins:[
+                        Ext.create('Ext.grid.plugin.CellEditing', {
+                            clicksToEdit: 2
+                        })
+                    ]
+                });
+            });//----onReady
+            
+        
+        </script>
+    </head>
+    <body>
+        <div id="viewport">
+            <!-- use class="x-hide-display" to prevent a brief flicker of the content -->
+            <div id="west" class="x-hide-display">
+                <p>Hi. I'm the west panel.</p>
+
+                <div id="props-panel" class="x-hide-display" style="width:200px;height:200px;overflow:hidden;">
+                </div>
+                <div id="south" class="x-hide-display">
+                    <p>south - generally for informational stuff, also could be for status bar</p>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,29 @@
+
+/* inbox */
+
+.detail{
+    display:none;
+    border-top:1px dotted #ccc;
+    margin-top:4px;
+    background-color: #E5E5E5;
+    border:1px dashed #ccc;
+    padding: 6px;
+    margin-top:10px;
+    font-family: monospace;
+} 
+
+.msgs{list-style-type: none;}
+.msgs LI{padding-bottom:10px;}
+
+.msgs .from{
+border-bottom:1px solid #ccc;
+padding-bottom:4px;
+}
+.msgs .body{
+border-top:1px solid #fff;
+padding-top:4px;
+}
+
+.control-group{
+    border-top:0px !important;
+}

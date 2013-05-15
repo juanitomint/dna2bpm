@@ -1,0 +1,172 @@
+/* 
+    Document   : form_editor.css
+    Created on : Sep 17, 2010, 9:30:30 AM
+    Author     : juanb
+    Description:
+        Purpose of the stylesheet follows.
+*/
+div{
+    /*    border:1px solid red;*/
+}
+#toolbar{
+    font-size: .7em;
+}
+.dot7 {
+    font-size: .7em;
+}
+#object-list li {
+    list-style: none;
+    margin: .2em;
+    padding: .5em;
+    border-bottom: 1px dashed lightgrey;
+}
+
+#object-list li:hover {
+    background-color: lightblue;
+    cursor: move;
+}
+#menu-side {
+    overflow: auto;
+    font-size: .7em;
+}
+#saveMsg{
+    overflow: scroll;
+    height: 300px;
+    /*    display: none;*/
+}
+.tools{
+
+    font-size:xx-small;
+    margin-left:-8px;
+    margin-top:-8px;
+}
+/* Floats */
+
+.left {float: left;}
+.right {float: right;}
+
+.clear,.clearer {clear: both;}
+.clearer {
+    display: block;
+    font-size: 0;
+    height: 0;
+    line-height: 0;
+}
+
+
+
+
+
+/* Columns */
+
+.column {
+    margin-left: 2%;
+    width: 49%;
+}
+.column.first {margin-left: 0;}
+
+
+/* Sortable items */
+
+.sortable-list {
+    margin: .2em;
+    padding: .5em;
+    border: 3px dashed  #ccd232;
+    /* background-color: #F93;*/
+    list-style: none;
+    margin: 0;
+    min-height: 60px;
+    padding: 10px;
+    font-size: .9em;
+}
+
+.sortable-list li {
+    /*    background-color: #FFF;*/
+    border: 1px solid  #339900;
+    /*    cursor: move;*/
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    padding: 5px;
+    background-color: #c9fecd;
+    /*    text-align: center;*/
+}
+
+.handle:hover{
+    background-color: lightblue;
+    cursor: move;
+}
+
+.active{
+    background-color: wheat;
+    border: 3px dashed  red;
+    /*    cursor: move;*/
+}
+.sortable-item {
+    /*    background-color: #FFF;
+        border: 3px dashed lightgray;
+        cursor: move;
+        display: block;
+        font-weight: bold;
+        margin-bottom: 5px;
+        padding: 20px 0;
+        text-align: center;*/
+}
+
+#east{
+    font-size: .7em;
+}
+
+#east form {
+    padding: 0;
+}
+
+#east #pTable .pTitle{
+    text-align: right
+}
+/* Containment area */
+
+#containment {
+    background-color: #FFA;
+    height: 230px;
+}
+
+
+/* Item placeholder (visual helper) */
+
+.placeholder {
+    /*background-color: #BFB;*/
+    border: 4px dashed #666;
+    height: 58px;
+    margin-bottom: 5px;
+}
+
+/* edit styles*/
+.edit_icon{
+    background-position: left;
+    background-repeat: no-repeat;
+    padding-left: 26px;
+    /*    padding-bottom: 2px;
+        padding-top: 2px;*/
+}
+.editJS{
+    background-image: url(../css/Icons/24x24/Document-2JS.gif);
+}
+
+.editJS_off{
+    background-image: url(../css/Icons/24x24/Document-2JS.off.gif);
+
+}
+.editPHP{
+    background-image: url(../css/Icons/24x24/Document-2PHP.gif);
+
+}
+
+.editPHP_off{
+    background-image: url(../css/Icons/24x24/Document-2PHP.off.gif);
+}
+
+root { 
+    display: block;
+}
+

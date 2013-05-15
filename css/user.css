@@ -1,0 +1,33 @@
+/* 
+    Document   : user.css
+    Created on : Oct 28, 2010, 4:50:07 PM
+    Author     : juan
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+/* 
+   TODO customize this sample style
+   Syntax recommendation http://www.w3.org/TR/REC-CSS2/
+*/
+
+root { 
+    display: block;
+}
+.dot7 {
+    font-size: .7em;
+}
+.dot8 {
+    font-size: .8em;
+}
+
+.toolbar{
+    padding: 7px 4px;
+}
+
+#radio {
+    float: left;
+}
+.new{
+    background-color: #edef7d
+}

@@ -1,0 +1,71 @@
+/* 
+    Document   : browser
+    Created on : Feb 14, 2013, 1:41:33 PM
+    Author     : juanb
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+root { 
+    display: block;
+}
+.browser_image_container{
+    border: 1px dashed graytext;
+}
+.model{
+    background-image: url(../images/dot-green.png) !important;
+    background-repeat: no-repeat;
+}
+.dot-green{
+    background-image: url(../images/dot-green.png) !important;
+    background-repeat: no-repeat;
+
+}
+.dot-gray{
+    background-image: url(../images/dot-gray.png) !important;
+    background-repeat: no-repeat;
+
+}
+.editModel{
+    background-image: url(../images/file_edit_16x16.gif) !important;
+    background-repeat: no-repeat;
+}
+.viewModel{
+    background-image: url(../images/preview_16x16.gif) !important;
+    background-repeat: no-repeat;
+}
+.dumpModel{
+    background-image: url(../images/down_16x16.gif) !important;
+    background-repeat: no-repeat;
+}
+
+.start{
+    background-image: url(../images/start.gif) !important;
+    background-repeat: no-repeat;
+}
+.text-new {
+    color: #009900; 
+}
+.icon-add {
+    background-image: url(../images/add.png) !important;
+}
+.icon-add-folder {
+    background-image: url(../images/folder_add.gif) !important;
+}
+.icon-delete {
+    background-image: url(../images/delete.png) !important;
+}
+.icon-save {
+    background-image: url(../images/save.gif) !important;
+}
+.wf_image{
+    width: 100%
+}
+.page_header{
+    text-shadow: 2px 2px 2px rgb(51, 51, 51);
+}
+
+.model_overlay:hover{
+    background-color: #009933;
+    opacity: .5
+}

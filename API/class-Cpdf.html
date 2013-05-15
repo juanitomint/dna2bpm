@@ -1,0 +1,3846 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="generator" content="ApiGen 2.8.0" />
+
+	<title>Class Cpdf | DNA² Modules</title>
+
+	<script type="text/javascript" src="resources/combined.js?394153670"></script>
+	<script type="text/javascript" src="elementlist.js?3257613408"></script>
+	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
+
+</head>
+
+<body>
+<div id="left">
+	<div id="menu">
+		<a href="index.html" title="Overview"><span>Overview</span></a>
+
+
+		<div id="groups">
+			<h3>Packages</h3>
+			<ul>
+				<li class="active"><a href="package-Cpdf.html">Cpdf</a>
+						</li>
+				<li><a href="package-None.html">None</a>
+						</li>
+			</ul>
+		</div>
+
+		<hr />
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li><a href="class-Cezpdf.html">Cezpdf</a></li>
+				<li class="active"><a href="class-Cpdf.html">Cpdf</a></li>
+			</ul>
+
+
+
+
+
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+<div id="rightInner">
+	<form id="search">
+		<input type="hidden" name="cx" value="" />
+		<input type="hidden" name="ie" value="UTF-8" />
+		<input type="text" name="q" class="text" />
+		<input type="submit" value="Search" />
+	</form>
+
+	<div id="navigation">
+		<ul>
+			<li>
+				<a href="index.html" title="Overview"><span>Overview</span></a>
+			</li>
+			<li>
+				<a href="package-Cpdf.html" title="Summary of Cpdf"><span>Package</span></a>
+			</li>
+			<li class="active">
+<span>Class</span>			</li>
+		</ul>
+		<ul>
+			<li>
+				<a href="tree.html" title="Tree view of classes, interfaces, traits and exceptions"><span>Tree</span></a>
+			</li>
+			<li>
+				<a href="deprecated.html" title="List of deprecated elements"><span>Deprecated</span></a>
+			</li>
+			<li>
+				<a href="todo.html" title="Todo list"><span>Todo</span></a>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<a href="dna-modules-api-documentation.zip" title="Download documentation as ZIP archive"><span>Download</span></a>
+			</li>
+		</ul>
+	</div>
+
+<div id="content" class="class">
+	<h1>Class Cpdf</h1>
+
+
+	<div class="description">
+	
+<p>Cpdf</p>
+
+<p><a href="http://www.ros.co.nz/pdf">http://www.ros.co.nz/pdf</a></p>
+
+<p>A PHP class to provide the basic functionality to create a pdf document
+without any requirement for additional modules.</p>
+
+<p>Note that they companion class CezPdf can be used to extend this class and
+dramatically simplify the creation of documents.</p>
+
+<p>IMPORTANT NOTE there is no warranty, implied or otherwise with this
+software.</p>
+
+<p>LICENCE This code has been placed in the Public Domain for all to enjoy.</p>
+
+	</div>
+
+
+
+	<div>
+		<h4>Direct known subclasses</h4>
+			<a href="class-Cezpdf.html">Cezpdf</a>
+	</div>
+
+
+
+
+
+
+	<div class="info">
+		
+		
+		
+		<b>Package:</b> <a href="package-Cpdf.html">Cpdf</a><br />
+
+				<b>Author:</b>
+				Wayne Munro &lt;<a
+href="mailto:pdf&#64;ros.co.nz">pdf&#64;<!---->ros.co.nz</a>&gt;<br />
+				<b>Version:</b>
+				009<br />
+		<b>Located at</b> <a href="source-class-Cpdf.html#2-3073" title="Go to source code">meetings/libraries/class.pdf.php</a><br />
+	</div>
+
+
+
+	<table class="summary" id="methods">
+	<caption>Methods summary</caption>
+	<tr data-order="Cpdf" id="_Cpdf">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_Cpdf">#</a>
+		<code><a href="source-class-Cpdf.html#192-204" title="Go to source code">Cpdf</a>( <span>mixed <var>$pageSize</var> = <span class="php-keyword1">array</span>(<span class="php-num">0</span>,<span class="php-num">0</span>,<span class="php-num">612</span>,<span class="php-num">792</span>)</span> )</code>
+
+		<div class="description short">
+			
+<p>class constructor this will start a new document</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>class constructor this will start a new document</p>
+
+
+
+
+
+
+				<h4>Var</h4>
+				<div class="list">
+						array array of 4 numbers, defining the bottom left and upper right corner of the
+page. first two are normally zero.<br />
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="o_destination" id="_o_destination">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_o_destination">#</a>
+		<code><a href="source-class-Cpdf.html#221-254" title="Go to source code">o_destination</a>( <span>mixed <var>$id</var></span>, <span>mixed <var>$action</var></span>, <span>mixed <var>$options</var> = <span class="php-quote">''</span></span> )</code>
+
+		<div class="description short">
+			
+<p>destination object, used to specify the location for the user to jump to,
+presently on opening</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>destination object, used to specify the location for the user to jump to,
+presently on opening</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="o_viewerPreferences" id="_o_viewerPreferences">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_o_viewerPreferences">#</a>
+		<code><a href="source-class-Cpdf.html#256-292" title="Go to source code">o_viewerPreferences</a>( <span>mixed <var>$id</var></span>, <span>mixed <var>$action</var></span>, <span>mixed <var>$options</var> = <span class="php-quote">''</span></span> )</code>
+
+		<div class="description short">
+			
+<p>set the viewer preferences</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>set the viewer preferences</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="o_catalog" id="_o_catalog">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_o_catalog">#</a>
+		<code><a href="source-class-Cpdf.html#294-342" title="Go to source code">o_catalog</a>( <span>mixed <var>$id</var></span>, <span>mixed <var>$action</var></span>, <span>mixed <var>$options</var> = <span class="php-quote">''</span></span> )</code>
+
+		<div class="description short">
+			
+<p>define the document catalog, the overall controller for the document</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>define the document catalog, the overall controller for the document</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="o_pages" id="_o_pages">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_o_pages">#</a>
+		<code><a href="source-class-Cpdf.html#344-440" title="Go to source code">o_pages</a>( <span>mixed <var>$id</var></span>, <span>mixed <var>$action</var></span>, <span>mixed <var>$options</var> = <span class="php-quote">''</span></span> )</code>
+
+		<div class="description short">
+			
+<p>object which is a parent to the pages in the document</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>object which is a parent to the pages in the document</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="o_outlines" id="_o_outlines">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_o_outlines">#</a>
+		<code><a href="source-class-Cpdf.html#442-470" title="Go to source code">o_outlines</a>( <span>mixed <var>$id</var></span>, <span>mixed <var>$action</var></span>, <span>mixed <var>$options</var> = <span class="php-quote">''</span></span> )</code>
+
+		<div class="description short">
+			
+<p>define the outlines in the doc, empty for now</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>define the outlines in the doc, empty for now</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="o_font" id="_o_font">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_o_font">#</a>
+		<code><a href="source-class-Cpdf.html#472-554" title="Go to source code">o_font</a>( <span>mixed <var>$id</var></span>, <span>mixed <var>$action</var></span>, <span>mixed <var>$options</var> = <span class="php-quote">''</span></span> )</code>
+
+		<div class="description short">
+			
+<p>an object to hold the font description</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>an object to hold the font description</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="o_fontDescriptor" id="_o_fontDescriptor">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_o_fontDescriptor">#</a>
+		<code><a href="source-class-Cpdf.html#556-605" title="Go to source code">o_fontDescriptor</a>( <span>mixed <var>$id</var></span>, <span>mixed <var>$action</var></span>, <span>mixed <var>$options</var> = <span class="php-quote">''</span></span> )</code>
+
+		<div class="description short">
+			
+<p>a font descriptor, needed for including additional fonts</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>a font descriptor, needed for including additional fonts</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="o_fontEncoding" id="_o_fontEncoding">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_o_fontEncoding">#</a>
+		<code><a href="source-class-Cpdf.html#607-642" title="Go to source code">o_fontEncoding</a>( <span>mixed <var>$id</var></span>, <span>mixed <var>$action</var></span>, <span>mixed <var>$options</var> = <span class="php-quote">''</span></span> )</code>
+
+		<div class="description short">
+			
+<p>the font encoding</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>the font encoding</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="o_procset" id="_o_procset">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_o_procset">#</a>
+		<code><a href="source-class-Cpdf.html#644-677" title="Go to source code">o_procset</a>( <span>mixed <var>$id</var></span>, <span>mixed <var>$action</var></span>, <span>mixed <var>$options</var> = <span class="php-quote">''</span></span> )</code>
+
+		<div class="description short">
+			
+<p>the document procset, solves some problems with printing to old PS
+printers</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>the document procset, solves some problems with printing to old PS
+printers</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="o_info" id="_o_info">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_o_info">#</a>
+		<code><a href="source-class-Cpdf.html#679-721" title="Go to source code">o_info</a>( <span>mixed <var>$id</var></span>, <span>mixed <var>$action</var></span>, <span>mixed <var>$options</var> = <span class="php-quote">''</span></span> )</code>
+
+		<div class="description short">
+			
+<p>define the document information</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>define the document information</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="o_action" id="_o_action">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_o_action">#</a>
+		<code><a href="source-class-Cpdf.html#723-763" title="Go to source code">o_action</a>( <span>mixed <var>$id</var></span>, <span>mixed <var>$action</var></span>, <span>mixed <var>$options</var> = <span class="php-quote">''</span></span> )</code>
+
+		<div class="description short">
+			
+<p>an action object, used to link to URLS initially</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>an action object, used to link to URLS initially</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="o_annotation" id="_o_annotation">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_o_annotation">#</a>
+		<code><a href="source-class-Cpdf.html#765-816" title="Go to source code">o_annotation</a>( <span>mixed <var>$id</var></span>, <span>mixed <var>$action</var></span>, <span>mixed <var>$options</var> = <span class="php-quote">''</span></span> )</code>
+
+		<div class="description short">
+			
+<p>an annotation object, this will add an annotation to the current page.
+initially will support just link annotations</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>an annotation object, this will add an annotation to the current page.
+initially will support just link annotations</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="o_page" id="_o_page">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_o_page">#</a>
+		<code><a href="source-class-Cpdf.html#818-885" title="Go to source code">o_page</a>( <span>mixed <var>$id</var></span>, <span>mixed <var>$action</var></span>, <span>mixed <var>$options</var> = <span class="php-quote">''</span></span> )</code>
+
+		<div class="description short">
+			
+<p>a page object, it also creates a contents object to hold its contents</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>a page object, it also creates a contents object to hold its contents</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="o_contents" id="_o_contents">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_o_contents">#</a>
+		<code><a href="source-class-Cpdf.html#887-935" title="Go to source code">o_contents</a>( <span>mixed <var>$id</var></span>, <span>mixed <var>$action</var></span>, <span>mixed <var>$options</var> = <span class="php-quote">''</span></span> )</code>
+
+		<div class="description short">
+			
+<p>the contents objects hold all of the content which appears on pages</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>the contents objects hold all of the content which appears on pages</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="o_image" id="_o_image">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_o_image">#</a>
+		<code><a href="source-class-Cpdf.html#937-1010" title="Go to source code">o_image</a>( <span>mixed <var>$id</var></span>, <span>mixed <var>$action</var></span>, <span>mixed <var>$options</var> = <span class="php-quote">''</span></span> )</code>
+
+		<div class="description short">
+			
+<p>an image object, will be an XObject in the document, includes description and
+data</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>an image object, will be an XObject in the document, includes description and
+data</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="o_encryption" id="_o_encryption">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_o_encryption">#</a>
+		<code><a href="source-class-Cpdf.html#1012-1076" title="Go to source code">o_encryption</a>( <span>mixed <var>$id</var></span>, <span>mixed <var>$action</var></span>, <span>mixed <var>$options</var> = <span class="php-quote">''</span></span> )</code>
+
+		<div class="description short">
+			
+<p>encryption object.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>encryption object.</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="md5_16" id="_md5_16">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_md5_16">#</a>
+		<code><a href="source-class-Cpdf.html#1083-1093" title="Go to source code">md5_16</a>( <span>mixed <var>$string</var></span> )</code>
+
+		<div class="description short">
+			
+<p>calculate the 16 byte version of the 128 bit md5 digest of the string</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>calculate the 16 byte version of the 128 bit md5 digest of the string</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="encryptInit" id="_encryptInit">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_encryptInit">#</a>
+		<code><a href="source-class-Cpdf.html#1095-1107" title="Go to source code">encryptInit</a>( <span>mixed <var>$id</var></span> )</code>
+
+		<div class="description short">
+			
+<p>initialize the encryption for processing a particular object</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>initialize the encryption for processing a particular object</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="ARC4_init" id="_ARC4_init">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_ARC4_init">#</a>
+		<code><a href="source-class-Cpdf.html#1109-1133" title="Go to source code">ARC4_init</a>( <span>mixed <var>$key</var> = <span class="php-quote">''</span></span> )</code>
+
+		<div class="description short">
+			
+<p>initialize the ARC4 encryption</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>initialize the ARC4 encryption</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="ARC4" id="_ARC4">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_ARC4">#</a>
+		<code><a href="source-class-Cpdf.html#1135-1155" title="Go to source code">ARC4</a>( <span>mixed <var>$text</var></span> )</code>
+
+		<div class="description short">
+			
+<p>ARC4 encrypt a text string</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>ARC4 encrypt a text string</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="addLink" id="_addLink">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_addLink">#</a>
+		<code><a href="source-class-Cpdf.html#1161-1168" title="Go to source code">addLink</a>( <span>mixed <var>$url</var></span>, <span>mixed <var>$x0</var></span>, <span>mixed <var>$y0</var></span>, <span>mixed <var>$x1</var></span>, <span>mixed <var>$y1</var></span> )</code>
+
+		<div class="description short">
+			
+<p>add a link in the document to an external URL</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>add a link in the document to an external URL</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="addInternalLink" id="_addInternalLink">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_addInternalLink">#</a>
+		<code><a href="source-class-Cpdf.html#1170-1177" title="Go to source code">addInternalLink</a>( <span>mixed <var>$label</var></span>, <span>mixed <var>$x0</var></span>, <span>mixed <var>$y0</var></span>, <span>mixed <var>$x1</var></span>, <span>mixed <var>$y1</var></span> )</code>
+
+		<div class="description short">
+			
+<p>add a link in the document to an internal destination (ie. within the
+document)</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>add a link in the document to an internal destination (ie. within the
+document)</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="setEncryption" id="_setEncryption">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_setEncryption">#</a>
+		<code><a href="source-class-Cpdf.html#1179-1209" title="Go to source code">setEncryption</a>( <span>mixed <var>$userPass</var> = <span class="php-quote">''</span></span>, <span>mixed <var>$ownerPass</var> = <span class="php-quote">''</span></span>, <span>mixed <var>$pc</var> = <span class="php-keyword1">array</span>()</span> )</code>
+
+		<div class="description short">
+			
+<p>set the encryption of the document can be used to turn it on and/or set the
+passwords which it will have. also the functions that the user will have are set
+here, such as print, modify, add</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>set the encryption of the document can be used to turn it on and/or set the
+passwords which it will have. also the functions that the user will have are set
+here, such as print, modify, add</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="checkAllHere" id="_checkAllHere">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_checkAllHere">#</a>
+		<code><a href="source-class-Cpdf.html#1211-1215" title="Go to source code">checkAllHere</a>( )</code>
+
+		<div class="description short">
+			
+<p>should be used for internal checks, not implemented as yet</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>should be used for internal checks, not implemented as yet</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="output" id="_output">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_output">#</a>
+		<code><a href="source-class-Cpdf.html#1217-1258" title="Go to source code">output</a>( <span>mixed <var>$debug</var> = <span class="php-num">0</span></span> )</code>
+
+		<div class="description short">
+			
+<p>return the pdf stream as a string returned from the function</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>return the pdf stream as a string returned from the function</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="newDocument" id="_newDocument">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_newDocument">#</a>
+		<code><a href="source-class-Cpdf.html#1260-1295" title="Go to source code">newDocument</a>( <span>mixed <var>$pageSize</var> = <span class="php-keyword1">array</span>(<span class="php-num">0</span>,<span class="php-num">0</span>,<span class="php-num">612</span>,<span class="php-num">792</span>)</span> )</code>
+
+		<div class="description short">
+			
+<p>intialize a new document if this is called on an existing document results
+may be unpredictable, but the existing document would be lost at minimum this
+function is called automatically by the constructor function</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>intialize a new document if this is called on an existing document results
+may be unpredictable, but the existing document would be lost at minimum this
+function is called automatically by the constructor function</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="openFont" id="_openFont">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_openFont">#</a>
+		<code><a href="source-class-Cpdf.html#1297-1407" title="Go to source code">openFont</a>( <span>mixed <var>$font</var></span> )</code>
+
+		<div class="description short">
+			
+<p>open the font file and return a php structure containing it. first check if
+this one has been done before and saved in a form more suited to php note that
+if a php serialized version does not exist it will try and make one, but will
+require write access to the directory to do it... it is MUCH faster to have
+these serialized files.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>open the font file and return a php structure containing it. first check if
+this one has been done before and saved in a form more suited to php note that
+if a php serialized version does not exist it will try and make one, but will
+require write access to the directory to do it... it is MUCH faster to have
+these serialized files.</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="selectFont" id="_selectFont">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_selectFont">#</a>
+		<code><a href="source-class-Cpdf.html#1409-1597" title="Go to source code">selectFont</a>( <span>mixed <var>$fontName</var></span>, <span>mixed <var>$encoding</var> = <span class="php-quote">''</span></span>, <span>mixed <var>$set</var> = <span class="php-num">1</span></span> )</code>
+
+		<div class="description short">
+			
+<p>if the font is not loaded then load it and make the required object else just
+make it the current font the encoding array can contain 'encoding'=&gt;
+'none','WinAnsiEncoding','MacRomanEncoding' or 'MacExpertEncoding' note that
+encoding='none' will need to be used for symbolic fonts and 'differences' =&gt;
+an array of mappings between numbers 0-&gt;255 and character names.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>if the font is not loaded then load it and make the required object else just
+make it the current font the encoding array can contain 'encoding'=&gt;
+'none','WinAnsiEncoding','MacRomanEncoding' or 'MacExpertEncoding' note that
+encoding='none' will need to be used for symbolic fonts and 'differences' =&gt;
+an array of mappings between numbers 0-&gt;255 and character names.</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="setCurrentFont" id="_setCurrentFont">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_setCurrentFont">#</a>
+		<code><a href="source-class-Cpdf.html#1599-1633" title="Go to source code">setCurrentFont</a>( )</code>
+
+		<div class="description short">
+			
+<p>sets up the current font, based on the font families, and the current text
+state note that this system is quite flexible, a <b><i> font can be completely
+different to a <i><b> font, and even <b><b> will have to be defined within the
+family to have meaning This function is to be called whenever the
+currentTextState is changed, it will update the currentFont setting to whatever
+the appropriatte family one is. If the user calls selectFont themselves then
+that will reset the currentBaseFont, and the currentFont This function will
+change the currentFont to whatever it should be, but will not change the
+currentBaseFont.</b></b></b></i></i></b></p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>sets up the current font, based on the font families, and the current text
+state note that this system is quite flexible, a <b><i> font can be completely
+different to a <i><b> font, and even <b><b> will have to be defined within the
+family to have meaning This function is to be called whenever the
+currentTextState is changed, it will update the currentFont setting to whatever
+the appropriatte family one is. If the user calls selectFont themselves then
+that will reset the currentBaseFont, and the currentFont This function will
+change the currentFont to whatever it should be, but will not change the
+currentBaseFont.</b></b></b></i></i></b></p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getFirstPageId" id="_getFirstPageId">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getFirstPageId">#</a>
+		<code><a href="source-class-Cpdf.html#1635-1641" title="Go to source code">getFirstPageId</a>( )</code>
+
+		<div class="description short">
+			
+<p>function for the user to find out what the ID is of the first page that was
+created during startup - useful if they wish to add something to it later.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>function for the user to find out what the ID is of the first page that was
+created during startup - useful if they wish to add something to it later.</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="addContent" id="_addContent">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_addContent">#</a>
+		<code><a href="source-class-Cpdf.html#1643-1650" title="Go to source code">addContent</a>( <span>mixed <var>$content</var></span> )</code>
+
+		<div class="description short">
+			
+<p>add content to the currently active object</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>add content to the currently active object</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="setColor" id="_setColor">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_setColor">#</a>
+		<code><a href="source-class-Cpdf.html#1652-1660" title="Go to source code">setColor</a>( <span>mixed <var>$r</var></span>, <span>mixed <var>$g</var></span>, <span>mixed <var>$b</var></span>, <span>mixed <var>$force</var> = <span class="php-num">0</span></span> )</code>
+
+		<div class="description short">
+			
+<p>sets the colour for fill operations</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>sets the colour for fill operations</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="setStrokeColor" id="_setStrokeColor">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_setStrokeColor">#</a>
+		<code><a href="source-class-Cpdf.html#1662-1670" title="Go to source code">setStrokeColor</a>( <span>mixed <var>$r</var></span>, <span>mixed <var>$g</var></span>, <span>mixed <var>$b</var></span>, <span>mixed <var>$force</var> = <span class="php-num">0</span></span> )</code>
+
+		<div class="description short">
+			
+<p>sets the colour for stroke operations</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>sets the colour for stroke operations</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="line" id="_line">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_line">#</a>
+		<code><a href="source-class-Cpdf.html#1672-1677" title="Go to source code">line</a>( <span>mixed <var>$x1</var></span>, <span>mixed <var>$y1</var></span>, <span>mixed <var>$x2</var></span>, <span>mixed <var>$y2</var></span> )</code>
+
+		<div class="description short">
+			
+<p>draw a line from one set of coordinates to another</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>draw a line from one set of coordinates to another</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="curve" id="_curve">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_curve">#</a>
+		<code><a href="source-class-Cpdf.html#1679-1687" title="Go to source code">curve</a>( <span>mixed <var>$x0</var></span>, <span>mixed <var>$y0</var></span>, <span>mixed <var>$x1</var></span>, <span>mixed <var>$y1</var></span>, <span>mixed <var>$x2</var></span>, <span>mixed <var>$y2</var></span>, <span>mixed <var>$x3</var></span>, <span>mixed <var>$y3</var></span> )</code>
+
+		<div class="description short">
+			
+<p>draw a bezier curve based on 4 control points</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>draw a bezier curve based on 4 control points</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="partEllipse" id="_partEllipse">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_partEllipse">#</a>
+		<code><a href="source-class-Cpdf.html#1689-1694" title="Go to source code">partEllipse</a>( <span>mixed <var>$x0</var></span>, <span>mixed <var>$y0</var></span>, <span>mixed <var>$astart</var></span>, <span>mixed <var>$afinish</var></span>, <span>mixed <var>$r1</var></span>, <span>mixed <var>$r2</var> = <span class="php-num">0</span></span>, <span>mixed <var>$angle</var> = <span class="php-num">0</span></span>, <span>mixed <var>$nSeg</var> = <span class="php-num">8</span></span> )</code>
+
+		<div class="description short">
+			
+<p>draw a part of an ellipse</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>draw a part of an ellipse</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="filledEllipse" id="_filledEllipse">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_filledEllipse">#</a>
+		<code><a href="source-class-Cpdf.html#1696-1701" title="Go to source code">filledEllipse</a>( <span>mixed <var>$x0</var></span>, <span>mixed <var>$y0</var></span>, <span>mixed <var>$r1</var></span>, <span>mixed <var>$r2</var> = <span class="php-num">0</span></span>, <span>mixed <var>$angle</var> = <span class="php-num">0</span></span>, <span>mixed <var>$nSeg</var> = <span class="php-num">8</span></span>, <span>mixed <var>$astart</var> = <span class="php-num">0</span></span>, <span>mixed <var>$afinish</var> = <span class="php-num">360</span></span> )</code>
+
+		<div class="description short">
+			
+<p>draw a filled ellipse</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>draw a filled ellipse</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="ellipse" id="_ellipse">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_ellipse">#</a>
+		<code><a href="source-class-Cpdf.html#1703-1774" title="Go to source code">ellipse</a>( <span>mixed <var>$x0</var></span>, <span>mixed <var>$y0</var></span>, <span>mixed <var>$r1</var></span>, <span>mixed <var>$r2</var> = <span class="php-num">0</span></span>, <span>mixed <var>$angle</var> = <span class="php-num">0</span></span>, <span>mixed <var>$nSeg</var> = <span class="php-num">8</span></span>, <span>mixed <var>$astart</var> = <span class="php-num">0</span></span>, <span>mixed <var>$afinish</var> = <span class="php-num">360</span></span>, <span>mixed <var>$close</var> = <span class="php-num">1</span></span>, <span>mixed <var>$fill</var> = <span class="php-num">0</span></span> )</code>
+
+		<div class="description short">
+			
+<p>draw an ellipse note that the part and filled ellipse are just special cases
+of this function</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>draw an ellipse note that the part and filled ellipse are just special cases
+of this function</p>
+
+<p>draws an ellipse in the current line style centered at $x0,$y0, radii $r1,$r2
+if $r2 is not set, then a circle is drawn nSeg is not allowed to be less than 2,
+as this will simply draw a line (and will even draw a pretty crappy shape at 2,
+as we are approximating with bezier curves.</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="setLineStyle" id="_setLineStyle">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_setLineStyle">#</a>
+		<code><a href="source-class-Cpdf.html#1776-1813" title="Go to source code">setLineStyle</a>( <span>mixed <var>$width</var> = <span class="php-num">1</span></span>, <span>mixed <var>$cap</var> = <span class="php-quote">''</span></span>, <span>mixed <var>$join</var> = <span class="php-quote">''</span></span>, <span>mixed <var>$dash</var> = <span class="php-quote">''</span></span>, <span>mixed <var>$phase</var> = <span class="php-num">0</span></span> )</code>
+
+		<div class="description short">
+			
+<p>this sets the line drawing style. width, is the thickness of the line in user
+units cap is the type of cap to put on the line, values can be
+'butt','round','square'<br />
+where the diffference between 'square' and 'butt' is that 'square' projects a
+flat end past the<br />
+end of the line. join can be 'miter', 'round', 'bevel' dash is an array which
+sets the dash pattern, is a series of length values, which are the lengths of
+the<br />
+on and off dashes.<br />
+(2) represents 2 on, 2 off, 2 on , 2 off ...<br />
+(2,1) is 2 on, 1 off, 2 on, 1 off.. etc phase is a modifier on the dash pattern
+which is used to shift the point at which the pattern starts.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>this sets the line drawing style. width, is the thickness of the line in user
+units cap is the type of cap to put on the line, values can be
+'butt','round','square' where the diffference between 'square' and 'butt' is
+that 'square' projects a flat end past the end of the line. join can be 'miter',
+'round', 'bevel' dash is an array which sets the dash pattern, is a series of
+length values, which are the lengths of the on and off dashes. (2) represents 2
+on, 2 off, 2 on , 2 off ... (2,1) is 2 on, 1 off, 2 on, 1 off.. etc phase is a
+modifier on the dash pattern which is used to shift the point at which the
+pattern starts.</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="polygon" id="_polygon">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_polygon">#</a>
+		<code><a href="source-class-Cpdf.html#1815-1829" title="Go to source code">polygon</a>( <span>mixed <var>$p</var></span>, <span>mixed <var>$np</var></span>, <span>mixed <var>$f</var> = <span class="php-num">0</span></span> )</code>
+
+		<div class="description short">
+			
+<p>draw a polygon, the syntax for this is similar to the GD polygon command</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>draw a polygon, the syntax for this is similar to the GD polygon command</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="filledRectangle" id="_filledRectangle">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_filledRectangle">#</a>
+		<code><a href="source-class-Cpdf.html#1831-1837" title="Go to source code">filledRectangle</a>( <span>mixed <var>$x1</var></span>, <span>mixed <var>$y1</var></span>, <span>mixed <var>$width</var></span>, <span>mixed <var>$height</var></span> )</code>
+
+		<div class="description short">
+			
+<p>a filled rectangle, note that it is the width and height of the rectangle
+which are the secondary paramaters, not the coordinates of the upper-right
+corner</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>a filled rectangle, note that it is the width and height of the rectangle
+which are the secondary paramaters, not the coordinates of the upper-right
+corner</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="rectangle" id="_rectangle">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_rectangle">#</a>
+		<code><a href="source-class-Cpdf.html#1839-1845" title="Go to source code">rectangle</a>( <span>mixed <var>$x1</var></span>, <span>mixed <var>$y1</var></span>, <span>mixed <var>$width</var></span>, <span>mixed <var>$height</var></span> )</code>
+
+		<div class="description short">
+			
+<p>draw a rectangle, note that it is the width and height of the rectangle which
+are the secondary paramaters, not the coordinates of the upper-right corner</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>draw a rectangle, note that it is the width and height of the rectangle which
+are the secondary paramaters, not the coordinates of the upper-right corner</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="newPage" id="_newPage">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_newPage">#</a>
+		<code><a href="source-class-Cpdf.html#1847-1893" title="Go to source code">newPage</a>( <span>mixed <var>$insert</var> = <span class="php-num">0</span></span>, <span>mixed <var>$id</var> = <span class="php-num">0</span></span>, <span>mixed <var>$pos</var> = <span class="php-quote">'after'</span></span> )</code>
+
+		<div class="description short">
+			
+<p>add a new page to the document this also makes the new page the current
+active object</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>add a new page to the document this also makes the new page the current
+active object</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="stream" id="_stream">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_stream">#</a>
+		<code><a href="source-class-Cpdf.html#1895-1924" title="Go to source code">stream</a>( <span>mixed <var>$options</var> = <span class="php-quote">''</span></span> )</code>
+
+		<div class="description short">
+			
+<p>output the pdf code, streaming it to the browser the relevant headers are set
+so that hopefully the browser will recognise it</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>output the pdf code, streaming it to the browser the relevant headers are set
+so that hopefully the browser will recognise it</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getFontHeight" id="_getFontHeight">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getFontHeight">#</a>
+		<code><a href="source-class-Cpdf.html#1926-1936" title="Go to source code">getFontHeight</a>( <span>mixed <var>$size</var></span> )</code>
+
+		<div class="description short">
+			
+<p>return the height in units of the current font in the given size</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>return the height in units of the current font in the given size</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getFontDecender" id="_getFontDecender">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getFontDecender">#</a>
+		<code><a href="source-class-Cpdf.html#1938-1950" title="Go to source code">getFontDecender</a>( <span>mixed <var>$size</var></span> )</code>
+
+		<div class="description short">
+			
+<p>return the font decender, this will normally return a negative number if you
+add this number to the baseline, you get the level of the bottom of the font it
+is in the pdf user units</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>return the font decender, this will normally return a negative number if you
+add this number to the baseline, you get the level of the bottom of the font it
+is in the pdf user units</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="filterText" id="_filterText">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_filterText">#</a>
+		<code><a href="source-class-Cpdf.html#1952-1969" title="Go to source code">filterText</a>( <span>mixed <var>$text</var></span> )</code>
+
+		<div class="description short">
+			
+<p>filter the text, this is applied to all text just before being inserted into
+the pdf document it escapes the various things that need to be escaped, and so
+on</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>filter the text, this is applied to all text just before being inserted into
+the pdf document it escapes the various things that need to be escaped, and so
+on</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="PRVTgetTextPosition" id="_PRVTgetTextPosition">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_PRVTgetTextPosition">#</a>
+		<code><a href="source-class-Cpdf.html#1971-1986" title="Go to source code">PRVTgetTextPosition</a>( <span>mixed <var>$x</var></span>, <span>mixed <var>$y</var></span>, <span>mixed <var>$angle</var></span>, <span>mixed <var>$size</var></span>, <span>mixed <var>$wa</var></span>, <span>mixed <var>$text</var></span> )</code>
+
+		<div class="description short">
+			
+<p>given a start position and information about how text is to be laid out,
+calculate where on the page the text will end</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>given a start position and information about how text is to be laid out,
+calculate where on the page the text will end</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="PRVTcheckTextDirective" id="_PRVTcheckTextDirective">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_PRVTcheckTextDirective">#</a>
+		<code><a href="source-class-Cpdf.html#1988-1997" title="Go to source code">PRVTcheckTextDirective</a>( <span>mixed <var>&amp; $text</var></span>, <span>mixed <var>$i</var></span>, <span>mixed <var>&amp; $f</var></span> )</code>
+
+		<div class="description short">
+			
+<p>wrapper function for PRVTcheckTextDirective1</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>wrapper function for PRVTcheckTextDirective1</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="PRVTcheckTextDirective1" id="_PRVTcheckTextDirective1">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_PRVTcheckTextDirective1">#</a>
+		<code><a href="source-class-Cpdf.html#1999-2151" title="Go to source code">PRVTcheckTextDirective1</a>( <span>mixed <var>&amp; $text</var></span>, <span>mixed <var>$i</var></span>, <span>mixed <var>&amp; $f</var></span>, <span>mixed <var>$final</var></span>, <span>mixed <var>&amp; $x</var></span>, <span>mixed <var>&amp; $y</var></span>, <span>mixed <var>$size</var> = <span class="php-num">0</span></span>, <span>mixed <var>$angle</var> = <span class="php-num">0</span></span>, <span>mixed <var>$wordSpaceAdjust</var> = <span class="php-num">0</span></span> )</code>
+
+		<div class="description short">
+			
+<p>checks if the text stream contains a control directive if so then makes some
+changes and returns the number of characters involved in the directive this has
+been re-worked to include everything neccesary to fins the current writing
+point, so that the location can be sent to the callback function if required if
+the directive does not require a font change, then $f should be set to 0</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>checks if the text stream contains a control directive if so then makes some
+changes and returns the number of characters involved in the directive this has
+been re-worked to include everything neccesary to fins the current writing
+point, so that the location can be sent to the callback function if required if
+the directive does not require a font change, then $f should be set to 0</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="addText" id="_addText">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_addText">#</a>
+		<code><a href="source-class-Cpdf.html#2153-2242" title="Go to source code">addText</a>( <span>mixed <var>$x</var></span>, <span>mixed <var>$y</var></span>, <span>mixed <var>$size</var></span>, <span>mixed <var>$text</var></span>, <span>mixed <var>$angle</var> = <span class="php-num">0</span></span>, <span>mixed <var>$wordSpaceAdjust</var> = <span class="php-num">0</span></span> )</code>
+
+		<div class="description short">
+			
+<p>add text to the document, at a specified location, size and angle on the
+page</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>add text to the document, at a specified location, size and angle on the
+page</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getTextWidth" id="_getTextWidth">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getTextWidth">#</a>
+		<code><a href="source-class-Cpdf.html#2244-2293" title="Go to source code">getTextWidth</a>( <span>mixed <var>$size</var></span>, <span>mixed <var>$text</var></span> )</code>
+
+		<div class="description short">
+			
+<p>calculate how wide a given text string will be on a page, at a given size.
+this can be called externally, but is alse used by the other class functions</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>calculate how wide a given text string will be on a page, at a given size.
+this can be called externally, but is alse used by the other class functions</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="PRVTadjustWrapText" id="_PRVTadjustWrapText">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_PRVTadjustWrapText">#</a>
+		<code><a href="source-class-Cpdf.html#2295-2323" title="Go to source code">PRVTadjustWrapText</a>( <span>mixed <var>$text</var></span>, <span>mixed <var>$actual</var></span>, <span>mixed <var>$width</var></span>, <span>mixed <var>&amp; $x</var></span>, <span>mixed <var>&amp; $adjust</var></span>, <span>mixed <var>$justification</var></span> )</code>
+
+		<div class="description short">
+			
+<p>do a part of the calculation for sorting out the justification of the
+text</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>do a part of the calculation for sorting out the justification of the
+text</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="addTextWrap" id="_addTextWrap">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_addTextWrap">#</a>
+		<code><a href="source-class-Cpdf.html#2325-2439" title="Go to source code">addTextWrap</a>( <span>mixed <var>$x</var></span>, <span>mixed <var>$y</var></span>, <span>mixed <var>$width</var></span>, <span>mixed <var>$size</var></span>, <span>mixed <var>$text</var></span>, <span>mixed <var>$justification</var> = <span class="php-quote">'left'</span></span>, <span>mixed <var>$angle</var> = <span class="php-num">0</span></span>, <span>mixed <var>$test</var> = <span class="php-num">0</span></span> )</code>
+
+		<div class="description short">
+			
+<p>add text to the page, but ensure that it fits within a certain width if it
+does not fit then put in as much as possible, splitting at word boundaries and
+return the remainder. justification and angle can also be specified for the
+text</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>add text to the page, but ensure that it fits within a certain width if it
+does not fit then put in as much as possible, splitting at word boundaries and
+return the remainder. justification and angle can also be specified for the
+text</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="saveState" id="_saveState">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_saveState">#</a>
+		<code><a href="source-class-Cpdf.html#2441-2466" title="Go to source code">saveState</a>( <span>mixed <var>$pageEnd</var> = <span class="php-num">0</span></span> )</code>
+
+		<div class="description short">
+			
+<p>this will be called at a new page to return the state to what it was on the
+end of the previous page, before the stack was closed down This is to get around
+not being able to have open 'q' across pages</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>this will be called at a new page to return the state to what it was on the
+end of the previous page, before the stack was closed down This is to get around
+not being able to have open 'q' across pages</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="restoreState" id="_restoreState">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_restoreState">#</a>
+		<code><a href="source-class-Cpdf.html#2468-2482" title="Go to source code">restoreState</a>( <span>mixed <var>$pageEnd</var> = <span class="php-num">0</span></span> )</code>
+
+		<div class="description short">
+			
+<p>restore a previously saved state</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>restore a previously saved state</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="openObject" id="_openObject">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_openObject">#</a>
+		<code><a href="source-class-Cpdf.html#2484-2500" title="Go to source code">openObject</a>( )</code>
+
+		<div class="description short">
+			
+<p>make a loose object, the output will go into this object, until it is closed,
+then will revert to the current one. this object will not appear until it is
+included within a page. the function will return the object number</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>make a loose object, the output will go into this object, until it is closed,
+then will revert to the current one. this object will not appear until it is
+included within a page. the function will return the object number</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="reopenObject" id="_reopenObject">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_reopenObject">#</a>
+		<code><a href="source-class-Cpdf.html#2502-2513" title="Go to source code">reopenObject</a>( <span>mixed <var>$id</var></span> )</code>
+
+		<div class="description short">
+			
+<p>open an existing object for editing</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>open an existing object for editing</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="closeObject" id="_closeObject">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_closeObject">#</a>
+		<code><a href="source-class-Cpdf.html#2515-2528" title="Go to source code">closeObject</a>( )</code>
+
+		<div class="description short">
+			
+<p>close an object</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>close an object</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="stopObject" id="_stopObject">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_stopObject">#</a>
+		<code><a href="source-class-Cpdf.html#2530-2539" title="Go to source code">stopObject</a>( <span>mixed <var>$id</var></span> )</code>
+
+		<div class="description short">
+			
+<p>stop an object from appearing on pages from this point on</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>stop an object from appearing on pages from this point on</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="addObject" id="_addObject">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_addObject">#</a>
+		<code><a href="source-class-Cpdf.html#2541-2585" title="Go to source code">addObject</a>( <span>mixed <var>$id</var></span>, <span>mixed <var>$options</var> = <span class="php-quote">'add'</span></span> )</code>
+
+		<div class="description short">
+			
+<p>after an object has been created, it wil only show if it has been added,
+using this function.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>after an object has been created, it wil only show if it has been added,
+using this function.</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="addInfo" id="_addInfo">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_addInfo">#</a>
+		<code><a href="source-class-Cpdf.html#2587-2602" title="Go to source code">addInfo</a>( <span>mixed <var>$label</var></span>, <span>mixed <var>$value</var> = <span class="php-num">0</span></span> )</code>
+
+		<div class="description short">
+			
+<p>add content to the documents info object</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>add content to the documents info object</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="setPreferences" id="_setPreferences">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_setPreferences">#</a>
+		<code><a href="source-class-Cpdf.html#2604-2616" title="Go to source code">setPreferences</a>( <span>mixed <var>$label</var></span>, <span>mixed <var>$value</var> = <span class="php-num">0</span></span> )</code>
+
+		<div class="description short">
+			
+<p>set the viewer preferences of the document, it is up to the browser to obey
+these.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>set the viewer preferences of the document, it is up to the browser to obey
+these.</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="PRVT_getBytes" id="_PRVT_getBytes">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_PRVT_getBytes">#</a>
+		<code><a href="source-class-Cpdf.html#2618-2631" title="Go to source code">PRVT_getBytes</a>( <span>mixed <var>&amp; $data</var></span>, <span>mixed <var>$pos</var></span>, <span>mixed <var>$num</var></span> )</code>
+
+		<div class="description short">
+			
+<p>extract an integer from a position in a byte stream</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>extract an integer from a position in a byte stream</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="addPngFromFile" id="_addPngFromFile">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_addPngFromFile">#</a>
+		<code><a href="source-class-Cpdf.html#2633-2820" title="Go to source code">addPngFromFile</a>( <span>mixed <var>$file</var></span>, <span>mixed <var>$x</var></span>, <span>mixed <var>$y</var></span>, <span>mixed <var>$w</var> = <span class="php-num">0</span></span>, <span>mixed <var>$h</var> = <span class="php-num">0</span></span> )</code>
+
+		<div class="description short">
+			
+<p>add a PNG image into the document, from a file this should work with remote
+files</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>add a PNG image into the document, from a file this should work with remote
+files</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="addJpegFromFile" id="_addJpegFromFile">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_addJpegFromFile">#</a>
+		<code><a href="source-class-Cpdf.html#2822-2863" title="Go to source code">addJpegFromFile</a>( <span>mixed <var>$img</var></span>, <span>mixed <var>$x</var></span>, <span>mixed <var>$y</var></span>, <span>mixed <var>$w</var> = <span class="php-num">0</span></span>, <span>mixed <var>$h</var> = <span class="php-num">0</span></span> )</code>
+
+		<div class="description short">
+			
+<p>add a JPEG image into the document, from a file</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>add a JPEG image into the document, from a file</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="addImage" id="_addImage">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_addImage">#</a>
+		<code><a href="source-class-Cpdf.html#2865-2924" title="Go to source code">addImage</a>( <span>mixed <var>&amp; $img</var></span>, <span>mixed <var>$x</var></span>, <span>mixed <var>$y</var></span>, <span>mixed <var>$w</var> = <span class="php-num">0</span></span>, <span>mixed <var>$h</var> = <span class="php-num">0</span></span>, <span>mixed <var>$quality</var> = <span class="php-num">75</span></span> )</code>
+
+		<div class="description short">
+			
+<p>add an image into the document, from a GD object this function is not all
+that reliable, and I would probably encourage people to use the file based
+functions</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>add an image into the document, from a GD object this function is not all
+that reliable, and I would probably encourage people to use the file based
+functions</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="addJpegImage_common" id="_addJpegImage_common">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_addJpegImage_common">#</a>
+		<code><a href="source-class-Cpdf.html#2926-2944" title="Go to source code">addJpegImage_common</a>( <span>mixed <var>&amp; $data</var></span>, <span>mixed <var>$x</var></span>, <span>mixed <var>$y</var></span>, <span>mixed <var>$w</var> = <span class="php-num">0</span></span>, <span>mixed <var>$h</var> = <span class="php-num">0</span></span>, <span>mixed <var>$imageWidth</var></span>, <span>mixed <var>$imageHeight</var></span>, <span>mixed <var>$channels</var> = <span class="php-num">3</span></span> )</code>
+
+		<div class="description short">
+			
+<p>common code used by the two JPEG adding functions</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>common code used by the two JPEG adding functions</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="openHere" id="_openHere">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_openHere">#</a>
+		<code><a href="source-class-Cpdf.html#2946-2964" title="Go to source code">openHere</a>( <span>mixed <var>$style</var></span>, <span>mixed <var>$a</var> = <span class="php-num">0</span></span>, <span>mixed <var>$b</var> = <span class="php-num">0</span></span>, <span>mixed <var>$c</var> = <span class="php-num">0</span></span> )</code>
+
+		<div class="description short">
+			
+<p>specify where the document should open when it first starts</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>specify where the document should open when it first starts</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="addDestination" id="_addDestination">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_addDestination">#</a>
+		<code><a href="source-class-Cpdf.html#2966-2978" title="Go to source code">addDestination</a>( <span>mixed <var>$label</var></span>, <span>mixed <var>$style</var></span>, <span>mixed <var>$a</var> = <span class="php-num">0</span></span>, <span>mixed <var>$b</var> = <span class="php-num">0</span></span>, <span>mixed <var>$c</var> = <span class="php-num">0</span></span> )</code>
+
+		<div class="description short">
+			
+<p>create a labelled destination within the document</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>create a labelled destination within the document</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="setFontFamily" id="_setFontFamily">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_setFontFamily">#</a>
+		<code><a href="source-class-Cpdf.html#2980-3017" title="Go to source code">setFontFamily</a>( <span>mixed <var>$family</var></span>, <span>mixed <var>$options</var> = <span class="php-quote">''</span></span> )</code>
+
+		<div class="description short">
+			
+<p>define font families, this is used to initialize the font families for the
+default fonts and for the user to add new ones for their fonts. The default
+bahavious can be overridden should that be desired.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>define font families, this is used to initialize the font families for the
+default fonts and for the user to add new ones for their fonts. The default
+bahavious can be overridden should that be desired.</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="addMessage" id="_addMessage">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_addMessage">#</a>
+		<code><a href="source-class-Cpdf.html#3019-3024" title="Go to source code">addMessage</a>( <span>mixed <var>$message</var></span> )</code>
+
+		<div class="description short">
+			
+<p>used to add messages for use in debugging</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>used to add messages for use in debugging</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="transaction" id="_transaction">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_transaction">#</a>
+		<code><a href="source-class-Cpdf.html#3026-3071" title="Go to source code">transaction</a>( <span>mixed <var>$action</var></span> )</code>
+
+		<div class="description short">
+			
+<p>a few functions which should allow the document to be treated
+transactionally.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>a few functions which should allow the document to be treated
+transactionally.</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	</table>
+
+
+
+
+
+
+
+
+
+
+
+
+	<table class="summary" id="properties">
+	<caption>Properties summary</caption>
+	<tr data-order="numObj" id="$numObj">
+		<td class="attributes"><code>
+			public  
+			integer
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Cpdf.html#25-28" title="Go to source code"><var>$numObj</var></a>
+		</td>
+		<td class="value"><code><span class="php-num">0</span></code></td>
+		<td class="description"><div>
+			<a href="#$numObj" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>the current number of pdf objects in the document</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>the current number of pdf objects in the document</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="objects" id="$objects">
+		<td class="attributes"><code>
+			public  
+			array
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Cpdf.html#29-32" title="Go to source code"><var>$objects</var></a>
+		</td>
+		<td class="value"><code><span class="php-keyword1">array</span>()</code></td>
+		<td class="description"><div>
+			<a href="#$objects" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>this array contains all of the pdf objects, ready for final assembly</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>this array contains all of the pdf objects, ready for final assembly</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="catalogId" id="$catalogId">
+		<td class="attributes"><code>
+			public  
+			mixed
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Cpdf.html#33-36" title="Go to source code"><var>$catalogId</var></a>
+		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$catalogId" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>the objectId (number within the objects array) of the document catalog</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>the objectId (number within the objects array) of the document catalog</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="fonts" id="$fonts">
+		<td class="attributes"><code>
+			public  
+			array
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Cpdf.html#37-41" title="Go to source code"><var>$fonts</var></a>
+		</td>
+		<td class="value"><code><span class="php-keyword1">array</span>()</code></td>
+		<td class="description"><div>
+			<a href="#$fonts" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>array carrying information about the fonts that the system currently knows
+about used to ensure that a font is not loaded twice, among other things</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>array carrying information about the fonts that the system currently knows
+about used to ensure that a font is not loaded twice, among other things</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="currentFont" id="$currentFont">
+		<td class="attributes"><code>
+			public  
+			string
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Cpdf.html#42-45" title="Go to source code"><var>$currentFont</var></a>
+		</td>
+		<td class="value"><code><span class="php-quote">''</span></code></td>
+		<td class="description"><div>
+			<a href="#$currentFont" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>a record of the current font</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>a record of the current font</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="currentBaseFont" id="$currentBaseFont">
+		<td class="attributes"><code>
+			public  
+			string
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Cpdf.html#46-49" title="Go to source code"><var>$currentBaseFont</var></a>
+		</td>
+		<td class="value"><code><span class="php-quote">''</span></code></td>
+		<td class="description"><div>
+			<a href="#$currentBaseFont" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>the current base font</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>the current base font</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="currentFontNum" id="$currentFontNum">
+		<td class="attributes"><code>
+			public  
+			integer
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Cpdf.html#50-53" title="Go to source code"><var>$currentFontNum</var></a>
+		</td>
+		<td class="value"><code><span class="php-num">0</span></code></td>
+		<td class="description"><div>
+			<a href="#$currentFontNum" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>the number of the current font within the font array</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>the number of the current font within the font array</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="currentNode" id="$currentNode">
+		<td class="attributes"><code>
+			public  
+			mixed
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Cpdf.html#54-57" title="Go to source code"><var>$currentNode</var></a>
+		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$currentNode" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="currentPage" id="$currentPage">
+		<td class="attributes"><code>
+			public  
+			mixed
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Cpdf.html#58-61" title="Go to source code"><var>$currentPage</var></a>
+		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$currentPage" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>object number of the current page</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>object number of the current page</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="currentContents" id="$currentContents">
+		<td class="attributes"><code>
+			public  
+			mixed
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Cpdf.html#62-65" title="Go to source code"><var>$currentContents</var></a>
+		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$currentContents" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>object number of the currently active contents block</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>object number of the currently active contents block</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="numFonts" id="$numFonts">
+		<td class="attributes"><code>
+			public  
+			integer
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Cpdf.html#66-69" title="Go to source code"><var>$numFonts</var></a>
+		</td>
+		<td class="value"><code><span class="php-num">0</span></code></td>
+		<td class="description"><div>
+			<a href="#$numFonts" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>number of fonts within the system</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>number of fonts within the system</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="currentColour" id="$currentColour">
+		<td class="attributes"><code>
+			public  
+			array
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Cpdf.html#70-73" title="Go to source code"><var>$currentColour</var></a>
+		</td>
+		<td class="value"><code><span class="php-keyword1">array</span>(<span class="php-quote">'r'</span>=&gt;-<span class="php-num">1</span>,<span class="php-quote">'g'</span>=&gt;-<span class="php-num">1</span>,<span class="php-quote">'b'</span>=&gt;-<span class="php-num">1</span>)</code></td>
+		<td class="description"><div>
+			<a href="#$currentColour" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>current colour for fill operations, defaults to inactive value, all three
+components should be between 0 and 1 inclusive when active</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>current colour for fill operations, defaults to inactive value, all three
+components should be between 0 and 1 inclusive when active</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="currentStrokeColour" id="$currentStrokeColour">
+		<td class="attributes"><code>
+			public  
+			array
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Cpdf.html#74-77" title="Go to source code"><var>$currentStrokeColour</var></a>
+		</td>
+		<td class="value"><code><span class="php-keyword1">array</span>(<span class="php-quote">'r'</span>=&gt;-<span class="php-num">1</span>,<span class="php-quote">'g'</span>=&gt;-<span class="php-num">1</span>,<span class="php-quote">'b'</span>=&gt;-<span class="php-num">1</span>)</code></td>
+		<td class="description"><div>
+			<a href="#$currentStrokeColour" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>current colour for stroke operations (lines etc.)</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>current colour for stroke operations (lines etc.)</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="currentLineStyle" id="$currentLineStyle">
+		<td class="attributes"><code>
+			public  
+			string
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Cpdf.html#78-81" title="Go to source code"><var>$currentLineStyle</var></a>
+		</td>
+		<td class="value"><code><span class="php-quote">''</span></code></td>
+		<td class="description"><div>
+			<a href="#$currentLineStyle" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>current style that lines are drawn in</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>current style that lines are drawn in</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="stateStack" id="$stateStack">
+		<td class="attributes"><code>
+			public  
+			array
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Cpdf.html#82-86" title="Go to source code"><var>$stateStack</var></a>
+		</td>
+		<td class="value"><code><span class="php-keyword1">array</span>()</code></td>
+		<td class="description"><div>
+			<a href="#$stateStack" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>an array which is used to save the state of the document, mainly the colours
+and styles it is used to temporarily change to another state, the change back to
+what it was before</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>an array which is used to save the state of the document, mainly the colours
+and styles it is used to temporarily change to another state, the change back to
+what it was before</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="nStateStack" id="$nStateStack">
+		<td class="attributes"><code>
+			public  
+			integer
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Cpdf.html#87-90" title="Go to source code"><var>$nStateStack</var></a>
+		</td>
+		<td class="value"><code><span class="php-num">0</span></code></td>
+		<td class="description"><div>
+			<a href="#$nStateStack" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>number of elements within the state stack</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>number of elements within the state stack</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="numPages" id="$numPages">
+		<td class="attributes"><code>
+			public  
+			integer
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Cpdf.html#91-94" title="Go to source code"><var>$numPages</var></a>
+		</td>
+		<td class="value"><code><span class="php-num">0</span></code></td>
+		<td class="description"><div>
+			<a href="#$numPages" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>number of page objects within the document</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>number of page objects within the document</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="stack" id="$stack">
+		<td class="attributes"><code>
+			public  
+			array
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Cpdf.html#95-98" title="Go to source code"><var>$stack</var></a>
+		</td>
+		<td class="value"><code><span class="php-keyword1">array</span>()</code></td>
+		<td class="description"><div>
+			<a href="#$stack" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>object Id storage stack</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>object Id storage stack</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="nStack" id="$nStack">
+		<td class="attributes"><code>
+			public  
+			integer
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Cpdf.html#99-102" title="Go to source code"><var>$nStack</var></a>
+		</td>
+		<td class="value"><code><span class="php-num">0</span></code></td>
+		<td class="description"><div>
+			<a href="#$nStack" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>number of elements within the object Id storage stack</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>number of elements within the object Id storage stack</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="looseObjects" id="$looseObjects">
+		<td class="attributes"><code>
+			public  
+			array
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Cpdf.html#103-107" title="Go to source code"><var>$looseObjects</var></a>
+		</td>
+		<td class="value"><code><span class="php-keyword1">array</span>()</code></td>
+		<td class="description"><div>
+			<a href="#$looseObjects" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>an array which contains information about the objects which are not firmly
+attached to pages these have been added with the addObject function</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>an array which contains information about the objects which are not firmly
+attached to pages these have been added with the addObject function</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="addLooseObjects" id="$addLooseObjects">
+		<td class="attributes"><code>
+			public  
+			array
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Cpdf.html#108-111" title="Go to source code"><var>$addLooseObjects</var></a>
+		</td>
+		<td class="value"><code><span class="php-keyword1">array</span>()</code></td>
+		<td class="description"><div>
+			<a href="#$addLooseObjects" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>array contains infomation about how the loose objects are to be added to the
+document</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>array contains infomation about how the loose objects are to be added to the
+document</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="infoObject" id="$infoObject">
+		<td class="attributes"><code>
+			public  
+			integer
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Cpdf.html#112-116" title="Go to source code"><var>$infoObject</var></a>
+		</td>
+		<td class="value"><code><span class="php-num">0</span></code></td>
+		<td class="description"><div>
+			<a href="#$infoObject" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>the objectId of the information object for the document this contains
+authorship, title etc.</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>the objectId of the information object for the document this contains
+authorship, title etc.</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="numImages" id="$numImages">
+		<td class="attributes"><code>
+			public  
+			integer
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Cpdf.html#117-120" title="Go to source code"><var>$numImages</var></a>
+		</td>
+		<td class="value"><code><span class="php-num">0</span></code></td>
+		<td class="description"><div>
+			<a href="#$numImages" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>number of images being tracked within the document</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>number of images being tracked within the document</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="options" id="$options">
+		<td class="attributes"><code>
+			public  
+			array
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Cpdf.html#121-125" title="Go to source code"><var>$options</var></a>
+		</td>
+		<td class="value"><code><span class="php-keyword1">array</span>(<span class="php-quote">'compression'</span>=&gt;<span class="php-num">1</span>)</code></td>
+		<td class="description"><div>
+			<a href="#$options" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>an array containing options about the document it defaults to turning on the
+compression of the objects</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>an array containing options about the document it defaults to turning on the
+compression of the objects</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="firstPageId" id="$firstPageId">
+		<td class="attributes"><code>
+			public  
+			mixed
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Cpdf.html#126-129" title="Go to source code"><var>$firstPageId</var></a>
+		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$firstPageId" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>the objectId of the first page of the document</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>the objectId of the first page of the document</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="wordSpaceAdjust" id="$wordSpaceAdjust">
+		<td class="attributes"><code>
+			public  
+			integer
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Cpdf.html#130-134" title="Go to source code"><var>$wordSpaceAdjust</var></a>
+		</td>
+		<td class="value"><code><span class="php-num">0</span></code></td>
+		<td class="description"><div>
+			<a href="#$wordSpaceAdjust" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>used to track the last used value of the inter-word spacing, this is so that
+it is known when the spacing is changed.</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>used to track the last used value of the inter-word spacing, this is so that
+it is known when the spacing is changed.</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="procsetObjectId" id="$procsetObjectId">
+		<td class="attributes"><code>
+			public  
+			mixed
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Cpdf.html#135-138" title="Go to source code"><var>$procsetObjectId</var></a>
+		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$procsetObjectId" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>the object Id of the procset object</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>the object Id of the procset object</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="fontFamilies" id="$fontFamilies">
+		<td class="attributes"><code>
+			public  
+			array
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Cpdf.html#139-144" title="Go to source code"><var>$fontFamilies</var></a>
+		</td>
+		<td class="value"><code><span class="php-keyword1">array</span>()</code></td>
+		<td class="description"><div>
+			<a href="#$fontFamilies" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>store the information about the relationship between font families this used
+so that the code knows which font is the bold version of another font, etc. the
+value of this array is initialised in the constuctor function.</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>store the information about the relationship between font families this used
+so that the code knows which font is the bold version of another font, etc. the
+value of this array is initialised in the constuctor function.</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="currentTextState" id="$currentTextState">
+		<td class="attributes"><code>
+			public  
+			string
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Cpdf.html#145-148" title="Go to source code"><var>$currentTextState</var></a>
+		</td>
+		<td class="value"><code><span class="php-quote">''</span></code></td>
+		<td class="description"><div>
+			<a href="#$currentTextState" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>track if the current font is bolded or italicised</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>track if the current font is bolded or italicised</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="messages" id="$messages">
+		<td class="attributes"><code>
+			public  
+			string
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Cpdf.html#149-152" title="Go to source code"><var>$messages</var></a>
+		</td>
+		<td class="value"><code><span class="php-quote">''</span></code></td>
+		<td class="description"><div>
+			<a href="#$messages" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>messages are stored here during processing, these can be selected afterwards
+to give some useful debug information</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>messages are stored here during processing, these can be selected afterwards
+to give some useful debug information</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="arc4" id="$arc4">
+		<td class="attributes"><code>
+			public  
+			string
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Cpdf.html#153-156" title="Go to source code"><var>$arc4</var></a>
+		</td>
+		<td class="value"><code><span class="php-quote">''</span></code></td>
+		<td class="description"><div>
+			<a href="#$arc4" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>the ancryption array for the document encryption is stored here</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>the ancryption array for the document encryption is stored here</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="arc4_objnum" id="$arc4_objnum">
+		<td class="attributes"><code>
+			public  
+			integer
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Cpdf.html#157-160" title="Go to source code"><var>$arc4_objnum</var></a>
+		</td>
+		<td class="value"><code><span class="php-num">0</span></code></td>
+		<td class="description"><div>
+			<a href="#$arc4_objnum" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>the object Id of the encryption information</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>the object Id of the encryption information</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="fileIdentifier" id="$fileIdentifier">
+		<td class="attributes"><code>
+			public  
+			string
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Cpdf.html#161-164" title="Go to source code"><var>$fileIdentifier</var></a>
+		</td>
+		<td class="value"><code><span class="php-quote">''</span></code></td>
+		<td class="description"><div>
+			<a href="#$fileIdentifier" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>the file identifier, used to uniquely identify a pdf document</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>the file identifier, used to uniquely identify a pdf document</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="encrypted" id="$encrypted">
+		<td class="attributes"><code>
+			public  
+			integer
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Cpdf.html#165-168" title="Go to source code"><var>$encrypted</var></a>
+		</td>
+		<td class="value"><code><span class="php-num">0</span></code></td>
+		<td class="description"><div>
+			<a href="#$encrypted" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>a flag to say if a document is to be encrypted or not</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>a flag to say if a document is to be encrypted or not</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="encryptionKey" id="$encryptionKey">
+		<td class="attributes"><code>
+			public  
+			string
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Cpdf.html#169-172" title="Go to source code"><var>$encryptionKey</var></a>
+		</td>
+		<td class="value"><code><span class="php-quote">''</span></code></td>
+		<td class="description"><div>
+			<a href="#$encryptionKey" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>the ancryption key for the encryption of all the document content (structure
+is not encrypted)</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>the ancryption key for the encryption of all the document content (structure
+is not encrypted)</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="callback" id="$callback">
+		<td class="attributes"><code>
+			public  
+			array
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Cpdf.html#173-176" title="Go to source code"><var>$callback</var></a>
+		</td>
+		<td class="value"><code><span class="php-keyword1">array</span>()</code></td>
+		<td class="description"><div>
+			<a href="#$callback" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>array which forms a stack to keep track of nested callback functions</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>array which forms a stack to keep track of nested callback functions</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="nCallback" id="$nCallback">
+		<td class="attributes"><code>
+			public  
+			integer
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Cpdf.html#177-180" title="Go to source code"><var>$nCallback</var></a>
+		</td>
+		<td class="value"><code><span class="php-num">0</span></code></td>
+		<td class="description"><div>
+			<a href="#$nCallback" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>the number of callback functions in the callback array</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>the number of callback functions in the callback array</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="destinations" id="$destinations">
+		<td class="attributes"><code>
+			public  
+			array
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Cpdf.html#181-185" title="Go to source code"><var>$destinations</var></a>
+		</td>
+		<td class="value"><code><span class="php-keyword1">array</span>()</code></td>
+		<td class="description"><div>
+			<a href="#$destinations" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>store label-&gt;id pairs for named destinations, these will be used to
+replace internal links done this way so that destinations can be defined after
+the location that links to them</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>store label-&gt;id pairs for named destinations, these will be used to
+replace internal links done this way so that destinations can be defined after
+the location that links to them</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="checkpoint" id="$checkpoint">
+		<td class="attributes"><code>
+			public  
+			string
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Cpdf.html#186-191" title="Go to source code"><var>$checkpoint</var></a>
+		</td>
+		<td class="value"><code><span class="php-quote">''</span></code></td>
+		<td class="description"><div>
+			<a href="#$checkpoint" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>store the stack for the transaction commands, each item in here is a record
+of the values of all the variables within the class, so that the user can
+rollback at will (from each 'start' command) note that this includes the objects
+array, so these can be large.</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>store the stack for the transaction commands, each item in here is a record
+of the values of all the variables within the class, so that the user can
+rollback at will (from each 'start' command) note that this includes the objects
+array, so these can be large.</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	</table>
+
+
+
+
+
+
+</div>
+
+	<div id="footer">
+		DNA² Modules API documentation generated by <a href="http://apigen.org">ApiGen 2.8.0</a>
+	</div>
+</div>
+</div>
+</body>
+</html>
