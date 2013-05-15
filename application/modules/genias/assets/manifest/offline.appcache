@@ -1,0 +1,26 @@
+CACHE MANIFEST # Comments are OK here
+#Generated: 2013-03-22T09:12
+#Spaces before comments shouldn't matter
+
+/dna2bpm/genias/
+#JS FILES
+#/dna2bpm/jscript/ext/ext-all-dev.js
+
+/dna2bpm/genias/assets/jscript/ext.data.js
+/dna2bpm/genias/assets/jscript/app.js
+/dna2bpm/genias/assets/jscript/ext.viewport.js
+
+
+NETWORK: # Comments are OK here too.
+
+ CACHE:
+
+
+FALLBACK:
+
+
+CACHE:
+
+NETWORK:
+
+*
