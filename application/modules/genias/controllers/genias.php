@@ -243,12 +243,12 @@ $profile = unserialize( $str );
     // Chequeo en Gravatar.com
     if ( is_array( $profile ) && isset( $profile['entry'] ) ){
         return($profile['entry'][0]['thumbnailUrl']);
-    }else{
+    }
+}else{
         // Devuelvo el default
        return base_url() . 'genias/assets/images/avatar-hombre.jpg';
 
     }
-}
 }
 
 }// close
