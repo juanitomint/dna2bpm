@@ -7,6 +7,7 @@ $(document).ready(function(){
 // Open msg area
     $('UL.msgs .subject').live('click',function(){
     $(this).next().slideToggle();
+    $(this).preventDefault();
     var msgid=$(this).parent().attr('id');
     $.post(globals.module_url+'inbox/set_read',{'state':1,'msgid':msgid},function(data){})
         $(this).addClass('muted');
