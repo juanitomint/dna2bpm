@@ -238,7 +238,7 @@ class Genias extends MX_Controller {
 // Profile    
 function get_gravatar($email) {
 $code=md5( strtolower( trim( $email ) ) );
-if($str = @file_get_contents( "http://www.gravatar.com/$code.php" )){
+if($str = file_get_contents( "http://www.gravatar.com/$code.php" )){
 $profile = unserialize( $str );
     // Chequeo en Gravatar.com
     if ( is_array( $profile ) && isset( $profile['entry'] ) )
