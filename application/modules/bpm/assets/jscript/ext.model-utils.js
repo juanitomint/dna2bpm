@@ -3,7 +3,7 @@ var model_svg={};
 var flat={};
 var first=false;
 var exclude_shape=new Array('SequenceFlow','Pool','MessageFlow');
-var exclude_paint=new Array('SequenceFlow','Pool','Lane','MessageFlow');
+var exclude_paint=new Array('Pool','Lane');
 var TOKEN_SCROLL=true;
 var load_data_callback=null;
 /*
