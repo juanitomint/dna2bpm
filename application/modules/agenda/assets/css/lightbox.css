@@ -1,0 +1,39 @@
+A
+{
+	padding: 0px;
+	font: 12px Tahoma;
+	color: #87792D;
+	text-decoration: none;
+}
+
+P
+{
+	color: #B11515;
+	font-family: Tahoma;
+	font-size: 10px;
+}
+/*Detalles*/
+
+
+    #lightbox2{
+            width: 400px;
+            height:300px;
+            position:absolute;
+            top:50px!important;
+            left:150px !important;
+            z-index:10001;
+            display:none;
+            background: #E1ECFE;
+            border:2px outset gray;
+            padding:8px;
+            font-family:Tahoma; 
+            font-size:10pt;
+            overflow: auto;
+
+    }
+        
+    #lightbox2 label{
+        width:150px;
+        display:inline-block;
+    }
+        

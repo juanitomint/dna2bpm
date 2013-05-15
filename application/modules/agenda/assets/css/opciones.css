@@ -1,0 +1,10 @@
+#wrapper_colorPicker{
+    list-style-type: none;
+}
+
+#wrapper_colorPicker a.swatch{
+    width:20px;
+    height:20px;
+    background-color: #ccc;
+    display:inline-block;
+}

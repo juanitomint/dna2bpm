@@ -1,0 +1,250 @@
+
+
+.lightbox A
+{
+	padding: 0px;
+	font: 12px Tahoma;
+	color: #87792D;
+	text-decoration: none;
+}
+.lightbox P, .lightbox LABEL
+{
+	font-family: Tahoma;
+	font-size: 10px;
+	font: 12px Tahoma;
+	color: #87792D;
+}
+/*Detalles*/
+
+
+
+/*.lightbox
+{
+	width: 100%;
+	background: #E1ECFE;
+	overflow: auto;
+	position: absolute;
+	display: block;
+	height: 100%;
+	z-index: 100001;
+	border: 1px dotted #2E3947;
+	padding: 10px;
+}*/
+.lightbox H1
+{
+	font: 14px Tahoma;
+	color: #2E3947;
+	font-weight: bold;
+	display: block;
+	position: absolute;
+	top: -6px;
+}
+.lightbox INPUT, .lightbox TEXTAREA, .lightbox SELECT
+{
+	color: #87792D;
+	font-size: 12px;
+}
+.detalles-block
+{
+	width: 100%;
+	height: 27px;
+	margin: 0 0 2px;
+	float: left;
+	position: relative;
+}
+.lightbox .detalle-texarea
+{
+	height: 89px;
+}
+.lightbox #detalle-bottombar
+{
+	margin: 10px 0 0;
+}
+.lightbox .detalles-block INPUT, .lightbox .detalles-block TEXTAREA, .detalle-estado, .detalle-agenda
+{
+	position: absolute;
+	top: 0;
+	left: 128px;
+	width: 375px;
+}
+.lightbox DIV TEXTAREA
+{
+	height: 80px;
+}
+#detalle-bottombar DIV A:hover
+{
+	background: #BED4F8;
+}
+.guardar
+{
+	margin: 10px 2px 2px;
+	float: right;
+}
+.cerrar
+{
+	margin: 10px 2px 2px;
+	float: right;
+}
+.borrar
+{
+	margin: 10px 10px 2px 2px;
+	float: right;
+}
+#cancelar
+{
+    display:none;
+	margin: 10px 10px 2px 2px;
+	float: right;
+}
+.guardar A SPAN
+{
+	background: url(../../jscript/dhtmlxSuite/dhtmlxScheduler_v30/codebase/imgs/controls.gif) -85px -3px;
+	width: 21px;
+	height: 17px;
+	display: block;
+	float: left;
+}
+.cancelar A SPAN
+{
+	background: url(../../jscript/dhtmlxSuite/dhtmlxScheduler_v30/codebase/imgs/controls.gif) 42px -3px;
+	width: 21px;
+	height: 17px;
+	display: block;
+	float: left;
+}
+.cerrar A SPAN
+{
+	background: url(../../jscript/dhtmlxSuite/dhtmlxScheduler_v30/codebase/imgs/controls.gif) -70px -3px;
+	width: 21px;
+	height: 17px;
+	display: block;
+	float: left;
+}
+.borrar A SPAN
+{
+	background: url(../../jscript/dhtmlxSuite/dhtmlxScheduler_v30/codebase/imgs/controls.gif) -45px -3px;
+	width: 21px;
+	height: 17px;
+	display: block;
+	float: left;
+}
+.obligatorio
+{
+	background: url(../../images/agenda/iconos2.png) no-repeat;
+	width: 17px;
+	height: 17px;
+	position: absolute;
+	z-index: 1;
+}
+/*Autor*/
+
+#detalle-bottombar
+{
+	width: 504px;
+	border-top: 1px dotted #2E3947;
+	padding-top: 2px;
+        float:left;
+}
+
+#botonera
+{
+	width: 300px;
+	height: 30px;
+        float:right;
+	position: relative;
+}
+
+#detalle-autor
+{
+	width: auto;
+	height: 41px;
+	padding: 0 0 0 20px;
+	overflow: hidden;
+	position: relative;
+	float: left;
+	margin: 0;
+}
+#autor-fecha
+{
+	background: url(../../images/agenda/edit.png) no-repeat 0px 3px;
+	font: 12px Tahoma;
+	position: absolute;
+	top: 0px;
+	left: 2px;
+	width: 100px;
+	height: 24px;
+	padding: 5px 0 0 19px;
+	font-size: 11px;
+}
+#autor-nombre
+{
+	font: 12px Tahoma;
+	color: #2E3947;
+	font-weight: bold;
+	position: absolute;
+	top: 5px;
+	left: 87px;
+	width: 154px;
+	height: 24px;
+	padding: 0;
+}
+#autor-grupo
+{
+	font: 12px Tahoma;
+	color: #2E3947;
+	font-weight: bold;
+	position: absolute;
+	top: 22px;
+	left: 87px;
+	width: 154px;
+	height: 24px;
+	padding: 0;
+}
+/*Detalle Fechas*/
+#detalle-timebar-inicio
+{
+	width: 100%;
+	height: 30px;
+	position: relative;
+}
+#start_hour
+{
+	position: absolute;
+	left: 128px !important;
+	width: 40px !important;
+}
+#start_minute
+{
+	position: absolute;
+	left: 170px !important;
+	width: 40px !important;
+}
+#start_date
+{
+	position: absolute;
+	left: 212px !important;
+	width: 80px !important;
+}
+#end_hour
+{
+	position: absolute;
+	left: 351px !important;
+	width: 40px !important;
+}
+#end_minute
+{
+	position: absolute;
+	left: 393px !important;
+	width: 40px !important;
+}
+#end_date
+{
+	position: absolute;
+	left: 434px !important;
+	width: 80px !important;
+}
+
+.color_error{
+    color:#f00 !important;
+}
+
