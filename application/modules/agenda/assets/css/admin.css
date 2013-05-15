@@ -1,0 +1,122 @@
+
+
+a, a:visited {
+    color: #4183C4;
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+}
+pre, code {
+    font-size: 12px;
+}
+pre {
+    overflow: auto;
+    width: 100%;
+}
+small {
+    font-size: 90%;
+}
+small code {
+    font-size: 11px;
+}
+.placeholder {
+    outline: 1px dashed #4183C4;
+}
+.mjs-nestedSortable-error {
+    background: none repeat scroll 0 0 #FBE3E4;
+    border-color: transparent;
+}
+ol {
+    margin: 0;
+    padding: 0 0 0 30px;
+}
+ol.sortable, ol.sortable ol {
+    list-style-type: none;
+    margin: 0 0 0 25px;
+    padding: 0;
+}
+ol.sortable {
+    margin: 10px 0;
+}
+.sortable li {
+    margin: 5px 0 0;
+    padding: 0;
+}
+.sortable li div {
+    -moz-border-bottom-colors: none;
+    -moz-border-image: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background: -moz-linear-gradient(center top , #FFFFFF 0%, #F6F6F6 47%, #EDEDED 100%) repeat scroll 0 0 transparent;
+    border-color: #D4D4D4 #D4D4D4 #BCBCBC;
+    border-radius: 3px 3px 3px 3px;
+    border-style: solid;
+    border-width: 1px;
+    cursor: move;
+    margin: 0;
+    padding: 6px;
+}
+.sortable li.mjs-nestedSortable-branch div {
+    background: -moz-linear-gradient(center top , #FFFFFF 0%, #F6F6F6 47%, #F0ECE9 100%) repeat scroll 0 0 transparent;
+}
+.sortable li.mjs-nestedSortable-leaf div {
+    background: -moz-linear-gradient(center top , #FFFFFF 0%, #F6F6F6 47%, #BCCCBC 100%) repeat scroll 0 0 transparent;
+}
+li.mjs-nestedSortable-collapsed.mjs-nestedSortable-hovering div {
+    background: none repeat scroll 0 0 #FAFAFA;
+    border-color: #999999;
+}
+.disclose {
+    cursor: pointer;
+    display: none;
+    width: 10px;
+}
+.sortable li.mjs-nestedSortable-collapsed > ol {
+    display: none;
+}
+.sortable li.mjs-nestedSortable-branch > div > .disclose {
+    display: inline-block;
+}
+.sortable li.mjs-nestedSortable-collapsed > div > .disclose > span:before {
+    content: "+ ";
+}
+.sortable li.mjs-nestedSortable-expanded > div > .disclose > span:before {
+    content: "- ";
+}
+h1 {
+    font-size: 2em;
+    margin-bottom: 0;
+}
+h2 {
+    font-size: 1.2em;
+    font-style: italic;
+    font-weight: normal;
+    margin-bottom: 1.5em;
+    margin-top: 0.2em;
+}
+h3 {
+    font-size: 1em;
+    margin: 1em 0 0.3em;
+}
+p, ol, ul, pre, form {
+    margin-bottom: 1em;
+    margin-top: 0;
+}
+dl {
+    margin: 0;
+}
+dd {
+    margin: 0;
+    padding: 0 0 0 1.5em;
+}
+code {
+    background: none repeat scroll 0 0 #E5E5E5;
+}
+input {
+    vertical-align: text-bottom;
+}
+.notice {
+    color: #CC3333;
+}

@@ -1,3 +1,14 @@
+
+/*
+*   Screen Media Queries
+* 
+*/
+
+
+@media screen {
+
+
+
 BODY, HTML
 {
 	padding: 2px;
@@ -24,18 +35,10 @@ BODY, HTML
 {
 	margin: 0 5px;
 	width: 80px;
-	color: #87792D;
+
+        
 }
-#refresh
-{
-	width: 30px;
-	height: 30px;
-	background: url(../imagenes/iconos1.png) 0px -420px;
-	display: block;
-	position: absolute;
-	left: 482px;
-	top: 0;
-}
+
 #search_field
 {
 	width: 78px;
@@ -46,37 +49,87 @@ BODY, HTML
 }
 #search_box
 {
-	position: absolute;
 	top: 5px;
-	left: 250px;
+        display:inline-block;
+                float:left;
 }
+
+#date_box
+{
+float:left;
+}
+
+
 #print
 {
 	width: 30px;
 	height: 30px;
-	background: url(../imagenes/iconos1.png) 0px -60px;
-	display: block;
-	position: absolute;
-	left: 520px;
-	top: 0;
+	background: url(../images/iconos1.png) 0px -60px;
+	display: inline-block;
+        float:left;
+        margin:0 6px;
 }
 #csv
 {
 	width: 30px;
 	height: 30px;
-	background: url(../imagenes/iconos1.png) 0px -450px;
-	display: block;
-	position: absolute;
-	left: 558px;
-	top: 0;
+	background: url(../images/iconos1.png) 0px -450px;
+	display: inline-block;
+        float:left;
+        margin:0 6px;
 }
 #ical
 {
 	width: 30px;
 	height: 30px;
-	background: url(../imagenes/iconos1.png) 0px -540px;
-	display: block;
-	position: absolute;
-	left: 596px;
-	top: 0;
+	background: url(../images/iconos1.png) 0px -540px;
+	display: inline-block;
+        float:left;
+        margin:0 6px;
+}
+
+#refresh
+{
+	width: 30px;
+	height: 30px;
+	background: url(../images/iconos1.png) 0px -420px;
+	display: inline-block;
+        float:left;
+        margin:0 6px;
+}
+
+/* media-specific rules */
+}
+
+/*
+*   Print Media Queries
+* 
+*/
+
+
+
+@media print {
+
+BODY, HTML
+{
+	background-color: #FFF !important;
+	font-family: arial;
+	font-size: 12px;
+}
+.objbox{overflow: visible !important;}
+#grid1
+{
+	overflow: visible !important;
+	width: 100% !important;
+}
+DIV.gridbox_light TABLE.obj TD
+{
+	border-bottom: 1px solid #CCCCCC !important;
+	padding: 5px 0;
+	overflow-x: hidden;
+}
+
+#menu{display:none;}
+
+
 }
