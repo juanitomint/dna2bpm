@@ -2,6 +2,16 @@ var second=null;
 var third=null;
 var gridIndex=0;
 var HSPEED=1300;
+function playShape(result){
+    if(result=='yes'){
+        resourceId=this.get('resourceId');
+        gridSel=mygrid.selModel.selected.items[0];
+        idcase=gridSel.get('id');
+        url=globals.base_url+'bpm/engine/run_post/model/'+globals.idwf+'/'+idcase+'/'+resourceId;
+        //console.log(url);
+        window.location=url;
+    }
+}
 function highlightToken (view,record,item,index,e,options ){
     //console.log(view,record,record.internalId,item,index,e,options );
     //console.log(record.internalId);
@@ -228,7 +238,23 @@ var tokenGrid=Ext.create('Ext.grid.Panel',
     columns: [
     Ext.create('Ext.grid.RowNumberer'),
     {
-        text: "",
+        menuDisabled: true,
+        sortable: false,
+        xtype: 'actioncolumn',
+        width: 50,
+        text:'play',
+        items: [{
+            text:'play',
+            icon:globals.module_url+'assets/images/play.png',
+            handler: function(grid, rowIndex, colIndex) {
+                var rec = tokenstore.getAt(rowIndex);
+                Ext.Msg.confirm('Confirm', 'Are you sure you want to Play: '+rec.get('type')+'?',playShape,rec);
+                            
+            }
+        }]
+    },
+    {
+        text: "Icon",
         flex:1,
         dataIndex: 'icon',
         sortable: true

@@ -47,7 +47,7 @@ var add_events=function(shapes){
             */
             div.on('click',function(event,target,options){
                 resourceId=target.id.replace('overlay','');
-                console.log(resourceId);
+                //console.log(resourceId);
                 tokenGrid.selModel.select(tokenGrid.store.find('resourceId',resourceId));
             });
         }
