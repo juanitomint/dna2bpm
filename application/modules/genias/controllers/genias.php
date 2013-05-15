@@ -245,8 +245,8 @@ $profile = unserialize( $str );
         return($profile['entry'][0]['thumbnailUrl']);
     }else{
         // Devuelvo el default
-      // return base_url() . 'genias/assets/images/avatar-hombre.jpg';
-       return $code;
+       return base_url() . 'genias/assets/images/avatar-hombre.jpg';
+
     }
 }
 }
