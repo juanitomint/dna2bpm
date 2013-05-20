@@ -28,16 +28,26 @@ class Inbox extends MX_Controller {
         $customData['inbox_title'] = $this->lang->line('Inbox');
         $customData['js'] = array($this->module_url . "assets/jscript/inbox.js"=>'Inbox JS'); 
         $customData['css'] = array($this->module_url . "assets/css/dashboard.css" => 'Dashboard CSS');
-        
+        //debug
+
+
         $mymgs = $this->msg->get_msgs($this->idu);
         
         foreach ($mymgs as $msg) {
             $msg['msgid'] = $msg['_id'];
             $msg['date'] = substr($msg['checkdate'], 0, 10);
-            $msg['icon_star'] = (isset($msg['star'])&&$msg['star']==true) ? ('icon-star') : ('icon-star-empty');
+            $msg['icon_star'] = (isset($msg['star']) && $msg['star']==true) ? ('icon-star') : ('icon-star-empty');
             $msg['read'] = (isset($msg['read'])&&$msg['read']==true) ? ('muted') : ('');
-            $temp = $this->user->get_user($msg['from']);
-            $msg['sender'] = "{$temp->nick}";
+            if(isset($msg['from'])){
+                $userdata = $this->user->get_user($msg['from']);
+                if(!is_null($userdata))$msg['sender'] = $userdata->nick;
+                else $msg['sender'] = "No sender";              
+            }else{
+                 $msg['sender'] = "System"; 
+            }
+
+            
+
             $customData['mymsgs'][] = $msg;
         }
 

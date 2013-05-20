@@ -124,7 +124,7 @@ class User extends CI_Model {
             }
         }
         if (!$canaccess) {
-            $this->session->set_userdata('redir', current_url());
+            $this->session->set_userdata('redir',  base_url(). uri_string());
             $this->session->set_userdata('msg', 'nolevel');
             header('Location: ' . base_url() . 'user/login');
         }
@@ -146,7 +146,7 @@ class User extends CI_Model {
 
     function isloggedin() {
         if (!$this->session->userdata('loggedin')) {
-            $this->session->set_userdata('redir', current_url());
+            $this->session->set_userdata('redir',  base_url(). uri_string());
             $this->session->set_userdata('msg', 'hastolog');
             header('Location: ' . base_url() . 'user/login');
         } else {
