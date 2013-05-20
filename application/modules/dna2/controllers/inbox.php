@@ -30,8 +30,8 @@ class Inbox extends MX_Controller {
         $customData['css'] = array($this->module_url . "assets/css/dashboard.css" => 'Dashboard CSS');
         //debug
 
-         //$this->idu
-        $mymgs = $this->msg->get_msgs(1);
+
+        $mymgs = $this->msg->get_msgs($this->idu);
         
         foreach ($mymgs as $msg) {
             $msg['msgid'] = $msg['_id'];
