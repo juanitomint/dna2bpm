@@ -36,11 +36,12 @@ class Inbox extends MX_Controller {
         foreach ($mymgs as $msg) {
             $msg['msgid'] = $msg['_id'];
             $msg['date'] = substr($msg['checkdate'], 0, 10);
-            $msg['icon_star'] = (isset($msg['star'])&&$msg['star']==true) ? ('icon-star') : ('icon-star-empty');
+            $msg['icon_star'] = (isset($msg['star']) && $msg['star']==true) ? ('icon-star') : ('icon-star-empty');
             $msg['read'] = (isset($msg['read'])&&$msg['read']==true) ? ('muted') : ('');
             if(isset($msg['from'])){
                 $userdata = $this->user->get_user($msg['from']);
-                $msg['sender'] = $userdata->nick; 
+                if(!is_null($userdata))$msg['sender'] = $userdata->nick;
+                else $msg['sender'] = "No sender";              
             }else{
                  $msg['sender'] = "System"; 
             }
