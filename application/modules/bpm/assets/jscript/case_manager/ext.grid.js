@@ -1,6 +1,6 @@
 function gridClick (view,record,item,index,e,options ){
     thisCase=record.data.id;
-    url=globals.module_url+'case_manager/tokens/history/'+globals.idwf+'/'+thisCase;    
+    url=globals.module_url+'case_manager/tokens/status/'+globals.idwf+'/'+thisCase;    
     tokenStore=Ext.getStore('tokenStore')
     tokenStore.proxy.url=url;
     tokenStore.load({

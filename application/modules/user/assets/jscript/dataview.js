@@ -101,7 +101,7 @@ var dataview=Ext.create('Ext.grid.Panel',
     {
         text: "IDGroup",
         width:90,
-        dataIndex: 'idgroup',
+        dataIndex: 'idu',
         hidden:true,
         sortable: true
            
@@ -116,8 +116,7 @@ var dataview=Ext.create('Ext.grid.Panel',
         editor: {
             allowBlank: false
         }
-    }
-]
+    }]
     ,
     viewConfig: {
         copy:true,

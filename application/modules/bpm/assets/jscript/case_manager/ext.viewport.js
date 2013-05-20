@@ -39,6 +39,7 @@ Ext.application({
                 collapsible: true,
                 collapsed:true,
                 resizable:true,
+                animCollapse: false,
                 height:300,
                 items:[tokenGrid]
             }

@@ -1,10 +1,10 @@
 function confirm(result){
     if(result=='yes'){
-        thiStore=Ext.data.StoreManager.lookup('UserGroupStore');
+        store=Ext.data.StoreManager.lookup('UserGroupStore');
         groupField=Ext.getCmp('groupField');
         groups=Ext.Array.remove(groupField.value.split(','),this.data.idgroup.toString());
         groupField.setValue(groups.join(','));
-        thisStore.remove(this);
+        store.remove(this);
     
     }
 }
