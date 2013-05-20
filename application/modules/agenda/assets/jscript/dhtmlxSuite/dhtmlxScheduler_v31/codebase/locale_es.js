@@ -7,6 +7,7 @@ To use it on other terms or get Professional edition of the component please con
 /*
 	@Autor Manuel Fernandez Panzuela - www.mfernandez.es
 */
+
 scheduler.locale={
 	date:{
 		month_full:["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],

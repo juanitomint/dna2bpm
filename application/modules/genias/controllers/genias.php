@@ -221,18 +221,24 @@ class Genias extends MX_Controller {
     function config() {
         $this->user->authorize();
         $customData = $this->lang->language;
+        $projects=$this->genias_model->config_get('projects');
+        $customData['js'] = array($this->module_url . "assets/jscript/config.js" => 'Config JS');
+        $customData['projects']=$projects['items'];
+
         $this->render('config', $customData);
     }
     
-    function config_set() {
-        $this->user->authorize();
-        $customData = $this->lang->language;
-        $mydata=array('name'=>'projects2','items'=>array(
-            array('id'=>1,'name'=>'Informes'),
-            array('id'=>2,'name'=>'Escenario Pyme'),
-            array('id'=>3,'name'=>'Escenario Polílico'),
-            array('id'=>4,'name'=>'Comunicación y Difusion')));
-        $this->genias_model->config_set($mydata);
+    function config_set_projects() {
+        //$this->user->authorize();
+        //echo $this->input->post('data');
+        echo 1;
+//        $customData = $this->lang->language;
+//        $mydata=array('name'=>'projects2','items'=>array(
+//            array('id'=>1,'name'=>'Informes'),
+//            array('id'=>2,'name'=>'Escenario Pyme'),
+//            array('id'=>3,'name'=>'Escenario Polílico'),
+//            array('id'=>4,'name'=>'Comunicación y Difusion')));
+//        $this->genias_model->config_set($mydata);
     }
     
 // Profile    
@@ -241,13 +247,16 @@ $code=md5( strtolower( trim( $email ) ) );
 if($str = @file_get_contents( "http://www.gravatar.com/$code.php" )){
 $profile = unserialize( $str );
     // Chequeo en Gravatar.com
-    if ( is_array( $profile ) && isset( $profile['entry'] ) )
+    if ( is_array( $profile ) && isset( $profile['entry'] ) ){
         return($profile['entry'][0]['thumbnailUrl']);
-    }else{
+    }
+}else{
         // Devuelvo el default
-        return base_url() . 'genias/assets/images/avatar-hombre.jpg';
+       return base_url() . 'genias/assets/images/avatar-hombre.jpg';
+
     }
 }
+
 
 
 }// close

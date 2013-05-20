@@ -10,6 +10,7 @@
 
 $(document).ready(function(){
 
+
  // Date Picker 1
   cal1 = new dhtmlxCalendarObject('calendario1',true);
   cal1.loadUserLanguage("es");
@@ -127,14 +128,18 @@ $("#guardar").click(function(){
         trap=1;
         parent.pop('Error','No ha elegido una agenda');
     }  
-    
+
     if(!trap){   
-        $.post('{module_url}main/lightbox_save_event/',{evento:json},function(data){
-           if(data.show==true){  
-              parent.msg(data.msg);   
-           } 
-           parent.lightbox_close($('#id_dhtmlx').val());
-        },'json');
+
+        $.post('{module_url}main/lightbox_save_event/',{},function(data){
+            alert(data);
+        });
+//        $.post('{module_url}main/lightbox_save_event/',{evento:json},function(data){
+//           if(data.show==true){  
+//              parent.msg(data.msg);   
+//           } 
+//           parent.lightbox_close($('#id_dhtmlx').val());
+//        },'json');
         parent.refresh();
     }
 

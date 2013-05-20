@@ -51,6 +51,10 @@ margin-bottom: 5px;
     top:6px;
     left:3px;
 }
+.dialog{
+display:none;
+}
+
 
 /* Google map */
 
@@ -76,9 +80,11 @@ margin-bottom: 5px;
 #desde{
     float:left;
     margin-right:10px;
+    position:relative;
 }
 #hasta{
   float:left;  
+  position:relative;
 }
 
 /* xxxxxxxxxxx AUTOR xxxxxxxxxxx */
