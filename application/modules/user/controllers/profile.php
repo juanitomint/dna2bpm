@@ -58,7 +58,7 @@ class Profile extends MX_Controller {
         
         //tomamos los datos del usuario
         $idu = (float) $this->session->userdata('iduser');
-        echo $idu;
+        //echo $idu;
         //echo "user from db:<br/>";
         //var_dump($this->user->get_user((float) $idu));
         //echo '<hr/>';
