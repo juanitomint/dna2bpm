@@ -37,7 +37,7 @@
      <div class="control-group">
         <label class="control-label" for="apellido">Genero:</label>
         <div class="controls">
-        {genero}
+        {gender}
         </div>
     </div>
     <div class="control-group">
