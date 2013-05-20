@@ -19,9 +19,9 @@
 
         <div class="fileupload fileupload-new control-group" data-provides="fileupload">
             <label class="control-label" for="foto">Foto </label>
-            <div class="fileupload-new thumbnail" style="width: 200px; height: 150px;">
-                <img src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&text=no+image" /></div>
-            <div class="fileupload-preview fileupload-exists thumbnail" style="max-width: 200px; max-height: 150px; line-height: 20px;">
+            <div class="fileupload-new thumbnail" style="width: 120px; height: 120px;">
+                <img src="{base_url}{avatar}" /></div>
+            <div class="fileupload-preview fileupload-exists thumbnail" style="max-width: 120px; max-height: 120px; line-height: 20px;">
 
             </div>
             <div class="control-group">
@@ -51,6 +51,18 @@
             <label class="control-label" for="apellido">Apellido</label>
             <div class="controls">
                 <input type="text" id="apellido" name="apellido" value="{lastname}">
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="apellido">Apellido</label>
+            <div class="controls">
+                
+                <input type="radio" name="gender" id="female" value="female" checked>
+                Femenino
+             
+                <input type="radio" name="gender" id="male" value="male">
+                Masculino
+               
             </div>
         </div>
         <div class="control-group">
