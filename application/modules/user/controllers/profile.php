@@ -62,7 +62,7 @@ class Profile extends MX_Controller {
         
         $customData+=(array)$this->user->get_user((float) $idu);
         
-        $genero=$customData['gender'];
+        $genero=isset($customData['gender'])? ($customData['gender']):("male") ;
         if($genero=="female") $customData['checkedF']= 'checked';
         else  $customData['checkedM']= 'checked';
         
