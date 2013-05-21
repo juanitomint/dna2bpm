@@ -74,7 +74,7 @@
         <div class="control-group">
             <label class="control-label" for="fechanac">Fecha de nacimiento</label>
             <div class="controls">
-                <input type="date" id="fechanac" name="fechanac" value="{birthdate}">
+                <input class="calendar" type="date" id="fechanac" name="fechanac" value="{birthdate}"><span class="add-on"><i class="icon-calendar"></i></span>
             </div>
         </div>
         <div class="control-group">
