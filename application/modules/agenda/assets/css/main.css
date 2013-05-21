@@ -1,0 +1,304 @@
+HTML, BODY
+{
+	width: 100%;
+	height: 100%;
+	margin: 0px;
+	overflow: hidden;
+}
+A
+{
+	padding: 0px;
+	font: 12px Tahoma, Verdana;
+	color: #87792D;
+	text-decoration: none;
+}
+P
+{
+	font-family: tahoma;
+
+}
+
+#agenda
+{
+	width: 600px;
+	height: 300px;
+	position: relative;
+}
+
+#usertree
+{
+	height: 300px;
+	width: 300px;
+	border: 1px solid #CCCCCC;
+}
+#userlist
+{
+	width: 300px;
+	height: 300px;
+	border: 1px solid #CCCCCC;
+	position: absolute;
+	top: 0;
+	left: 305px;
+}
+
+.msg{
+    font-size:12px;
+    padding:5px;
+}
+
+#msg2{
+width: 250px;
+min-height:20px;
+background-color: #C2D5FC;
+position: fixed;
+right:7px;
+bottom:7px;
+border:1px solid #ccc;
+padding:5px;
+text-align: center;
+
+
+}
+
+
+/*Menu*/
+#tree_agendas
+{
+	padding: 4px;
+	margin: 0;
+}
+#agenda_actual
+{
+	margin: 4px 0 0 7px;
+	width: 170px;
+}
+.item-menu
+{
+	margin: 10px 0 0 8px;
+}
+#administrador-agendas
+{
+	background: url(../images/iconos1.png) no-repeat 0px -210px;
+	height: 20px;
+	display: block;
+	padding-left: 34px;
+	padding-top: 10px;
+}
+#administrador-estadisticas
+{
+	background: url(../images/iconos1.png) no-repeat 0px -480px;
+	height: 20px;
+	display: block;
+	padding-left: 34px;
+	padding-top: 10px;
+}
+#administrador-usuarios
+{
+	background: url(../images/iconos1.png) no-repeat 0px -150px;
+	height: 20px;
+	display: block;
+	padding-left: 34px;
+	padding-top: 10px;
+}
+#menu_administrador
+{
+	background: url(../images/iconos1.png) no-repeat 0px -90px;
+	height: 20px;
+	display: block;
+	padding-left: 34px;
+	padding-top: 10px;
+	width: 174px;
+	font-family: tahoma;
+	font-size: 12px;
+	font-weight: bold;
+	color: #2E3947;
+	border-bottom: 1px dotted #57697D;
+}
+#agendas_visibles
+{
+	background: url(../images/iconos1.png) no-repeat 0px -120px;
+	height: 20px;
+	display: block;
+	padding-left: 34px;
+	padding-top: 10px;
+	width: 172px;
+	font-family: tahoma;
+	font-size: 12px;
+	font-weight: bold;
+	color: #2E3947;
+	border-bottom: 1px dotted #57697D;
+}
+#bt_print
+{
+	background: url(../images/iconos1.png) no-repeat 0px -60px;
+	height: 20px;
+	display: block;
+	padding-left: 34px;
+	padding-top: 10px;
+}
+#bt_listado
+{
+	background: url(../images/iconos1.png) no-repeat 0px -390px;
+	height: 20px;
+	display: block;
+	padding-left: 34px;
+	padding-top: 10px;
+}
+#bt_help
+{
+	background: url(../images/iconos1.png) no-repeat 0px -360px;
+	height: 20px;
+	display: block;
+	padding-left: 34px;
+	padding-top: 10px;
+}
+#bt_opciones
+{
+	background: url(../images/iconos1.png) no-repeat 0px -570px;
+	height: 20px;
+	display: block;
+	padding-left: 34px;
+	padding-top: 10px;
+}
+#bt_close
+{
+	background: url(../images/iconos1.png) no-repeat 0px -180px;
+	height: 20px;
+	display: block;
+	padding-left: 34px;
+	padding-top: 10px;
+}
+#printArea
+{
+	display: none;
+}
+/*Usuarios*/
+.admin-usuarios
+{
+	float: left;
+	width: 100%;
+	margin: 0 0 6px;
+}
+.admin-usuarios INPUT, A
+{
+	margin: 0 6px 0 0;
+}
+.admin-usuarios-id
+{
+	width: 27px;
+	display: inline-block;
+	font-family: tahoma;
+	font-size: 12px;
+	color: #87792D;
+	font-weight: bold;
+}
+.separador
+{
+	width: 100%;
+	border-bottom: 1px dotted #57697D;
+	background: #819CBA;
+	padding: 0 !important;
+	margin: 0 !important;
+}
+.cb
+{
+	clear: both;
+}
+#admin-addAgenda
+{
+	width: 284px !important;
+	/*[empty]height:;*/
+	float: left;
+	margin: 0 6px 0 0;
+}
+/*Iconos*/
+A.read
+{
+	background: url(../images/iconos1.png) no-repeat 0px -270px;
+	display: block;
+	width: 30px;
+	height: 30px;
+	float: left;
+}
+A.write
+{
+	background: url(../images/iconos1.png) no-repeat 0px -240px;
+	display: block;
+	width: 30px;
+	height: 30px;
+	float: left;
+}
+A.delete
+{
+	background: url(../images/iconos1.png) no-repeat 0px -30px;
+	display: block;
+	width: 30px;
+	height: 30px;
+	float: left;
+}
+A.guardar
+{
+	background: url(../images/iconos1.png) no-repeat 0px 0px;
+	display: block;
+	width: 30px;
+	height: 30px;
+	float: left;
+}
+A.borrar
+{
+	background: url(../images/iconos1.png) no-repeat 0px -30px;
+	display: block;
+	width: 30px;
+	height: 30px;
+	float: left;
+}
+A.colorPicker
+{
+	background: url(../images/iconos1.png) no-repeat 0px -330px;
+	display: block;
+	width: 30px;
+	height: 30px;
+	float: left;
+}
+A.agendaFolder
+{
+	background: url(../images/iconos1.png) no-repeat 0px -210px;
+	display: block;
+	width: 30px;
+	height: 30px;
+	float: left;
+}
+A.agenda
+{
+	background: url(../images/iconos1.png) no-repeat 0px -122px;
+	display: block;
+	width: 30px;
+	height: 30px;
+	float: left;
+}
+.nombre-agenda
+{
+	float: left;
+}
+.agregar-agenda A
+{
+	background: url(../images/iconos1.png) no-repeat 0px -300px;
+	display: block;
+	width: 30px;
+	height: 30px;
+	float: left;
+}
+.agregar-agenda
+{
+	height: 30px;
+	width: 100%;
+	border-bottom: 1px dotted #57697D;
+	padding: 0 0 6px;
+	margin: 0 0 6px;
+}
+/*Calendario*/
+.hora-actual
+{
+	background: #2BC9C6;
+	color: #FEFEFE;
+}

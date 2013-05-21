@@ -34,6 +34,12 @@
         {lastname}
         </div>
     </div>
+     <div class="control-group">
+        <label class="control-label" for="apellido">Genero:</label>
+        <div class="controls">
+        {gender}
+        </div>
+    </div>
     <div class="control-group">
         <label class="control-label" for="dni">DNI:</label>
         <div class="controls">

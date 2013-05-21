@@ -1,0 +1,114 @@
+P
+{
+	margin: 0;
+	padding: 0;
+	font-size: 10pt;
+	font-family: Helvetica;
+	color: #2F3A48;
+	background: none !important;
+}
+H1
+{
+	font-family: "Times New Roman";
+	font-size: 14pt;
+	line-height: 14pt;
+	text-align: left;
+}
+H2
+{
+	font-family: helvetica;
+	font-size: 10pt;
+	line-height: 12pt;
+	margin: 9px 0 0;
+	padding: 0;
+}
+/*Semanal*/
+#semana
+{
+	width: 255mm;
+	top: 53px;
+	position: absolute;
+}
+.columna DIV SPAN
+{
+	padding: 5px 0 0;
+	display: block;
+	font-size: 10pt;
+	font-family: Helvetica;
+	font-weight: bold;
+	color: #2F3A48;
+	width: 100%;
+	height: 100%;
+	background: #DEE0EC;
+	text-align: center;
+}
+.columna DIV
+{
+	width: 244mm;
+	height: 10mm;
+	border-top: 1px solid #020202;
+	border-left: 1px solid #020202;
+	overflow: hidden;
+}
+.columna DIV P
+{
+	width: 100%;
+	float: left;
+}
+.columna
+{
+	float: left;
+}
+#hora DIV
+{
+	background: #DEE0EC;
+	width: 10mm !important;
+	height: 10mm;
+}
+.half
+{
+	height: 4mm !important;
+	border-bottom: 1px dashed #A3A3A3 !important;
+	border-top: 0 !important;
+	border-left: 0 !important;
+	position: absolute;
+}
+.abajo
+{
+	border-bottom: 1px solid #020202 !important;
+}
+.derecha
+{
+	border-right: 1px solid #020202 !important;
+}
+#info #nombre
+{
+	display: block;
+	position: absolute;
+	top: 0;
+	right: 10px;
+}
+#info #fecha
+{
+	display: block;
+	position: absolute;
+	top: 0;
+	left: 10px;
+}
+#info
+{
+	position: relative;
+	width: 255mm;
+	height: 33px;
+	background: #DDDFEB;
+}
+.item
+{
+	overflow: hidden;
+	position: absolute;
+	width: 182px;
+	background-color: #D90C0C;
+	z-index: 1;
+	opacity: 0.9;
+	filter: alpha(opacity=90);
+}
