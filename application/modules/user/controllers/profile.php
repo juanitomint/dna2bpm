@@ -52,7 +52,7 @@ class Profile extends MX_Controller {
         $customData['base_url'] = base_url();
         $customData['module_url'] = base_url() . 'user/';
         
-        $customData['js'] = array($this->module_url . "assets/jscript/bootstrap-fileupload.js" => 'profile JS');
+        $customData['js'] = array($this->base_url . "jscript/jquery/jquery-ui-1.7.1.custom.min.js" => 'profile JS',$this->module_url . "assets/jscript/bootstrap-fileupload.js" => 'profile JS',$this->module_url . "assets/jscript/profile.js" => 'profile JS');
         $customData['css'] = array($this->module_url . "assets/css/fix_bootstrap_checkbox.css" => 'profile CSS', $this->module_url . "assets/css/bootstrap-fileupload.css" => 'profile CSS');
        
         
