@@ -4,7 +4,14 @@
  */
 
 $(document).ready(function() {
-$("#fechanac").datepicker();
-alert("je");
+$(".calendar").datepicker();
+   
+    var changeYear = $( ".calendar" ).datepicker( "option", "changeYear" );
+    var changeMonth = $( ".calendar" ).datepicker( "option", "changeMonth" );
+
+    $( ".calendar" ).datepicker( "option", "changeMonth", true );
+    $( ".calendar" ).datepicker( "option", "changeYear", true );
+    $( ".calendar" ).datepicker( "option", "yearRange", "1920:2013" );
+
 });
 
