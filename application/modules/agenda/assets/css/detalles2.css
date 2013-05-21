@@ -1,0 +1,192 @@
+.lightbox A
+{
+       font: 1em sans-serif;
+	text-decoration: none;
+        color:#555;
+}
+body{
+    font-size: 100%;
+    line-height: 12px;
+}
+
+.lightbox 
+{
+	padding: 5px;
+	font: 0.833em sans-serif;
+	color: #87792D;
+	text-decoration: none;
+}
+.lightbox LABEL
+{
+display:block;
+color:#87792D;
+margin-bottom: 5px;
+}
+
+
+.lightbox select, .input
+{
+ display:block;
+ margin-bottom: 5px;
+ width:96%;
+ color: #2E394B;
+}
+
+#lugar{
+    width: 88%;
+}
+
+.sep{
+    height:50px;
+    width:100%;
+    float:left;
+}
+
+.bt_gmap{
+    background: url(../images/Google-Maps-icon.png) no-repeat;
+    width:24px;
+    height:24px;
+    display:inline-block;
+    position:relative;
+    top:6px;
+    left:3px;
+}
+.dialog{
+display:none;
+}
+
+
+/* Google map */
+
+#map{
+    width:96%;
+    height:200px;
+    margin-bottom:10px;
+    display:none;
+}
+
+
+.clear{clear:both;}
+.lightbox DIV TEXTAREA{	height: 80px;}
+
+/* xxxxxxxxxxx FECHAS xxxxxxxxxxx */
+
+#start_hour,#end_hour,#start_minute,#end_minute{
+    width:50px;
+}
+#start_date,#end_date{
+    width:90px;
+}
+#desde{
+    float:left;
+    margin-right:10px;
+    position:relative;
+}
+#hasta{
+  float:left;  
+  position:relative;
+}
+
+/* xxxxxxxxxxx AUTOR xxxxxxxxxxx */
+#autor{
+    float:left;
+    padding:3px 0 0 0 ;  
+    width:100%;
+height:24px;
+}
+
+#autor-fecha{
+    font-size: .875em;
+    display:inline-block;
+    vertical-align:middle;
+    background: url(../images/calendar.png) no-repeat 0px 0px;
+    padding:5px 0 0 26px;
+    height:30px;
+}
+#autor-nombre{
+    font-size: .875em;
+    display:inline-block;
+    vertical-align: middle;
+    background: url(../images/user.png) no-repeat 0px 0px;
+    padding:5px 0 0 26px;
+    height:30px;
+}
+
+
+#botonera2{
+float:right;
+}
+
+
+/* xxxxxxxxxxx BOTONERA xxxxxxxxxxx */
+
+#botonera{
+    position:fixed;
+    bottom:0;
+    left:0;
+    width:100%;
+    /* background-color: #EBEBEB;*/
+    background-color: #B9CAE1;
+    border-top: 1px dotted gray;
+    padding:4px;
+
+}
+#guardar
+{
+	margin: 10px 2px 2px;
+	float: right;
+}
+#cerrar
+{
+	margin: 10px 2px 2px;
+	float: right;
+}
+#borrar
+{
+	margin: 10px 20px 2px 2px;
+	float: right;
+}
+
+#cancelar
+{
+    margin: 10px 10px 2px 2px;
+    float: right;
+}
+
+#guardar SPAN
+{
+	background: url(../jscript/dhtmlxSuite/dhtmlxScheduler_v31/codebase/imgs/controls.gif) -85px -3px;
+	width: 21px;
+	height: 17px;
+	display: block;
+	float: left;
+}
+
+#cancelar SPAN
+{
+	background: url(../jscript/dhtmlxSuite/dhtmlxScheduler_v31/codebase/imgs/controls.gif) 42px -3px;
+	width: 21px;
+	height: 17px;
+	display: block;
+	float: left;
+}
+
+#cerrar SPAN
+{
+	background: url(../jscript/dhtmlxSuite/dhtmlxScheduler_v31/codebase/imgs/controls.gif) -70px -3px;
+	width: 21px;
+	height: 17px;
+	display: block;
+	float: left;
+}
+
+#borrar SPAN
+{
+	background: url(../jscript/dhtmlxSuite/dhtmlxScheduler_v31/codebase/imgs/controls.gif) -45px -3px;
+	width: 21px;
+	height: 17px;
+	display: block;
+	float: left;
+}
+
+.lightbox .error{color:red;}

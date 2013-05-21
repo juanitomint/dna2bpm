@@ -19,9 +19,9 @@
 
         <div class="fileupload fileupload-new control-group" data-provides="fileupload">
             <label class="control-label" for="foto">Foto </label>
-            <div class="fileupload-new thumbnail" style="width: 200px; height: 150px;">
-                <img src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&text=no+image" /></div>
-            <div class="fileupload-preview fileupload-exists thumbnail" style="max-width: 200px; max-height: 150px; line-height: 20px;">
+            <div class="fileupload-new thumbnail" style="width: 120px; height: 120px;">
+                <img src="{base_url}{avatar}" /></div>
+            <div class="fileupload-preview fileupload-exists thumbnail" style="max-width: 120px; max-height: 120px; line-height: 20px;">
 
             </div>
             <div class="control-group">
@@ -54,6 +54,18 @@
             </div>
         </div>
         <div class="control-group">
+            <label class="control-label" for="apellido">Genero</label>
+            <div class="controls">
+                
+                <input type="radio" name="gender" id="female" value="female" {checkedF}>
+                Femenino
+             
+                <input type="radio" name="gender" id="male" value="male" {checkedM}>
+                Masculino
+               
+            </div>
+        </div>
+        <div class="control-group">
             <label class="control-label" for="dni">DNI</label>
             <div class="controls">
                 <input type="number" id="dni" name="dni" value="{idnumber}">
@@ -62,7 +74,7 @@
         <div class="control-group">
             <label class="control-label" for="fechanac">Fecha de nacimiento</label>
             <div class="controls">
-                <input type="date" id="fechanac" name="fechanac" value="{birthdate}">
+                <input class="calendar" type="date" id="fechanac" name="fechanac" value="{birthdate}"><span class="add-on"><i class="icon-calendar"></i></span>
             </div>
         </div>
         <div class="control-group">

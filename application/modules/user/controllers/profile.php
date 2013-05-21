@@ -52,13 +52,13 @@ class Profile extends MX_Controller {
         $customData['base_url'] = base_url();
         $customData['module_url'] = base_url() . 'user/';
         
-        $customData['js'] = array($this->module_url . "assets/jscript/bootstrap-fileupload.js" => 'profile JS');
+        $customData['js'] = array($this->base_url . "jscript/jquery/jquery-ui-1.7.1.custom.min.js" => 'profile JS',$this->base_url . "jscript/jquery/ui/ui.datepicker.js" => 'profile JS',$this->module_url . "assets/jscript/bootstrap-fileupload.js" => 'profile JS',$this->module_url . "assets/jscript/profile.js" => 'profile JS');
         $customData['css'] = array($this->module_url . "assets/css/fix_bootstrap_checkbox.css" => 'profile CSS', $this->module_url . "assets/css/bootstrap-fileupload.css" => 'profile CSS');
-       
+      
         
         //tomamos los datos del usuario
         $idu = (float) $this->session->userdata('iduser');
-        echo $idu;
+        //echo $idu;
         //echo "user from db:<br/>";
         //var_dump($this->user->get_user((float) $idu));
         //echo '<hr/>';
@@ -69,17 +69,49 @@ class Profile extends MX_Controller {
     }
 
     /*
-     * Save Profile data uses $this->user->save($data);
+     * Save Profile data uses $this->userimage/jpg->save($data);
      */
     function Save() {
+        
+        $customData['base_url'] = base_url();
+        $customData['module_url'] = base_url() . 'user/';
+        $iduser = (float) $this->session->userdata('iduser');
+        $post_obj['gender']  = $this->input->post('gender');
+        
+       
+        
         //var_dump($this->input->post());
+       // var_dump($_FILES);
+        $img_avatar = $_FILES["avatar"];
+        //si hay archivo
+        if($img_avatar["name"]){
+            $allowedExts = array("gif", "jpeg", "jpg", "png");
+            $allowedTypes = array("image/gif", "image/jpeg","image/jpg", "image/pjpeg", "image/png","image/x-png");
+            $extension = end(explode(".", $img_avatar["name"]));
+            $type = $img_avatar["type"];
+            if (in_array($type, $allowedTypes) && ($_FILES["file"]["size"] < 20000) && in_array($extension, $allowedExts)){
+             
+              move_uploaded_file($img_avatar["tmp_name"],"images/avatar/".$iduser.".".$extension);
+              //echo "Stored in: " . "images/avatar/".$iduser.".".$extension;
+              $post_obj['avatar']  = "images/avatar/".$iduser.".".$extension;
+  
+            }else echo "Invalid file";  
+            
+        }else{
+            if( $post_obj['gender']=="male" )
+                $post_obj['avatar']  = "images/avatar/male.jpg";
+            else  $post_obj['avatar']  = "images/avatar/female.jpg";
+            
+            
+        }
+        
         
         
         $iduser = (float) $this->session->userdata('iduser');
         $post_obj['nick']  = $this->input->post('nick');
         //la foto 
         $post_obj['name']  = $this->input->post('nombre');
-        $post_obj['name']  = $this->input->post('nombre');
+        $post_obj['gender']  = $this->input->post('gender');
         $post_obj['lastname']  = $this->input->post('apellido');
         $post_obj['idnumber']  = $this->input->post('dni');
         $post_obj['birthdate']  = $this->input->post('fechanac');
@@ -112,7 +144,7 @@ class Profile extends MX_Controller {
         //---now SAVE it
         $result = $this->user->save($new_obj);
 
-        
+        echo "Actualizacion realizada con exito <a href='".$customData['module_url']."profile/index'>Volver</a>";
         //header('Location:');
         
         

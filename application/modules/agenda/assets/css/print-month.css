@@ -1,0 +1,224 @@
+/*+clearfix {*/
+
+
+.linea:after
+{
+	content: ".";
+	display: block;
+	height: 0;
+	clear: both;
+	visibility: hidden;
+	font-size: 0;
+}
+.linea
+{
+	display: inline-block;
+}
+.linea
+{
+/*\*/
+	display: block;
+/**/
+	_height: 1px;
+}
+/*+}*/
+P
+{
+	margin: 0;
+	padding: 0;
+	font-size: 11px;
+	font-family: Helvetica, Verdana;
+	color: #2F3A48;
+	background: none;
+}
+A
+{
+	padding: 0px;
+	font: 12px Helvetica, Verdana;
+	color: #87792D;
+	text-decoration: none;
+}
+HTML, BODY
+{
+	margin: 0px;
+	padding: 0px;
+	background-color: #FFFFFF;
+	font-family: Helvetica;
+	font-size: 100%;
+	
+}
+H1
+{
+	font-family: helvetica, Verdana;
+	font-size: 10pt;
+	line-height: 14pt;
+	text-align: left;
+}
+H2
+{
+	font-family: helvetica, Verdana;
+	font-size: 10pt;
+	line-height: 14pt;
+	text-align: left;
+	margin: 4px;
+}
+
+.dummy{height:60px;}
+#info
+{
+	text-align: center;
+	height: 22px;
+	width: 100%;
+	margin-bottom: 4px;
+	position: relative;
+	color: #596A7D;
+}
+#info-center
+{
+	position: absolute;
+	margin: 0 auto;
+}
+#info-right
+{
+	position: absolute;
+	right: 10px;
+	top: 0;
+}
+/*Mensual*/
+
+
+.calendario_mensual
+{
+	width: 100%;
+	border:1px solid #E2E2E2;
+	font-size: 0.9em;
+}
+
+.calendario_mensual TD	
+{
+	border:1px solid #E2E2E2;
+}
+.calendario_mensual  TH
+{
+    	border-right: 1px solid #E2E2E2;
+	color: #fff;
+	height: 1.8em;
+        background-color: #586A7E;
+}
+.calendario_mensual SPAN
+{
+	display:block;
+}
+.mes-date
+{
+	display: block;
+	background: #C2E6EA;
+}
+.mes-anterior .mes-date, .mes-proximo .mes-date
+{
+	display: block;
+	background: #E2E2E2;
+	color:#999;
+}
+/*[clearfix]*/.linea
+{
+	width: 100%;
+	clear: both;
+}
+.encabezado
+{
+	width: 33mm;
+	float: left;
+	height: 5mm;
+	border: 1px solid #020202;
+	padding: 2mm 0px 0 2mm;
+		font-family: Helvetica;
+		font-size:12px;
+}
+/* Items*/
+.listado-item
+{
+	border-bottom: 1px dotted #586A7E;
+	padding: 0 0 2px;
+	background: #E3E3E3;
+	color: #586A7E;
+}
+.listado-item-recurrente
+{
+	border-bottom: 1px dotted #586A7E;
+	color: #586A7E;
+	padding: 0 0 4px 20px;
+	background: #E3E3E3 url(../images/calendar.gif) no-repeat;
+}
+.listado-item-recurrente SPAN, .listado-item SPAN
+{
+	padding: 0 2px 0 0;
+	font-weight: bold;
+}
+
+
+/* Options */
+
+#options{
+    background-color: #ECECEC;
+    width:300px;
+    height:150px;
+    position:absolute;
+    z-index:1000;
+    padding:10px;
+    font-family: monospace;
+    border-bottom: 6px solid #D0E5FF;
+    left:10px;
+-webkit-box-shadow: 0px 2px 2px 2px #cccccc;
+box-shadow: 0px 2px 2px 2px #cccccc; 
+top:-175px;
+}
+
+#options > label{
+    display:block;
+    width:150px;
+    position:relative;
+    margin-bottom: 10px;
+}
+
+#options > label > input{
+    position:absolute;
+    left:100px;
+}
+
+.line{
+    width:100%;
+    height:1px;
+    background-color: #999;
+    border-bottom: 1px solid #fff;
+    margin: 5px 0px;
+}
+
+#options > #block_altura{
+    position: relative;
+}
+
+#options > #block_altura label{
+    position: absolute;
+    left:0px;
+}
+
+#options > #block_altura > #sliderBox{
+margin-left:50px;
+}
+
+#options > .menu{
+    position:absolute;
+    bottom:-36px;
+    left:0px;
+    height:20px;
+    width:80px;
+    padding: 5px 5px 5px 40px;
+    background-color: #fff;
+    display:block;
+    background-image: url(../images/iconos1.png);
+    background-position: 0px -570px;
+    background-repeat: no-repeat;
+-webkit-box-shadow: 0px 2px 2px 2px #cccccc;
+box-shadow: 0px 3px 2px 2px #cccccc;
+}

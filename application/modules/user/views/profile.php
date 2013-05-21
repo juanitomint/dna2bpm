@@ -18,7 +18,7 @@
     </div>
     <div class="control-group">
         <div class="controls">
-        <img src="..." style="width: 140px; height: 140px;" alt="imagen" id="imgusuario" class="img-polaroid">
+        <img src="{base_url}{avatar}" style="width: 120px; height: 120px;" alt="imagen" id="imgusuario" class="img-polaroid">
         </div>
     </div>
     
@@ -34,10 +34,16 @@
         {lastname}
         </div>
     </div>
+     <div class="control-group">
+        <label class="control-label" for="apellido">Genero:</label>
+        <div class="controls">
+        {gender}
+        </div>
+    </div>
     <div class="control-group">
         <label class="control-label" for="dni">DNI:</label>
         <div class="controls">
-       {ddni}
+       {idnumber}
         </div>
     </div>
     <div class="control-group">
