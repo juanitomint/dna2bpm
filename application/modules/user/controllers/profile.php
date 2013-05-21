@@ -169,6 +169,9 @@ class Profile extends MX_Controller {
        //var_dump($this->user->get_user((float) $idu));
 
        $customData+=(array)$this->user->get_user((float) $idu);
+       $genero=isset($customData['gender'])? ($customData['gender']):("nada") ;
+        if($genero=="female") $customData['checkedG']= 'femenino';
+        if($genero=="male") $customData['checkedG']= 'masculino';
        
        $this->ui->compose('profile', 'bootstrap.ui.php', $customData);
       
