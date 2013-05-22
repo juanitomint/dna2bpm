@@ -98,15 +98,17 @@ class Profile extends MX_Controller {
   
             }else echo "Invalid file";  
             
-        }else{
-            if( $post_obj['gender']=="male" )
-                $post_obj['avatar']  = "images/avatar/male.jpg";
-            else  $post_obj['avatar']  = "images/avatar/female.jpg";
-            
+        }else{//si no hay archivo puede ser porque no subio img o porque ya la subio
+            //si ya la subio, dejamos la misma foto
+            $avatarFoto=isset($customData['avatar'])? ($customData['avatar']):("nohay") ;
+            //sino la subio, ponemos una segun el genero, sino cargo el genero se setea masculino
+            if($avatarFoto=="nohay"){
+                if($post_obj['gender']=="male")
+                    $post_obj['avatar']  = "images/avatar/male.jpg";
+                else $post_obj['avatar']  = "images/avatar/female.jpg";
+            }
             
         }
-        
-        
         
         $iduser = (float) $this->session->userdata('iduser');
         $post_obj['nick']  = $this->input->post('nick');
@@ -129,8 +131,8 @@ class Profile extends MX_Controller {
         $dbobj = (array)$this->user->get_user((float)$iduser);
         
         //process password
-        //vemos si es la misma 
-        if($dbobj['passw']==$this->input->post('passw'))
+        //vemos si es la misma q ya esta guardado
+        if($dbobj['passw']==md5($this->input->post('passw')))
             $post_obj['passw'] = $this->input->post('passw');
         else 
             $post_obj['passw'] = ($this->input->post('passw')) ? md5($this->input->post('passw')) : md5('nopass');
