@@ -32,28 +32,32 @@ Ext.onReady(function(){
         launch: function() {
             Ext.create('Ext.container.Viewport', {
                 layout:'border',
-                items:[ {
+                items:[ 
+                /*
+                {
                     region:'north',
-                    title:'<h3><i class="icon icon-bpm"></i> BPM Browser</h3>',
-                    cls:'page_header'
+                    title:'<h3 class="hidden-tablet hidden-phone"><i class="icon icon-bpm"></i> BPM Browser</h3>',
+                    cls:'page_header',
+                    collapsible:true
                 },
+                */
                 left,
                 center
                 ],
                 listeners: {
-                                
+
                     afterrender: function(){
                         //---Load Data
-                                   
+
                         //Ext.data.StoreManager.lookup('GroupStore').load(); 
                         //Ext.data.StoreManager.lookup('UserStore').load(); 
                         Ext.data.StoreManager.lookup('TreeStore').load(); 
-                                   
-                                
+
+
                     }
                 }
             });
-                        
+
         },
         onLaunch: function(){
         }
@@ -61,6 +65,6 @@ Ext.onReady(function(){
     //---remove the loader
     Ext.get('loading').remove();
     Ext.fly('loading-mask').remove();
-                
-                
+
+
 });
