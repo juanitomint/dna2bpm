@@ -54,13 +54,13 @@
             </div>
         </div>
         <div class="control-group">
-            <label class="control-label" for="apellido">Genero</label>
+            <label class="control-label" for="apellido">Apellido</label>
             <div class="controls">
                 
-                <input type="radio" name="gender" id="female" value="female" {checkedF}>
+                <input type="radio" name="gender" id="female" value="female" checked>
                 Femenino
              
-                <input type="radio" name="gender" id="male" value="male" {checkedM}>
+                <input type="radio" name="gender" id="male" value="male">
                 Masculino
                
             </div>
