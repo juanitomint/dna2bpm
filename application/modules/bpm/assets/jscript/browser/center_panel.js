@@ -116,6 +116,7 @@ var ModelView = Ext.create('Ext.Action', {
         
         if(n && n.isLeaf()){
             url= globals.module_url+'repository/view/model/'+n.data.id;
+            url= globals.base_url+'images/svg/'+n.data.id+'.svg';
             window.open(url);
         }
     }

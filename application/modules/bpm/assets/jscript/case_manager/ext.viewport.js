@@ -46,7 +46,7 @@ Ext.application({
             ,
             {
                 //title: '<i class="icon icon-bpm"></i> Model Panel / Picker',
-                title:'<h4><i class="icon icon-dashboard"></i> Case Manager</h4>',
+                title:'<i class="icon icon-dashboard"></i> Case Manager',
                 id:'ModelPanel',
                 region:'center',
                 layout:'fit',

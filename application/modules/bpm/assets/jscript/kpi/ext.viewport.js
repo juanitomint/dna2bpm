@@ -86,11 +86,13 @@ Ext.application({
         Ext.create('Ext.Viewport', {
             layout:'border',
             items:[
+            /*
             {
                 region:'north',
                 title:'<h3><i class="icon icon-dashboard"></i> Key Process/Performance Indicators Editor</h3>',
                 cls:'page_header'
             },
+            */
             center,
             left,
             right
