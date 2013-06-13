@@ -330,8 +330,8 @@ class Engine extends MX_Controller {
                 'idwf' => $idwf,
                 'idcase' => $idcase,
                 'resourceId' => $resourceId,
-            );
-            $this->ui->compose('manual_task', 'bpm/bootstrap.ui.php', $renderData);
+                );
+            $this->ui->compose('bpm/manual_task', 'bpm/bootstrap.ui.php', $renderData);
         }
     }
 
@@ -384,8 +384,8 @@ class Engine extends MX_Controller {
                 'idwf' => $idwf,
                 'idcase' => $idcase,
                 'resourceId' => $resourceId,
-            );
-            $this->ui->compose('manual_gate', 'bpm/bootstrap.ui.php', $renderData);
+                );
+            $this->ui->compose('bpm/manual_gate', 'bpm/bootstrap.ui.php', $renderData);
         }
     }
 
