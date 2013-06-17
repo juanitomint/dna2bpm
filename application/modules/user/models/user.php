@@ -256,8 +256,8 @@ class User extends CI_Model {
         //var_dump(json_encode($query));
         $user = $this->db->get_where('users', $query)->result();
         if ($user) {
-            unset($user[0]['password']);
-            unset($user[0]['_id']);
+            unset($user[0]->password);
+            unset($user[0]->_id);
             return $user[0];
         }
     }
