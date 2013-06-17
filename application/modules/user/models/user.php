@@ -124,7 +124,7 @@ class User extends CI_Model {
             }
         }
         if (!$canaccess) {
-            $this->session->set_userdata('redir',  base_url(). uri_string());
+            $this->session->set_userdata('redir', base_url() . uri_string());
             $this->session->set_userdata('msg', 'nolevel');
             header('Location: ' . base_url() . 'user/login');
         }
@@ -146,7 +146,7 @@ class User extends CI_Model {
 
     function isloggedin() {
         if (!$this->session->userdata('loggedin')) {
-            $this->session->set_userdata('redir',  base_url(). uri_string());
+            $this->session->set_userdata('redir', base_url() . uri_string());
             $this->session->set_userdata('msg', 'hastolog');
             header('Location: ' . base_url() . 'user/login');
         } else {
@@ -242,6 +242,24 @@ class User extends CI_Model {
         $user = $this->db->get_where('users', $query)->result();
         if ($user)
             return $user[0];
+    }
+
+    /*
+     * Get user data without passwords or any other security info
+     */
+
+    function get_user_safe($iduser) {
+        //*
+        //returns an array with  matching id's
+        $query = array('idu' => (float) $iduser);
+
+        //var_dump(json_encode($query));
+        $user = $this->db->get_where('users', $query)->result();
+        if ($user) {
+            unset($user[0]['password']);
+            unset($user[0]['_id']);
+            return $user[0];
+        }
     }
 
     function get_user_array($iduser) {
