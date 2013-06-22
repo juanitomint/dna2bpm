@@ -124,7 +124,7 @@ class User extends CI_Model {
             }
         }
         if (!$canaccess) {
-            $this->session->set_userdata('redir',  base_url(). uri_string());
+            $this->session->set_userdata('redir', base_url() . uri_string());
             $this->session->set_userdata('msg', 'nolevel');
             header('Location: ' . base_url() . 'user/login');
         }
@@ -146,7 +146,7 @@ class User extends CI_Model {
 
     function isloggedin() {
         if (!$this->session->userdata('loggedin')) {
-            $this->session->set_userdata('redir',  base_url(). uri_string());
+            $this->session->set_userdata('redir', base_url() . uri_string());
             $this->session->set_userdata('msg', 'hastolog');
             header('Location: ' . base_url() . 'user/login');
         } else {
@@ -215,7 +215,7 @@ class User extends CI_Model {
     }
 
     function getbygroup($idgroup) {
-        $grouparr = (array) json_decode((string) $idgroup);
+        $grouparr = (is_array($idgroup)) ? $idgroup : (array) json_decode((string) $idgroup);
         $this->db->where_in('group', $grouparr);
         $result = $this->db->get('users')->result();
         return $result;
