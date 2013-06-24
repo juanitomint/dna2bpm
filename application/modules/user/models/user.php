@@ -22,7 +22,7 @@ class User extends CI_Model {
         $user_data['idu'] = isset($user_data['idu']) ? $user_data['idu'] : null;
         if ($user_data['idu']) {
             //---set proper typo 4 id
-            $user_data['idu'] = (float) $user_data['idu'];
+            $user_data['idu'] = (int) $user_data['idu'];
             //---if found then update data
             $user = (array) $this->getbyid($user_data['idu']);
             //---add previous data not submited _id & iduser
@@ -180,7 +180,7 @@ class User extends CI_Model {
          * returns single user with matching id
          */
         //var_dump(json_encode($query));
-        $this->db->where(array('idu' => (float) $iduser));
+        $this->db->where(array('idu' => (int) $iduser));
         $result = $this->db->get('users')->result();
         ///----return only 1st
         if (isset($result[0]->idu)) {
@@ -242,7 +242,7 @@ class User extends CI_Model {
     function get_user($iduser) {
         //*
         //returns an array with  matching id's
-        $query = array('idu' => (float) $iduser);
+        $query = array('idu' => (int) $iduser);
 
         //var_dump(json_encode($query));
         $user = $this->db->get_where('users', $query)->result();
@@ -257,7 +257,7 @@ class User extends CI_Model {
     function get_user_safe($iduser) {
         //*
         //returns an array with  matching id's
-        $query = array('idu' => (float) $iduser);
+        $query = array('idu' => (int) $iduser);
 
         //var_dump(json_encode($query));
         $user = $this->db->get_where('users', $query)->result();
@@ -271,7 +271,7 @@ class User extends CI_Model {
     function get_user_array($iduser) {
         //*
         //returns an array with  matching id's
-        $query = array('idu' => (float) $iduser);
+        $query = array('idu' => (int) $iduser);
 
         //var_dump(json_encode($query));
         $user = $this->db->get_where('users', $query)->result_array();
@@ -392,7 +392,7 @@ class User extends CI_Model {
             //---make a new copy in backup table.
             $result = $this->db->insert('users.back', (array) $obj);
         }
-        $this->db->where(array('idu' => (float) $obj->idu));
+        $this->db->where(array('idu' => (int) $obj->idu));
         //---now delete original
         $result = $this->db->delete('users');
         return $result;
@@ -406,7 +406,7 @@ class User extends CI_Model {
         $container = 'users';
         //---if passed specific id
         if (func_num_args() > 0) {
-            $id = (float) func_get_arg(0);
+            $id = (int) func_get_arg(0);
             $passed = true;
             //echo "passed: $id<br>";
         }

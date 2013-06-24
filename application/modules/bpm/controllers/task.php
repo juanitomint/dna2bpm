@@ -21,7 +21,7 @@ class Task extends MX_Controller {
     }
 
     function claim($idwf, $case, $resourceId) {
-        $iduser = (float) $this->session->userdata('iduser');
+        $iduser = (int) $this->session->userdata('iduser');
         //---get the user
         $user = $this->user->get_user($iduser);
         $user_groups = $user->group;
@@ -38,14 +38,14 @@ class Task extends MX_Controller {
         }
         if (!isset($token['assign'])) {
             if ($is_allowed) {
-                $token['assign'] = array((float) $this->session->userdata('iduser'));
+                $token['assign'] = array((int) $this->session->userdata('iduser'));
                 $this->bpm->save_token($token);
             }
         }
     }
 
     function refuse($idwf, $case, $resourceId) {
-        $iduser = (float) $this->session->userdata('iduser');
+        $iduser = (int) $this->session->userdata('iduser');
         //---get the user
         $user = $this->user->get_user($iduser);
         $user_groups = $user->group;

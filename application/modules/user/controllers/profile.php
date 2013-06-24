@@ -25,7 +25,7 @@ class Profile extends MX_Controller {
         $this->module_url = base_url() . 'user/';
         //----LOAD LANGUAGE
         $this->lang->load('library', $this->config->item('language'));
-        $this->idu = (float) $this->session->userdata('iduser');
+        $this->idu = (int) $this->session->userdata('iduser');
         
     }
 
@@ -57,10 +57,10 @@ class Profile extends MX_Controller {
       
         
         //tomamos los datos del usuario
-        $idu = (float) $this->session->userdata('iduser');
+        $idu = (int) $this->session->userdata('iduser');
         
         
-        $customData+=(array)$this->user->get_user((float) $idu);
+        $customData+=(array)$this->user->get_user((int) $idu);
         
         $genero=isset($customData['gender'])? ($customData['gender']):("male") ;
         if($genero=="female") $customData['checkedF']= 'checked';
@@ -76,7 +76,7 @@ class Profile extends MX_Controller {
         
         $customData['base_url'] = base_url();
         $customData['module_url'] = base_url() . 'user/';
-        $iduser = (float) $this->session->userdata('iduser');
+        $iduser = (int) $this->session->userdata('iduser');
         $post_obj['gender']  = $this->input->post('gender');
         
        
@@ -108,7 +108,7 @@ class Profile extends MX_Controller {
         
         
         
-        $iduser = (float) $this->session->userdata('iduser');
+        $iduser = (int) $this->session->userdata('iduser');
         $post_obj['nick']  = $this->input->post('nick');
         //la foto 
         $post_obj['name']  = $this->input->post('nombre');
@@ -122,11 +122,11 @@ class Profile extends MX_Controller {
         $post_obj['address']  = $this->input->post('domicilio');
         $post_obj['cp']  = $this->input->post('cp');
         $post_obj['city']  = $this->input->post('ciudad');
-        $post_obj['idu'] = (float) $iduser;
+        $post_obj['idu'] = (int) $iduser;
 
         
         //lo que esta en la base
-        $dbobj = (array)$this->user->get_user((float)$iduser);
+        $dbobj = (array)$this->user->get_user((int)$iduser);
         
         //process password
         //vemos si es la misma 
@@ -157,7 +157,7 @@ class Profile extends MX_Controller {
      * View user Profile
      */
     function View() {
-        $idu = (float) $this->session->userdata('iduser');
+        $idu = (int) $this->session->userdata('iduser');
         
         $customData['base_url'] = base_url();
         $customData['module_url'] = base_url() . 'user/';
@@ -165,10 +165,10 @@ class Profile extends MX_Controller {
         $customData['css'] = array($this->module_url . "assets/css/fix_bootstrap_checkbox.css" => 'profile CSS');
         
         
-        $idu = (float) $this->session->userdata('iduser');
-       //var_dump($this->user->get_user((float) $idu));
+        $idu = (int) $this->session->userdata('iduser');
+       //var_dump($this->user->get_user((int) $idu));
 
-       $customData+=(array)$this->user->get_user((float) $idu);
+       $customData+=(array)$this->user->get_user((int) $idu);
        $genero=isset($customData['gender'])? ($customData['gender']):("nada") ;
         if($genero=="female") $customData['checkedG']= 'femenino';
         if($genero=="male") $customData['checkedG']= 'masculino';
@@ -184,7 +184,7 @@ class Profile extends MX_Controller {
         var_dump($this->input->post());
         
         
-        $iduser = (float) $this->session->userdata('iduser');
+        $iduser = (int) $this->session->userdata('iduser');
         $post_obj['nick']  = $this->input->post('nick');
         //la foto 
         $post_obj['name']  = $this->input->post('nombre');
@@ -198,11 +198,11 @@ class Profile extends MX_Controller {
         $post_obj['address']  = $this->input->post('domicilio');
         $post_obj['cp']  = $this->input->post('cp');
         $post_obj['city']  = $this->input->post('ciudad');
-        $post_obj['idu'] = (float) $iduser;
+        $post_obj['idu'] = (int) $iduser;
 
         
         //lo que esta en la base
-        $dbobj = (array)$this->user->get_user((float)$iduser);
+        $dbobj = (array)$this->user->get_user((int)$iduser);
         
         //process password
         //vemos si es la misma 

@@ -53,7 +53,7 @@ class Engine extends MX_Controller {
         $this->debug['run_EndNoneEvent'] = null;
         $this->debug['get_start_shapes'] = null;
         $this->debug['get_shape_parent'] = null;
-        $this->idu = (float) $this->session->userdata('iduser');
+        $this->idu = (int) $this->session->userdata('iduser');
         //$this->debug['get_shape_byname']=false;
     }
 

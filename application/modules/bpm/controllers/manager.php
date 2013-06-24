@@ -16,7 +16,7 @@ class Manager extends MX_Controller {
         //----LOAD LANGUAGE
         $this->types_path = 'application/modules/bpm/assets/types/';
         $this->lang->load('library', $this->config->item('language'));
-        $this->idu = (float) $this->session->userdata('iduser');
+        $this->idu = (int) $this->session->userdata('iduser');
         $this->base_url = base_url();
         $this->module_url = base_url() . 'bpm/';
     }
@@ -65,7 +65,7 @@ class Manager extends MX_Controller {
         //---allow asking 4 other users only if admin
         if (($this->user->has("root/ADM") OR $this->user->has("root/ADMWF"))) {
 
-            $iduser = (isset($user)) ? (float) $user : $this->idu;
+            $iduser = (isset($user)) ? (int) $user : $this->idu;
         } else {
             $iduser = $this->idu;
         }
