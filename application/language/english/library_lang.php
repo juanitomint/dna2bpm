@@ -1,4 +1,7 @@
-<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php
+
+if (!defined('BASEPATH'))
+    exit('No direct script access allowed');
 $lang['dateFmt']='m/d/Y';
 $lang['dateFmt_JS']='d MM yy';
 $lang['dateTimeFmt']='m/d/Y H:i';
