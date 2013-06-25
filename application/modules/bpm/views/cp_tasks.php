@@ -1,19 +1,19 @@
 <div id="tasks_container">
     <div id="tasks_brief" >
-             <h5>{byStatus}</h5>
+             <h5>{lang byStatus}</h5>
             <ul id="tasks_by_status">
                 <li>
-                    <a class="filter-task" filter="all" href="#"> {MyTasks} ({SumTasks})</a>
+                    <a class="filter-task" filter="all" href="#"> {lang MyTasks} ({SumTasks})</a>
                     <ul>
-                        <li><a class="filter-task" filter="user" href="#">{Pending} ({brief user})</a></li>
-                        <li><a class="filter-task" filter="finished" href="#">{Finished} ({brief finished})</a></li>
+                        <li><a class="filter-task" filter="user" href="#">{lang Pending} ({brief user})</a></li>
+                        <li><a class="filter-task" filter="finished" href="#">{lang Finished} ({brief finished})</a></li>
                     </ul>
                 </li>
 
             </ul>
             
 
-        <h5>{byGroup}</h5>
+        <h5>{lang byGroup}</h5>
         <ul id="tasks_by_group">
                 {groups}
                 <li>{title} ({qtty})</li>
@@ -38,14 +38,14 @@
                         <img src="{base_url}{icon}" style="vertical-align: middle" />
                         {title}
                         {if {claimable}}
-                        <button class="claimTask" title="claim" idwf="{idwf}" case="{case}" resourceId="{resourceId}">{claim}</button>
+                        <button class="claimTask" title="claim" idwf="{idwf}" case="{case}" resourceId="{resourceId}">{lang claim}</button>
                         {/if}
                         {if {refusable}}
-                        <button class="refuseTask" title="refuse" idwf="{idwf}" case="{case}" resourceId="{resourceId}">{refuse}</button>
+                        <button class="refuseTask" title="refuse" idwf="{idwf}" case="{case}" resourceId="{resourceId}">{lang refuse}</button>
                         {/if}
                         <!--manual task -->
                         {if {wfadmin}}
-                        <button class="manualTask" title="refuse" idwf="{idwf}" case="{case}" resourceId="{resourceId}">{manual}</button>
+                        <button class="manualTask" title="refuse" idwf="{idwf}" case="{case}" resourceId="{resourceId}">{lang manual}</button>
                         {/if}
                         <!--manual task -->
                     </li>
