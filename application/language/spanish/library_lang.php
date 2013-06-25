@@ -66,6 +66,7 @@ $lang["Delete"]='Borrar';
 /*---WF-Tasks------*/
 $lang["MyTasks"]='Mis Tareas';
 $lang["byGroup"]='Por Grupo';
+$lang["byStatus"]='Por Estado';
 $lang["Pending"]='Pendientes';
 $lang["Finished"]='Finalizadas';
 $lang["Canceled"]='Canceladas';
