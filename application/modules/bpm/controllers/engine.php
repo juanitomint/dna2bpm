@@ -724,7 +724,7 @@ class Engine extends MX_Controller {
             'base_url' => $this->base_url,
             'module_url' => $this->module_url,
             );
-        $this->ui->compose('modal_msg', 'bpm/bootstrap.ui.php', $renderData);
+        $this->ui->compose('bpm/modal_msg', 'bpm/bootstrap.ui.php', $renderData);
     }
 
 }
