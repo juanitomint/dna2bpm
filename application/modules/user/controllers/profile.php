@@ -82,7 +82,7 @@ class Profile extends MX_Controller {
        
         
         //var_dump($this->input->post());
-       // var_dump($_FILES);
+        //var_dump($_FILES);
         $img_avatar = $_FILES["avatar"];
         //si hay archivo
         if($img_avatar["name"]){
@@ -90,7 +90,7 @@ class Profile extends MX_Controller {
             $allowedTypes = array("image/gif", "image/jpeg","image/jpg", "image/pjpeg", "image/png","image/x-png");
             $extension = end(explode(".", $img_avatar["name"]));
             $type = $img_avatar["type"];
-            if (in_array($type, $allowedTypes) && ($_FILES["file"]["size"] < 20000) && in_array($extension, $allowedExts)){
+            if (in_array($type, $allowedTypes) && ($_FILES["avatar"]["size"] < 200000) && in_array($extension, $allowedExts)){
              
               move_uploaded_file($img_avatar["tmp_name"],"images/avatar/".$iduser.".".$extension);
               //echo "Stored in: " . "images/avatar/".$iduser.".".$extension;
