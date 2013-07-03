@@ -28,7 +28,7 @@ require_once('Cimongo_extras.php');
 class Cimongo extends Cimongo_extras {
 
     private $_inserted_id = FALSE;
-
+    public $debug=false;
     /**
      * Construct a new Cimongo
      *
@@ -56,7 +56,9 @@ class Cimongo extends Cimongo_extras {
             //FIXME theow exception instead show error
             show_error("In order to retreive documents from MongoDB, a collection name must be passed", 500);
         }
-        var_dump($this->wheres);
+        if ($this->debug){
+            var_dump('Wheres',$this->wheres);
+        }
         $cursor = $this->db->selectCollection($collection)->find($this->wheres, $this->selects);
         $cimongo_cursor = new Cimongo_cursor($cursor);
 
