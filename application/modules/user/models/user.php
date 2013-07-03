@@ -299,7 +299,6 @@ class User extends CI_Model {
     }
 
     function get_users($offset = 0, $limit = 50, $order = null, $query_txt = null, $idgroup = null) {
-        $this->db->debug=true;
         $this->db->get('users');
         //var_dump($start,$limit,$idgroup, $order, $idgroup);
         if ($idgroup) {
