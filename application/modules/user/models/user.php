@@ -85,7 +85,7 @@ class User extends CI_Model {
         }
     }
 
-    function authorize($reqlevel = '') {
+    function authorize($reqlevel = null) {
         $this->load->model('user/rbac');
         //---check if already logged in
         $this->isloggedin();
@@ -119,7 +119,7 @@ class User extends CI_Model {
                 $canaccess = true;
             } else {
                 //----$reqlevel override $path
-                $path = (isset($reqlevel)) ? $reqlevel : $path;
+                $path=(isset($reqlevel)) ? $reqlevel:$path;
                 //---give access if have path exists
                 if ($this->user->has('root/' . $path, $thisUser))
                     $canaccess = true;

@@ -38,7 +38,7 @@ class Engine extends MX_Controller {
         $this->digInto = array('Pool', 'Subprocess', 'CollapsedSubprocess', 'Lane');
         //---Debug options
         $this->debug['triggers'] = null;
-        $this->debug['Run'] = true;
+        $this->debug['Run'] = null;
         $this->debug['Startcase'] = null;
         $this->debug['get_inbound_shapes'] = null;
         $this->debug['load_data'] = null;
@@ -58,7 +58,7 @@ class Engine extends MX_Controller {
     }
 
     function Index() {
-        
+
     }
 
     function Newcase($model, $idwf, $manual = false) {
@@ -73,7 +73,7 @@ class Engine extends MX_Controller {
         $this->Startcase($model, $idwf, $case);
     }
 
-    function Startcase($model, $idwf, $case) {
+    function Startcase($model, $idwf, $case,$silent=false) {
         $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
         if ($debug)
             var_dump($model, $idwf, $case, $debug);
@@ -110,12 +110,17 @@ class Engine extends MX_Controller {
                 'body' => $wf->properties->documentation,
                 'from' => 'DNA²',
                 'link' => 'bpm/engine/tokens/model' . $idwf . '/' . $case
-            );
+                );
             $this->user->create_message($this->session->userdata('iduser'), $msg);
         }
         //---Redir the browser to engine Run
         $redir = "bpm/engine/run/model/$idwf/$case";
-        header("Location:" . $this->base_url . $redir);
+        if(!$silent){
+            header("Location:" . $this->base_url . $redir);
+        } else {
+        //$this->Run('model', $idwf, $case);
+        }
+
     }
 
     function Run($model, $idwf, $case) {
@@ -129,11 +134,11 @@ class Engine extends MX_Controller {
             $msg_data = array(
                 'user_lock' => $user_lock['name'] . ' ' . $user_lock['lastname'],
                 'time' => date($this->lang->line('dateTimeFmt'), strtotime($thisCase['lockedDate']))
-            );
+                );
 
             $this->show_modal(
-                    $this->lang->line('lock'), $this->parser->parse_string($this->lang->line('caseLocked'), $msg_data)
-            );
+                $this->lang->line('lock'), $this->parser->parse_string($this->lang->line('caseLocked'), $msg_data)
+                );
         } else {
 
             if ($debug)
@@ -235,7 +240,7 @@ class Engine extends MX_Controller {
                         'run' => $token['run'],
                         'status' => $token['status'],
                         'name' => (isset($shape->properties->name)) ? $shape->properties->name : ''
-                    );
+                        );
                     $this->bpm->update_history($wf->case, $history);
                     $shape_flow = $this->bpm->get_shape($flowId, $wf);
                     //run_SequenceFlow(_flow, $wf);
@@ -322,7 +327,7 @@ class Engine extends MX_Controller {
             $renderData['title'] = 'Manual Task';
             $renderData['js'] = array(
                 $this->module_url . 'assets/jscript/manual_task.js' => 'Manual task JS'
-            );
+                );
             //---prepare globals 4 js
             $renderData['global_js'] = array(
                 'base_url' => $this->base_url,
@@ -376,7 +381,7 @@ class Engine extends MX_Controller {
             $renderData['title'] = 'Manual Gate';
             $renderData['js'] = array(
                 $this->module_url . 'assets/jscript/manual_gate.js' => 'Manual Gate JS'
-            );
+                );
             //---prepare globals 4 js
             $renderData['global_js'] = array(
                 'base_url' => $this->base_url,
@@ -395,7 +400,7 @@ class Engine extends MX_Controller {
         //$debug = true;
         if ($debug)
             echo '<h2>' . __FUNCTION__ . '</h2>' .
-            "Called @ " . xdebug_call_file() . "<br/>Line:" . xdebug_call_line() . "<br/>from: <b>" . xdebug_call_function() . '</b><hr/>';
+        "Called @ " . xdebug_call_file() . "<br/>Line:" . xdebug_call_line() . "<br/>from: <b>" . xdebug_call_function() . '</b><hr/>';
 
         ////////////////////////////////////////////////////////////////////////
         ///////////////////// Read From DataStore  ///////////////////////////
@@ -605,77 +610,77 @@ class Engine extends MX_Controller {
                 //var_dump('loaded token', $token);
                 switch ($token['type']) {
                     case 'Exclusive_Databased_Gateway':
-                        $this->manual_gate($model, $idwf, $idcase, $first['resourceId']);
-                        break;
+                    $this->manual_gate($model, $idwf, $idcase, $first['resourceId']);
+                    break;
                     case 'Task':
-                        $id = 'new';
-                        $shape = $this->bpm->get_shape($first['resourceId'], $this->wf);
-                        if ($shape and property_exists($shape->properties, 'operationref')) {
-                            if ($shape->properties->operationref) {
-                                $opRef = $shape->properties->operationref;
+                    $id = 'new';
+                    $shape = $this->bpm->get_shape($first['resourceId'], $this->wf);
+                    if ($shape and property_exists($shape->properties, 'operationref')) {
+                        if ($shape->properties->operationref) {
+                            $opRef = $shape->properties->operationref;
                                 //--check if storage $opRf exists
-                                if (property_exists($this->data, $opRef)) {
-                                    if ($debug)
-                                        var_dump('data by opRef:' . $opRef, $this->data->$opRef);
-                                    $stored_data = $this->data->$opRef;
-                                    $id = (isset($stored_data['id'])) ? $stored_data['id'] : 'new';
-                                }
+                            if (property_exists($this->data, $opRef)) {
+                                if ($debug)
+                                    var_dump('data by opRef:' . $opRef, $this->data->$opRef);
+                                $stored_data = $this->data->$opRef;
+                                $id = (isset($stored_data['id'])) ? $stored_data['id'] : 'new';
                             }
                         }
+                    }
 
-                        if ($id == '') {
+                    if ($id == '') {
                             //---try to assign id from token data passed
-                            if (isset($token['data'])) {
-                                if (isset($token['data']['id'])) {
-                                    $id = $token['data']['id'];
-                                } else {
-                                    $id = 'new';
-                                }
+                        if (isset($token['data'])) {
+                            if (isset($token['data']['id'])) {
+                                $id = $token['data']['id'];
+                            } else {
+                                $id = 'new';
                             }
                         }
+                    }
                         //-------------------------------------
                         //---save lock status
-                        $token['lockedBy'] = (isset($token['lockedBy'])) ? $token['lockedBy'] : $this->idu;
-                        $token['lockedDate'] = (isset($token['lockedDate'])) ? $token['lockedDate'] : date('Y-m-d H:i:s');
+                    $token['lockedBy'] = (isset($token['lockedBy'])) ? $token['lockedBy'] : $this->idu;
+                    $token['lockedDate'] = (isset($token['lockedDate'])) ? $token['lockedDate'] : date('Y-m-d H:i:s');
 
-                        $this->bpm->save_token($token);
+                    $this->bpm->save_token($token);
 
-                        if ($token['lockedBy'] == $this->idu) {
+                    if ($token['lockedBy'] == $this->idu) {
                             //----route each typo to it's action
-                            switch ($shape->properties->tasktype) {
+                        switch ($shape->properties->tasktype) {
 
-                                case 'User':
-                                    if (property_exists($shape->properties, 'rendering') and !$run_manual) {
-                                        if (trim($shape->properties->rendering)) {
-                                            $token_id = $first['_id'];
-                                            $redir = "dna2/render/edit/" . $shape->properties->rendering . "/$id/id/token/" . $token_id;
-                                            if (!$debug)
-                                                header("Location:" . $this->base_url . $redir);
-                                            else
-                                                echo "<a href='" . $this->base_url . $redir . "'>" . $this->base_url . $redir . "</a>";
-                                        } else {
+                            case 'User':
+                            if (property_exists($shape->properties, 'rendering') and !$run_manual) {
+                                if (trim($shape->properties->rendering)) {
+                                    $token_id = $first['_id'];
+                                    $redir = "dna2/render/edit/" . $shape->properties->rendering . "/$id/id/token/" . $token_id;
+                                    if (!$debug)
+                                        header("Location:" . $this->base_url . $redir);
+                                    else
+                                        echo "<a href='" . $this->base_url . $redir . "'>" . $this->base_url . $redir . "</a>";
+                                } else {
                                             //----if has no rendering directive then call manual
-                                            if ($debug) {
-                                                echo "has no rendering directive then call manual<br>";
-                                            }
-                                            $this->manual_task($model, $idwf, $idcase, $first['resourceId']);
-                                        }
-                                    } else {
-                                        if ($debug) {
-                                            echo "Manual directive set<br>";
-                                        }
-                                        //----if has no rendering directive then call manual
-                                        $this->manual_task($model, $idwf, $idcase, $first['resourceId']);
-                                    }
-                                    break;
-
-                                default:
                                     if ($debug) {
-                                        echo "Task has no type then call manual<br>";
+                                        echo "has no rendering directive then call manual<br>";
                                     }
                                     $this->manual_task($model, $idwf, $idcase, $first['resourceId']);
-                                    break;
+                                }
+                            } else {
+                                if ($debug) {
+                                    echo "Manual directive set<br>";
+                                }
+                                        //----if has no rendering directive then call manual
+                                $this->manual_task($model, $idwf, $idcase, $first['resourceId']);
                             }
+                            break;
+
+                            default:
+                            if ($debug) {
+                                echo "Task has no type then call manual<br>";
+                            }
+                            $this->manual_task($model, $idwf, $idcase, $first['resourceId']);
+                            break;
+                        }
                         } else {//--the token is locked by other user
                             //---load  no pending taks
                             $renderData['name'] = $this->lang->line('message');
@@ -683,11 +688,11 @@ class Engine extends MX_Controller {
                             $msg_data = array(
                                 'user_lock' => $user_lock['name'] . ' ' . $user_lock['lastname'],
                                 'time' => date($this->lang->line('dateTimeFmt'), strtotime($token['lockedDate']))
-                            );
+                                );
 
                             $this->show_modal(
-                                    $this->lang->line('message'), $this->parser->parse_string($this->lang->line('taskLocked'), $msg_data)
-                            );
+                                $this->lang->line('message'), $this->parser->parse_string($this->lang->line('taskLocked'), $msg_data)
+                                );
                         }
                         break;
                 }//--end switch token type
@@ -696,8 +701,8 @@ class Engine extends MX_Controller {
                 $renderData['name'] = $this->lang->line('message');
                 $renderData['documentation'] = $this->parser->parse_string($this->lang->line('noMoreTasks'), $case);
                 $this->show_modal(
-                        $this->lang->line('message'), $this->parser->parse_string($this->lang->line('noMoreTasks'), $case)
-                );
+                    $this->lang->line('message'), $this->parser->parse_string($this->lang->line('noMoreTasks'), $case)
+                    );
             }
         } else {//case is closed or in other state
             $this->show_modal($this->lang->line('message'), $this->lang->line('caseClosed'));
@@ -713,13 +718,13 @@ class Engine extends MX_Controller {
         //---prepare UI
         $renderData['js'] = array(
             $this->module_url . 'assets/jscript/modal_window.js' => 'Modal Window Generic JS'
-        );
+            );
         //---prepare globals 4 js
         $renderData['global_js'] = array(
             'base_url' => $this->base_url,
             'module_url' => $this->module_url,
-        );
-        $this->ui->compose('modal_msg', 'bpm/bootstrap.ui.php', $renderData);
+            );
+        $this->ui->compose('bpm/modal_msg', 'bpm/bootstrap.ui.php', $renderData);
     }
 
 }

@@ -16,6 +16,7 @@ class Manager extends MX_Controller {
         //----LOAD LANGUAGE
         $this->types_path = 'application/modules/bpm/assets/types/';
         $this->lang->load('library', $this->config->item('language'));
+        $this->lang->load('bpm', $this->config->item('language'));
         $this->idu = (int) $this->session->userdata('iduser');
         $this->base_url = base_url();
         $this->module_url = base_url() . 'bpm/';
@@ -167,7 +168,9 @@ class Manager extends MX_Controller {
     }
 
     function show_tasks($user = null, $filter_status = '') {
-        $cpData = $this->lang->language;
+        $cpData = array();
+        //$cpData = $this->lang->language;
+        $cpData['lang'] = $this->lang->language;
         $cpData['base_url'] = base_url();
         //---4 aditional icons and actions
         $cpData['wfadmin'] = ($this->user->has("root/ADM") OR $this->user->has("root/ADMWF")) ? true : false;

@@ -12,9 +12,9 @@
 |
 */
 
-$config['base_url']	= "http://localhost/dna2bpm/";
-
 $config['base_url']	= "/dna2bpm/";
+
+$config['base_url']	= "http://localhost/dna2bpm/";
 
 
 /*
