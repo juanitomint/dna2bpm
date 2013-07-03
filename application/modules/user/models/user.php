@@ -118,6 +118,8 @@ class User extends CI_Model {
             if (in_array(1, $thisUser->group)) {
                 $canaccess = true;
             } else {
+                //----$reqlevel override $path
+                $path = (isset($reqlevel)) ? $reqlevel : $path;
                 //---give access if have path exists
                 if ($this->user->has('root/' . $path, $thisUser))
                     $canaccess = true;
@@ -297,6 +299,7 @@ class User extends CI_Model {
     }
 
     function get_users($offset = 0, $limit = 50, $order = null, $query_txt = null, $idgroup = null) {
+        $this->db->debug=true;
         $this->db->get('users');
         //var_dump($start,$limit,$idgroup, $order, $idgroup);
         if ($idgroup) {
@@ -304,13 +307,11 @@ class User extends CI_Model {
         }
 
         if ($query_txt) {
-            $this->db->like('nick', $query_txt);
-            /*
-              @todo make this work with mongo.
-              $this->db->or_like('name',(array) $query_txt);
-              $this->db->or_like('lastname',(array)$query_txt);
-             */
+            $this->db->or_like('nick', $query_txt);
 
+            $this->db->or_like('name', $query_txt);
+            $this->db->or_like('lastname', $query_txt);
+            
             if (is_numeric($query_txt)) {
                 $this->db->or_where('idu', (int) $query_txt);
             }
