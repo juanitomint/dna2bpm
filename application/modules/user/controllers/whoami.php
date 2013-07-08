@@ -11,14 +11,14 @@ class Whoami extends MX_Controller {
         $this->load->model('user');
                 //----LOAD LANGUAGE
         $this->lang->load('library', $this->config->item('language'));
-        $this->idu = (float) $this->session->userdata('iduser');
+        $this->idu = (int) $this->session->userdata('iduser');
     }
 
     function Index() {
         $this->output->enable_profiler(true);
         $idu=$this->session->userdata('iduser');
         echo "CI Version: ".CI_VERSION.'<br/>';
-        var_dump('idu',$idu,$this->user->get_user((float)$idu));
+        var_dump('idu',$idu,$this->user->get_user((int)$idu));
     }
 
 }

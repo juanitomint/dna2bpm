@@ -66,7 +66,7 @@ class Render extends MX_Controller {
     function Edit($idform, $id='new') {
         //----4 id
         if ($id <> 'new')
-            $id = (float) $id;
+            $id = (int) $id;
         //----get url as array
         $segments = $this->uri_segments;
 
@@ -221,7 +221,7 @@ class Render extends MX_Controller {
             show_error("id is needed to render Vista: $idobject");
         }
         if (isset($id))
-            $id = (float) $id;
+            $id = (int) $id;
         //----get url as array
         $segments = $this->uri->segment_array();
 
@@ -299,7 +299,7 @@ class Render extends MX_Controller {
             show_error("id is needed to render Vista: $idobject");
         }
         if (isset($id))
-            $id = (float) $id;
+            $id = (int) $id;
         //----get url as array
         $segments = $this->uri->segment_array();
 

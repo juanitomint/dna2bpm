@@ -12,11 +12,11 @@ function run_Task($shape, $wf, $CI) {
 //---get case data
     $case = $CI->bpm->get_case($wf->case);
 //---set initiator same as case creator.
-    $CI->user->Initiator = (float) $case['iduser'];
+    $CI->user->Initiator = (int) $case['iduser'];
 //----Get token data
     $token = $CI->bpm->get_token($wf->idwf, $wf->case, $shape->resourceId);
 //---set actual user
-    $iduser = (float) $CI->idu;
+    $iduser = (int) $CI->idu;
     $user = $CI->user->get_user($iduser);
     $user_groups = (array) $user->group;
 
@@ -130,7 +130,7 @@ function run_Task($shape, $wf, $CI) {
 //---but only if the task havent been assigned to an specific user
             if (isset($token['idgroup']) and !isset($token['assign'])) {
                 foreach ($user_groups as $thisgroup) {
-                    if (in_array((float) $thisgroup, $token['idgroup']))
+                    if (in_array((int) $thisgroup, $token['idgroup']))
                         $is_allowed = true;
                 }
             }

@@ -29,7 +29,7 @@ class Process extends MX_Controller {
     }
 
     function Go($idobject, $id='new') {
-        if($id<>'new') $id=(float)$id;
+        if($id<>'new') $id=(int)$id;
         //---START Pre process Hooks
         $path = 'system/application/helpers/process/pre/';
         $hooks = glob($path . '*.php');

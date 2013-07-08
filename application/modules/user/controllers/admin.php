@@ -17,7 +17,7 @@ class admin extends MX_Controller {
         $this->module_url = base_url() . 'user/';
         //----LOAD LANGUAGE
         $this->lang->load('library', $this->config->item('language'));
-        $this->idu = (float) $this->session->userdata('iduser');
+        $this->idu = (int) $this->session->userdata('iduser');
     }
 
     function Index() {
@@ -259,7 +259,7 @@ class admin extends MX_Controller {
         }
         $obj = $this->user->get_user($iduser);
         $post_obj['_id'] = $obj['_id'];
-        $post_obj['idu'] = (float) $iduser;
+        $post_obj['idu'] = (int) $iduser;
         $post_obj['idgroup'] = (int) $post_obj['idgroup'];
         $post_obj['passw'] = ($post_obj['passw']) ? md5($post_obj['passw']) : md5('nopass');
         //---conform group
@@ -293,11 +293,11 @@ class admin extends MX_Controller {
     function showall($idu) {
 
         echo "user from db:<br/>";
-        var_dump($this->user->get_user((float) $idu));
+        var_dump($this->user->get_user((int) $idu));
         echo '<hr/>';
 
         echo "level from db:<br/>";
-        var_dump($this->user->getlevel((float) $idu));
+        var_dump($this->user->getlevel((int) $idu));
         echo '<hr/>';
 
         echo "Session data:<br/>";

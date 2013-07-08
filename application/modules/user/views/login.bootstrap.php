@@ -1,7 +1,6 @@
 <div class="container">
-
     <form class="form-signin" id="formAuth" action="{authUrl}" method="post">
-        <h2 class="form-signin-heading">Please sign in</h2>
+        <h1 class="form-signin-heading">{lang loginMsg}</h1>
         {if {show_warn}}                
         <div class="alert">
             <button type="button" class="close" data-dismiss="alert">&times;</button>
@@ -31,9 +30,9 @@
 
         </div>
         <label class="checkbox">
-            <input type="checkbox" value="remember-me"> Remember me
+            <input type="checkbox" value="remember-me">{lang rememberButton}
         </label>
-        <button class="btn  btn-success" type="submit">Sign in</button>
+        <button class="btn  btn-success" type="submit">{lang loginButton}</button>
         <br/>
     </form>
 

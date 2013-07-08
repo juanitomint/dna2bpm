@@ -14,7 +14,7 @@ class Bpm extends CI_Model {
 
     function __construct() {
         parent::__construct();
-        $this->idu = (float) $this->session->userdata('iduser');
+        $this->idu = (int) $this->session->userdata('iduser');
         $this->load->library('cimongo/cimongo');
         $this->db = $this->cimongo;
     }
@@ -161,7 +161,7 @@ class Bpm extends CI_Model {
         //---allow asking 4 other users only if admin
         if (($this->user->has("root/ADM") OR $this->user->has("root/ADMWF"))) {
 
-            $iduser = (isset($user)) ? (float) $user : $this->idu;
+            $iduser = (isset($user)) ? (int) $user : $this->idu;
         } else {
             $iduser = $this->idu;
         }
@@ -284,7 +284,7 @@ class Bpm extends CI_Model {
         //---check 4 incomplete data
         //---set execution user
         if (!isset($data['iduser']))
-            $data['iduser'] = (float) $this->session->userdata('iduser');
+            $data['iduser'] = (int) $this->session->userdata('iduser');
 
         if (!isset($idwf) or !isset($case) or !isset($resourceId)) {
             show_error("Can't update whith: idwf:$idwf case:$case  resourceId:$resourceId<br/>Incomplete Data.");
@@ -598,7 +598,7 @@ class Bpm extends CI_Model {
         $data['interval'] = date_diff($dateOut, $dateIn, true);
         //---asign user
         if (!isset($data['iduser']))
-            $data['iduser'] = (float) $this->session->userdata('iduser');
+            $data['iduser'] = (int) $this->session->userdata('iduser');
 
         $query = array('$set' => (array) $data);
         $criteria = array('id' => $id);
@@ -713,7 +713,7 @@ class Bpm extends CI_Model {
     }
 
     function get_tasks($iduser, $idcase = null) {
-        $user = $this->user->get_user((float) $iduser);
+        $user = $this->user->get_user((int) $iduser);
         $user_groups = $user->group;
         $query = array(
             //'type' =>array('$in'=>array('Task','Exclusive_Databased_Gateway')),
@@ -1302,14 +1302,14 @@ class Bpm extends CI_Model {
                         //---Add matched users to $data array
                         case 'user':
                             foreach ($matches as $user) {
-                                $rtn['assign'][] = (float) $user['idu'];
+                                $rtn['assign'][] = (int) $user['idu'];
                                 if ($debug)
                                     echo "adding user:" . $user['idu'] . ':' . $user['name'] . ' ' . $user['lastname'] . '<br/>';
                             }
                             break;
                         case 'group':
                             foreach ($matches as $group) {
-                                $rtn['idgroup'][] = (float) $group['idgroup'];
+                                $rtn['idgroup'][] = (int) $group['idgroup'];
                                 if ($debug)
                                     echo "adding group:" . $group['idgroup'] . ':' . $group['name'] . '<br/>';
                             }

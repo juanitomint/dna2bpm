@@ -35,7 +35,7 @@ class Login extends MX_Controller {
         //----LOAD LANGUAGE
         $this->lang->load('login', $this->config->item('language'));
         //---add language data
-        $cpData = $this->lang->language;
+        $cpData['lang'] = $this->lang->language;
 
         $cpData['title'] = 'LogIn Form';
         $cpData['authUrl'] = base_url() . 'user/authenticate';

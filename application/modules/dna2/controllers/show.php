@@ -32,7 +32,7 @@ class Show extends MX_Controller {
         $page--;
         $maxPages = 10;
         //---get user and register data 4 filters
-        $idu = (float) $this->session->userdata('iduser');
+        $idu = (int) $this->session->userdata('iduser');
         $user = $this->user->get_user($idu);
         //$idg=$user['group'];
         //var_dump('user',$user);

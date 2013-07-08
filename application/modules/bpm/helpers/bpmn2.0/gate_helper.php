@@ -28,7 +28,7 @@ function run_Exclusive_Databased_Gateway($shape, $wf, $CI) {
     //$debug = true;
     $shape_data = array();
     //---assign gate to current user
-    $shape_data['assign'][] = (float) $CI->session->userdata('iduser');
+    $shape_data['assign'][] = (int) $CI->session->userdata('iduser');
     extract((array) $CI->data);
     if ($debug)
         var_dump('DATA', $CI->data);
@@ -150,7 +150,7 @@ function run_InclusiveGateway($shape, $wf, $CI) {
     //$debug = true;
     $shape_data = array();
     //---assign gate to current user
-    $shape_data['assign'][] = (float) $CI->session->userdata('iduser');
+    $shape_data['assign'][] = (int) $CI->session->userdata('iduser');
     extract((array) $CI->data);
     if ($debug)
         var_dump('DATA', $CI->data);
