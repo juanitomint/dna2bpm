@@ -215,6 +215,19 @@ class User extends CI_Model {
             return false;
         }
     }
+    
+    function getbymailaddress($mail) {
+       
+        $this->db->where(array('email' => $mail));
+        $result = $this->db->get('users')->result();
+        
+        //----return only 1st
+        if (count($result)) {
+            return $result[0];
+        } else {
+            return false;
+        }
+    }
 
     function getbygroup($idgroup) {
         $grouparr = (is_array($idgroup)) ? $idgroup : (array) json_decode((string) $idgroup);
