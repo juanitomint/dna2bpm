@@ -86,9 +86,9 @@ class Recover extends MX_Controller {
             $content.="<p>Hemos recibido un pedido de reseteo de contraseña a su nombre.</p>";
             $content.="<p>Su nombre de usuario es: <strong>{$dbobj['nick']}</strong></p>";
             $content.="<p>Si ha sido efectuado por Ud. simplemente haga click en el link al pie y ud podrá elegir su nueva contraseña.</p>";
-            $content.="<a href='{$this->base_url}user/recover/new_pass/token=$token&uid={$dbobj['idu']}'>Quiero resetear mi clave</a>";
+            $content.="<a href='{$this->base_url}user/recover/new_pass/$token'>Quiero resetear mi clave</a>";
 
-            $this->email->clear();
+           /* $this->email->clear();
             $config['mailtype'] = "html";
             $this->email->initialize($config);
             $this->email->set_newline("\r\n");
@@ -97,19 +97,22 @@ class Recover extends MX_Controller {
             $this->email->to($list);
             $data = array();
             $this->email->subject('Reseteo de contraseña sistema DNA2');
-            $this->email->message($content);
+            $this->email->message($content);*/
 
+echo $content."<br>";
 
-
-            if ($this->email->send()){
+            //if ($this->email->send()){
                 //echo 'Your email was sent, thanks chamil.';
                 //save token
+                $object['token']  = $token;
+                $object['idu'] = (int)$dbobj['idu'];
+                $result = $this->user->save_token($object);
                 
-            }else show_error($this->email->print_debugger());
+           // }else show_error($this->email->print_debugger());
             
                 
         }else{
-        exit("0, No se ha podido enviar el email. No existe el email o el DNI.");
+        exit("0, No se ha podido enviar el email. No existe el email");
         }
 
         
@@ -117,11 +120,10 @@ class Recover extends MX_Controller {
     }
     
     
-    function ChangePassword(){
-        
-        $clean['email']  = $this->input->post('mail');
-        echo "entro:".$clean['email'];
-        
+    function new_pass($token){
+
+        echo "entro:".$token;
+        $result = $this->user->get_token($token);
 //        
 //        if($_REQUEST["cmd"]=='changePassToken'){
 //$clean = array();
