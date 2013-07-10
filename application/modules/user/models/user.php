@@ -319,13 +319,11 @@ class User extends CI_Model {
         }
 
         if ($query_txt) {
-            $this->db->like('nick', $query_txt);
-            /*
-              @todo make this work with mongo.
-              $this->db->or_like('name',(array) $query_txt);
-              $this->db->or_like('lastname',(array)$query_txt);
-             */
+            $this->db->or_like('nick', $query_txt);
 
+            $this->db->or_like('name', $query_txt);
+            $this->db->or_like('lastname', $query_txt);
+            
             if (is_numeric($query_txt)) {
                 $this->db->or_where('idu', (int) $query_txt);
             }
