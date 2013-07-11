@@ -34,6 +34,14 @@
         </label>
         <button class="btn  btn-success" type="submit">{lang loginButton}</button>
         <br/>
+        <br/>
+        <div>
+            <span id="forgot-password" >
+                <a href="user/recover" >
+                    {lang forgotPassword}
+                </a>
+            </span>
+        </div>
     </form>
 
 </div> 
