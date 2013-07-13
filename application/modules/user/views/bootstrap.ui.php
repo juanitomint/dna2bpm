@@ -8,10 +8,10 @@
         <meta name="author" content="">
         <link href="{base_url}jscript/bootstrap/css/bootstrap.min.css" rel="stylesheet">
         <link rel="stylesheet" href="{base_url}jscript/fontawesome/css/font-awesome.min.css" />
+        <link href="{base_url}jscript/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
         <!-- CSS -->
         {css}
 
-        <link href="{base_url}jscript/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
     </head>
     <body>
         {content}
