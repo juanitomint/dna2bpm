@@ -271,6 +271,7 @@ class User extends CI_Model {
        
         $query = array('token' => $token);
         //var_dump(json_encode($query));
+        
         $details = $this->db->get_where('users_token', $query)->result();
         if ($details) return $details[0];
     }
@@ -388,7 +389,7 @@ class User extends CI_Model {
      */
 
     function save($data) {
-        //var_dump($object);
+        //var_dump($data);
         $options = array('safe' => true, 'upsert' => true);
         $result = $this->mongo->db->users->save($data, $options);
         return $result;
