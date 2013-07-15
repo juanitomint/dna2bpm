@@ -23,7 +23,6 @@ class Recover extends MX_Controller {
         $this->lang->load('recover', $this->config->item('language'));
         //---add language data
         $cpData['lang'] = $this->lang->language;
-
         $cpData['title'] = 'Forgot Password Form';
         $cpData['base_url'] = $this->base_url;
         $cpData['module_url'] = $this->module_url;
@@ -105,6 +104,7 @@ echo $content."<br>";
                 //echo 'Your email was sent, thanks chamil.';
                 //save token
                 $object['token']  = $token;
+                $object['creationdate']  = date('Y-m-d H:i:s');
                 $object['idu'] = (int)$dbobj['idu'];
                 $result = $this->user->save_token($object);
                 
@@ -120,46 +120,82 @@ echo $content."<br>";
     }
     
     
-    function new_pass($token){
+    function New_pass($token){
+        
+        $msg = $this->session->userdata('msg');
+        //----LOAD LANGUAGE
+        $this->lang->load('recover', $this->config->item('language'));
+        //---add language data
+        $cpData['lang'] = $this->lang->language;
+        $cpData['title'] = 'New Password Form';
+        $cpData['base_url'] = $this->base_url;
+        $cpData['module_url'] = $this->module_url;
+        $cpData['theme'] = $this->config->item('theme');
+        //----NO USER
 
-        echo "entro:".$token;
-        $result = $this->user->get_token($token);
-//        
-//        if($_REQUEST["cmd"]=='changePassToken'){
-//$clean = array();
-//$clean['passw'] = htmlspecialchars (utf8_decode($_POST["passw"]));
-//$clean['uid'] = htmlspecialchars ($_POST["uid"]);
-//
-//if(strlen($clean['passw'])<5){
-//exit("0, Su contraseña debe tener al menos 5 carácteres.");
-//}
-//
-//
-//// Solo puede cambiar si tiene no pass
-//$SQL="select * from users where idusuario={$clean['uid']} and passw=md5('nopass')";
-//$rs1=$forms2->Execute($SQL);
-//	if($rs1){
-//		$token2=md5($rs1->fields['email'].$rs1->fields['idusuario']);
-//		if($token2==$_POST["token"]){
-//		$SQL="UPDATE users SET passw=MD5('".$clean['passw']."') WHERE idusuario={$clean['uid']}";
-//		$usuario=$forms2->Execute($SQL) or die($forms2->ErrorMsg()."<br>$SQL");
-//		$_SESSION['idu']=$rs1->Fields("idusuario");
-//		$redir="/appfront/index.php";
-//		exit("1,$basedir$redir");
-//		}else{
-//		exit("0, Ha habido algún error $SQL");
-//		}
-//		
-//	}else{
-//	exit("0, Ha habido algún error");
-//	}
-//}
-//
-//        
-   }
+        if ($msg == 'nouser') {
+            $cpData['msgcode'] = $this->lang->line('nousr');
+        }
+        //----USER DOESN'T HAS PROPPER LEVELS
+
+        if ($msg == 'nolevel') {
+            $cpData['msgcode'] = $this->lang->line('nolevel') . "<br>" . $this->session->userdata('redir');
+        }
+
+        //----USER has to be logged first
+        if ($msg == 'hastolog') {
+            $cpData['msgcode'] = $this->lang->line('hastolog') . "<br>" . $this->session->userdata('redir');
+        }
+        
+        $this->session->set_userdata('msg', $msg);
+        //---build UI 
+        //---define files to viewport
+        $cpData['css'] = array($this->module_url . "assets/css/login.css" => 'Login Specific');
+        
+        //---
+        $cpData['global_js'] = array(
+            'base_url' => $this->base_url,
+            'module_url' => $this->module_url,
+            'show_warn' =>$this->config->item('show_warn'),
+            'msg' => $msg,
+            'msgcode' => (isset($cpData['msgcode'])) ? $cpData['msgcode'] : ''
+        );
+        $cpData['show_warn']=($this->config->item('show_warn') and $msg<>'');
+        $cpData['token']=$token;
+        
+        $this->ui->compose('user/recover_newpass.php','user/bootstrap.ui.php',$cpData);
+        
+    }
     
+     function Save_new_pass(){
+         
+        // var_dump($this->input->post());
+            
+            $token  = $this->input->post('token');
+            $result=(array)$this->user->get_token($token);
+
+            if($result['token']==$token){//if the token matches with a saved idu
+
+                  $user_data = array();
+                  $clean= htmlspecialchars (utf8_decode($this->input->post('password1')));
+                  if(strlen($clean)<5) exit("0, Su contraseña debe tener al menos 5 carácteres.");
+                  $user_data['passw']= md5($clean);
+                  
+                  //data user
+                  $user_data=(array)$this->user->get_user((int)$result['idu']);
+                  $user_data['passw']= md5($clean);   
+
+                  var_dump($user_data);
+
+                 
+
+                 $savedresult = $this->user->save($user_data);
+
+                   //$redir="/appfront/index.php";
+                   //exit("1,$basedir$redir");
+            }else exit("0, Ha habido algún error");
+            
+            echo "done!";
+    } 
 
 }
-
-
-?>
