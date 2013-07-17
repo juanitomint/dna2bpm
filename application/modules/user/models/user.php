@@ -397,9 +397,17 @@ class User extends CI_Model {
     
     //forgot password: change password token
     function save_token($object) {
-        var_dump($object);
+        //var_dump($object);
         $options = array('safe' => true, 'upsert' => true);
         return $this->mongo->db->users_token->save($object, $options);
+    }
+    
+    function delete_token($token) {
+
+        $this->db->where(array('token' => $token));
+        //---now delete original
+        $result = $this->db->delete('users_token');
+        return $result;
     }
 
     function delete_group($idgroup) {

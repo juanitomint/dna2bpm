@@ -66,7 +66,7 @@ class Recover extends MX_Controller {
     function Send() {
         
         $clean['email']  = $this->input->post('mail');
-        echo "entro:".$clean['email'];
+        
   ////////////////////////////////////////////////            
 //        $email_pattern = '/^[^@\s<&>]+@([-a-z0-9]+\.)+[a-z]{2,}$/i';
 //        if (!preg_match($email_pattern, $_POST['email']))
@@ -87,7 +87,7 @@ class Recover extends MX_Controller {
             $content.="<p>Si ha sido efectuado por Ud. simplemente haga click en el link al pie y ud podrá elegir su nueva contraseña.</p>";
             $content.="<a href='{$this->base_url}user/recover/new_pass/$token'>Quiero resetear mi clave</a>";
 
-           /* $this->email->clear();
+            $this->email->clear();
             $config['mailtype'] = "html";
             $this->email->initialize($config);
             $this->email->set_newline("\r\n");
@@ -96,19 +96,19 @@ class Recover extends MX_Controller {
             $this->email->to($list);
             $data = array();
             $this->email->subject('Reseteo de contraseña sistema DNA2');
-            $this->email->message($content);*/
+            $this->email->message($content);
 
-echo $content."<br>";
+//echo $content."<br>";
 
-            //if ($this->email->send()){
-                //echo 'Your email was sent, thanks chamil.';
+            if ($this->email->send()){
+                echo "Revise su email.</br> Muchas gracias.</br> <a href='{$this->base_url}'>VOLVER</a>";
                 //save token
                 $object['token']  = $token;
                 $object['creationdate']  = date('Y-m-d H:i:s');
                 $object['idu'] = (int)$dbobj['idu'];
                 $result = $this->user->save_token($object);
                 
-           // }else show_error($this->email->print_debugger());
+            }else show_error($this->email->print_debugger());
             
                 
         }else{
@@ -163,7 +163,10 @@ echo $content."<br>";
         $cpData['show_warn']=($this->config->item('show_warn') and $msg<>'');
         $cpData['token']=$token;
         
+        //si el token aun existe en la base y es decir que no fue usado
         $this->ui->compose('user/recover_newpass.php','user/bootstrap.ui.php',$cpData);
+        //sino tiene que ir a una pantalla que le diga que ya fue utilizado y que vuelva a colocar su mail
+        
         
     }
     
@@ -176,26 +179,28 @@ echo $content."<br>";
 
             if($result['token']==$token){//if the token matches with a saved idu
 
-                  $user_data = array();
-                  $clean= htmlspecialchars (utf8_decode($this->input->post('password1')));
-                  if(strlen($clean)<5) exit("0, Su contraseña debe tener al menos 5 carácteres.");
-                  $user_data['passw']= md5($clean);
-                  
-                  //data user
-                  $user_data=(array)$this->user->get_user((int)$result['idu']);
-                  $user_data['passw']= md5($clean);   
+                $user_data = array();
+                $clean= htmlspecialchars (utf8_decode($this->input->post('password1')));
+                if(strlen($clean)<5) exit("0, Su contraseña debe tener al menos 5 carácteres.");
+                $user_data['passw']= md5($clean);
 
-                  var_dump($user_data);
+                //data user
+                $user_data=(array)$this->user->get_user((int)$result['idu']);
+                $user_data['passw']= md5($clean);   
+                //var_dump($user_data);
 
-                 
+                //guardamos la info
+                $savedresult = $this->user->save($user_data);
+                //borramos el token
+                $tokenout = $this->user->delete_token($token);
+               
+                echo "Su contrase&ntilde;a ha sido cambiada exitosamente.</br> <a href='{$this->base_url}'>Ingresar</a>";
 
-                 $savedresult = $this->user->save($user_data);
 
-                   //$redir="/appfront/index.php";
-                   //exit("1,$basedir$redir");
+                //$redir="/appfront/index.php";
+                //exit("1,$basedir$redir");
             }else exit("0, Ha habido algún error");
             
-            echo "done!";
     } 
 
 }
