@@ -54,7 +54,7 @@ class Authenticate extends MX_Controller {
         }
     }
 
-    function Byhash($username, $hash) {
+    private function Byhash($username, $hash) {
         /**
          * Authenticate user by a given username and hash
          *
