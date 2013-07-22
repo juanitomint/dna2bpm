@@ -279,7 +279,7 @@ var userform = Ext.create('Ext.form.Panel', {
 
     buttons: [
         {
-            text: 'Test',
+            text: '<i class="icon-beaker"></i> Test',
             handler: function() {
                 form = this.up('form').getForm();
                 val=form.getValues()
@@ -287,12 +287,12 @@ var userform = Ext.create('Ext.form.Panel', {
             }
         },
         {
-            text: 'Reset',
+            text: '<i class="icon-refresh"></i> Reset',
             handler: function() {
                 this.up('form').getForm().reset();
             }
         }, {
-            text: 'save',
+            text: '<i class="icon-save"></i> Save',
             formBind: true, //only enabled once the form is valid
             disabled: true,
             handler: function() {
