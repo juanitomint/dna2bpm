@@ -31,7 +31,6 @@ class Authenticate extends MX_Controller {
             //---register the user id
             $this->session->set_userdata('iduser', $idu);
             //---register level string
-            //$this->session->set_userdata('level', $this->user->getlevel($idu));
             $redir=$this->session->userdata('redir');
             $redir = ($this->session->userdata('redir')) ? $this->session->userdata('redir') : base_url() .$this->config->item('default_controller');
             log_message('debug', 'Redirecting user:' . $this->session->userdata('iduser') . ' to:' . $redir);
@@ -73,7 +72,7 @@ class Authenticate extends MX_Controller {
             //---register level string
             $this->session->set_userdata('level', $this->user->getlevel($idu));
 
-            $redir = base_url() . 'dna2/controlpanel/';
+            $redir = ($this->session->userdata('redir')) ? $this->session->userdata('redir') : base_url() .$this->config->item('default_controller');
             log_message('debug', 'Redirecting user:' . $this->session->userdata('iduser') . ' to:' . $redir);
             header("Location: $redir");
             //echo "si";
