@@ -87,12 +87,12 @@ class admin extends MX_Controller {
                 break;
             case 'update':
                 $post_groups = json_decode(file_get_contents('php://input'));
-                
+
                 foreach ($post_groups as $group) {
-                    $idgroup=$group->idgroup;
+                    $idgroup = $group->idgroup;
                     $db_group = $this->group->get($idgroup);
-                    $obj=(array)$group+$db_group;
-                    $groups[]=$obj;
+                    $obj = (array) $group + $db_group;
+                    $groups[] = $obj;
                     $this->group->save($obj);
                 }
                 break;
@@ -142,8 +142,8 @@ class admin extends MX_Controller {
                 }
                 break;
             case 'update':
-                $user_data=$_POST;
-                $user=$this->user->add($user_data);
+                $user_data = $_POST;
+                $user = $this->user->add($user_data);
                 $rtnArr['success'] = true;
                 $rtnArr['msg'] = 'User updated: ok!';
                 $rtnArr['data'] = $user;
@@ -303,6 +303,23 @@ class admin extends MX_Controller {
         echo "Session data:<br/>";
         var_dump('iduser', $this->session->userdata('iduser'), 'level', $this->session->userdata('level'));
         echo '<hr/>';
+    }
+
+    function test_user($idu) {
+        $this->user->authorize();
+        //---only allow users to impersonate
+        if ($this->user->isAdmin($this->user->get_user($this->idu))) {
+            $this->load->config('config');
+            //---register if it has logged is
+            $this->session->set_userdata('loggedin', true);
+            //---register the user id
+            $this->session->set_userdata('iduser', $idu);
+            //---register level string
+            $redir =  base_url() . $this->config->item('default_controller');
+            //---redirect
+            header('Location: ' . $redir);
+            exit;
+        }
     }
 
 }
