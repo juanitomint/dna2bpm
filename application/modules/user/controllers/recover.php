@@ -20,10 +20,10 @@ class Recover extends MX_Controller {
     function Index() {
         $msg = $this->session->userdata('msg');
         //----LOAD LANGUAGE
-        $this->lang->load('recover', $this->config->item('language'));
+        $this->lang->load('login', $this->config->item('language'));
         //---add language data
         $cpData['lang'] = $this->lang->language;
-        $cpData['title'] = 'Forgot Password Form';
+        $cpData['title'] = $this->lang->line('PageDescriptionR');
         $cpData['base_url'] = $this->base_url;
         $cpData['module_url'] = $this->module_url;
         $cpData['theme'] = $this->config->item('theme');
@@ -64,6 +64,14 @@ class Recover extends MX_Controller {
     }
     
     function Send() {
+        //----LOAD LANGUAGE
+        $this->lang->load('login', $this->config->item('language'));
+        //---add language data
+        $cpData['lang'] = $this->lang->language;
+        $cpData['title'] = $this->lang->line('PageDescriptionR');
+        $cpData['base_url'] = $this->base_url;
+        $cpData['module_url'] = $this->module_url;
+        $cpData['theme'] = $this->config->item('theme');
         
         $clean['email']  = $this->input->post('mail');
         
@@ -71,7 +79,7 @@ class Recover extends MX_Controller {
 //        $email_pattern = '/^[^@\s<&>]+@([-a-z0-9]+\.)+[a-z]{2,}$/i';
 //        if (!preg_match($email_pattern, $_POST['email']))
 //        {
-//        exit("0, Ingrese un email válido");
+//        exit("0, Ingrese un email v&aacute;lido");
 //        }
         // Chequeo datos atraves del email
         $dbobj=(array)$this->user->getbymailaddress($clean['email']);
@@ -80,12 +88,11 @@ class Recover extends MX_Controller {
         if(isset($dbobj['idu'])){ 
 
             $token=md5($dbobj['email'].$dbobj['idu']);
-
-            $content="<h2>Estimado usuario, </h2>";
-            $content.="<p>Hemos recibido un pedido de reseteo de contraseña a su nombre.</p>";
-            $content.="<p>Su nombre de usuario es: <strong>{$dbobj['nick']}</strong></p>";
-            $content.="<p>Si ha sido efectuado por Ud. simplemente haga click en el link al pie y ud podrá elegir su nueva contraseña.</p>";
-            $content.="<a href='{$this->base_url}user/recover/new_pass/$token'>Quiero resetear mi clave</a>";
+            //armamos el mail
+            $content = $this->lang->line('mailsendpart1');
+            $content.=" <strong>{$dbobj['nick']}</strong></p>";
+            $content.=$this->lang->line('mailsendpart2');
+            $content.="<a href='{$this->base_url}user/recover/new_pass/$token'>".$this->lang->line('mailsendpart3')."</a>";
 
             $this->email->clear();
             $config['mailtype'] = "html";
@@ -95,13 +102,13 @@ class Recover extends MX_Controller {
             $list = array($clean['email']); //$list = array('xxx@gmail.com', 'xxx@gmail.com');
             $this->email->to($list);
             $data = array();
-            $this->email->subject('Reseteo de contraseña sistema DNA2');
+            $this->email->subject($this->lang->line('mailsubject'));
             $this->email->message($content);
 
 //echo $content."<br>";
 
             if ($this->email->send()){
-                echo "Revise su email.</br> Muchas gracias.</br> <a href='{$this->base_url}'>VOLVER</a>";
+                echo $this->lang->line('mailmsg1')."</br> <a href='{$this->base_url}'>".$this->lang->line('mailback')."</a>";
                 //save token
                 $object['token']  = $token;
                 $object['creationdate']  = date('Y-m-d H:i:s');
@@ -124,10 +131,10 @@ class Recover extends MX_Controller {
         
         $msg = $this->session->userdata('msg');
         //----LOAD LANGUAGE
-        $this->lang->load('recover', $this->config->item('language'));
+        $this->lang->load('login', $this->config->item('language'));
         //---add language data
         $cpData['lang'] = $this->lang->language;
-        $cpData['title'] = 'New Password Form';
+        $cpData['title'] = $this->lang->line('mailform');
         $cpData['base_url'] = $this->base_url;
         $cpData['module_url'] = $this->module_url;
         $cpData['theme'] = $this->config->item('theme');
@@ -173,7 +180,15 @@ class Recover extends MX_Controller {
      function Save_new_pass(){
          
         // var_dump($this->input->post());
-            
+             //----LOAD LANGUAGE
+            $this->lang->load('login', $this->config->item('language'));
+            //---add language data
+            $cpData['lang'] = $this->lang->language;
+            $cpData['title'] = $this->lang->line('mailform');
+            $cpData['base_url'] = $this->base_url;
+            $cpData['module_url'] = $this->module_url;
+            $cpData['theme'] = $this->config->item('theme');
+        
             $token  = $this->input->post('token');
             $result=(array)$this->user->get_token($token);
 
@@ -181,7 +196,7 @@ class Recover extends MX_Controller {
 
                 $user_data = array();
                 $clean= htmlspecialchars (utf8_decode($this->input->post('password1')));
-                if(strlen($clean)<5) exit("0, Su contraseña debe tener al menos 5 carácteres.");
+                if(strlen($clean)<5) exit($this->lang->line('mailpassno'));
                 $user_data['passw']= md5($clean);
 
                 //data user
@@ -194,12 +209,12 @@ class Recover extends MX_Controller {
                 //borramos el token
                 $tokenout = $this->user->delete_token($token);
                
-                echo "Su contrase&ntilde;a ha sido cambiada exitosamente.</br> <a href='{$this->base_url}'>Ingresar</a>";
+                echo $this->lang->line('mailmsg2')."<a href='{$this->base_url}'>".$this->lang->line('mailback')."</a>";
 
 
                 //$redir="/appfront/index.php";
                 //exit("1,$basedir$redir");
-            }else exit("0, Ha habido algún error");
+            }else exit($this->lang->line('mailalert'));
             
     } 
 

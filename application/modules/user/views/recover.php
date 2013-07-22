@@ -1,7 +1,7 @@
 <div class="container">
     <div class="well well-large span6 offset3">
         <form  action="{module_url}recover/send" method="post">
-            <h1>{lang loginMsg}</h1>
+            <h1>{lang loginMsgR}</h1>
             {if {show_warn}}                
             <div class="alert">
                 <button type="button" class="close" data-dismiss="alert">&times;</button>
@@ -16,7 +16,7 @@
                     </span>
                     <input name="mail" id="log inputIcon" value="" class="username span5" placeholder="Email" type="email">
                 </div><br/>
-                    <button class="btn btn-success" type="submit">{lang loginButton}</button>
+                    <button class="btn btn-success" type="submit">{lang loginButtonR}</button>
 
 
 
