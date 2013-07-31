@@ -180,7 +180,7 @@ class App extends CI_Model {
         return $rtnVal;
     }
 
-    function get_result($container,$query,$fields=array();) {
+    function get_result($container,$query,$fields=array()) {
         $result = $this->mongo->db->selectCollection($container)->find($query, $fields);
         return $result;
     }
