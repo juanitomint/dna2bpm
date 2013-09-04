@@ -107,8 +107,10 @@ class Case_manager extends MX_Controller {
                     foreach ($cases as $case) {
                         unset($case['history']);
                         //--set user
+                        if(!isset($case['iduser'])) break;
                         $user = $this->user->get_user($case['iduser']);
-                        $case['user'] = $user->nick;
+                        
+                        $case['user'] =($user) ? $user->nick:'???';
                         //----set pseudo status (add locked to statuses)
                         if (isset($case['locked'])) {
                             if ($case['locked'])
