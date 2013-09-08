@@ -16,7 +16,8 @@ function renderGroups(groupField) {
         groups = groupField.getValue().split(',');
         for (i in groups) {
             value = groups[i];
-            record = store.getAt(store.find('idgroup', value));
+            //---make a copy of the original record
+            record = store.getAt(store.find('idgroup', value)).copy();
             if (record) {
                 grid.store.add(record);
             }
