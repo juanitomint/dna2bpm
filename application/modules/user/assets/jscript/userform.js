@@ -16,10 +16,10 @@ function renderGroups(groupField) {
         groups = groupField.getValue().split(',');
         for (i in groups) {
             value = groups[i];
-            //---make a copy of the original record
-            record = store.getAt(store.find('idgroup', value)).copy();
+            record = store.getAt(store.find('idgroup', value));
             if (record) {
-                grid.store.add(record);
+            //---make a copy of the original record
+                grid.store.add(record.copy());
             }
             //html+=record.data.name+'<br/>';
         }
