@@ -69,3 +69,7 @@ root {
     background-color: #009933;
     opacity: .5
 }
+.resourceId {
+    display: inline-block;
+    white-space:nowrap;
+}

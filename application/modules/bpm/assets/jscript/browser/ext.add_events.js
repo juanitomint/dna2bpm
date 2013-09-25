@@ -42,8 +42,9 @@ var add_events=function(shapes){
                 target: 'overlay'+shape.resourceId,
                 anchor: 'bottom',
                 dismissDelay : 0,
+                minWidth:320,
                 //anchorOffset: 85, // center the anchor on the tooltip
-                html: "<span>resourceId:'"+shape.resourceId+"'</span><br/>Doc:"+documentation
+                html: "<span class='resourceId'>resourceId:<br/>"+shape.resourceId+"</span><br/>Doc:"+documentation
             };
                 
             Ext.create('Ext.tip.ToolTip', config);
