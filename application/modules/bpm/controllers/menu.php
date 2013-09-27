@@ -19,7 +19,7 @@ class Menu extends MX_Controller {
         'text' => 'BPM Index',
         'cls' => '',
         'iconCls' => 'icon-bpm',
-        'order' => 0,
+        'priority' => 10,
         'info' => '15/32', //---Icon
         'items' => array(
             array(
@@ -28,7 +28,7 @@ class Menu extends MX_Controller {
                 'text' => 'BPM Browser',
                 'cls' => '',
                 'iconCls' => 'icon-bpm',
-                'order' => 0,
+                'priority' => 10,
             ),
         )
     );
