@@ -1,12 +1,12 @@
 <?php
 
 /**
- * bpm
+ * menu
  * 
- * Description of the class bpm
+ * This class returns the menu tree of the module exposing all the funcionalities available and info
  * 
  * @author Juan Ignacio Borda <juanignacioborda@gmail.com>
- * @date   Feb 10, 2013
+ * @date   Sep 27, 2013
  */
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
