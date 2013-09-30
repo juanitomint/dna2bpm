@@ -13,5 +13,6 @@ $common = array(
     'type' => 'string',
     'filter' => 'string',
     'resourceId' => 'string',
-    'idwf' => 'string'
+    'idwf' => 'string',
+    'group'=>'int'
 );

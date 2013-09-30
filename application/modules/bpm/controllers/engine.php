@@ -130,7 +130,7 @@ class Engine extends MX_Controller {
         $thisCase = $this->bpm->get_case($case);
         $locked = (isset($thisCase['locked'])) ? $thisCase['locked'] : false;
         if ($locked) {
-            $user_lock =(array) $this->user->get_user($thisCase['lockedBy']);
+            $user_lock = (array) $this->user->get_user($thisCase['lockedBy']);
             $msg_data = array(
                 'user_lock' => $user_lock['name'] . ' ' . $user_lock['lastname'],
                 'time' => date($this->lang->line('dateTimeFmt'), strtotime($thisCase['lockedDate']))
@@ -335,7 +335,7 @@ class Engine extends MX_Controller {
                 'idwf' => $idwf,
                 'idcase' => $idcase,
                 'resourceId' => $resourceId,
-                );
+            );
             $this->ui->compose('bpm/manual_task', 'bpm/bootstrap.ui.php', $renderData);
         }
     }
@@ -389,7 +389,7 @@ class Engine extends MX_Controller {
                 'idwf' => $idwf,
                 'idcase' => $idcase,
                 'resourceId' => $resourceId,
-                );
+            );
             $this->ui->compose('bpm/manual_gate', 'bpm/bootstrap.ui.php', $renderData);
         }
     }
@@ -463,11 +463,13 @@ class Engine extends MX_Controller {
         $this->load->model('bpm/connectors/mongo_connector');
         if (isset($case['data'])) {
             foreach ($case['data'] as $key => $value) {
-                if (isset($value['connector'])) {
-                    $conn = $value['connector'] . '_connector';
-                    if ($debug)
-                        echo "Calling Connector: $conn<br/>";
-                    $this->data->$key = $this->$conn->get_data($value);
+                if (is_array($value)) {
+                    if (isset($value['connector'])) {
+                        $conn = $value['connector'] . '_connector';
+                        if ($debug)
+                            echo "Calling Connector: $conn<br/>";
+                        $this->data->$key = $this->$conn->get_data($value);
+                    }
                 } else { //add regular data
                     $this->data->$key = $value;
                 }
@@ -684,7 +686,7 @@ class Engine extends MX_Controller {
                         } else {//--the token is locked by other user
                             //---load  no pending taks
                             $renderData['name'] = $this->lang->line('message');
-                            $user_lock = (array)$this->user->get_user($token['lockedBy']);
+                            $user_lock = (array) $this->user->get_user($token['lockedBy']);
                             $msg_data = array(
                                 'user_lock' => $user_lock['name'] . ' ' . $user_lock['lastname'],
                                 'time' => date($this->lang->line('dateTimeFmt'), strtotime($token['lockedDate']))
