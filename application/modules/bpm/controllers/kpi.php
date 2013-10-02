@@ -339,10 +339,18 @@ class Kpi extends MX_Controller {
         //var_dump($filter, $cases);
         foreach ($cases as $case) {
             $d1 = new DateTime($case['checkdate']);
+            $d3 = new DateTime($case['checkdate']);
             $d2 = new DateTime($case['checkoutdate']);
             $interval = $d1->diff($d2);
-            $ref=new DateInterval($kpi['time_limit']);
-            var_dump($ref,$interval);
+            $ref = date_interval_create_from_date_string($kpi['time_limit']);
+            $d3->add($ref);
+            if ($d2 > $d3) {
+                $sla_out[] = $case;
+            } else {
+                $sla_in[] = $case;
+            }
+            $cpData['on_time'] = $sla_in;
+            $cpData['out_time'] = $sla_out;
         }
     }
 

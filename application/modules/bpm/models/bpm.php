@@ -152,6 +152,12 @@ class Bpm extends CI_Model {
         
     }
 
+    function get_cases_byFilter($filter) {
+        $this->db->where($filter);
+        $rs = $this->db->get('case');
+        return $rs->result_array();
+    }
+
     function get_cases($user = null, $offset = 0, $limit = null, $filter_status = array()) {
         $data = array(
             'cases' => array(),
