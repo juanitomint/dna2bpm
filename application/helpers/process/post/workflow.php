@@ -39,7 +39,7 @@ if ($this->input->post('token')) {
             //----set data reference (may vary upon db connectors)
             $case['data'][$opRef]['query'] =array('id'=>$id);
             $case['data'][$opRef]['container'] = $form['container'];
-            $case['data'][$opRef]['checkdate'] = date('Y-m-d H:i:s');
+            //$case['data'][$opRef]['checkdate'] = date('Y-m-d H:i:s');
 
             //---add formdata
             //$case['data'][$opRef] +=$frames;
