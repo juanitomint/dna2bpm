@@ -32,7 +32,7 @@ class admin extends MX_Controller {
         $cpData['theme'] = $this->config->item('theme');
         $cpData['base_url'] = $this->base_url;
         $cpData['module_url'] = $this->module_url;
-        $cpData['title'] = 'RBAC Admin';
+        $cpData['title'] = 'Menu Admin';
         $cpData['ext-locale'] = 'ext-lang-es';
         //---define files to viewport
         $cpData['css'] = array(
