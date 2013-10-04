@@ -11,6 +11,7 @@ class admin extends MX_Controller {
         $this->load->model('user/user');
         $this->load->model('user/group');
         $this->load->model('user/rbac');
+        $this->load->model('index/menu');
         $this->user->authorize();
         //---base variables
         $this->base_url = base_url();
@@ -48,7 +49,7 @@ class admin extends MX_Controller {
             $this->base_url . "jscript/ext/src/ux/form/SearchField.js" => 'Search Field',
             $this->module_url . "assets/jscript/tree.js" => 'Perm Tree',
             $this->module_url . "assets/jscript/grid.js" => 'Users Grid',
-            $this->module_url . "assets/jscript/userform.js" => 'Users Edit Form',
+            $this->module_url . "assets/jscript/propertyGrid.js" => 'Menu Properties Editor',
             $this->module_url . "assets/jscript/app.js" => 'Viewport',
         );
 
@@ -58,6 +59,22 @@ class admin extends MX_Controller {
         );
 
         $this->ui->makeui('user/ext.ui.php', $cpData);
+    }
+
+    function getpaths() {
+        $this->user->authorize();
+        $segments = $this->uri->segments;
+        $debug = (in_array('debug', $segments)) ? true : false;
+        $idgroup = (int) $this->input->post('idgroup');
+        //--get paths from db
+        $rtnArr['paths'] = $this->menu->get_paths();
+
+        if (!$debug) {
+            header('Content-type: application/json;charset=UTF-8');
+            echo json_encode($rtnArr);
+        } else {
+            var_dump($rtnArr);
+        }
     }
 
     function group($action) {
@@ -316,7 +333,7 @@ class admin extends MX_Controller {
             //---register the user id
             $this->session->set_userdata('iduser', $idu);
             //---register level string
-            $redir =  base_url() . $this->config->item('default_controller');
+            $redir = base_url() . $this->config->item('default_controller');
             //---redirect
             header('Location: ' . $redir);
             exit;

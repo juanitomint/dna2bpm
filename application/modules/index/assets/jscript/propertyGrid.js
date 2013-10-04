@@ -61,76 +61,20 @@ var propsGrid = Ext.create('Ext.grid.property.Grid', {
     ,
     disabled:true,
     propertyNames: {
-        'required': 'Required',
-        'hidden': 'Hidden',
-        'locked':'Locked',
-        'type':'Type',
-        'title':'Title',
-        'desc':'Description',
-        'help':'Help Text',
-        'idop':'Options Src',
-        'default':'Option default',
-        'removed':'Removed Options'
+        'title' :'Title', //----Section/module
+        'target' :'Target',
+        'text' :'Text',
+        'cls' :'Class',
+        'iconCls' :'IconClass',
+        'priority' :'Priority',
+        'info' :'Info', 
     }
     ,
     customEditors: {
-        'type': comboType,
-        'desc':desc,
-        'help':help,
-        'idop':comboOptions,
-        'default':comboDefault,
-        'cname':cname,
-        'idframe':idframe,
-        'required'  : required,
-        'hidden'  : hidden,
-        'locked'  : locked
+
     }
     ,
-    customRenderers: {
-        'required': showCheck
-        ,
-        'hidden': showCheck
-        ,
-        'locked': showCheck
-        ,
-        'type': function(value){
-            if(value){
-                return controls.getAt(controls.find('type',value)).data.name;
-            } else {
-                return value;
-            }
-        }
-        ,
-        'idop': function(value){
-            if(value){
-                //---load default options
-                optionsDefault.load({
-                    async:false,
-                    params:{
-                        'idop':value
-                    }
-                    ,//---fix asyncloading problem
-                    callback: function(){
-                        propsGrid.setProperty('default',propsGrid.store.getProperty('default').data.value);
-                    }    
-                });                
-                //---return idop+text
-                return value+' :: '+optionsStore.findRecord('idop',value).data.title;
-            } else {
-                return value;
-            }
-        }
-        ,
-        'default': function(value){
-            //return value+text
-            if(value){                
-                return (optionsDefault.findRecord('value',value))?value+' :: '+optionsDefault.findRecord('value',value).data.text:value;
-            } else {
-                return value;
-            }
-            
-        }
-    }
+    customRenderers: {}
     ////////////////////////////////////////////////////////////////////////////
     //////////////////////   LISTENERS    /////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
@@ -139,10 +83,6 @@ var propsGrid = Ext.create('Ext.grid.property.Grid', {
     listeners:{
         propertychange: function(source,recordId,value,oldValue,options){
             //console.log('source',source,'recordId','recordId',this.activeRecord,value,oldValue,options);            
-            var ds=mygrid.store.data.getAt(mygrid.store.data.keys.indexOf(this.activeRecord));
-            //---change data on mygrid
-            if(ds)
-                ds.data[recordId]=value;
             //---update cache
             pgridCache[this.activeRecord]=this.getSource();
             //---finally refresh the grid
@@ -162,8 +102,8 @@ var propsGrid = Ext.create('Ext.grid.property.Grid', {
             text: 'Save',
             icon:globals.base_url+'css/ext_icons/save.gif',
             handler:function(){
-                var url=globals.base_url+'dna2/form/save_frame_properties/'+imin;
-                save_props(url);
+                //var url=globals.base_url+'dna2/form/save_frame_properties/'+imin;
+                //save_props(url);
             }
         }
         ,{

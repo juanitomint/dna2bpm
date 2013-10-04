@@ -143,17 +143,15 @@ function uncheck_all(){
 
 //---load checked nodes
 function load_checked(){
-    idgroup=dataview.selModel.getLastSelected().data.idgroup;
+    
     tree.uncheck_all();
     paths = [];                                  
     tree.setLoading('loading Checked');
     Ext.Ajax.request({
         // the url to the remote source
-        url: globals.module_url+'rbac_admin/getpaths',
+        url: globals.module_url+'admin/getpaths',
         method: 'POST',
         params:{
-            //---get the active group
-            'idgroup':idgroup
         },
         // define a handler for request success
         success: function(response, options){
@@ -239,10 +237,7 @@ var tree=Ext.create('Ext.tree.Panel', {
             
         }
         ,
-        saveTree,
-        reloadTree,
-        addPath,
-        removePath
+        reloadTree
         ]
     }]
 });

@@ -32,7 +32,7 @@ Ext.onReady(function() {
                 margins: '0 0 0 0',
                 layout: 'fit'
                         ,
-                items: [userform]
+                items: [propsGrid]
             }
     );
     var center = Ext.create('Ext.Panel',
