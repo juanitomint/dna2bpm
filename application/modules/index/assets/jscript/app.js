@@ -23,7 +23,7 @@ Ext.onReady(function() {
             {
                 region: 'east',
                 id: 'rightPanel', // see Ext.getCmp() below
-                title: 'User Details',
+                title: 'Item Details',
                 split: true,
                 width: 370,
                 minWidth: 0,
