@@ -15,7 +15,7 @@ class Rbac extends CI_Model {
 
     function get_repository($query = array()) {
         //returns a mongo cursor with matching id's
-        $rs = $this->mongo->db->selectCollection('perm.repository')->find($query);
+        $rs = $this->mongo->db->selectCollection($this->permRepo)->find($query);
         $rs->sort(array('path'));
         $repo = array();
         while ($r = $rs->getNext()) {
@@ -33,7 +33,7 @@ class Rbac extends CI_Model {
             $query = array('$set' => array('path' => $path, 'properties' => $properties));
             $options = array('upsert' => true, 'safe' => true);
 
-            return $this->mongo->db->selectCollection('perm.repository')->update($criteria, $query, $options);
+            return $this->mongo->db->selectCollection($this->permRepo)->update($criteria, $query, $options);
         }
     }
 
@@ -42,7 +42,7 @@ class Rbac extends CI_Model {
         if ($path) {
             $criteria = array('path' => $path);
             $this->db->where($criteria);
-            $this->db->delete('perm.repository');
+            $this->db->delete($this->permRepo);
             return true;
         }
     }
@@ -51,7 +51,7 @@ class Rbac extends CI_Model {
         if ($idgroup) {
             $options = array("justOne" => false, "safe" => true);
             $criteria = array('idgroup' => (int) $idgroup);
-            return $this->mongo->db->selectCollection('perm.groups')->remove($criteria, $options);
+            return $this->mongo->db->selectCollection($this->permGroups)->remove($criteria, $options);
         } else {
             return false;
         }
@@ -66,13 +66,12 @@ class Rbac extends CI_Model {
         $query = array('$set' => $obj);
         $options = array('upsert' => true, 'safe' => true);
 
-        return $this->mongo->db->selectCollection('perm.groups')->update($criteria, $query, $options);
-        return $this->mongo->db->selectCollection('perm.groups')->update($criteria, $query, $options);
+        return $this->mongo->db->selectCollection($this->permGroups)->update($criteria, $query, $options);
     }
 
     function get_group_paths($idgroup) {
         $query = array('idgroup' => $idgroup);
-        $rs = $this->mongo->db->selectCollection('perm.groups')->find($query);
+        $rs = $this->mongo->db->selectCollection($this->permGroups)->find($query);
         $rtnArr = array();
         while ($arr = $rs->getNext()) {
             if (isset($arr['path']))
