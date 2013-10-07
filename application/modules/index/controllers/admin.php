@@ -339,5 +339,30 @@ class admin extends MX_Controller {
             exit;
         }
     }
+    
+    function save(){
+        $rtnArr['success'] = false;
+                $paths = $this->input->post('paths');
+                $props = $this->input->post('properties');
+                //--remove all paths
+                //----load repo to check if something is new
+                if ($paths) {
+                    foreach ($paths as $path) {
+                        if (!in_array($path, $repo)) {
+
+                            $path_arr = explode('/', $path);
+                            array_shift($path_arr);
+                            $path = implode('/', $path_arr);
+                            $this->menu->put_path($path, array(
+                                'source' => 'RepoAdmin',
+                                'checkdate' => date('Y-m-d H:i:s'),
+                                'idu' => $this->idu
+                                    )
+                            );
+                        }
+                    }
+                }
+                $rtnArr['success'] = true;
+    }
 
 }
