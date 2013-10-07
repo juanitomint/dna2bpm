@@ -29,7 +29,6 @@ var saveTree = Ext.create('Ext.Action', {
             method: 'POST',
             // define a handler for request success
             params: {
-                //---get the active group
                 'paths[]': paths
             },
             success: function(response, options) {
