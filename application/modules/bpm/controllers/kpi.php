@@ -282,6 +282,7 @@ class Kpi extends MX_Controller {
         $cpData['js'] = array(
             $this->module_url . 'assets/canv-gauge-master/gauge.js' => 'Jscript Gauge',
             $this->module_url . 'assets/jscript/gauge/gauge.init_1.js' => 'Init Gauges',
+            $this->module_url . 'assets/jscript/gauge/gauge.init_reverse.js' => 'Init Gauges reverse',
         );
 
         $this->ui->makeui('test.kpi.ui.php', $cpData);
@@ -337,6 +338,10 @@ class Kpi extends MX_Controller {
         $filter['status'] = 'closed';
         $cases = $this->bpm->get_cases_byFilter($filter);
         //var_dump($filter, $cases);
+        $cpData = $kpi;
+        $sla_in = array();
+        $sla_out = array();
+        $cpData['total'] = count($cases);
         foreach ($cases as $case) {
             $d1 = new DateTime($case['checkdate']);
             $d3 = new DateTime($case['checkdate']);
@@ -345,13 +350,17 @@ class Kpi extends MX_Controller {
             $ref = date_interval_create_from_date_string($kpi['time_limit']);
             $d3->add($ref);
             if ($d2 > $d3) {
-                $sla_out[] = $case;
+                $cpData['on_time'][] = $case;
             } else {
-                $sla_in[] = $case;
+                $cpData['out_time'][] = $case;
             }
-            $cpData['on_time'] = $sla_in;
-            $cpData['out_time'] = $sla_out;
         }
+        $cpData['sla_percent'] =  100*(count($cpData['on_time'])/$cpData['total']);
+        $cpData['sla_percent_out'] =  100*(count($cpData['out_time'])/$cpData['total']);
+        $cpData['sla']=  number_format($cpData['sla_percent'],2).'% ('. count($cpData['on_time']).')';
+        $cpData['sla_out'] =number_format($cpData['sla_percent_out'],2).'% ('. count($cpData['out_time']).')';
+        $rtn = $this->parser->parse('bpm/kpi_sla_time', $cpData, true);
+        return $rtn;
     }
 
     function time_avg_all($kpi) {
