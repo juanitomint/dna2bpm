@@ -10,6 +10,7 @@ class Menu extends CI_Model {
         $this->container = 'container.menu';
         $this->load->library('cimongo/cimongo');
         $this->db = $this->cimongo;
+        
     }
 
     //---add a path to repository
@@ -34,6 +35,7 @@ class Menu extends CI_Model {
         }
     }
 
+    
     function clear_paths($idgroup) {
         if ($idgroup) {
             $options = array("justOne" => false, "safe" => true);
@@ -54,5 +56,15 @@ class Menu extends CI_Model {
         }
         return $rtnArr;
     }
-
+       function get_repository($query = array()) {
+        //returns a mongo cursor with matching id's
+        $rs = $this->mongo->db->selectCollection($this->container)->find($query);
+        $rs->sort(array('path'));
+        $repo = array();
+        while ($r = $rs->getNext()) {
+            $repo[$r['path']] = $r['properties'];
+            //break;
+        }
+        return $repo;
+    }
 }

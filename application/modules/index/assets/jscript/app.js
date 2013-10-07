@@ -1,23 +1,23 @@
 Ext.onReady(function() {
     //---define components
-    var left = Ext.create('Ext.Panel',
-            {
-                region: 'west',
-                id: 'leftPanel', // see Ext.getCmp() below
-                title: 'Groups',
-                //                            title: 'West',
-                split: true,
-                width: 260,
-                minWidth: 200,
-                maxWidth: 700,
-                collapsible: true,
-                animCollapse: true,
-                margins: '0 0 0 0',
-                layout: 'fit'
-                        ,
-                items: [dataview]
-            }
-    );
+//    var left = Ext.create('Ext.Panel',
+//            {
+//                region: 'west',
+//                id: 'leftPanel', // see Ext.getCmp() below
+//                title: 'Groups',
+//                //                            title: 'West',
+//                split: true,
+//                width: 260,
+//                minWidth: 200,
+//                maxWidth: 700,
+//                collapsible: true,
+//                animCollapse: true,
+//                margins: '0 0 0 0',
+//                layout: 'fit'
+//                        ,
+//                items: [dataview]
+//            }
+//    );
     //----right
     var right = Ext.create('Ext.Panel',
             {
@@ -63,7 +63,7 @@ Ext.onReady(function() {
                 ],
                 listeners: {
                     afterrender: function() {
-                        Ext.data.StoreManager.lookup('TreeStore').load();
+                        //Ext.data.StoreManager.lookup('TreeStore').load();
 
 
                     }
