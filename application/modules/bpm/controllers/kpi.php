@@ -400,7 +400,7 @@ class Kpi extends MX_Controller {
         $filter = $this->get_filter($kpi);
         $tokens = $this->bpm->get_tokens_byResourceId($kpi['resourceId'], $filter);
         $cpData = $kpi;
-        //$cpData['tokens']=$tokens;
+        //var_dump($tokens);
         $cpData['count'] = count($tokens);
         $rtn = $this->parser->parse('bpm/kpi_count', $cpData, true);
         return $rtn;
@@ -438,6 +438,7 @@ class Kpi extends MX_Controller {
         //$filter['status'] = array('$in' => (array) $status); //@todo include other statuses
         $tokens = $this->bpm->get_tokens_byResourceId($kpi['resourceId'], $filter);
         $cpData = $kpi;
+        //var_dump($tokens);
         //$cpData['tokens']=$tokens;
         $cpData['count'] = count($tokens);
         $rtn = $this->parser->parse('bpm/kpi_count', $cpData, true);
