@@ -11,8 +11,6 @@ var addPath = Ext.create('Ext.Action', {
                         id: n.data.id + '/' + text,
                         text: text,
                         leaf: true,
-                        iconCls: 'dot-green',
-                        checked: n.data.checked,
                         priority:10,
                     };
                 n.appendChild(node);
