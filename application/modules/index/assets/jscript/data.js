@@ -1,3 +1,4 @@
+var pgridCache = {};
 /*
  *                      USERS
  */
@@ -22,33 +23,34 @@ Ext.define('User', {
         }
     ]
 });
-
-
 /*
  *      Tree Store
  */
-
+Ext.define('TreeModel', {
+    extend: 'Ext.data.Model',
+    fields: ['priority', 'title', 'type', 'group', 'locked', 'hidden', 'required']
+});
 function onTreeStoreLoad() {
     //tree.load_checked();
 }
 Ext.define('MenuItem', {
     extend: 'Ext.data.Model',
     fields: [
-         'title',
+        'title',
         'target',
         'text',
-        'cls' ,
+        'cls',
         'iconCls',
         'priority',
-        'info', 
+        'info',
     ]
 }
 );
-
 Ext.create('Ext.data.TreeStore', {
     id: "TreeStore",
     autoLoad: false,
     allowSingle: false,
+    model: MenuItem,
     proxy: {
         type: 'ajax',
         noCache: false, //---get rid of the ?dc=.... in urls
@@ -58,18 +60,25 @@ Ext.create('Ext.data.TreeStore', {
             update: globals.module_url + 'admin/repository/update',
             destroy: globals.module_url + 'admin/repository/destroy'
         },
-         writer: {
+        writer: {
             type: 'json',
             allowSingle: false
         }
     },
-    sorters: [{
+    sorters: [
+        {
+            property: 'priority',
+            direction: 'ASC'
+        },
+        {
             property: 'leaf',
             direction: 'ASC'
-        }, {
+        },
+        {
             property: 'text',
             direction: 'ASC'
-        }],
+        }
+    ],
     listeners: {
         load: onTreeStoreLoad
     }

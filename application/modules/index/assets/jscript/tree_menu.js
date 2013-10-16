@@ -1,7 +1,7 @@
 //---ACTIONS 4 Context
-function itemclick(me, record, item, index, e, eOpts){
-    id=record.data.id;
-    load_props(globals.module_url+'admin/get_properties',id,true);
+function itemclick(me, record, item, index, e, eOpts) {
+    id = record.data.id;
+    load_props(globals.module_url + 'admin/get_properties', id, true);
 }
 var addPath = Ext.create('Ext.Action', {
     iconCls: 'icon-add',
@@ -164,7 +164,6 @@ var tree = Ext.create('Ext.tree.Panel', {
     animate: false,
     stateful: true,
     lines: true,
-    layout: 'fit',
     uncheck_all: uncheck_all,
     columns: [{
             xtype: 'treecolumn', //this is so we know which column will show the tree
@@ -183,7 +182,7 @@ var tree = Ext.create('Ext.tree.Panel', {
             text: 'priority',
             flex: 1,
             sortable: true,
-            dataIndex: 'text'
+            dataIndex: 'priority'
         }
 
     ],
