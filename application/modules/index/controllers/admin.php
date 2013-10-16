@@ -6,7 +6,7 @@ if (!defined('BASEPATH'))
 class admin extends MX_Controller {
 
     public $tree_item = array(
-        'id'=>'string',
+        'id' => 'string',
         'title' => 'string',
         'target' => 'string',
         'text' => 'string',
@@ -14,7 +14,6 @@ class admin extends MX_Controller {
         'iconCls' => 'string',
         'priority' => 'int',
         'info' => 'string',
-        'children' => 'array',
         'hidden' => 'boolean',
     );
 
@@ -143,55 +142,9 @@ class admin extends MX_Controller {
         //$this->load->view('footer');
     }
 
-    function user($action) {
-        $this->user->authorize();
-        $segments = $this->uri->segments;
-        $debug = (in_array('debug', $segments)) ? true : false;
-        $cpData = $this->lang->language;
-        $rtnArr = array();
-        $i = 0;
-        switch ($action) {
-            case 'read':
-                $start = ($this->input->post('start')) ? $this->input->post('start') : 0;
-                $limit = ($this->input->post('limit')) ? $this->input->post('limit') : 50;
-                $query = $this->input->post('query');
-                $idgroup = (int) $this->input->post('idgroup');
-                $sortObj = json_decode($this->input->post('sort'));
-                // build sort array
-                $sort = array();
-                foreach ($sortObj as $value) {
-
-                    $sort[$value->property] = $value->direction;
-                };
-                $rs = $this->user->get_users($start, $limit, $sort, $query, $idgroup);
-                $rtnArr['totalCount'] = $rs->num_rows();
-
-                foreach ($rs->result() as $thisUser) {
-                    $rtnArr['rows'][] = $thisUser;
-                    //break;
-                }
-                break;
-            case 'update':
-                $user_data = $_POST;
-                $user = $this->user->add($user_data);
-                $rtnArr['success'] = true;
-                $rtnArr['msg'] = 'User updated: ok!';
-                $rtnArr['data'] = $user;
-                break;
-        }
-        //var_dump($cpData);
-        if (!$debug) {
-            header('Content-type: application/json;charset=UTF-8');
-            echo json_encode($rtnArr);
-        } else {
-            var_dump($rtnArr);
-        }
-        //$this->load->view('footer');
-    }
-
     function get_properties() {
-        $data['id']=$this->input->post('id');
-        $data=$this->menu->get_path($this->input->post('id'));
+        $data['id'] = $this->input->post('id');
+        $data = $this->menu->get_path($this->input->post('id'));
         $this->load->helper('dbframe');
         $debug = false;
         $menu_item = new dbframe($data['properties'], $this->tree_item);
@@ -201,16 +154,6 @@ class admin extends MX_Controller {
         } else {
             var_dump('Obj', $menu_item, 'Save:', $menu_item->toSave(), 'Show', $menu_item->toShow());
         }
-    }
-
-    function delete_group_db($idgroup) {
-        $this->user->delete_group($idgroup);
-        echo '{"result":"ok"}';
-    }
-
-    function delete_user_db($iduser) {
-        $this->user->delete($iduser);
-        echo '{"result":"ok"}';
     }
 
     function repository($action) {
@@ -234,7 +177,7 @@ class admin extends MX_Controller {
                         "checkdate" => date('Y-m-d H:i:s'),
                         "idu" => $this->idu
                     );
-                    $result = $this->menu->put_path($path, $menuItem);
+                    $result = $this->menu->put_path($path, array_merge($properties,(array) $menuItem));
                 }
                 $rtnArr['success'] = true;
                 break;
@@ -284,10 +227,8 @@ class admin extends MX_Controller {
                 $path = implode('/', $path_arr);
                 if ($path)
                     $rtnArr['success'] = $this->menu->remove_path($path);
-
                 break;
         }
-        //var_dump($cpData);
         if (!$debug) {
             header('Content-type: application/json;charset=UTF-8');
             echo json_encode($rtnArr);
@@ -296,143 +237,33 @@ class admin extends MX_Controller {
         }
     }
 
-    function save_group($idgroup) {
-        $post_obj = $this->input->post('obj');
-
-        $isnew = false;
-        if ($idgroup == 'new') {
-            $idgroup = $this->app->gen_inc('groups', 'idgroup');
-            $post_obj['idgroup'] = $idgroup;
-            $post_obj['idsup'] = $this->session->userdata('iduser');
-            $isnew = true;
-        }
-        $obj = $this->group->get($idgroup);
-        $post_obj['_id'] = $obj['_id'];
-        $post_obj['idgroup'] = (int) $idgroup;
-
-        //---conform perm array
-        $post_obj['perm'] = explode(',', $post_obj['perm']);
-
-        //---Clear the object
-        $obj = array_filter($post_obj);
-        $new_obj = $post_obj;
-
-        //---now SAVE it
-        $result = $this->group->save($new_obj);
-        //var_dump($post_obj);
-        //var_dump($new_obj);
-        $result = date('H:i:s');
-        $result.= ( $result['ok']) ? ' Saved OK!' : 'Error:' . $result['err'];
-        $result.= ( $result['updatedExisting']) ? ' Updated Existing Object' : '';
-        $result.='<br/>';
-        echo json_encode(array(
-            'result' => $result,
-            'isnew' => $isnew,
-            'idgroup' => $idgroup,
-        ));
-    }
-
-    function save_user($iduser) {
-        $post_obj = $this->input->post('obj');
-
-        $isnew = false;
-        if ($iduser == 'new') {
-            $iduser = $this->app->genid_general('users', 'idu');
-            $post_obj['iduser'] = $iduser;
-            $post_obj['owner'] = $this->session->userdata('iduser');
-            $post_obj['checkdate'] = date('Y-m-d');
-            //---make hash 4 password
-            $post_obj['passw'] = ($post_obj['passw']) ? md5($post_obj['passw']) : md5('nopass');
-            $isnew = true;
-        }
-        $obj = $this->user->get_user($iduser);
-        $post_obj['_id'] = $obj['_id'];
-        $post_obj['idu'] = (int) $iduser;
-        $post_obj['idgroup'] = (int) $post_obj['idgroup'];
-        $post_obj['passw'] = ($post_obj['passw']) ? md5($post_obj['passw']) : md5('nopass');
-        //---conform group
-        $post_obj['group'] = explode(',', $post_obj['group']);
-        $post_obj['group'] = array_map(
-                create_function('$value', 'return (int)$value;'), $post_obj['group']
-        );
-        //---conform perm array
-        $post_obj['perm'] = explode(',', $post_obj['perm']);
-
-        //---Clear the object
-        $obj = array_filter($post_obj);
-        $new_obj = $post_obj;
-
-        //---now SAVE it
-        $result = $this->user->save($new_obj);
-        //var_dump($post_obj);
-        //var_dump($new_obj);
-        $result = date('H:i:s');
-        $result.= ( $result['ok']) ? ' Saved OK!' : 'Error:' . $result['err'];
-        $result.= ( $result['updatedExisting']) ? ' Updated Existing Object' : '';
-        $result.='<br/>';
-        echo json_encode(array(
-            'result' => $result,
-            'isnew' => $isnew,
-            'iduser' => $iduser,
-        ));
-        //header('Location:');
-    }
-
-    function showall($idu) {
-
-        echo "user from db:<br/>";
-        var_dump($this->user->get_user((int) $idu));
-        echo '<hr/>';
-
-        echo "level from db:<br/>";
-        var_dump($this->user->getlevel((int) $idu));
-        echo '<hr/>';
-
-        echo "Session data:<br/>";
-        var_dump('iduser', $this->session->userdata('iduser'), 'level', $this->session->userdata('level'));
-        echo '<hr/>';
-    }
-
-    function test_user($idu) {
-        $this->user->authorize();
-        //---only allow users to impersonate
-        if ($this->user->isAdmin($this->user->get_user($this->idu))) {
-            $this->load->config('config');
-            //---register if it has logged is
-            $this->session->set_userdata('loggedin', true);
-            //---register the user id
-            $this->session->set_userdata('iduser', $idu);
-            //---register level string
-            $redir = base_url() . $this->config->item('default_controller');
-            //---redirect
-            header('Location: ' . $redir);
-            exit;
-        }
-    }
-
-    function save() {
+    function save_properties() {
+        $debug = false;
+        $post = json_decode(file_get_contents('php://input'));
+        $this->load->helper('dbframe');
         $rtnArr['success'] = false;
-        $paths = $this->input->post('paths');
-        $props = $this->input->post('properties');
-        //--remove all paths
-        //----load repo to check if something is new
-        if ($paths) {
-            foreach ($paths as $path) {
-                if (!in_array($path, $repo)) {
+        $path = $post->path;
+        $data = $post->data;
+        //---strip root
+        $path_arr = explode('/', $path);
+        array_shift($path_arr);
+        $path = implode('/', $path_arr);
 
-                    $path_arr = explode('/', $path);
-                    array_shift($path_arr);
-                    $path = implode('/', $path_arr);
-                    $this->menu->put_path($path, array(
-                        'source' => 'RepoAdmin',
-                        'checkdate' => date('Y-m-d H:i:s'),
-                        'idu' => $this->idu
-                            )
-                    );
-                }
-            }
+        $menu_item = new dbframe($data, $this->tree_item);
+        $properties = array(
+            "source" => "User",
+            "checkdate" => date('Y-m-d H:i:s'),
+            "idu" => $this->idu
+        );
+        $result = $this->menu->put_path($path, array_merge($properties, $menu_item->toSave()));
+
+        $rtnArr= $menu_item->toShow();
+        if (!$debug) {
+            header('Content-type: application/json;charset=UTF-8');
+            echo json_encode($rtnArr);
+        } else {
+            var_dump($rtnArr);
         }
-        $rtnArr['success'] = true;
     }
 
 }

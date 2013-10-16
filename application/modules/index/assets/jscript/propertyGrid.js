@@ -23,6 +23,10 @@ function showCheck(v){
 var required= new Ext.form.Checkbox({});
 var hidden = new Ext.form.Checkbox();
 var locked = new Ext.form.Checkbox();
+var readOnly=Ext.create('Ext.form.Text',{
+    disabled:true,
+    cls:"locked"
+});
 var desc=Ext.create('Ext.form.TextArea', {});
 var help=Ext.create('Ext.form.TextArea', {});
 var cname=Ext.create('Ext.form.Text',{
@@ -71,7 +75,7 @@ var propsGrid = Ext.create('Ext.grid.property.Grid', {
     }
     ,
     customEditors: {
-
+    id:readOnly
     }
     ,
     customRenderers: {}
@@ -86,7 +90,10 @@ var propsGrid = Ext.create('Ext.grid.property.Grid', {
             //---update cache
             //pgridCache[this.activeRecord]=this.getSource();
             //---finally refresh the grid
-            tree.store.getNodeById(this.activeRecord).data['data']=this.getSource();
+            thisData=this.getSource();
+            node=tree.store.getNodeById(this.activeRecord)
+            node.data['data']=thisData;
+            node.data['text']=thisData.text;
             tree.getView().refresh(true);
         }
     },
@@ -103,8 +110,8 @@ var propsGrid = Ext.create('Ext.grid.property.Grid', {
             text: 'Save',
             icon:globals.base_url+'css/ext_icons/save.gif',
             handler:function(){
-                //var url=globals.base_url+'dna2/form/save_frame_properties/'+imin;
-                //save_props(url);
+                var url=globals.module_url+'admin/save_properties';
+                save_props(url);
             }
         }
         ,{

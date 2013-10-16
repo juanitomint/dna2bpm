@@ -55,7 +55,7 @@ function explodeTree($array, $delimiter = '/') {
 }
 
 function explodeExtTree($array, $delimiter = '/') {
-    $CI=&get_instance();
+    $CI = &get_instance();
     if (!is_array($array))
         return false;
     //---Setings
@@ -69,7 +69,7 @@ function explodeExtTree($array, $delimiter = '/') {
             "icon-cls" => "icon-home",
             "expanded" => true,
             "leaf" => false,
-            "path" =>  '/',
+            "path" => '/',
             "children" => array(),
     ));
     foreach ($array as $key => $val) {
@@ -84,15 +84,16 @@ function explodeExtTree($array, $delimiter = '/') {
             $localpath[] = $part;
             $thispath = implode($delimiter, $localpath);
             //---get data from database
-            $data=$CI->menu->get_path($thispath);
-            
+            $data = $CI->menu->get_path($thispath);
+
             $isleaf = ($thispath == 'root/' . $key) ? true : false;
             //prepare object to add
             $obj = (object) array(
                         'id' => $thispath,
-                        'text' => $data['properties']['text'],
+                        'text' => $val['text'],
+                        'priority' => (isset($val['priority'])) ? $val['priority'] : 10,
                         'leaf' => $isleaf,
-                        //'checked' => false,
+                    //'checked' => false,
             );
             if ($isleaf) {
                 //$obj->iconCls = $leafCls;

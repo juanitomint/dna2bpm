@@ -151,6 +151,7 @@ var reloadTree = Ext.create('Ext.Action', {
 var tree = Ext.create('Ext.tree.Panel', {
     id: 'MenuTree',
     title: 'Menu',
+    xtype: 'tree-grid',
     store: Ext.data.StoreManager.lookup('TreeStore'),
     root: {
         text: "Home",
@@ -176,13 +177,13 @@ var tree = Ext.create('Ext.tree.Panel', {
             text: 'path',
             flex: 2,
             sortable: true,
-            dataIndex: 'path'
+            dataIndex: 'id'
         }
         , {
             text: 'priority',
             flex: 1,
             sortable: true,
-            dataIndex: 'priority'
+            dataIndex: 'text'
         }
 
     ],
