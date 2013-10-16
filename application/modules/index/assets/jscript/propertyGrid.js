@@ -84,9 +84,10 @@ var propsGrid = Ext.create('Ext.grid.property.Grid', {
         propertychange: function(source,recordId,value,oldValue,options){
             //console.log('source',source,'recordId','recordId',this.activeRecord,value,oldValue,options);            
             //---update cache
-            pgridCache[this.activeRecord]=this.getSource();
+            //pgridCache[this.activeRecord]=this.getSource();
             //---finally refresh the grid
-            mygrid.getView().refresh(true);
+            tree.store.getNodeById(this.activeRecord).data['data']=this.getSource();
+            tree.getView().refresh(true);
         }
     },
     ////////////////////////////////////////////////////////////////////////////

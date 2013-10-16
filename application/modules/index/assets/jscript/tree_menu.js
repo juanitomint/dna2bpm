@@ -1,7 +1,7 @@
 //---ACTIONS 4 Context
 function itemclick(me, record, item, index, e, eOpts){
     id=record.data.id;
-    load_props(globals.module_url+'admin/get_properties',id);
+    load_props(globals.module_url+'admin/get_properties',id,true);
 }
 var addPath = Ext.create('Ext.Action', {
     iconCls: 'icon-add',

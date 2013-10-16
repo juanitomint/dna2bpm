@@ -55,6 +55,7 @@ function explodeTree($array, $delimiter = '/') {
 }
 
 function explodeExtTree($array, $delimiter = '/') {
+    $CI=&get_instance();
     if (!is_array($array))
         return false;
     //---Setings
@@ -82,11 +83,14 @@ function explodeExtTree($array, $delimiter = '/') {
             $thisparentpath = implode($delimiter, $localpath);
             $localpath[] = $part;
             $thispath = implode($delimiter, $localpath);
+            //---get data from database
+            $data=$CI->menu->get_path($thispath);
+            
             $isleaf = ($thispath == 'root/' . $key) ? true : false;
             //prepare object to add
             $obj = (object) array(
                         'id' => $thispath,
-                        'text' => $part,
+                        'text' => $data['properties']['text'],
                         'leaf' => $isleaf,
                         //'checked' => false,
             );

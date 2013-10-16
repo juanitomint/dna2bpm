@@ -46,6 +46,15 @@ class Menu extends CI_Model {
         }
     }
 
+    function get_path($path) {
+        if($path){
+        $query=array('properties.id'=>$path);
+        $rs = $this->mongo->db->selectCollection($this->container)->findOne($query);
+        return $rs;
+        } else {
+            return null;
+        }
+    }
     function get_paths() {
         $query=array();
         $rs = $this->mongo->db->selectCollection($this->container)->find($query);
