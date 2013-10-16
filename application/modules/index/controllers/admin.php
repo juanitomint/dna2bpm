@@ -5,6 +5,19 @@ if (!defined('BASEPATH'))
 
 class admin extends MX_Controller {
 
+    public $tree_item = array(
+        'id'=>'string',
+        'title' => 'string',
+        'target' => 'string',
+        'text' => 'string',
+        'cls' => 'string',
+        'iconCls' => 'string',
+        'priority' => 'int',
+        'info' => 'string',
+        'children' => 'array',
+        'hidden' => 'boolean',
+    );
+
     function __construct() {
         parent::__construct();
         $this->load->library('parser');
@@ -47,6 +60,7 @@ class admin extends MX_Controller {
             $this->module_url . "assets/jscript/ext.settings.js" => 'Settings',
             $this->module_url . "assets/jscript/data.js" => 'Group Data Objects',
             $this->module_url . "assets/jscript/tree_menu.js" => 'Menu Tree',
+            $this->module_url . "assets/jscript/ext.load_props.js" => 'Properties Loader',
             $this->module_url . "assets/jscript/propertyGrid.js" => 'Menu Properties Editor',
             $this->module_url . "assets/jscript/app.js" => 'Viewport',
         );
@@ -175,43 +189,17 @@ class admin extends MX_Controller {
         //$this->load->view('footer');
     }
 
-    function get_group_properties($idgroup) {
-        $cpData = array();
-        $cpData = $this->lang->language;
-        $cpData['theme'] = $this->config->item('theme');
-        $cpData['base_url'] = base_url();
-        $cpData['new'] = false;
-
-        //----load group properties
-        if ($idgroup == 'new' or $idgroup == 'undefined') {
-            $cpData['new'] = true;
-            $cpData['idsup'] = $this->session->userdata('iduser');
-            $cpData['idgroup'] = 'new';
+    function get_properties() {
+        $data['id']=$this->input->post('id');
+        $this->load->helper('dbframe');
+        $debug = false;
+        $menu_item = new dbframe($data, $this->tree_item);
+        if (!$debug) {
+            header('Content-type: application/json;charset=UTF-8');
+            echo json_encode($menu_item->toShow());
         } else {
-            $group = $this->group->get($idgroup);
-
-            //----set visible
-            if (isset($group['visible']))
-                $cpData['visible'] = ($group['visible']) ? 'checked="checked"' : '';
-            //----set locked
-            if (isset($group['locked']))
-                $cpData['locked'] = ($group['locked']) ? 'checked="checked"' : '';
-            //---make perm String
-            //----prepare perm string
-            $group['perm'] = (isset($group['perm'])) ? implode(',', (array) $group['perm']) : '';
-
-            if ($group)
-                $cpData+=$group;
+            var_dump('Obj', $menu_item, 'Save:', $menu_item->toSave(), 'Show', $menu_item->toShow());
         }
-        //var_dump($group);
-        //---set name for supervisor
-        if (isset($cpData['idsup'])) {
-            $supervisor = $this->user->get_user($cpData['idsup']);
-            $cpData['supervisor'] = $supervisor['name'] . ' ' . $supervisor['lastname'];
-        } else {
-            $cpData['supervisor'] = 'UNSUPERVISED GROUP';
-        }
-        $this->parser->parse('user/group_properties', $cpData, false, true);
     }
 
     function delete_group_db($idgroup) {

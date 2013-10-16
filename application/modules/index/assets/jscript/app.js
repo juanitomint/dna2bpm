@@ -1,3 +1,5 @@
+var pgridCache=new Array();
+
 Ext.onReady(function() {
     //---define components
 //    var left = Ext.create('Ext.Panel',

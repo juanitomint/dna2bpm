@@ -1,4 +1,8 @@
 //---ACTIONS 4 Context
+function itemclick(me, record, item, index, e, eOpts){
+    id=record.data.id;
+    load_props(globals.module_url+'admin/get_properties',id);
+}
 var addPath = Ext.create('Ext.Action', {
     iconCls: 'icon-add',
     text: 'Add Path',
@@ -11,7 +15,7 @@ var addPath = Ext.create('Ext.Action', {
                         id: n.data.id + '/' + text,
                         text: text,
                         leaf: true,
-                        priority:10,
+                        priority: 10,
                     };
                 n.appendChild(node);
                 n.set('leaf', false);
@@ -75,7 +79,7 @@ var saveTree = Ext.create('Ext.Action', {
     iconCls: 'icon-save',
     text: 'Save',
     handler: function(widget, event) {
-       tree.sync();
+        tree.sync();
     }
 });
 //---4 context menu
@@ -184,11 +188,13 @@ var tree = Ext.create('Ext.tree.Panel', {
     ],
     listeners: {
         checkchange: checkchange,
+        itemclick: itemclick,
         itemcontextmenu: function(view, rec, node, index, e) {
             e.stopEvent();
             contextMenu.showAt(e.getXY());
             return false;
         }
+
     },
     dockedItems: [{
             xtype: 'toolbar', items: [
