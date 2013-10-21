@@ -21,7 +21,7 @@ class Menu extends MX_Controller {
         'iconCls' => 'icon-bpm',
         'priority' => 10,
         'info' => '15/32', //---Icon
-        'items' => array(
+        'children' => array(
             array(
                 'title' => 'BPM Models admin',
                 'target' => '/bpm/browser',
