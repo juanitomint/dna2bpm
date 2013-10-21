@@ -137,6 +137,7 @@ class admin extends MX_Controller {
                 $rtnArr['totalCount'] = $rs->num_rows();
 
                 foreach ($rs->result() as $thisUser) {
+                    $thisUser->_id = $thisUser->_id->{'$id'};
                     $rtnArr['rows'][] = $thisUser;
                     //break;
                 }
@@ -147,6 +148,12 @@ class admin extends MX_Controller {
                 $rtnArr['success'] = true;
                 $rtnArr['msg'] = 'User updated: ok!';
                 $rtnArr['data'] = $user;
+                break;
+            case 'destroy':
+                $post_users = json_decode(file_get_contents('php://input'));
+                foreach ($post_users as $group) {
+                    // $this->user->delete($group->iduser);
+                }
                 break;
         }
         //var_dump($cpData);
@@ -315,7 +322,7 @@ class admin extends MX_Controller {
             //---register the user id
             $this->session->set_userdata('iduser', $idu);
             //---register level string
-            $redir =  base_url() . $this->config->item('default_controller');
+            $redir = base_url() . $this->config->item('default_controller');
             //---redirect
             header('Location: ' . $redir);
             exit;
