@@ -285,7 +285,7 @@ var userform = Ext.create('Ext.form.Panel', {
             handler: function() {
                 this.up('form').getForm().reset();
                 mygrid.store.remove(mygrid.selModel.selected.items[0]);
-                mygrid.sync();
+                mygrid.store.sync();
             }
         },
         {

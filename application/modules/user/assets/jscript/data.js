@@ -103,7 +103,8 @@ Ext.create('Ext.data.Store', {
             totalProperty: 'totalCount'
         },
         writer: {
-            type: 'json'
+            type: 'json',
+            allowSingle: false
         }
     },
     sorters: [{

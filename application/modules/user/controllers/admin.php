@@ -151,8 +151,9 @@ class admin extends MX_Controller {
                 break;
             case 'destroy':
                 $post_users = json_decode(file_get_contents('php://input'));
-                foreach ($post_users as $group) {
-                    // $this->user->delete_by_id($group->iduser);
+                var_dump($post_users);
+                foreach ($post_users as $user) {
+                    $this->user->delete_by_id($user->_id);
                 }
                 break;
         }
