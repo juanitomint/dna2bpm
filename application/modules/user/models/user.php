@@ -103,7 +103,7 @@ class User extends CI_Model {
                         $this->router->class,
                         $this->router->method,
                             )
-                    ));
+            ));
             /*
              * Auto-discover from existent will add all the paths it's hits
              * turn off for production
@@ -119,7 +119,7 @@ class User extends CI_Model {
                 $canaccess = true;
             } else {
                 //----$reqlevel override $path
-                $path=(isset($reqlevel)) ? $reqlevel:$path;
+                $path = (isset($reqlevel)) ? $reqlevel : $path;
                 //---give access if have path exists
                 if ($this->user->has('root/' . $path, $thisUser))
                     $canaccess = true;
@@ -177,6 +177,17 @@ class User extends CI_Model {
         
     }
 
+    function getby_id($_id) {
+        /**
+         * returns single user with matching id
+         */
+        //var_dump(json_encode($query));
+        $this->db->where(array('_id' => new MongoId($_id)));
+        $result = $this->db->get('users')->result();
+        ///----return only 1st
+        return $result[0];
+    }
+
     function getbyid($iduser) {
         /**
          * returns single user with matching id
@@ -215,12 +226,13 @@ class User extends CI_Model {
             return false;
         }
     }
+
     //forgot passw: used to change password 
     function getbymailaddress($mail) {
-       
+
         $this->db->where(array('email' => $mail));
         $result = $this->db->get('users')->result();
-        
+
         //----return only 1st
         if (count($result)) {
             return $result[0];
@@ -264,18 +276,17 @@ class User extends CI_Model {
         if ($user)
             return $user[0];
     }
-    
-    
+
     //forgot password: change password token
     function get_token($token) {
-       
+
         $query = array('token' => $token);
         //var_dump(json_encode($query));
-        
+
         $details = $this->db->get_where('users_token', $query)->result();
-        if ($details) return $details[0];
+        if ($details)
+            return $details[0];
     }
-    
 
     /*
      * Get user data without passwords or any other security info
@@ -335,7 +346,7 @@ class User extends CI_Model {
 
             $this->db->or_like('name', $query_txt);
             $this->db->or_like('lastname', $query_txt);
-            
+
             if (is_numeric($query_txt)) {
                 $this->db->or_where('idu', (int) $query_txt);
             }
@@ -358,7 +369,6 @@ class User extends CI_Model {
         $options = array('upsert' => true, 'safe' => true);
         return $this->mongo->db->users->save($object, $options);
     }
-    
 
     function remove($iduser) {
         /**
@@ -394,14 +404,14 @@ class User extends CI_Model {
         $result = $this->mongo->db->users->save($data, $options);
         return $result;
     }
-    
+
     //forgot password: change password token
     function save_token($object) {
         //var_dump($object);
         $options = array('safe' => true, 'upsert' => true);
         return $this->mongo->db->users_token->save($object, $options);
     }
-    
+
     function delete_token($token) {
 
         $this->db->where(array('token' => $token));
@@ -418,6 +428,24 @@ class User extends CI_Model {
         $obj = $this->group->get($idgroup);
         $this->mongo->db->selectCollection('groups.back')->save($obj, $options_save);
         $this->mongo->db->groups->remove($criteria, $options_delete);
+    }
+
+    function delete_by_id($_id) {
+
+        //----make backup first
+        $obj = $this->getby_id($_id);
+        if ($obj) {
+            unset($obj->_id);
+            //---delete from backup
+            $this->db->where(array('idu' => $obj->idu));
+            $this->db->delete('users.back');
+            //---make a new copy in backup table.
+            $result = $this->db->insert('users.back', (array) $obj);
+        }
+        $this->db->where(array('_id' => new MongoId($_id)));
+        //---now delete original
+        $result = $this->db->delete('users');
+        return $result;
     }
 
     function delete($iduser) {

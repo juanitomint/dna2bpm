@@ -18,7 +18,7 @@ function renderGroups(groupField) {
             value = groups[i];
             record = store.getAt(store.find('idgroup', value));
             if (record) {
-            //---make a copy of the original record
+                //---make a copy of the original record
                 grid.store.add(record.copy());
             }
             //html+=record.data.name+'<br/>';
@@ -280,11 +280,20 @@ var userform = Ext.create('Ext.form.Panel', {
 
     buttons: [
         {
+            text: '<i class="icon-remove"></i> Delete',
+            formBind: true, //only enabled once the form is valid
+            handler: function() {
+                this.up('form').getForm().reset();
+                mygrid.store.remove(mygrid.selModel.selected.items[0]);
+                mygrid.sync();
+            }
+        },
+        {
             text: '<i class="icon-beaker"></i> Test',
             handler: function() {
                 form = this.up('form').getForm();
-                val=form.getValues()
-                window.location=globals.module_url + 'admin/test_user/' +val.idu;
+                val = form.getValues()
+                window.location = globals.module_url + 'admin/test_user/' + val.idu;
             }
         },
         {
