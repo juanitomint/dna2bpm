@@ -349,7 +349,6 @@ class User extends CI_Model {
 
         if ($query_txt) {
             $this->db->or_like('nick', $query_txt);
-
             $this->db->or_like('name', $query_txt);
             $this->db->or_like('lastname', $query_txt);
             $this->db->or_like('email', $query_txt);
