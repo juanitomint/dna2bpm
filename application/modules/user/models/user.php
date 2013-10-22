@@ -352,6 +352,7 @@ class User extends CI_Model {
 
             $this->db->or_like('name', $query_txt);
             $this->db->or_like('lastname', $query_txt);
+            $this->db->or_like('email', $query_txt);
 
             if (is_numeric($query_txt)) {
                 $this->db->or_where('idu', (int) $query_txt);
