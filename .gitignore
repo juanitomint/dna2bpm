@@ -3,3 +3,4 @@
 /application/config/
 /tmp/
 /update-git.log
+/tests/
