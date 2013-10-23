@@ -28,7 +28,7 @@ Ext.onReady(function(){
     });
     //---Create Application
     Ext.application({
-        name: 'Model Browser',
+        name: 'Model admin',
         launch: function() {
             Ext.create('Ext.container.Viewport', {
                 layout:'border',
@@ -36,7 +36,7 @@ Ext.onReady(function(){
                 /*
                 {
                     region:'north',
-                    title:'<h3 class="hidden-tablet hidden-phone"><i class="icon icon-bpm"></i> BPM Browser</h3>',
+                    title:'<h3 class="hidden-tablet hidden-phone"><i class="icon icon-bpm"></i> BPM admin</h3>',
                     cls:'page_header',
                     collapsible:true
                 },

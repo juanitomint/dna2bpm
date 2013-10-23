@@ -140,7 +140,7 @@ Ext.create('Ext.data.TreeStore', {
     proxy: {
         type: 'ajax',
         noCache: false,//---get rid of the ?dc=.... in urls
-        url: globals.module_url+'browser/get_tree2/json'
+        url: globals.module_url+'admin/get_tree2/json'
     //url:'http://localhost/ext/examples/build/KitchenSink/ext-theme-neptune/resources/data/tree/check-nodes.json?_dc=1363724048632&sort=[{%22property%22%3A%22leaf%22%2C%22direction%22%3A%22ASC%22}%2C{%22property%22%3A%22text%22%2C%22direction%22%3A%22ASC%22}]&node=root'
     },
     sorters: [{

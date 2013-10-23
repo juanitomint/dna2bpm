@@ -180,7 +180,7 @@ var TreeClick=function(widget,event){
         //url='http://localhost/dna2.gitorious/bpm/repository/load/model/ksemilla-listados/json';
         options={
             
-        'url': globals.module_url+'browser/get_model/'+n.data.id
+        'url': globals.module_url+'admin/get_model/'+n.data.id
         }
         //center_panel.body.load(options);
         //---prevent not loading

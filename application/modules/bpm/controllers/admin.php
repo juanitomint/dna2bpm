@@ -3,7 +3,7 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-class Browser extends MX_Controller {
+class Admin extends MX_Controller {
 
     public function __construct() {
         parent::__construct();
@@ -13,11 +13,13 @@ class Browser extends MX_Controller {
         $this->load->model('bpm');
         //---base variables
         $this->base_url = base_url();
-        $this->module_url = base_url() . 'bpm/';
+        $this->module_url = base_url() . $this->router->fetch_module();
         $this->user->authorize();
         //----LOAD LANGUAGE
         $this->lang->load('library', $this->config->item('language'));
         $this->idu = (int) $this->session->userdata('iduser');
+        echo $this->module_url;
+        exit;
     }
 
     function Index() {
@@ -231,16 +233,6 @@ class Browser extends MX_Controller {
         return array_filter($rtn_arr);
     }
 
-    function get_menu() {
-        $wfData = array();
-        $wfData = $this->lang->language;
-        $wfData['theme'] = $this->config->item('theme');
-        $wfData['base_url'] = base_url();
-        $wfData['img_url'] = base_url() . 'css/dhtmlx/imgs/';
-        $wfData['img_url'] = base_url() . 'css/Icons/24x24/';
-        header('Content-type: application/xml;charset=UTF-8');
-        $this->parser->parse('bpm/browser_menu.xml', $wfData);
-    }
 
     function import_form() {
         $this->load->helper('file');
