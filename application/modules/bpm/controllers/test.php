@@ -16,7 +16,7 @@ class test extends CI_Controller {
     function __construct() {
         parent::__construct();
         $this->base_url = base_url();
-        $this->module_url = base_url() . 'bpm/';
+        $this->module_url = base_url() . $this->router->fetch_module().'/';
         $this->debug_manual = null;
         $this->load->config();
         $this->load->model('user/user');

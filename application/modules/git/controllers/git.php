@@ -23,7 +23,7 @@ class Git extends MX_Controller {
 
         //---base variables
         $this->base_url = base_url();
-        $this->module_url = base_url() . 'git/';
+        $this->module_url = base_url() . $this->router->fetch_module().'/';
 
         //---Output Profiler
         //$this->output->enable_profiler(TRUE);

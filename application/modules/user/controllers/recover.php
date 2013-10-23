@@ -9,7 +9,7 @@ class Recover extends MX_Controller {
         parent::__construct();
         //---base variables
         $this->base_url = base_url();
-        $this->module_url = base_url() . 'user/';
+        $this->module_url = base_url() . $this->router->fetch_module().'/';
         //----load parser
         $this->load->library('parser');
         $this->load->library('email');

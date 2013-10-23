@@ -20,7 +20,7 @@ class Form extends MX_Controller {
         $this->load->helper('dbframe');
         //---base variables
         $this->base_url = base_url();
-        $this->module_url = base_url() . 'form/';
+        $this->module_url = base_url() . $this->router->fetch_module().'/';
         $this->module_path = 'application/modules/form/';
         //----LOAD LANGUAGE
         $this->lang->load('library', $this->config->item('language'));

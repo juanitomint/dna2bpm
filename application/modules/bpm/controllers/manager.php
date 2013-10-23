@@ -19,7 +19,7 @@ class Manager extends MX_Controller {
         $this->lang->load('bpm', $this->config->item('language'));
         $this->idu = (int) $this->session->userdata('iduser');
         $this->base_url = base_url();
-        $this->module_url = base_url() . 'bpm/';
+        $this->module_url = base_url() . $this->router->fetch_module().'/';
     }
 
     function Index() {
