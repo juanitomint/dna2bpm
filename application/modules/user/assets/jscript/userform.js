@@ -330,6 +330,7 @@ var userform = Ext.create('Ext.form.Panel', {
         UserRemove,
         {
             text: '<i class="icon-beaker"></i> Test',
+            formBind: true, //only enabled once the form is valid
             handler: function() {
                 form = this.up('form').getForm();
                 val = form.getValues()
