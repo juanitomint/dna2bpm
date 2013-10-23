@@ -18,8 +18,6 @@ class Admin extends MX_Controller {
         //----LOAD LANGUAGE
         $this->lang->load('library', $this->config->item('language'));
         $this->idu = (int) $this->session->userdata('iduser');
-        echo $this->module_url;
-        exit;
     }
 
     function Index() {
