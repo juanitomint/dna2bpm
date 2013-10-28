@@ -73,7 +73,7 @@ class admin extends MX_Controller {
         $this->ui->makeui('user/ext.ui.php', $cpData);
     }
 
-    function getpaths($repoId=0) {
+    function getpaths($repoId = 0) {
         $this->user->authorize();
         $segments = $this->uri->segments;
         $debug = (in_array('debug', $segments)) ? true : false;
@@ -89,10 +89,11 @@ class admin extends MX_Controller {
         }
     }
 
-     function get_properties() {
+    function get_properties() {
         $data['id'] = $this->input->post('id');
-        $repoId= ($this->input->post('repoId')) ? $this->input->post('repoId') : 0;
-        $data = $this->menu->get_path($repoId,$this->input->post('id'));
+        $repoId = ($this->input->post('repoId')) ? (int) $this->input->post('repoId') : 0;
+
+        $data = $this->menu->get_path($repoId, $this->input->post('id'));
         $this->load->helper('dbframe');
         $debug = false;
         $menu_item = new dbframe($data['properties'], $this->tree_item);
@@ -104,7 +105,8 @@ class admin extends MX_Controller {
         }
     }
 
-    function repository($action) {
+    function repository($repoId = 0, $action) {
+        $repoId = (int) $repoId;
         $this->user->authorize();
         $this->load->helper('ext');
         $segments = $this->uri->segments;
@@ -125,14 +127,13 @@ class admin extends MX_Controller {
                         "checkdate" => date('Y-m-d H:i:s'),
                         "idu" => $this->idu
                     );
-                    $result = $this->menu->put_path($path, array_merge($properties, (array) $menuItem));
+                    $result = $this->menu->put_path($repoId, $path, array_merge($properties, (array) $menuItem));
                 }
                 $rtnArr['success'] = true;
                 break;
             case 'read':
                 $node = ($this->input->post('node')) ? $this->input->post('node') : 'root';
-                $repoId= ($this->input->post('repoId')) ? $this->input->post('repoId') : 0;
-        $repo = $this->menu->get_repository(array('repoId'=>$repoId));
+                $repo = $this->menu->get_repository(array('repoId' => $repoId));
                 $rtnArr = explodeExtTree($repo, '/');
                 //var_dump($repo);
                 $rtnArr = (property_exists($rtnArr[0], 'children')) ? $rtnArr[0]->children : array();
@@ -140,7 +141,6 @@ class admin extends MX_Controller {
             case 'save':
                 $rtnArr['success'] = false;
                 $paths = $this->input->post('paths');
-                $repoId= ($this->input->post('repoId')) ? $this->input->post('repoId') : 0;
                 //--remove all paths
                 $this->menu->clear_paths($repoId);
                 //----load repo to check if something is new
@@ -168,15 +168,13 @@ class admin extends MX_Controller {
             case 'delete':
 
                 $rtnArr['success'] = false;
-
-                $repoId= ($this->input->post('repoId')) ? $this->input->post('repoId') : 0;
                 $path = $this->input->post('path');
                 //----remove root from path
                 $path_arr = explode('/', $path);
                 array_shift($path_arr);
                 $path = implode('/', $path_arr);
                 if ($path)
-                    $rtnArr['success'] = $this->menu->remove_path($repoId,$path);
+                    $rtnArr['success'] = $this->menu->remove_path($repoId, $path);
                 break;
         }
         if (!$debug) {

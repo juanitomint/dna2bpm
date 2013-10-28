@@ -55,10 +55,10 @@ Ext.create('Ext.data.TreeStore', {
         type: 'ajax',
         noCache: false, //---get rid of the ?dc=.... in urls
         api: {
-            create: globals.module_url + 'admin/repository/create',
-            read: globals.module_url + 'admin/repository/read',
-            update: globals.module_url + 'admin/repository/update',
-            destroy: globals.module_url + 'admin/repository/destroy'
+            create: globals.module_url + 'admin/repository/'+globals.repoId+'/create',
+            read: globals.module_url + 'admin/repository/'+globals.repoId+'/read',
+            update: globals.module_url + 'admin/repository/'+globals.repoId+'/update',
+            destroy: globals.module_url + 'admin/repository/'+globals.repoId+'/destroy'
         },
         writer: {
             type: 'json',
