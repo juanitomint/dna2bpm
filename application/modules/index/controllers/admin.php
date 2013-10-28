@@ -27,13 +27,13 @@ class admin extends MX_Controller {
         $this->user->authorize();
         //---base variables
         $this->base_url = base_url();
-        $this->module_url = base_url() . $this->router->fetch_module().'/';
+        $this->module_url = base_url() . $this->router->fetch_module() . '/';
         //----LOAD LANGUAGE
         $this->lang->load('library', $this->config->item('language'));
         $this->idu = (int) $this->session->userdata('iduser');
     }
 
-    function Index() {
+    function Menu($idmenu = 0) {
         //    var_dump(base_url()); exit;
         //---only allow admins and Groups/Users enabled
         $this->load->library('ui');
@@ -67,12 +67,13 @@ class admin extends MX_Controller {
         $cpData['global_js'] = array(
             'base_url' => $this->base_url,
             'module_url' => $this->module_url,
+            'idmenu' => $idmenu,
         );
 
         $this->ui->makeui('user/ext.ui.php', $cpData);
     }
 
-    function getpaths() {
+    function getpaths($idmenu=0) {
         $this->user->authorize();
         $segments = $this->uri->segments;
         $debug = (in_array('debug', $segments)) ? true : false;
@@ -177,13 +178,14 @@ class admin extends MX_Controller {
                         "checkdate" => date('Y-m-d H:i:s'),
                         "idu" => $this->idu
                     );
-                    $result = $this->menu->put_path($path, array_merge($properties,(array) $menuItem));
+                    $result = $this->menu->put_path($path, array_merge($properties, (array) $menuItem));
                 }
                 $rtnArr['success'] = true;
                 break;
             case 'read':
                 $node = ($this->input->post('node')) ? $this->input->post('node') : 'root';
-                $repo = $this->menu->get_repository();
+                $idmenu= ($this->input->post('idmenu')) ? $this->input->post('idmenu') : 0;
+                $repo = $this->menu->get_repository($idmenu);
                 $rtnArr = explodeExtTree($repo, '/');
                 //var_dump($repo);
                 $rtnArr = (property_exists($rtnArr[0], 'children')) ? $rtnArr[0]->children : array();
@@ -257,7 +259,7 @@ class admin extends MX_Controller {
         );
         $result = $this->menu->put_path($path, array_merge($properties, $menu_item->toSave()));
 
-        $rtnArr= $menu_item->toShow();
+        $rtnArr = $menu_item->toShow();
         if (!$debug) {
             header('Content-type: application/json;charset=UTF-8');
             echo json_encode($rtnArr);
