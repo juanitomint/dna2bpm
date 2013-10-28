@@ -41,7 +41,7 @@ class Menu extends CI_Model {
         }
     }
 
-    function clear_paths($idgroup) {
+    function clear_paths($repoId) {
         if ($idgroup) {
             $options = array("justOne" => false, "safe" => true);
             $criteria = array('idgroup' => (int) $idgroup);

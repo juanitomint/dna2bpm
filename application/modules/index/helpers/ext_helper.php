@@ -84,7 +84,8 @@ function explodeExtTree($array, $delimiter = '/') {
             $localpath[] = $part;
             $thispath = implode($delimiter, $localpath);
             //---get data from database
-            $data = $CI->menu->get_path($thispath);
+            //$data = $CI->menu->get_path($thispath);
+            $data = $val;
 
             $isleaf = ($thispath == 'root/' . $key) ? true : false;
             //prepare object to add

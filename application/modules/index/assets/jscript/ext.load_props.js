@@ -21,7 +21,8 @@ function load_props(url, id, nocache) {
                 method: 'POST',
                 // define a handler for request success
                 params: {
-                    id: id
+                    id: id,
+                    repoId:globals.repoId
                 },
                 success: function(response, options) {
                     var propsGrid = Ext.getCmp('propsGrid');
@@ -56,6 +57,7 @@ function save_props(url) {
             method: 'POST',
             // define a handler for request success
             jsonData: {
+                repoId:globals.repoId,
                 path:id,
                 data:data
             },
