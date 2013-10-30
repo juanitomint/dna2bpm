@@ -214,6 +214,7 @@ class Dna2 extends MX_Controller {
                 }
             }
             if (isset($cpData['apps'])) {
+                $cpData['apps']=array();
                 $cpData['apps']['SumApps'] = count($cpData['apps']);
             }
         }
