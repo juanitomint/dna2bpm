@@ -191,7 +191,7 @@ class Dna2 extends MX_Controller {
         $cpData['cases'] = $cases_data['cases'];
         //----get Apps from DB
         $apps = $this->app->get_apps();
-        if ($apps) {
+        if ($apps->count()) {
             //----check if the user has access to thi app
             foreach ($apps as $thisApp) {
                 $authorized = false;
@@ -214,9 +214,11 @@ class Dna2 extends MX_Controller {
                 }
             }
             if (isset($cpData['apps'])) {
-                $cpData['apps']=array();
-                $cpData['apps']['SumApps'] = count($cpData['apps']);
+                
             }
+        } else {
+            $cpData['apps'] = array();
+            $cpData['apps']['SumApps'] = count($cpData['apps']);
         }
 
         /* Inbox Count MSgs */

@@ -123,7 +123,7 @@
                     </a>
                 </li>
                 <li >
-                    <a id="appmanager" href="{base_url}bpm/browser" target="_blank">
+                    <a id="appmanager" href="{base_url}bpm/admin" target="_blank">
                         <i class="icon-bpm">
                         </i> 
                         <span>BPM Browser</span>
