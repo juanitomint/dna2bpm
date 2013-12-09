@@ -5,14 +5,15 @@ if (!defined('BASEPATH'))
 
 class User extends CI_Model {
 
+        
+        
     function __construct() {
         parent::__construct();
         $this->idu = $this->session->userdata('iduser');
-
+        $this->config->load('user/config');
         $this->load->library('cimongo/cimongo');
         $this->db = $this->cimongo;
-
-        //$this->load->database();
+        
     }
 
     function add($user_data) {
@@ -86,6 +87,7 @@ class User extends CI_Model {
     }
 
     function authorize($reqlevel = null) {
+//        $CI=& get_instance();
         $this->load->model('user/rbac');
         //---check if already logged in
         $this->isloggedin();

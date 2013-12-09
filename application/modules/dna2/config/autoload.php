@@ -1,7 +1,13 @@
 <?php
 
+$autoload['models'] = array(
+    'user',
+    'group',
+    'rbac'
+);
 $autoload['libraries'] = array(
     'mongo',
-    'session'
+    'session',
+    'user/ldap_plugin',
 );
 ?>

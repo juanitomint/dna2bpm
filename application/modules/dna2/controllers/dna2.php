@@ -19,8 +19,6 @@ class Dna2 extends MX_Controller {
         $this->load->library('parser');
         $this->load->library('ui');
         $this->load->model('app');
-        $this->load->model('user/user');
-        $this->load->model('user/rbac');
         $this->load->model('bpm/bpm');
         $this->load->model('msg');
 

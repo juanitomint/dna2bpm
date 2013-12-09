@@ -71,7 +71,10 @@ class Group extends CI_Model {
         $rs = $this->mongo->db->groups->find($query);
         if ($order)
             $rs->sort(array($order => 1));
-        return $rs;
+        while ($thisgroup = $rs->getNext()) {
+                    $groups[] = $thisgroup;
+                }
+        return $groups;
     }
 
     function delete($idgroup) {

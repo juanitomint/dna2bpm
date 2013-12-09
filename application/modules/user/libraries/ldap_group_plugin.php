@@ -39,14 +39,14 @@ class ldap_group_plugin extends User {
                 'desc' => (isset($data[$i]["description"][0])) ? $data[$i]["description"][0] : '',
             );
             //----get members()
-
+            /*
             if (isset($data[$i]['member'])) {
-                var_dump($data[$i]['member']);
                 for ($j = 0; $j < $data[$i]['member']["count"]; $j++) {
                     
                     $thisgroup['users'][]=$this->user->get_id_byDN($data[$i]['member'][$j]);
                 }
             }
+             */
             $groups[] = $thisgroup;
         }
         return $groups;

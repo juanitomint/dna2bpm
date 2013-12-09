@@ -5,6 +5,7 @@ $config['ldaprdn']= 'cn=zentyal,dc=s1,dc=local';
 $config['ldappass']= 'yzNRgV8fP4gL@eKCKfkq';
 $config['baseDN']= "ou=Users,dc=s1,dc=local";
 $config['groupsDN']= "ou=Groups,dc=s1,dc=local";
+$config['ldap_use_groups']=true;
 
 //$config['ldap_server'] = 'ldap.mp.gba.gov.ar';
 //$config['ldap_port']= '389';

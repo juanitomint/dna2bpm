@@ -14,7 +14,7 @@ class admin extends MX_Controller {
         $this->user->authorize();
         //---base variables
         $this->base_url = base_url();
-        $this->module_url = base_url() . $this->router->fetch_module().'/';
+        $this->module_url = base_url() . $this->router->fetch_module() . '/';
         //----LOAD LANGUAGE
         $this->lang->load('library', $this->config->item('language'));
         $this->idu = (int) $this->session->userdata('iduser');
@@ -80,10 +80,9 @@ class admin extends MX_Controller {
                 break;
             case 'read':
                 $db_groups = $this->group->get_groups();
-                $groups['totalCount'] = $db_groups->count();
-                while ($thisgroup = $db_groups->getNext()) {
-                    $groups['rows'][] = $thisgroup;
-                }
+                $groups['totalCount'] = count($db_groups);
+                $groups['rows'] = $db_groups;
+
                 break;
             case 'update':
                 $post_groups = json_decode(file_get_contents('php://input'));
