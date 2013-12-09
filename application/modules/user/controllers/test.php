@@ -36,6 +36,8 @@ class Test extends MX_Controller {
        var_dump('$userId',$userId);
         echo "<h3>get_user(2002)</h3>";
         var_dump($this->user->get_user($userId));
+        echo "<h3>get_groups</h3>";
+        var_dump($this->group->get_groups());
     }
 
 }
