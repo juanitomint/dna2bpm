@@ -105,14 +105,16 @@ class ldap_user_plugin extends User {
         $filter = "(uidNumber=$iduser)";
         $result = ldap_search($ldapconn, $this->config->item('baseDN'), $filter) or die("Search error.");
         $info = ldap_get_entries($ldapconn, $result);
-        return $this->prepare($info);
+        if ($info['count']) {
+            return $this->prepare($info);
+        }
     }
 
     function prepare($info) {
         if ($info) {
             $dn = $info[0]['dn'];
             $info = $info[0];
-            $map =$this->config->item('user_map');
+            $map = $this->config->item('user_map');
             $map = array_flip(array_filter($map));
             for ($j = 0; $j < $info["count"]; $j++) {
                 if (isset($map[$info[$j]])) {
@@ -135,7 +137,9 @@ class ldap_user_plugin extends User {
         $filter = "(objectclass=*)";
         $result = ldap_read($ldapconn, $dn, $filter, array()) or die("Search error.");
         $info = ldap_get_entries($ldapconn, $result);
-        return $this->prepare($info);
+        if ($info['count']) {
+            return $this->prepare($info);
+        }
     }
 
     function get_user_id_byDN($dn) {
@@ -144,7 +148,9 @@ class ldap_user_plugin extends User {
         $filter = "(objectclass=*)";
         $result = ldap_read($ldapconn, $dn, $filter, array('uidNumber')) or die("Search error.");
         $info = ldap_get_entries($ldapconn, $result);
-        return $info[0]['uidnumber'][0];
+        if ($info['count']) {
+            return $info[0]['uidnumber'][0];
+        }
     }
 
 }
