@@ -14,7 +14,6 @@
 class Userlayer {
      function __construct() {
         //parent::__construct();
-        
         $ci = & get_instance();
         $ci->load->config('user/config');
         $ci->load->model('user/user');

@@ -13,11 +13,7 @@ class Whoami extends MX_Controller {
         $this->lang->load('library', $this->config->item('language'));
         $this->idu = (int) $this->session->userdata('iduser');
         $this->load->config('config');
-        //----load plugins
-        $this->config->item('user_plugin');
-        if ($this->config->item('user_plugin')) {
-            $this->load->library('user/' . $this->config->item('user_plugin') . '_user_plugin');
-        }
+        
     }
 
     function Index() {

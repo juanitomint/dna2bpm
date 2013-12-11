@@ -14,12 +14,7 @@ class Authenticate extends MX_Controller {
     public function __construct() {
         parent::__construct();
         $this->load->config('config');
-        $this->load->model('user');
-        //----load plugins
-        $this->config->item('user_plugin');
-        if ($this->config->item('user_plugin')) {
-            $this->load->library('user/' . $this->config->item('user_plugin') . '_user_plugin');
-        }
+        
     }
 
     function Index() {

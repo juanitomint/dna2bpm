@@ -20,11 +20,7 @@ class Profile extends MX_Controller {
         $this->load->library('ui');
         $this->load->model('app');
         $this->load->config('config');
-        //----load plugins
-        $this->config->item('user_plugin');
-        if ($this->config->item('user_plugin')) {
-            $this->load->library('user/' . $this->config->item('user_plugin') . '_user_plugin');
-        }
+        
 
         $this->user->authorize();
         //---base variables
