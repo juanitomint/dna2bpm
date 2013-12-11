@@ -16,8 +16,6 @@ class Test extends MX_Controller {
     function __construct() {
         parent::__construct();
         $this->load->library('parser');
-        $this->load->model('user');
-        $this->load->model('group');
         //----LOAD LANGUAGE
         $this->lang->load('library', $this->config->item('language'));
         $this->idu = (int) $this->session->userdata('iduser');

@@ -7,6 +7,7 @@ class ldap_group_plugin extends User {
 
     function __construct() {
         parent::__construct();
+        $this->config->load('user/ldap');
     }
 
 ////-----update last access

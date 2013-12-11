@@ -6,6 +6,7 @@ if (!defined('BASEPATH'))
 class ldap_user_plugin extends User {
 
     function __construct() {
+        $this->config->load('user/ldap');
         parent::__construct();
     }
 
@@ -47,7 +48,12 @@ class ldap_user_plugin extends User {
             $ldapbind = ldap_bind($ldapconn, $dn, $password) or die("Could not bind with password to: " . $dn);
             if ($ldapbind) {
 //---get user data
-                return $info[0][$info[0][0]][0];
+                if (isset($info[0]['uidnumber'])) {
+                    return $info[0]['uidnumber'][0];
+                } else {
+                    show_error("The LDAP entry doesn't contains <br/> property: uidnumber<br/> for user:$username");
+                    exit;
+                }
             }
         } else {
             return false;
@@ -65,18 +71,18 @@ class ldap_user_plugin extends User {
         $filter = "(objectclass=*)";
         $result = ldap_read($ldapconn, $dn, $filter, array('gidnumber')) or die("Search error.");
         $info = ldap_get_entries($ldapconn, $result);
-        return $info[0]['gidnumber'][0];
+        return (int)$info[0]['gidnumber'][0];
     }
 
     function get_user_groups($dn) {
         $ldapconn = $this->connect();
         $ldapbind = ldap_bind($ldapconn, $this->config->item('ldaprdn'), $this->config->item('ldappass')) or die("Could not bind with password to: " . $this->config->item('ldaprdn'));
-        $filter = "(member=" . $dn . ")";
+        $filter = "(|(member=" . $dn . ")(uniqueMember=" . $dn . "))";
         $result = ldap_search($ldapconn, $this->config->item('groupsDN'), $filter, array('dn'), 1) or die("Search error.");
         $info = ldap_get_entries($ldapconn, $result);
         $groups = array();
         for ($j = 0; $j < $info["count"]; $j++) {
-            $groups[] =$this->get_group_id_byDN($info[$j]['dn']);
+            $groups[] = $this->get_group_id_byDN($info[$j]['dn']);
             //$groups[] = $info[$info[$j]][0];
         }
         return $groups;
@@ -113,7 +119,8 @@ class ldap_user_plugin extends User {
             $user['group'] = $this->get_user_groups($dn);
         }
         //---map user attrs
-        return $user;
+        $user['idu']=(int)$user['idu'];
+        return (object)$user;
     }
 
     function get_id_byDN($dn) {

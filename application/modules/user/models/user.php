@@ -117,7 +117,7 @@ class User extends CI_Model {
             ));
 
             //---give access if belong to group 1=ADMINS
-            if (in_array(1, $thisUser->group)) {
+            if (in_array($this->config->item('groupAdmin'), $thisUser->group)) {
                 $canaccess = true;
             } else {
                 //----$reqlevel override $path
