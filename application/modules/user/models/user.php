@@ -116,8 +116,8 @@ class User extends CI_Model {
                 'idu' => $this->idu
             ));
 
-            //---give access if belong to group 1=ADMINS
-            if (in_array($this->config->item('groupAdmin'), $thisUser->group)) {
+            //---give access if belong to group ADMINS
+            if ($this->isAdmin($thisUser)) {
                 $canaccess = true;
             } else {
                 //----$reqlevel override $path
@@ -141,7 +141,7 @@ class User extends CI_Model {
     function isAdmin($user) {
         if ($this->isloggedin()) {
             //---this is the ADMIN policy
-            if (in_array('1', $user->group)) {
+            if (in_array($this->config->item('groupAdmin'), $user->group)) {
                 return true;
             }
         }

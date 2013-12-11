@@ -8,8 +8,6 @@ class admin extends MX_Controller {
     function __construct() {
         parent::__construct();
         $this->load->library('parser');
-        $this->load->model('user');
-        $this->load->model('group');
         $this->load->model('rbac');
         $this->user->authorize();
         //---base variables
@@ -133,10 +131,11 @@ class admin extends MX_Controller {
                     $sort[$value->property] = $value->direction;
                 };
                 $rs = $this->user->get_users($start, $limit, $sort, $query, $idgroup);
-                $rtnArr['totalCount'] = $rs->num_rows();
+                $rtnArr['totalCount'] = count($rs);
 
-                foreach ($rs->result() as $thisUser) {
-                    $thisUser->_id = $thisUser->_id->{'$id'};
+                foreach ($rs as $thisUser) {
+                    
+                    $thisUser->_id = (property_exists($thisUser,'_id')) ? $thisUser->_id->{'$id'} :$thisUser->idu;
                     $rtnArr['rows'][] = $thisUser;
                     //break;
                 }
