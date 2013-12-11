@@ -39,8 +39,12 @@
 |	$autoload['libraries'] = array('database', 'session', 'xmlrpc');
 */
 
-$autoload['libraries'] = array('mongo','session','database');
-$autoload['libraries'] = array('mongo','session');
+$autoload['libraries'] = array(
+    'mongo',
+    'session',      
+    //-----if you need full layer support with plugin loader load the user/userlayer library
+    //'user/userlayer'
+    );
 
 /*
 | -------------------------------------------------------------------
@@ -133,7 +137,11 @@ $autoload['language'] = array();
      delete_user($iduser) 
  
  */
-$autoload['model'] = array('user/user');
+$autoload['model'] = array(
+    'user/user',
+    'user/group',
+    'user/rbac',
+    );
 
 
 
