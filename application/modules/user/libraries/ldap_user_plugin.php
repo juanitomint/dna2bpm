@@ -5,72 +5,152 @@ if (!defined('BASEPATH'))
 
 class ldap_user_plugin extends User {
 
-    public $ldap_server = 'ldap.mp.gba.gov.ar';
-    public $ldap_port = '389';
-    public $ldaprdn = 'cn=admin,dc=mp,dc=gba,dc=gov,dc=ar';
-    public $ldappass = 'root';
-    public $baseDN = "ou=People,dc=mp,dc=gba,dc=gov,dc=ar";
-
     function __construct() {
+        $this->config->load('user/ldap');
         parent::__construct();
-        $CI = & get_instance();
-        $CI->user = $this;
     }
 
-    ////-----update last access
+////-----update last access
 
 
     public function connect() {
-        $ldapconn = ldap_connect($this->ldap_server, $this->ldap_port);
+        $ldapconn = ldap_connect($this->config->item('ldap_server'), $this->config->item('ldap_port'));
         if ($ldapconn) {
-            //-----SETINGS
+//-----SETINGS
             ldap_set_option($ldapconn, LDAP_OPT_PROTOCOL_VERSION, 3);
             ldap_set_option($ldapconn, LDAP_OPT_REFERRALS, 0);
             return $ldapconn;
         } else {
-            show_error("Can\'t connect to LDAP Server:$this->ldap_server on port $this->ldap_port");
+            show_error("Can\'t connect to LDAP Server:" . $this->config->item('ldap_server') . " on port " . $this->config->item('ldap_port'));
         }
     }
 
     function authenticate($username = '', $password = '') {
         $ldapconn = $this->connect();
-        $ldapbind = ldap_bind($ldapconn, $this->ldaprdn, $this->ldappass) or die("Could not bind with password to: " . $this->ldaprdn);
+        $ldapbind = ldap_bind($ldapconn, $this->config->item('ldaprdn'), $this->config->item('ldappass')) or die("Could not bind with password to: " . $this->config->item('ldaprdn'));
         $filter = "(uid=$username)";
-        $result = ldap_search($ldapconn, $this->baseDN, $filter, array('uidnumber')) or die("Search error.");
+        $result = ldap_search($ldapconn, $this->config->item('baseDN'), $filter, array('uidnumber')) or die("Search error.");
         $info = ldap_get_entries($ldapconn, $result);
         $auth_success = false;
         if ($info['count']) {
             $dn = $info[0]['dn'];
-            // realizando la autenticación as test
+// realizando la autenticación as test
             $ldapbind = ldap_bind($ldapconn, $dn, $password) or die("Could not bind with password to: " . $dn);
             if ($ldapbind) {
-                //---get user data
-                return $info[0][$info[0][0]][0];
+//---get user data
+                if (isset($info[0]['uidnumber'])) {
+                    return $info[0]['uidnumber'][0];
+                } else {
+                    show_error("The LDAP entry doesn't contains <br/> property: uidnumber<br/> for user:$username");
+                    exit;
+                }
             }
         } else {
             return false;
         }
     }
 
-    //---getuser alias.
+//---getuser alias.
     function getuser($iduser) {
         return $this->get_user($iduser);
     }
 
-    function get_user($iduser) {
-        //*
-        $user = array();
+    function get_group_id_byDN($dn) {
         $ldapconn = $this->connect();
-        $ldapbind = ldap_bind($ldapconn, $this->ldaprdn, $this->ldappass) or die("Could not bind with password to: " . $this->ldaprdn);
-        $filter = "(uidNumber=$iduser)";
-        $result = ldap_search($ldapconn, $this->baseDN, $filter) or die("Search error.");
+        $ldapbind = ldap_bind($ldapconn, $this->config->item('ldaprdn'), $this->config->item('ldappass')) or die("Could not bind with password to: " . $this->config->item('ldaprdn'));
+        $filter = "(objectclass=*)";
+        $result = ldap_read($ldapconn, $dn, $filter, array('gidnumber')) or die("Search error.");
         $info = ldap_get_entries($ldapconn, $result);
-        if ($info) {
-            for ($j = 0; $j < $info[0]["count"]; $j++) {
-                $user[$info[0][$j]] = $info[0][$info[0][$j]][0];
-            }
+        return (int) $info[0]['gidnumber'][0];
+    }
+
+    function get_user_groups($dn) {
+        $ldapconn = $this->connect();
+        $ldapbind = ldap_bind($ldapconn, $this->config->item('ldaprdn'), $this->config->item('ldappass')) or die("Could not bind with password to: " . $this->config->item('ldaprdn'));
+        $filter = "(|(member=" . $dn . ")(uniqueMember=" . $dn . "))";
+        $result = ldap_search($ldapconn, $this->config->item('groupsDN'), $filter, array('dn'), 1) or die("Search error.");
+        $info = ldap_get_entries($ldapconn, $result);
+        $groups = array();
+        for ($j = 0; $j < $info["count"]; $j++) {
+            $groups[] = $this->get_group_id_byDN($info[$j]['dn']);
+            //$groups[] = $info[$info[$j]][0];
         }
-        return $user;
+        return $groups;
+    }
+
+    function get_users($start, $limit, $sort, $query, $idgroup) {
+        $ldapconn = $this->connect();
+        $ldapbind = ldap_bind($ldapconn, $this->config->item('ldaprdn'), $this->config->item('ldappass')) or die("Could not bind with password to: " . $this->config->item('ldaprdn'));
+        $filter = "(gidnumber=$idgroup)";
+        //@todo implements query;
+        $result = ldap_search($ldapconn, $this->config->item('groupsDN'), $filter, array()) or die("Search error.");
+        $data = ldap_get_entries($ldapconn, $result);
+        $groups = array();
+        $data = $data[0];
+        $ldap_users = (isset($data['uniquemember'])) ? $data['uniquemember'] : $data['member'];
+        unset($ldap_users['count']);
+
+        $ldap_users = array_slice($ldap_users, $start, $limit);
+        $users = array();
+        foreach ($ldap_users as $dn) {
+            $users[] = $this->get_user_byDN($dn);
+        }
+        return array_filter($users);
+    }
+
+    function get_user($iduser) {
+//*        $user = array();
+        $ldapconn = $this->connect();
+        $ldapbind = ldap_bind($ldapconn, $this->config->item('ldaprdn'), $this->config->item('ldappass')) or die("Could not bind with password to: " . $this->config->item('ldaprdn'));
+        $filter = "(uidNumber=$iduser)";
+        $result = ldap_search($ldapconn, $this->config->item('baseDN'), $filter) or die("Search error.");
+        $info = ldap_get_entries($ldapconn, $result);
+        if ($info['count']) {
+            return $this->prepare($info);
+        }
+    }
+
+    function prepare($info) {
+        if ($info) {
+            $dn = $info[0]['dn'];
+            $info = $info[0];
+            $map = $this->config->item('user_map');
+            $map = array_flip(array_filter($map));
+            for ($j = 0; $j < $info["count"]; $j++) {
+                if (isset($map[$info[$j]])) {
+                    $user[$map[$info[$j]]] = $info[$info[$j]][0];
+                }
+            }
+            $user['group'] = $this->get_user_groups($dn);
+        }
+        //---map user attrs
+        //----only return users with id
+        if (isset($user['idu'])) {
+            $user['idu'] = (int) $user['idu'];
+            return (object) $user;
+        }
+    }
+
+    function get_user_byDN($dn) {
+        $ldapconn = $this->connect();
+        $ldapbind = ldap_bind($ldapconn, $this->config->item('ldaprdn'), $this->config->item('ldappass')) or die("Could not bind with password to: " . $this->config->item('ldaprdn'));
+        $filter = "(objectclass=*)";
+        $result = ldap_read($ldapconn, $dn, $filter, array()) or die("Search error.");
+        $info = ldap_get_entries($ldapconn, $result);
+        if ($info['count']) {
+            return $this->prepare($info);
+        }
+    }
+
+    function get_user_id_byDN($dn) {
+        $ldapconn = $this->connect();
+        $ldapbind = ldap_bind($ldapconn, $this->config->item('ldaprdn'), $this->config->item('ldappass')) or die("Could not bind with password to: " . $this->config->item('ldaprdn'));
+        $filter = "(objectclass=*)";
+        $result = ldap_read($ldapconn, $dn, $filter, array('uidNumber')) or die("Search error.");
+        $info = ldap_get_entries($ldapconn, $result);
+        if ($info['count']) {
+            return $info[0]['uidnumber'][0];
+        }
     }
 
 }

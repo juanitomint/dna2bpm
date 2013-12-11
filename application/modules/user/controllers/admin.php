@@ -8,13 +8,11 @@ class admin extends MX_Controller {
     function __construct() {
         parent::__construct();
         $this->load->library('parser');
-        $this->load->model('user');
-        $this->load->model('group');
         $this->load->model('rbac');
         $this->user->authorize();
         //---base variables
         $this->base_url = base_url();
-        $this->module_url = base_url() . $this->router->fetch_module().'/';
+        $this->module_url = base_url() . $this->router->fetch_module() . '/';
         //----LOAD LANGUAGE
         $this->lang->load('library', $this->config->item('language'));
         $this->idu = (int) $this->session->userdata('iduser');
@@ -80,10 +78,9 @@ class admin extends MX_Controller {
                 break;
             case 'read':
                 $db_groups = $this->group->get_groups();
-                $groups['totalCount'] = $db_groups->count();
-                while ($thisgroup = $db_groups->getNext()) {
-                    $groups['rows'][] = $thisgroup;
-                }
+                $groups['totalCount'] = count($db_groups);
+                $groups['rows'] = $db_groups;
+
                 break;
             case 'update':
                 $post_groups = json_decode(file_get_contents('php://input'));
@@ -134,10 +131,11 @@ class admin extends MX_Controller {
                     $sort[$value->property] = $value->direction;
                 };
                 $rs = $this->user->get_users($start, $limit, $sort, $query, $idgroup);
-                $rtnArr['totalCount'] = $rs->num_rows();
+                $rtnArr['totalCount'] = count($rs);
 
-                foreach ($rs->result() as $thisUser) {
-                    $thisUser->_id = $thisUser->_id->{'$id'};
+                foreach ($rs as $thisUser) {
+                    
+                    $thisUser->_id = (property_exists($thisUser,'_id')) ? $thisUser->_id->{'$id'} :$thisUser->idu;
                     $rtnArr['rows'][] = $thisUser;
                     //break;
                 }
