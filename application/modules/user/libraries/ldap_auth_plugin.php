@@ -12,7 +12,7 @@
  * 
  * @author Juan Ignacio Borda <juanignacioborda@gmail.com>
  */
-class ldap_plugin {
+class ldap_auth_plugin {
 
     function __construct() {
         //parent::__construct();

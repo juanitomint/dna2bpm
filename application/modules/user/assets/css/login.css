@@ -20,3 +20,7 @@ body {
 .div_text input {
     font-size: x-large;
 }
+#plugins {
+    margin-top: 1em;
+    font-size: .7em;
+}

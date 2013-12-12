@@ -20,7 +20,8 @@ class Userlayer {
         $ci->load->model('user/group');
         $ci->load->model('user/rbac');
         if($ci->config->item('user_plugin')){
-            $ci->load->library('user/'.$ci->config->item('user_plugin').'_plugin');
+            foreach($ci->config->item('user_plugin') as $plugin)
+            $ci->load->library('user/'.$plugin.'_plugin');
         }
     }
 
