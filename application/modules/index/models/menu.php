@@ -21,7 +21,7 @@ class Menu extends CI_Model {
                     )
             );
 
-            $query = array('$set' => array('path' => $path, 'properties' => $properties));
+            $query = array('$set' => array('repoId' => $repoId,'path' => $path, 'properties' => $properties));
             $options = array('upsert' => true, 'safe' => true);
 
             return $this->mongo->db->selectCollection($this->container)->update($criteria, $query, $options);
