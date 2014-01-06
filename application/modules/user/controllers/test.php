@@ -45,7 +45,7 @@ class Test extends MX_Controller {
         $group = $this->group->save(
                 array(
                     'idgroup' => $newid,
-                    'name' => 'Test_' . $newid
+                    'name' => 'SQL/Admin/Test_' . $newid
                 )
         );
         echo "<h3>Remove Group:$newid</h3>";

@@ -112,11 +112,25 @@ class ldap_group_plugin extends Group {
 //parent::save($group);
         $ldapconn = $this->connect();
         $ldapbind = ldap_bind($ldapconn, $this->config->item('ldaprdn'), $this->config->item('ldappass')) or die("Could not bind with password to: " . $this->config->item('ldaprdn'));
-        $group_dn = 'cn=' . $group['name'] . ',' . $this->config->item('groupsDN');
+        //create parent ou
+        $path=  explode('/', $group['name']);
+        $groupname=  array_pop($path);
+        $dn= $this->config->item('groupsDN');
+        if(count($path)){
+            foreach($path as $part){
+                $dn='ou=' . $part. ',' . $dn;
+                $entry['objectClass'][0]='organizationalUnit';
+                $entry['objectClass'][1]='top';
+                $entry['ou']=$part;
+                @ldap_add($ldapconn,$dn, $entry); 
+            }
+            
+        }
+        $group_dn = 'cn=' . $groupname . ',' . $dn;
 //---Add the user to the group
         $group_obj = $this->config->item('group_template');
         $group_obj['gidnumber'] = $group['idgroup'] . '';
-        $group_obj['cn'] = $group['name'];
+        $group_obj['cn'] = $groupname;
         $res = ldap_add($ldapconn, $group_dn, $group_obj);
         if ($res) {
             return TRUE;
@@ -158,6 +172,8 @@ class ldap_group_plugin extends Group {
 
     function get_byname($groupname) {
 //parent::get_byname($groupname);
+        $path=  explode('/', $groupname);
+        $groupname=  array_pop($path);
         $ldapconn = $this->connect();
         $ldapbind = ldap_bind($ldapconn, $this->config->item('ldaprdn'), $this->config->item('ldappass')) or die("Could not bind with password to: " . $this->config->item('ldaprdn'));
         $filter = "(cn=$groupname)";
@@ -180,6 +196,18 @@ class ldap_group_plugin extends Group {
               }
              */
             return $thisgroup;
+        }
+    }
+    
+    function get_ou_byname($ouname) {
+//parent::get_byname($groupname);
+        $ldapconn = $this->connect();
+        $ldapbind = ldap_bind($ldapconn, $this->config->item('ldaprdn'), $this->config->item('ldappass')) or die("Could not bind with password to: " . $this->config->item('ldaprdn'));
+        $filter = "(ou=$ouname)";
+        $result = ldap_search($ldapconn, $this->config->item('groupsDN'), $filter, array()) or die("Search error.");
+        $data = ldap_get_entries($ldapconn, $result);
+        for ($i = 0; $i < $data["count"]; $i++) {
+            return $data[$i];
         }
     }
 
