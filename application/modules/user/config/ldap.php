@@ -1,6 +1,5 @@
 <?php
 
-
 //$config['groupAdmin'] = 1000;
 //$config['ldap_server'] = '192.168.1.11';
 //$config['ldap_port'] = '390';
@@ -19,10 +18,11 @@ $config['groupsDN'] = "ou=Groups,dc=mp,dc=gba,dc=gov,dc=ar";
 $config['ldap_use_groups'] = true;
 
 //-----Override GroupAdmin
-$config['groupAdmin']	= 1000;
+$config['groupAdmin'] = 1000;
 //-----set member Attributo to search or save members
 //$config['member_attr']='member';  //<------Zentyal
-$config['member_attr']='uniquemember';//<----OpenDs
+$config['member_attr'] = 'uniquemember'; //<----OpenDs
+$config['group_type'] = 'uniquemember'; //<----OpenDs
 
 $config['user_map'] = array(
     'idu' => 'uidnumber',
@@ -37,13 +37,26 @@ $config['user_map'] = array(
     "passw" => "",
     "phone" => "telephonenumber",
 );
+$config['group_map'] = array(
+    'idgroup' => 'gidnumber',
+    "name" => "cn",
+);
+
 
 $config['user_template'] = array(
-'objectClass' => array(
- 0 => 'person',
- 1 => 'inetorgperson',
- 2 => 'organizationalperson',
- 3 => 'top')
+    'objectClass' => array(
+        0 => 'person',
+        1 => 'inetorgperson',
+        2 => 'organizationalperson',
+        3 => 'top'
+    )
+);
+$config['group_template'] = array(
+    'objectClass' => array(
+        0 => 'groupOfUniqueNames',
+        1 => 'posixGroup',
+        2 => 'top'
+    )
 );
 //$config['ldap_server'] = 'ldap.mp.gba.gov.ar';
 //$config['ldap_port']= '389';
