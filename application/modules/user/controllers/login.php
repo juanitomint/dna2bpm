@@ -19,14 +19,14 @@ class Login extends MX_Controller {
         $msg = $this->session->userdata('msg');
         $this->lang->load('login', $this->config->item('language'));
         //---add language data
-        $data = $this->lang->language;
-        $data['authUrl'] = base_url() . 'user/authenticate';
-        $data['base_url'] = base_url();
-        $data['show_warn'] = $this->config->item('show_warn');
-        $data['theme'] = $this->config->item('theme');
-        $data['plugins'] = implode(',', $this->config->item('user_plugin'));
+        $cpData = $this->lang->language;
+        $cpData['authUrl'] = base_url() . 'user/authenticate';
+        $cpData['base_url'] = base_url();
+        $cpData['show_warn'] = $this->config->item('show_warn');
+        $cpData['theme'] = $this->config->item('theme');
+        $cpData['plugins'] =(class_exists('Userlayer')) ? implode(',', $this->config->item('user_plugin')):array();
         //----load login again with msg 
-        $this->parser->parse('user/login', $data);
+        $this->parser->parse('user/login', $cpData);
     }
 
     function Index() {
@@ -41,7 +41,7 @@ class Login extends MX_Controller {
         $cpData['base_url'] = $this->base_url;
         $cpData['module_url'] = $this->module_url;
         $cpData['theme'] = $this->config->item('theme');
-        $cpData['plugins'] = implode(',', $this->config->item('user_plugin'));
+        $cpData['plugins'] =(class_exists('Userlayer')) ? implode(',', $this->config->item('user_plugin')):array();
         //----NO USER
 
         if ($msg == 'nouser') {

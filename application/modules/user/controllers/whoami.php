@@ -20,6 +20,8 @@ class Whoami extends MX_Controller {
         $this->output->enable_profiler(true);
         $idu = $this->session->userdata('iduser');
         echo "CI Version: " . CI_VERSION . '<br/>';
+        $plugins=(class_exists('Userlayer')) ? implode(',', $this->config->item('user_plugin')):array();
+        var_dump('plugins',$plugins);
         var_dump('idu', $idu, $this->user->get_user((int) $idu));
     }
 
