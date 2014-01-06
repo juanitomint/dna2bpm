@@ -657,7 +657,7 @@ class Engine extends MX_Controller {
                                         if ($rendering) {
                                             $token_id = $first['_id'];
                                             if (strstr($rendering,'http')) {
-                                                $redir = $rendering . "?id=$id&token=$token_id";
+                                                $redir = $rendering . "&id=$id&token=$token_id";
                                             } else {
                                                 $redir = $this->base_url . "dna2/render/edit/" . $shape->properties->rendering . "/$id/id/token/" . $token_id;
                                             }
