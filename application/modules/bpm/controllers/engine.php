@@ -145,6 +145,7 @@ class Engine extends MX_Controller {
             $mywf = $this->bpm->load($idwf, true);
             $mywf['data']['idwf'] = $idwf;
             $mywf['data']['case'] = $case;
+            $mywf['data']['folder'] = $mywf['folder'];
             $wf = bindArrayToObject($mywf['data']);
             //----make it publicly available to other methods
             $this->wf = $wf;

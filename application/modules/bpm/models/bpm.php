@@ -1179,7 +1179,9 @@ class Bpm extends CI_Model {
 
         if ($parent) {
             //----try to get group by name
-            $group = $this->group->get_byname($parent->properties->name);
+//            $group_name = $wf->idwf . '/' . $parent->properties->name;
+            $group_name = $wf->folder . '/' . $parent->properties->name;
+            $group = $this->group->get_byname($group_name);
             if ($group) {
                 $data['idgroup'][] = $group['idgroup'];
                 //---if group exists add it to the array
@@ -1189,8 +1191,8 @@ class Bpm extends CI_Model {
                 if ($this->config->item('auto_create_groups')) {
                     $idgroup = $this->group->genid();
                     $group = array();
-                    $group['idgroup']= $idgroup;
-                    $group['name']= $parent->properties->name;
+                    $group['idgroup'] = $idgroup;
+                    $group['name'] =$group_name;
                     $this->group->save($group);
                 } else {
                     $idgroup = -1;
