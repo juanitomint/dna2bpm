@@ -85,5 +85,3 @@ class Login extends MX_Controller {
     }
 
 }
-
-?>

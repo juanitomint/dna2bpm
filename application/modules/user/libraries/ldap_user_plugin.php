@@ -13,30 +13,31 @@ class ldap_user_plugin extends User {
 ////-----update last access
     function add($user_data) {
         $ldapconn = $this->connect();
-        $user_data['group'] = '1000,1100';
         $ldapbind = ldap_bind($ldapconn, $this->config->item('ldaprdn'), $this->config->item('ldappass')) or die("Could not bind with password to: " . $this->config->item('ldaprdn'));
         //@todo add user to ldap directory
         //----add user to groups
         if ($user_data['group']) {
             $group = explode(',', $user_data['group']);
             $user_dn = $this->get_DN_byid((int) $user_data['idu']);
-            var_dump($group, $user_dn);
-            echo "<h3>Removing User form all groups</h3>";
+            //var_dump($group, $user_dn);
             $this->group->remove_user($user_dn);
             foreach ($group as $gidNumber) {
                 $group_dn = $this->group->get_DN_byid($gidNumber);
-                
-                $filter = "(|(member=" . $user_dn . ")(uniqueMember=" . $user_dn . "))";
+
+                //$filter = "(|(member=" . $user_dn . ")(uniqueMember=" . $user_dn . "))";
+                $filter = "(".$this->config->item('member_attr').'=' . $user_dn . ")";
                 $result = ldap_search($ldapconn, $group_dn, $filter, array('dn')) or die("Search error.");
                 $info = ldap_get_entries($ldapconn, $result);
                 if (!$info['count']) {
-                    echo "add user $user_dn to $group_dn<br/>";
+                    //echo "add user $user_dn to $group_dn<br/>";
                     $ldap_obj = array(
-                        'uniqueMember' => $user_dn
+                        $this->config->item('member_attr') => $user_dn
                     );
+                    //---Add the user to the group
                     ldap_mod_add($ldapconn, $group_dn, $ldap_obj) or die('error in ldap MOdule<br/>File:".__FILE__."<br/>Line:' . __LINE__);
                 }
             }
+            
         }
     }
 
@@ -94,7 +95,8 @@ class ldap_user_plugin extends User {
     function get_user_groups($dn) {
         $ldapconn = $this->connect();
         $ldapbind = ldap_bind($ldapconn, $this->config->item('ldaprdn'), $this->config->item('ldappass')) or die("Could not bind with password to: " . $this->config->item('ldaprdn'));
-        $filter = "(|(member=" . $dn . ")(uniqueMember=" . $dn . "))";
+        //$filter = "(|(member=" . $dn . ")(uniqueMember=" . $dn . "))";
+        $filter = "(".$this->config->item('member_attr').'=' . $dn . ")";
         $result = ldap_search($ldapconn, $this->config->item('groupsDN'), $filter, array('dn'), 1) or die("Search error.");
         $info = ldap_get_entries($ldapconn, $result);
         $groups = array();
@@ -114,7 +116,7 @@ class ldap_user_plugin extends User {
         $data = ldap_get_entries($ldapconn, $result);
         $groups = array();
         $data = $data[0];
-        $ldap_users = (isset($data['uniquemember'])) ? $data['uniquemember'] : $data['member'];
+        $ldap_users =(isset($data[$this->config->item('member_attr')])) ? $data[$this->config->item('member_attr')]:array();
         unset($ldap_users['count']);
 
         $ldap_users = array_slice($ldap_users, $start, $limit);

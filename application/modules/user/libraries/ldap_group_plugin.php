@@ -85,7 +85,7 @@ $ldapbind = ldap_bind($ldapconn, $this->config->item('ldaprdn'), $this->config->
         $result = ldap_search($ldapconn, $this->config->item('groupsDN'), $filter, array()) or die("Search error.");
         $data = ldap_get_entries($ldapconn, $result);
         $groups = array();
-        var_dump($data);echo "<hr/>";
+        //var_dump($data);echo "<hr/>";
         for ($i = 0; $i < $data["count"]; $i++) {
             //----map to unified group object
             $thisgroup = array(
