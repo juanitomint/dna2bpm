@@ -17,6 +17,7 @@ class Bpm extends CI_Model {
         $this->idu = (int) $this->session->userdata('iduser');
         $this->load->library('cimongo/cimongo');
         $this->db = $this->cimongo;
+        $this->load->config('bpm/config');
     }
 
     function load($idwf, $replace = false) {
@@ -100,7 +101,7 @@ class Bpm extends CI_Model {
         $mywf['idwf'] = $idwf;
         $mywf['data'] = (isset($data)) ? $data : $mywf['data'];
         $mywf['svg'] = (isset($svg)) ? $svg : $mywf['svg'];
-        $mywf['version'] = (isset($mywf['version'])) ? $mywf['version']++ : 1;
+        $mywf['version'] = (isset($mywf['version'])) ? $mywf['version'] ++ : 1;
         array_filter($mywf);
         //--only save if 
         //var_dump2($mywf);
@@ -1187,9 +1188,9 @@ class Bpm extends CI_Model {
                 //---autocreate group here
                 if ($this->config->item('auto_create_groups')) {
                     $idgroup = $this->group->genid();
-                    $group = new stdClass();
-                    $group->idgroup = $idgroup;
-                    $group->name = $parent->properties->name;
+                    $group = array();
+                    $group['idgroup']= $idgroup;
+                    $group['name']= $parent->properties->name;
                     $this->group->save($group);
                 } else {
                     $idgroup = -1;
