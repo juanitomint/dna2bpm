@@ -27,7 +27,6 @@ class Test extends MX_Controller {
     }
 
     function ldap() {
-        $this->load->library('ldap_plugin');
 
         echo "<h1>LDAP TEST</h1>";
         echo "<h3>Authenticate: jborda -> jborda1234</h3>";
@@ -37,6 +36,20 @@ class Test extends MX_Controller {
         var_dump($this->user->get_user($userId));
         echo "<h3>get_groups</h3>";
         var_dump($this->group->get_groups());
+        echo "<h3>get_group by gidnumber 1010</h3>";
+        var_dump($this->group->get(1010));
+        echo "<h3>genid()</h3>";
+        $newid = $this->group->genid();
+        var_dump($newid);
+        echo "<h3>Add Group:$newid</h3>";
+        $group = $this->group->save(
+                array(
+                    'idgroup' => $newid,
+                    'name' => 'Test_' . $newid
+                )
+        );
+        echo "<h3>Remove Group:$newid</h3>";
+        $this->group->delete($newid);
     }
 
 }
