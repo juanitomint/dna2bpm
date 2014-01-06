@@ -8,7 +8,7 @@ class admin extends MX_Controller {
     function __construct() {
         parent::__construct();
         $this->load->library('parser');
-        $this->load->model('rbac');
+        $this->load->library('user/userlayer');
         $this->user->authorize();
         //---base variables
         $this->base_url = base_url();

@@ -7,6 +7,6 @@ $config['groupAdmin']	= 1;
 
 //----set if yopu want to use a plugin
 $config['user_plugin']=array(
-    'ldap_auth',
+    //'ldap_auth',
     //'mysql',
     );

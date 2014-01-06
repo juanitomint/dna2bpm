@@ -368,7 +368,7 @@ class User extends CI_Model {
             #@todo //--check order like
             $this->db->order_by($order);
         }
-        $result = $this->db->get('users', $limit, $offset);
+        $result = $this->db->get('users', $limit, $offset)->result();
         return $result;
     }
 
