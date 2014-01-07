@@ -19,6 +19,8 @@ $config['ldap_use_groups'] = true;
 
 //-----Override GroupAdmin
 $config['groupAdmin'] = 1000;
+$config['userDefaultGidnumber'] = 999;
+$config['home'] ='/home/';
 //-----set member Attributo to search or save members
 //$config['member_attr']='member';  //<------Zentyal
 $config['member_attr'] = 'uniquemember'; //<----OpenDs
@@ -28,14 +30,14 @@ $config['user_map'] = array(
     'idu' => 'uidnumber',
     "name" => "givenname",
     "lastname" => "sn",
-    "cn" => "cn",
+    "name" => "cn",
     "company" => "",
     "email" => "mail",
     "idnumber" => "",
     "phone" => "",
     "nick" => "uid",
-    "passw" => "",
-    "phone" => "telephonenumber",
+    "passw" => "userpassword",
+    //"phone" => "telephonenumber",
 );
 $config['group_map'] = array(
     'idgroup' => 'gidnumber',
@@ -45,10 +47,11 @@ $config['group_map'] = array(
 
 $config['user_template'] = array(
     'objectClass' => array(
-        0 => 'person',
-        1 => 'inetorgperson',
-        2 => 'organizationalperson',
-        3 => 'top'
+        //0 => 'person',
+        0 => 'inetOrgPerson',
+        //2 => 'organizationalperson',
+        1 => 'posixAccount',
+        2 => 'top'
     )
 );
 $config['group_template'] = array(
