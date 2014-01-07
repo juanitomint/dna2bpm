@@ -198,7 +198,7 @@ var tree = Ext.create('Ext.tree.Panel', {
     },
     dockedItems: [{
             xtype: 'toolbar', items: [
-                saveTree,
+                
                 reloadTree,
                 addPath,
                 removePath
