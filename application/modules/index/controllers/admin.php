@@ -20,9 +20,7 @@ class admin extends MX_Controller {
     function __construct() {
         parent::__construct();
         $this->load->library('parser');
-        $this->load->model('user/user');
-        $this->load->model('user/group');
-        $this->load->model('user/rbac');
+
         $this->load->model('index/menu');
         $this->user->authorize();
         //---base variables
