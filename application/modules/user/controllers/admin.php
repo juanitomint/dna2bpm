@@ -70,8 +70,9 @@ class admin extends MX_Controller {
                 $groups = array();
                 //---Gen id 4 group
                 foreach ($post_groups as $group) {
+                    $group = (array) $group;
                     $idgroup = $this->group->genid();
-                    $group->idgroup = $idgroup;
+                    $group['idgroup'] = $idgroup;
                     $this->group->save($group);
                     $groups[] = $group;
                 }
@@ -134,8 +135,8 @@ class admin extends MX_Controller {
                 $rtnArr['totalCount'] = count($rs);
 
                 foreach ($rs as $thisUser) {
-                    
-                    $thisUser->_id = (property_exists($thisUser,'_id')) ? $thisUser->_id->{'$id'} :$thisUser->idu;
+
+                    $thisUser->_id = (property_exists($thisUser, '_id')) ? $thisUser->_id->{'$id'} : $thisUser->idu;
                     $rtnArr['rows'][] = $thisUser;
                     //break;
                 }
