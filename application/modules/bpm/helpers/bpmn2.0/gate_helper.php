@@ -25,7 +25,7 @@ function run_ParallelGateway($shape, $wf, $CI) {
 function run_Exclusive_Databased_Gateway($shape, $wf, $CI) {
 
     $debug = (isset($CI->debug[__FUNCTION__])) ? $CI->debug[__FUNCTION__] : false;
-    $debug = true;
+    //$debug = true;
     $shape_data = array();
 //---assign gate to current user
     $shape_data['assign'][] = (int) $CI->session->userdata('iduser');
@@ -90,7 +90,7 @@ function run_Exclusive_Databased_Gateway($shape, $wf, $CI) {
                 echo '<hr>';
             }
         }
-        exit;
+
         if ($i == 0) {//---none of the above has match, so try to find default
             foreach ($shape->outgoing as $key => $out) {
                 $shape_out = $CI->bpm->get_shape($out->resourceId, $wf);
@@ -239,5 +239,3 @@ function run_InclusiveGateway($shape, $wf, $CI) {
         }
     }
 }
-
-?>
