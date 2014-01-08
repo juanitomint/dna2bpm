@@ -1,13 +1,37 @@
 <?php
 
 function run_Task($shape, $wf, $CI) {
-    //$CI = & get_instance('Engine');
-//---set DS pointer to Data Storage
-    $DS = (property_exists($CI, 'data')) ? $CI->data : null;
     $debug = (isset($CI->debug[__FUNCTION__])) ? $CI->debug[__FUNCTION__] : false;
     //$debug = true;
+    //$CI = & get_instance('Engine');
+    $resourceId = $shape->resourceId;
+//---set DS pointer to Data Storage
+    $DS = (property_exists($CI, 'data')) ? $CI->data : null;
     if ($debug)
         echo '<H1>TASK:' . $shape->properties->name . '</H1>';
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+//---check 4 looptype---
+    
+    if (!property_exists($wf, 'task_run'))
+        $wf->task_run = array();
+    switch ($shape->properties->looptype) {
+        case 'Standard':
+            break;
+        default:
+            //only excutes task 1 time
+            if (in_array($resourceId, $wf->task_run)) {
+                $wf->prevent_run[]=$resourceId;
+                return;
+            }
+            break;
+    }
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+//---DATA LOAD--
+//----add $resourceId to the run stack
+    $wf->task_run[] = $resourceId;
+    
     $data = array();
 //---get case data
     $case = $CI->bpm->get_case($wf->case);
@@ -49,9 +73,9 @@ function run_Task($shape, $wf, $CI) {
             }
         }
     }
+
 //--------------------------------------------------
 //---load data from 'transport' from previous shape
-    $resourceId = $shape->resourceId;
     $inbound = $CI->bpm->get_inbound_shapes($resourceId, $wf);
     foreach ($inbound as $inshape) {
         $token_in = $CI->bpm->get_token($wf->idwf, $wf->case, $inshape->resourceId);
@@ -96,12 +120,12 @@ function run_Task($shape, $wf, $CI) {
 ////////////////////////////////////////////////////////////////////////////
 /////////////////////// Search outgoing for timers /////////////////////////
 ////////////////////////////////////////////////////////////////////////////
- foreach($shape->outgoing as $out){
-     $this_shape=$CI->bpm->get_shape($out->resourceId, $wf);
-     if($this_shape->stencil->id=='IntermediateTimerEvent'){
-      $CI->bpm->set_token($wf->idwf, $wf->case, $this_shape->resourceId, $this_shape->stencil->id, 'pending');   
-     }
- }
+    foreach ($shape->outgoing as $out) {
+        $this_shape = $CI->bpm->get_shape($out->resourceId, $wf);
+        if ($this_shape->stencil->id == 'IntermediateTimerEvent') {
+            $CI->bpm->set_token($wf->idwf, $wf->case, $this_shape->resourceId, $this_shape->stencil->id, 'pending');
+        }
+    }
 ////////////////////////////////////////////////////////////////////////////
 /////////////////////// SWITCH BY TASK TYPE ////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
@@ -174,13 +198,11 @@ function run_Task($shape, $wf, $CI) {
                         }
 ///--ecxecute BE CAREFULL EXTREMLY DANGEROUS
                         try {
-                            $DS->$data_store = eval($streval)
-                                    
-                                    or die(
-                                    "<h1>SCRIPT DIE! :(".
-                                    var_dump(
-                                            'Name', $shape->properties->name, '$data_store', $data_store, 'type', $shape->properties->tasktype, 'streval', $streval
-                                    ));
+                            $DS->$data_store = eval($streval) or die(
+                                            "<h1>SCRIPT DIE! :(" .
+                                            var_dump(
+                                                    'Name', $shape->properties->name, '$data_store', $data_store, 'type', $shape->properties->tasktype, 'streval', $streval
+                            ));
                         } catch (ErrorException $e) {
                             echo 'Caught exception: ', $e->getMessage(), "<br/>";
                         }

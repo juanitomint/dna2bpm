@@ -44,6 +44,7 @@ class Engine extends MX_Controller {
         $this->debug['get_inbound_shapes'] = null;
         $this->debug['load_data'] = null;
         $this->debug['manual_task'] = null;
+        $this->debug['show_modal'] = null;
 
         //---debug Helpers
         $this->debug['run_Task'] = null;
@@ -163,23 +164,28 @@ class Engine extends MX_Controller {
             $this->load_data($wf, $case);
             //$open = $this->bpm->get_tokens($idwf, $case, 'pending');
             $status = 'pending';
+            $wf->prevent_run = array();
             while ($i <= 100 and $open = $this->bpm->get_tokens($idwf, $case, $status)) {
                 $i++;
                 foreach ($open as $token) {
                     //---only call tokens that correspond to user.
                     //var_dump($token);
-                    $shape = $this->bpm->get_shape($token['resourceId'], $wf);
-                    $callfunc = 'run_' . $shape->stencil->id;
-                    if ($debug) {
-                        $name = (property_exists($shape->properties, 'name')) ? $shape->properties->name : '';
-                        $doc = (property_exists($shape->properties, 'documentation')) ? $shape->properties->documentation : '';
-                        echo 'About to call:' . $callfunc . ':' . $name . '<br/>' . $shape->stencil->id . '<br/>';
-                        var_dump(function_exists($callfunc));
+                    $resourceId = $token['resourceId'];
+
+                    if (!in_array($resourceId, $wf->prevent_run)) {
+                        $shape = $this->bpm->get_shape($resourceId, $wf);
+                        $callfunc = 'run_' . $shape->stencil->id;
+                        if ($debug) {
+                            $name = (property_exists($shape->properties, 'name')) ? $shape->properties->name : '';
+                            $doc = (property_exists($shape->properties, 'documentation')) ? $shape->properties->documentation : '';
+                            echo 'About to call:' . $callfunc . ':' . $name . '<br/>' . $shape->stencil->id . '<br/>';
+                            var_dump(function_exists($callfunc));
+                        }
+                        /*
+                         * Calls the specific function for that shape or movenext
+                         */
+                        $result = (function_exists($callfunc)) ? $callfunc($shape, $wf, $this) : $this->bm->movenext($shape, $wf);
                     }
-                    /*
-                     * Calls the specific function for that shape or movenext
-                     */
-                    $result = (function_exists($callfunc)) ? $callfunc($shape, $wf, $this) : $this->bpm->movenext($shape, $wf);
                 }
             }
             $this->get_pending('model', $idwf, $case);
@@ -721,6 +727,13 @@ class Engine extends MX_Controller {
     }
 
     function show_modal($name, $text) {
+        $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
+        if ($debug) {
+            echo '<h1>' . __FUNCTION__ . '</h1>';
+            echo "<h3>$name</h3>";
+            echo "<span>$text</span>";
+            return;
+        }
         $this->load->library('ui');
         $renderData['base_url'] = $this->base_url;
         $renderData['name'] = $name;
