@@ -344,6 +344,7 @@ class Repository extends MX_Controller {
         $this->load->helper('url');
         $this->load->helper('file');
         $filePath = "images/zip/";
+        //@todo better warning manager
         try {
             if (!is_dir($filePath)) {
                 mkdir($filePath, 0775, true);
