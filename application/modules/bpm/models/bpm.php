@@ -1012,7 +1012,11 @@ class Bpm extends CI_Model {
 
         if ($debug)
             echo '<h2>' . __FUNCTION__ . '</h2>';
-
+        //----ignore certainshapes
+        $ignore_shapes=array('TextAnnotation');
+        if(in_array($shape_src->stencil->id,$ignore_shapes)){
+            return;
+        }
         //---set default status
         $status = 'pending';
         //---mark this shape as FINISHED

@@ -44,6 +44,10 @@ class Engine extends MX_Controller {
         $this->debug['get_inbound_shapes'] = null;
         $this->debug['load_data'] = null;
         $this->debug['manual_task'] = null;
+        /*
+         * true: don't show modal msgs
+         * null: no debug
+         */
         $this->debug['show_modal'] = null;
 
         //---debug Helpers
@@ -184,7 +188,7 @@ class Engine extends MX_Controller {
                         /*
                          * Calls the specific function for that shape or movenext
                          */
-                        $result = (function_exists($callfunc)) ? $callfunc($shape, $wf, $this) : $this->bm->movenext($shape, $wf);
+                        $result = (function_exists($callfunc)) ? $callfunc($shape, $wf, $this) : $this->bpm->movenext($shape, $wf);
                     }
                 }
             }
