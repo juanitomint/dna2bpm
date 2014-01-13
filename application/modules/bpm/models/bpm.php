@@ -724,7 +724,8 @@ class Bpm extends CI_Model {
         $user_groups = $user->group;
         $query = array(
             //'type' =>array('$in'=>array('Task','Exclusive_Databased_Gateway')),
-            'tasktype' => array('$in' => array('User', 'Manual')),
+            //'tasktype' => array('$in' => array('User', 'Manual')),
+            'type' => array('$in' => array('Task', 'Exclusive_Databased_Gateway')),
             'title' => array('$exists' => true),
             'status' => array('$nin' => array('waiting')),
             '$or' => array(
@@ -735,7 +736,7 @@ class Bpm extends CI_Model {
         );
         if ($idcase)
             $query['idcase'] = $idcase;
-        //var_dump2(json_encode($query));
+        //var_dump(json_encode($query));
         return $this->mongo->db->tokens->find($query);
     }
 
