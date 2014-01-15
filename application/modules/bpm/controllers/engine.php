@@ -216,13 +216,12 @@ class Engine extends MX_Controller {
             }
         }
         //---Redir the browser to engine Run
-        
+
         $redir = "bpm/engine/run/model/$idwf/$case";
-        if(!$debug){
-        header("Location:" . $this->base_url . $redir);
-        }else{
-            echo 'Location:<a href="' . $this->base_url . $redir.'"> >>> Click here to continue <<< </a>';
-                    
+        if (!$debug) {
+            header("Location:" . $this->base_url . $redir);
+        } else {
+            echo 'Location:<a href="' . $this->base_url . $redir . '"> >>> Click here to continue <<< </a>';
         }
     }
 
@@ -439,7 +438,7 @@ class Engine extends MX_Controller {
                 echo '<hr/>';
             }
             //$this->$strStor= bindArrayToObject($this->app->getall($item,$container));
-            $this->data->$strStor = $this->$conn->get_data($resource);
+            $this->data->$strStor = (object)$this->$conn->get_data($resource);
 
             //----4 debug
             if ($debug) {
@@ -675,22 +674,25 @@ class Engine extends MX_Controller {
                                         $rendering = trim($shape->properties->rendering);
                                         if ($rendering) {
                                             $token_id = $first['_id'];
+                                            $streval='return '.$rendering.';';
+                                            $rendering = eval($streval);
+                                            
                                             if (strstr($rendering, 'http')) {
-                                                $querystr=array_filter(
+                                                $querystr = array_filter(
                                                         array(
-                                                            'id'=>$id,
-                                                            'idwf'=>$idwf,
-                                                            'token'=>$token_id,
-                                                            'case'=>$token['case']
+                                                            'id' => $id,
+                                                            'idwf' => $idwf,
+                                                            'token' => $token_id,
+                                                            'case' => $token['case']
                                                         )
-                                                        );
-                                                $q='';
-                                                foreach($querystr as $key=>$value) $q.='&'.$key.'='.$value;
+                                                );
+                                                $q = '';
+                                                foreach ($querystr as $key => $value)
+                                                    $q.='&' . $key . '=' . $value;
                                                 $redir = $rendering .$q;
                                             } else {
                                                 $redir = $this->base_url . "dna2/render/edit/" . $shape->properties->rendering . "/$id/id/token/" . $token_id;
                                             }
-
                                             if (!$debug)
                                                 header("Location:" . $redir);
                                             else
