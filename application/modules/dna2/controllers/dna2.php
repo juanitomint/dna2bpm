@@ -19,18 +19,16 @@ class Dna2 extends MX_Controller {
         $this->load->library('parser');
         $this->load->library('ui');
         $this->load->model('app');
-        $this->load->model('user/user');
-        $this->load->model('user/rbac');
         $this->load->model('bpm/bpm');
         $this->load->model('msg');
 
         //---base variables
         $this->base_url = base_url();
-        $this->module_url = base_url() . 'dna2/';
+        $this->module_url = base_url() . $this->router->fetch_module() . '/';
         $this->user->authorize();
         //----LOAD LANGUAGE
         $this->lang->load('library', $this->config->item('language'));
-        $this->idu = (float) $this->session->userdata('iduser');
+        $this->idu = (int) $this->session->userdata('iduser');
     }
 
     function Application($idapp) {
@@ -158,7 +156,6 @@ class Dna2 extends MX_Controller {
 
     function render($file, $customData) {
 
-        $this->load->model('user/user');
         $this->load->model('app');
         $this->load->model('bpm/bpm');
         $this->user->authorize();
@@ -190,8 +187,11 @@ class Dna2 extends MX_Controller {
          */
         $cpData['cases'] = $cases_data['cases'];
         //----get Apps from DB
+        $cpData['apps'] = array();
+        $cpData['apps']['SumApps'] = 0;
         $apps = $this->app->get_apps();
-        if ($apps) {
+
+        if ($apps->count()) {
             //----check if the user has access to thi app
             foreach ($apps as $thisApp) {
                 $authorized = false;
@@ -213,9 +213,12 @@ class Dna2 extends MX_Controller {
                     );
                 }
             }
-            $cpData['apps']['SumApps'] = count($cpData['apps']);
+            if (isset($cpData['apps'])) {
+                
+            }
+        } else {
+            
         }
-
         /* Inbox Count MSgs */
         $mymgs = $this->msg->get_msgs($this->idu);
         $cpData['inbox_count'] = $mymgs->count();

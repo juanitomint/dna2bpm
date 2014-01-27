@@ -20,12 +20,12 @@ class Application extends MX_Controller {
 
         //----LOAD LANGUAGE
         $this->lang->load('library', $this->config->item('language'));
-        $this->idu = (float) $this->session->userdata('iduser');
+        $this->idu = (int) $this->session->userdata('iduser');
         $this->types_path = 'application/modules/application/assets/types/';
         $this->module_path = 'application/modules/application/';
         //----Variables
         $this->base_url = base_url();
-        $this->module_url = base_url() . 'application/';
+        $this->module_url = base_url() . $this->router->fetch_module().'/';
     }
 
     function addQuote($st) {
@@ -157,7 +157,7 @@ class Application extends MX_Controller {
         } else {
             //----LOAD
             $rtn = $this->app->get_code($id, $context, $lang);
-            $rtn['ok'] = (float) 1;
+            $rtn['ok'] = (int) 1;
             $rtn['code'] = isset($rtn['code']) ? $rtn['code'] : $template[$lang];
         }
 

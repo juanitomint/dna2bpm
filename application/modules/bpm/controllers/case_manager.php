@@ -25,9 +25,9 @@ class Case_manager extends MX_Controller {
         $this->module_path = 'application/modules/bpm/';
         //----LOAD LANGUAGE
         $this->lang->load('library', $this->config->item('language'));
-        $this->idu = (float) $this->session->userdata('iduser');
+        $this->idu = (int) $this->session->userdata('iduser');
         $this->base_url = base_url();
-        $this->module_url = base_url() . 'bpm/';
+        $this->module_url = base_url() . $this->router->fetch_module().'/';
     }
 
     function Browse($model, $idwf, $case = null, $action = '') {
@@ -107,8 +107,10 @@ class Case_manager extends MX_Controller {
                     foreach ($cases as $case) {
                         unset($case['history']);
                         //--set user
+                        if(!isset($case['iduser'])) break;
                         $user = $this->user->get_user($case['iduser']);
-                        $case['user'] = $user->nick;
+                        
+                        $case['user'] =($user) ? $user->nick:'???';
                         //----set pseudo status (add locked to statuses)
                         if (isset($case['locked'])) {
                             if ($case['locked'])

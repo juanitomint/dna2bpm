@@ -5,14 +5,15 @@ if (!defined('BASEPATH'))
 
 class User extends CI_Model {
 
+        
+        
     function __construct() {
         parent::__construct();
         $this->idu = $this->session->userdata('iduser');
-
+        $this->config->load('user/config');
         $this->load->library('cimongo/cimongo');
         $this->db = $this->cimongo;
-
-        //$this->load->database();
+        
     }
 
     function add($user_data) {
@@ -22,7 +23,7 @@ class User extends CI_Model {
         $user_data['idu'] = isset($user_data['idu']) ? $user_data['idu'] : null;
         if ($user_data['idu']) {
             //---set proper typo 4 id
-            $user_data['idu'] = (float) $user_data['idu'];
+            $user_data['idu'] = (int) $user_data['idu'];
             //---if found then update data
             $user = (array) $this->getbyid($user_data['idu']);
             //---add previous data not submited _id & iduser
@@ -85,7 +86,8 @@ class User extends CI_Model {
         }
     }
 
-    function authorize($reqlevel = '') {
+    function authorize($reqlevel = null) {
+//        $CI=& get_instance();
         $this->load->model('user/rbac');
         //---check if already logged in
         $this->isloggedin();
@@ -103,7 +105,7 @@ class User extends CI_Model {
                         $this->router->class,
                         $this->router->method,
                             )
-                    ));
+            ));
             /*
              * Auto-discover from existent will add all the paths it's hits
              * turn off for production
@@ -114,17 +116,19 @@ class User extends CI_Model {
                 'idu' => $this->idu
             ));
 
-            //---give access if belong to group 1=ADMINS
-            if (in_array(1, $thisUser->group)) {
+            //---give access if belong to group ADMINS
+            if ($this->isAdmin($thisUser)) {
                 $canaccess = true;
             } else {
+                //----$reqlevel override $path
+                $path = (isset($reqlevel)) ? $reqlevel : $path;
                 //---give access if have path exists
                 if ($this->user->has('root/' . $path, $thisUser))
                     $canaccess = true;
             }
         }
         if (!$canaccess) {
-            $this->session->set_userdata('redir',  base_url(). uri_string());
+            $this->session->set_userdata('redir', base_url() . uri_string());
             $this->session->set_userdata('msg', 'nolevel');
             header('Location: ' . base_url() . 'user/login');
         }
@@ -137,7 +141,7 @@ class User extends CI_Model {
     function isAdmin($user) {
         if ($this->isloggedin()) {
             //---this is the ADMIN policy
-            if (in_array('1', $user->group)) {
+            if (in_array($this->config->item('groupAdmin'), $user->group)) {
                 return true;
             }
         }
@@ -146,7 +150,7 @@ class User extends CI_Model {
 
     function isloggedin() {
         if (!$this->session->userdata('loggedin')) {
-            $this->session->set_userdata('redir',  base_url(). uri_string());
+            $this->session->set_userdata('redir', base_url() . uri_string());
             $this->session->set_userdata('msg', 'hastolog');
             header('Location: ' . base_url() . 'user/login');
         } else {
@@ -175,12 +179,29 @@ class User extends CI_Model {
         
     }
 
+    function getby_id($_id) {
+        /**
+         * returns single user with matching id
+         */
+        //var_dump(json_encode($query));
+        //$this->db->debug = true;
+        $this->db->where(array('_id' => new MongoId($_id)));
+        $result = $this->db->get('users')->result();
+        ///----return only 1st
+        //$this->db->debug = false;
+        if ($result) {
+            return $result[0];
+        } else {
+            return false;
+        }
+    }
+
     function getbyid($iduser) {
         /**
          * returns single user with matching id
          */
         //var_dump(json_encode($query));
-        $this->db->where(array('idu' => (float) $iduser));
+        $this->db->where(array('idu' => (int) $iduser));
         $result = $this->db->get('users')->result();
         ///----return only 1st
         if (isset($result[0]->idu)) {
@@ -214,9 +235,29 @@ class User extends CI_Model {
         }
     }
 
+    //forgot passw: used to change password 
+    function getbymailaddress($mail) {
+
+        $this->db->where(array('email' => $mail));
+        $result = $this->db->get('users')->result();
+
+        //----return only 1st
+        if (count($result)) {
+            return $result[0];
+        } else {
+            return false;
+        }
+    }
+
     function getbygroup($idgroup) {
-        $grouparr = (array) json_decode((string) $idgroup);
+        $grouparr = (is_array($idgroup)) ? $idgroup : (array) json_decode((string) $idgroup);
         $this->db->where_in('group', $grouparr);
+        $this->db->order_by(
+                array(
+                    'name' => 'asc',
+                    'lastname' => 'asc'
+                )
+        );
         $result = $this->db->get('users')->result();
         return $result;
     }
@@ -236,7 +277,7 @@ class User extends CI_Model {
     function get_user($iduser) {
         //*
         //returns an array with  matching id's
-        $query = array('idu' => (float) $iduser);
+        $query = array('idu' => (int) $iduser);
 
         //var_dump(json_encode($query));
         $user = $this->db->get_where('users', $query)->result();
@@ -244,10 +285,39 @@ class User extends CI_Model {
             return $user[0];
     }
 
+    //forgot password: change password token
+    function get_token($token) {
+
+        $query = array('token' => $token);
+        //var_dump(json_encode($query));
+
+        $details = $this->db->get_where('users_token', $query)->result();
+        if ($details)
+            return $details[0];
+    }
+
+    /*
+     * Get user data without passwords or any other security info
+     */
+
+    function get_user_safe($iduser) {
+        //*
+        //returns an array with  matching id's
+        $query = array('idu' => (int) $iduser);
+
+        //var_dump(json_encode($query));
+        $user = $this->db->get_where('users', $query)->result();
+        if ($user) {
+            unset($user[0]->password);
+            unset($user[0]->_id);
+            return $user[0];
+        }
+    }
+
     function get_user_array($iduser) {
         //*
         //returns an array with  matching id's
-        $query = array('idu' => (float) $iduser);
+        $query = array('idu' => (int) $iduser);
 
         //var_dump(json_encode($query));
         $user = $this->db->get_where('users', $query)->result_array();
@@ -280,12 +350,10 @@ class User extends CI_Model {
         }
 
         if ($query_txt) {
-            $this->db->like('nick', $query_txt);
-            /*
-              @todo make this work with mongo.
-              $this->db->or_like('name',(array) $query_txt);
-              $this->db->or_like('lastname',(array)$query_txt);
-             */
+            $this->db->or_like('nick', $query_txt);
+            $this->db->or_like('name', $query_txt);
+            $this->db->or_like('lastname', $query_txt);
+            $this->db->or_like('email', $query_txt);
 
             if (is_numeric($query_txt)) {
                 $this->db->or_where('idu', (int) $query_txt);
@@ -300,7 +368,7 @@ class User extends CI_Model {
             #@todo //--check order like
             $this->db->order_by($order);
         }
-        $result = $this->db->get('users', $limit, $offset);
+        $result = $this->db->get('users', $limit, $offset)->result();
         return $result;
     }
 
@@ -339,9 +407,24 @@ class User extends CI_Model {
      */
 
     function save($data) {
-        //var_dump($object);s
+        //var_dump($data);
         $options = array('safe' => true, 'upsert' => true);
         $result = $this->mongo->db->users->save($data, $options);
+        return $result;
+    }
+
+    //forgot password: change password token
+    function save_token($object) {
+        //var_dump($object);
+        $options = array('safe' => true, 'upsert' => true);
+        return $this->mongo->db->users_token->save($object, $options);
+    }
+
+    function delete_token($token) {
+
+        $this->db->where(array('token' => $token));
+        //---now delete original
+        $result = $this->db->delete('users_token');
         return $result;
     }
 
@@ -353,6 +436,24 @@ class User extends CI_Model {
         $obj = $this->group->get($idgroup);
         $this->mongo->db->selectCollection('groups.back')->save($obj, $options_save);
         $this->mongo->db->groups->remove($criteria, $options_delete);
+    }
+
+    function delete_by_id($_id) {
+
+        //----make backup first
+        $obj = $this->getby_id($_id);
+        if ($obj) {
+            unset($obj->_id);
+            //---delete from backup
+            $this->db->where(array('idu' => $obj->idu));
+            $this->db->delete('users.back');
+            //---make a new copy in backup table.
+            $result = $this->db->insert('users.back', (array) $obj);
+        }
+        $this->db->where(array('_id' => new MongoId($_id)));
+        //---now delete original
+        $result = $this->db->delete('users');
+        return $result;
     }
 
     function delete($iduser) {
@@ -368,7 +469,7 @@ class User extends CI_Model {
             //---make a new copy in backup table.
             $result = $this->db->insert('users.back', (array) $obj);
         }
-        $this->db->where(array('idu' => (float) $obj->idu));
+        $this->db->where(array('idu' => (int) $obj->idu));
         //---now delete original
         $result = $this->db->delete('users');
         return $result;
@@ -382,7 +483,7 @@ class User extends CI_Model {
         $container = 'users';
         //---if passed specific id
         if (func_num_args() > 0) {
-            $id = (float) func_get_arg(0);
+            $id = (int) func_get_arg(0);
             $passed = true;
             //echo "passed: $id<br>";
         }

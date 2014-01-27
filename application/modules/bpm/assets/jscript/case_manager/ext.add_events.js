@@ -3,7 +3,7 @@
  */
 var add_events=function(shapes){
     for (j in shapes){
-        shape=shapes[j];
+        var shape=shapes[j];
         xBound=0;
         yBound=0;
         //console.log(shape.stencil.id,exclude_shape.indexOf(shape.stencil.id)==-1);

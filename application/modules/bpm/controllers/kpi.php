@@ -24,9 +24,9 @@ class Kpi extends MX_Controller {
         $this->types_path = 'application/modules/bpm/assets/types/';
         $this->module_path = 'application/modules/bpm/';
         $this->lang->load('library', $this->config->item('language'));
-        $this->idu = (float) $this->session->userdata('iduser');
+        $this->idu = (int) $this->session->userdata('iduser');
         $this->base_url = base_url();
-        $this->module_url = base_url() . 'bpm/';
+        $this->module_url = base_url() . $this->router->fetch_module().'/';
     }
 
     function Index() {
@@ -174,7 +174,7 @@ class Kpi extends MX_Controller {
         $cpData = $this->lang->language;
         $thisKpi = array();
         $custom = '';
-        $thisKpi = array();
+        $thisKpi = array('');
         if (isset($idkpi)) {
             $thisKpi = $this->kpi_model->get($idkpi);
         }
@@ -249,7 +249,7 @@ class Kpi extends MX_Controller {
         echo $props;
     }
 
-    function test_render($idwf) {
+    function Test_render($idwf) {
         $this->load->model('bpm');
         $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
         if ($debug)
@@ -266,8 +266,11 @@ class Kpi extends MX_Controller {
         $cpData['module_url'] = $this->module_url;
         $cpData['idwf'] = $idwf;
         $kpis = $this->kpi_model->get_model($idwf);
-        //----PROCESS KPIS
+
+//----PROCESS KPIS
+        $kpi_show = array();
         foreach ($kpis as $kpi) {
+            //echo $kpi['type'].'<hr/>';
             $kpi_show[] = $this->render($kpi);
         }
         $cpData['content'] = implode($kpi_show);
@@ -279,24 +282,28 @@ class Kpi extends MX_Controller {
         $cpData['js'] = array(
             $this->module_url . 'assets/canv-gauge-master/gauge.js' => 'Jscript Gauge',
             $this->module_url . 'assets/jscript/gauge/gauge.init_1.js' => 'Init Gauges',
+            $this->module_url . 'assets/jscript/gauge/gauge.init_reverse.js' => 'Init Gauges reverse',
         );
 
         $this->ui->makeui('test.kpi.ui.php', $cpData);
     }
 
     function Render($kpi = null) {
+        $debug=false;
         $exists = false;
         //---load type extension
         if (!method_exists($this, $kpi['type'])) {
             $file_custom = $this->types_path . $kpi['type'] . '/kpi_controller.php';
             if (is_file($file_custom)) {
-                $exists = true;
+                //$exists = true;
                 if ($debug)
                     echo "Loaded Custom Render:$file_custom<br/>";
                 require_once($file_custom);
+                
             } else {
                 $rtn = $this->ShowMsg('<strong>Warning!</strong>Function:' . $kpi['type'] . '<br/>' . $kpi['title'] . '<br/>Does not exists. ', 'alert');
             }
+            $rtn = $kpi['type']($kpi,$this);
         } else {
             $exists = true;
         }
@@ -329,9 +336,9 @@ class Kpi extends MX_Controller {
         return $filter;
     }
 
+
     function time_avg_all($kpi) {
         $filter = $this->get_filter($kpi);
-        
     }
 
     function time_avg($kpi) {
@@ -367,7 +374,7 @@ class Kpi extends MX_Controller {
         $filter = $this->get_filter($kpi);
         $tokens = $this->bpm->get_tokens_byResourceId($kpi['resourceId'], $filter);
         $cpData = $kpi;
-        //$cpData['tokens']=$tokens;
+        //var_dump($tokens);
         $cpData['count'] = count($tokens);
         $rtn = $this->parser->parse('bpm/kpi_count', $cpData, true);
         return $rtn;
@@ -402,9 +409,10 @@ class Kpi extends MX_Controller {
             'user',
             'waiting'
         );
-        $filter['status'] = array('$in' => (array) $status); //@todo include other statuses
+        //$filter['status'] = array('$in' => (array) $status); //@todo include other statuses
         $tokens = $this->bpm->get_tokens_byResourceId($kpi['resourceId'], $filter);
         $cpData = $kpi;
+        //var_dump($tokens);
         //$cpData['tokens']=$tokens;
         $cpData['count'] = count($tokens);
         $rtn = $this->parser->parse('bpm/kpi_count', $cpData, true);

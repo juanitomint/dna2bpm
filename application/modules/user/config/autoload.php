@@ -3,6 +3,6 @@
 $autoload['libraries'] = array(
     'mongo',
     'session',
-    'ui'
+    'ui',    
 );
 ?>

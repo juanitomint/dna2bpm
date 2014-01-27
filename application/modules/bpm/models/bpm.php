@@ -14,9 +14,10 @@ class Bpm extends CI_Model {
 
     function __construct() {
         parent::__construct();
-        $this->idu = (float) $this->session->userdata('iduser');
+        $this->idu = (int) $this->session->userdata('iduser');
         $this->load->library('cimongo/cimongo');
         $this->db = $this->cimongo;
+        $this->load->config('bpm/config');
     }
 
     function load($idwf, $replace = false) {
@@ -100,7 +101,7 @@ class Bpm extends CI_Model {
         $mywf['idwf'] = $idwf;
         $mywf['data'] = (isset($data)) ? $data : $mywf['data'];
         $mywf['svg'] = (isset($svg)) ? $svg : $mywf['svg'];
-        $mywf['version'] = (isset($mywf['version'])) ? $mywf['version']++ : 1;
+        $mywf['version'] = (isset($mywf['version'])) ? $mywf['version'] ++ : 1;
         array_filter($mywf);
         //--only save if 
         //var_dump2($mywf);
@@ -152,6 +153,12 @@ class Bpm extends CI_Model {
         
     }
 
+    function get_cases_byFilter($filter) {
+        $this->db->where($filter);
+        $rs = $this->db->get('case');
+        return $rs->result_array();
+    }
+
     function get_cases($user = null, $offset = 0, $limit = null, $filter_status = array()) {
         $data = array(
             'cases' => array(),
@@ -161,7 +168,7 @@ class Bpm extends CI_Model {
         //---allow asking 4 other users only if admin
         if (($this->user->has("root/ADM") OR $this->user->has("root/ADMWF"))) {
 
-            $iduser = (isset($user)) ? (float) $user : $this->idu;
+            $iduser = (isset($user)) ? (int) $user : $this->idu;
         } else {
             $iduser = $this->idu;
         }
@@ -284,7 +291,7 @@ class Bpm extends CI_Model {
         //---check 4 incomplete data
         //---set execution user
         if (!isset($data['iduser']))
-            $data['iduser'] = (float) $this->session->userdata('iduser');
+            $data['iduser'] = (int) $this->session->userdata('iduser');
 
         if (!isset($idwf) or !isset($case) or !isset($resourceId)) {
             show_error("Can't update whith: idwf:$idwf case:$case  resourceId:$resourceId<br/>Incomplete Data.");
@@ -598,7 +605,7 @@ class Bpm extends CI_Model {
         $data['interval'] = date_diff($dateOut, $dateIn, true);
         //---asign user
         if (!isset($data['iduser']))
-            $data['iduser'] = (float) $this->session->userdata('iduser');
+            $data['iduser'] = (int) $this->session->userdata('iduser');
 
         $query = array('$set' => (array) $data);
         $criteria = array('id' => $id);
@@ -713,11 +720,12 @@ class Bpm extends CI_Model {
     }
 
     function get_tasks($iduser, $idcase = null) {
-        $user = $this->user->get_user((float) $iduser);
+        $user = $this->user->get_user((int) $iduser);
         $user_groups = $user->group;
         $query = array(
             //'type' =>array('$in'=>array('Task','Exclusive_Databased_Gateway')),
-            'tasktype' => array('$in' => array('User', 'Manual')),
+            //'tasktype' => array('$in' => array('User', 'Manual')),
+            'type' => array('$in' => array('Task', 'Exclusive_Databased_Gateway')),
             'title' => array('$exists' => true),
             'status' => array('$nin' => array('waiting')),
             '$or' => array(
@@ -728,7 +736,7 @@ class Bpm extends CI_Model {
         );
         if ($idcase)
             $query['idcase'] = $idcase;
-        //var_dump2(json_encode($query));
+        //var_dump(json_encode($query));
         return $this->mongo->db->tokens->find($query);
     }
 
@@ -1005,7 +1013,11 @@ class Bpm extends CI_Model {
 
         if ($debug)
             echo '<h2>' . __FUNCTION__ . '</h2>';
-
+        //----ignore certainshapes
+        $ignore_shapes=array('TextAnnotation');
+        if(in_array($shape_src->stencil->id,$ignore_shapes)){
+            return;
+        }
         //---set default status
         $status = 'pending';
         //---mark this shape as FINISHED
@@ -1172,7 +1184,9 @@ class Bpm extends CI_Model {
 
         if ($parent) {
             //----try to get group by name
-            $group = $this->group->get_byname($parent->properties->name);
+//            $group_name = $wf->idwf . '/' . $parent->properties->name;
+            $group_name = $wf->folder . '/' . $parent->properties->name;
+            $group = $this->group->get_byname($group_name);
             if ($group) {
                 $data['idgroup'][] = $group['idgroup'];
                 //---if group exists add it to the array
@@ -1181,9 +1195,9 @@ class Bpm extends CI_Model {
                 //---autocreate group here
                 if ($this->config->item('auto_create_groups')) {
                     $idgroup = $this->group->genid();
-                    $group = new stdClass();
-                    $group->idgroup = $idgroup;
-                    $group->name = $parent->properties->name;
+                    $group = array();
+                    $group['idgroup'] = $idgroup;
+                    $group['name'] =$group_name;
                     $this->group->save($group);
                 } else {
                     $idgroup = -1;
@@ -1302,14 +1316,14 @@ class Bpm extends CI_Model {
                         //---Add matched users to $data array
                         case 'user':
                             foreach ($matches as $user) {
-                                $rtn['assign'][] = (float) $user['idu'];
+                                $rtn['assign'][] = (int) $user['idu'];
                                 if ($debug)
                                     echo "adding user:" . $user['idu'] . ':' . $user['name'] . ' ' . $user['lastname'] . '<br/>';
                             }
                             break;
                         case 'group':
                             foreach ($matches as $group) {
-                                $rtn['idgroup'][] = (float) $group['idgroup'];
+                                $rtn['idgroup'][] = (int) $group['idgroup'];
                                 if ($debug)
                                     echo "adding group:" . $group['idgroup'] . ':' . $group['name'] . '<br/>';
                             }

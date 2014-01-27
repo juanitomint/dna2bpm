@@ -5,10 +5,10 @@ var HSPEED=1300;
 function playShape(result){
     if(result=='yes'){
         resourceId=this.get('resourceId');
-        gridSel=mygrid.selModel.selected.items[0];
+        gridSel=tokenGrid.selModel.selected.items[0];
         idcase=gridSel.get('id');
-        url=globals.base_url+'bpm/engine/run_post/model/'+globals.idwf+'/'+idcase+'/'+resourceId;
-        //console.log(url);
+        url=globals.base_url+'bpm/engine/run_post/model/'+globals.idwf+'/'+globals.idcase+'/'+resourceId;
+        console.log(url);
         window.location=url;
     }
 }

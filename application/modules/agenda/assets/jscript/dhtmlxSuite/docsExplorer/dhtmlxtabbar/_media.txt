@@ -1,4 +1,0 @@
-icons___file.gif
-icons___tabbar.gif
-common___any_ed.gif
-common___pro_ed.gif

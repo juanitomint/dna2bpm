@@ -8,16 +8,14 @@ class admin extends MX_Controller {
     function __construct() {
         parent::__construct();
         $this->load->library('parser');
-        $this->load->model('user');
-        $this->load->model('group');
-        $this->load->model('rbac');
+        $this->load->library('user/userlayer');
         $this->user->authorize();
         //---base variables
         $this->base_url = base_url();
-        $this->module_url = base_url() . 'user/';
+        $this->module_url = base_url() . $this->router->fetch_module() . '/';
         //----LOAD LANGUAGE
         $this->lang->load('library', $this->config->item('language'));
-        $this->idu = (float) $this->session->userdata('iduser');
+        $this->idu = (int) $this->session->userdata('iduser');
     }
 
     function Index() {
@@ -72,27 +70,27 @@ class admin extends MX_Controller {
                 $groups = array();
                 //---Gen id 4 group
                 foreach ($post_groups as $group) {
+                    $group = (array) $group;
                     $idgroup = $this->group->genid();
-                    $group->idgroup = $idgroup;
+                    $group['idgroup'] = $idgroup;
                     $this->group->save($group);
                     $groups[] = $group;
                 }
                 break;
             case 'read':
                 $db_groups = $this->group->get_groups();
-                $groups['totalCount'] = $db_groups->count();
-                while ($thisgroup = $db_groups->getNext()) {
-                    $groups['rows'][] = $thisgroup;
-                }
+                $groups['totalCount'] = count($db_groups);
+                $groups['rows'] = $db_groups;
+
                 break;
             case 'update':
                 $post_groups = json_decode(file_get_contents('php://input'));
-                
+
                 foreach ($post_groups as $group) {
-                    $idgroup=$group->idgroup;
+                    $idgroup = $group->idgroup;
                     $db_group = $this->group->get($idgroup);
-                    $obj=(array)$group+$db_group;
-                    $groups[]=$obj;
+                    $obj = (array) $group + $db_group;
+                    $groups[] = $obj;
                     $this->group->save($obj);
                 }
                 break;
@@ -134,19 +132,27 @@ class admin extends MX_Controller {
                     $sort[$value->property] = $value->direction;
                 };
                 $rs = $this->user->get_users($start, $limit, $sort, $query, $idgroup);
-                $rtnArr['totalCount'] = $rs->num_rows();
+                $rtnArr['totalCount'] = count($rs);
 
-                foreach ($rs->result() as $thisUser) {
+                foreach ($rs as $thisUser) {
+
+                    $thisUser->_id = (property_exists($thisUser, '_id')) ? $thisUser->_id->{'$id'} : $thisUser->idu;
                     $rtnArr['rows'][] = $thisUser;
                     //break;
                 }
                 break;
             case 'update':
-                $user_data=$_POST;
-                $user=$this->user->add($user_data);
+                $user_data = $_POST;
+                $user = $this->user->add($user_data);
                 $rtnArr['success'] = true;
                 $rtnArr['msg'] = 'User updated: ok!';
                 $rtnArr['data'] = $user;
+                break;
+            case 'destroy':
+                $post_users = json_decode(file_get_contents('php://input'));
+                foreach ($post_users as $user) {
+                    $this->user->delete_by_id($user->_id);
+                }
                 break;
         }
         //var_dump($cpData);
@@ -259,7 +265,7 @@ class admin extends MX_Controller {
         }
         $obj = $this->user->get_user($iduser);
         $post_obj['_id'] = $obj['_id'];
-        $post_obj['idu'] = (float) $iduser;
+        $post_obj['idu'] = (int) $iduser;
         $post_obj['idgroup'] = (int) $post_obj['idgroup'];
         $post_obj['passw'] = ($post_obj['passw']) ? md5($post_obj['passw']) : md5('nopass');
         //---conform group
@@ -293,16 +299,33 @@ class admin extends MX_Controller {
     function showall($idu) {
 
         echo "user from db:<br/>";
-        var_dump($this->user->get_user((float) $idu));
+        var_dump($this->user->get_user((int) $idu));
         echo '<hr/>';
 
         echo "level from db:<br/>";
-        var_dump($this->user->getlevel((float) $idu));
+        var_dump($this->user->getlevel((int) $idu));
         echo '<hr/>';
 
         echo "Session data:<br/>";
         var_dump('iduser', $this->session->userdata('iduser'), 'level', $this->session->userdata('level'));
         echo '<hr/>';
+    }
+
+    function test_user($idu) {
+        $this->user->authorize();
+        //---only allow users to impersonate
+        if ($this->user->isAdmin($this->user->get_user($this->idu))) {
+            $this->load->config('config');
+            //---register if it has logged is
+            $this->session->set_userdata('loggedin', true);
+            //---register the user id
+            $this->session->set_userdata('iduser', $idu);
+            //---register level string
+            $redir = base_url() . $this->config->item('default_controller');
+            //---redirect
+            header('Location: ' . $redir);
+            exit;
+        }
     }
 
 }
