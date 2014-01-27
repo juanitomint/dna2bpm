@@ -17,10 +17,10 @@
             <ul class="msgs">
             {mymsgs}
             <li id="{msgid}">
-                <span class="label label-default">{date}</span>
+                <a href="#" data-toggle="tooltip" data-placement="bottom" title="{msg_time}" class="tip"><span class="msg_date" >{msg_date}</span></a>
                 <a class="icon {icon_star}" href="#"></a>
-                <a class="icon icon-user" href="#" title="{sender}"></a>
                 <a class="subject {read}" href="#">{subject}</a>
+                <a class="pull-right" href="#" ><i class="fa fa-times"></i></a>
                 <div class="detail">
                     <div class="from"><strong>De: </strong><span>{sender}</span></div>
                     <div class="body">{body}</div>   

@@ -7,6 +7,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="stylesheet" href="{base_url}jscript/bootstrap/css/bootstrap.min.css" />
         <link rel="stylesheet" href="{base_url}jscript/bootstrap/css/bootstrap-responsive.min.css" />
+<!--        <link rel="stylesheet" href="{base_url}jscript/font-awesome-4.0.3/css/font-awesome.min.css" />-->
         <link rel="stylesheet" href="{base_url}jscript/fontawesome/css/font-awesome.min.css" />
         <link rel="stylesheet" href="{module_url}assets/css/extra-icons.css" />	
         <link rel="stylesheet" href="{module_url}assets/css/fullcalendar.css" />	
@@ -68,7 +69,7 @@
         <!-- SIDEBAR -->
         <div id="sidebar">
             <a href="dashboard" class="visible-phone">
-                <i class="icon icon-home">
+                <i class="icon icon-envelope    ">
                 </i> Dashboard </a>
             <ul>
                 <li class="{dashboard_class}">
@@ -163,10 +164,12 @@
 
         <script src="{module_url}assets/jscript/excanvas.min.js">
         </script>
+
         <script src="{module_url}assets/jscript/jquery.min.js">
         </script>
         <script src="{module_url}assets/jscript/jquery.ui.custom.js">
         </script>
+
         <script src="{base_url}/jscript/bootstrap/js/bootstrap.min.js">
         </script>
         <script src="{module_url}assets/jscript/jquery.flot.min.js">

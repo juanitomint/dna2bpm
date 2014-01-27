@@ -8,6 +8,7 @@ class Inbox extends MX_Controller {
         $this->load->library('parser');
         $this->load->library('ui');
         $this->load->model('msg');
+        $this->load->model('user');
         
         //---base variables
         $this->base_url = base_url();
@@ -35,7 +36,8 @@ class Inbox extends MX_Controller {
         
         foreach ($mymgs as $msg) {
             $msg['msgid'] = $msg['_id'];
-            $msg['date'] = substr($msg['checkdate'], 0, 10);
+            $msg['msg_date'] = substr($msg['checkdate'], 0, 10);
+            $msg['msg_time'] = date('l jS \of F Y h:i:s A',strtotime($msg['checkdate']));
             $msg['icon_star'] = (isset($msg['star']) && $msg['star']==true) ? ('icon-star') : ('icon-star-empty');
             $msg['read'] = (isset($msg['read'])&&$msg['read']==true) ? ('muted') : ('');
             if(isset($msg['from'])){
@@ -110,8 +112,10 @@ class Inbox extends MX_Controller {
     }
     
     function send(){
+
         $data=$this->input->post('data');
-        $to=(int)$data[0]['value'];
+        
+        $to=explode(",",$data[0]['value']);
         $subject=$data[1]['value'];
         $body=$data[2]['value'];
         $msg=array(
@@ -119,20 +123,52 @@ class Inbox extends MX_Controller {
         'body'=>$body,
         'from'=>$this->idu
         );
-
-        $this->msg->send($msg,$to);
+        $i=0;
+        
+        foreach($to as $user){
+            $this->msg->send($msg,(int)$user);
+            $i++;
+        }
+        echo $i;
+        
     }
     
     function new_msg(){
         $customData['user'] = (array) $this->user->get_user($this->idu);
 
-        $customData['js'] = array($this->module_url . "assets/jscript/inbox.js"=>'Inbox JS'); 
-        $customData['css'] = array($this->module_url . "assets/css/dashboard.css" => 'Dashboard CSS');
+        $customData['js'] = array(
+            $this->base_url . "jscript/select2-3.4.5/select2.min.js"=>'Select JS',
+            $this->module_url . "assets/jscript/inbox_new.js"=>'Inbox JS'
+            ); 
+
+        $customData['css'] = array(
+            $this->base_url . "jscript/select2-3.4.5/select2.css" => 'Select CSS',
+            $this->base_url . "jscript/select2-3.4.5/select2-bootstrap.css" => 'Select BT CSS',
+            $this->module_url . "assets/css/dashboard.css" => 'Dashboard CSS'
+            );
+
         
         Modules::run('dna2/dna2/render','inbox_new',$customData);
     }
     
+    function get_users(){
+       
+        $row_array = array();
+        $term=$this->input->post('term');
 
+        $allusers=$this->user->get_users(null,100,null,$term,null,'both');
+        foreach($allusers as $myuser){
+           $row_array[]=array('text'=> $myuser->nick,'id'=>$myuser->idu);
+        }
+        $ret['results']=$row_array;
+        echo json_encode($ret);
+        
+       
+
+    }
+    
+
+    
 } //
 
 ?>
