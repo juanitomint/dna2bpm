@@ -15,24 +15,15 @@ class Test extends MX_Controller {
 
     function __construct() {
         parent::__construct();
-//        $this->load->library('parser');
-//        //----LOAD LANGUAGE
-//        $this->lang->load('library', $this->config->item('language'));
-//        $this->idu = (int) $this->session->userdata('iduser');
+        $this->load->library('parser');
+        //----LOAD LANGUAGE
+        $this->lang->load('library', $this->config->item('language'));
+        $this->idu = (int) $this->session->userdata('iduser');
     }
 
     function Index() {
         echo "<h3>get_groups</h3>";
         var_dump($this->group->get_groups());
-    }
-
-    function cimongo() {
-        $this->load->library('cimongo/cimongo',null,'sgr_db');
-        //$this->sgr_db=new Cimongo();
-        $this->sgr_db->switch_db('sgr');
-        var_dump($this->sgr_db->get('padfyj',10)->result());
-        var_dump($this->cimongo->get('users',10)->result());
-        
     }
 
     function ldap() {

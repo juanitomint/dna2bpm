@@ -15,44 +15,45 @@
         <!-- Start 2nd col -->
 
     <form class="form-horizontal" id="inbox_new">
+        
+            
+        
+        
+    <!-- -->
+<!--      <div class="control-group">
+        <label for="multiple" class="control-label">Para</label>
+        <div class="controls">
+          <select name="to" class="select2" multiple="multiple" style="width:400px;">
+
+          </select>
+        </div>
+      </div>-->
+
+    <div class="control-group">
+    <label class="control-label" for="subject">Destinatario</label>
+    <div class="controls">
+    <input type="hidden" name="to" class="select2" multiple="multiple" />
+    </div>
+    </div>
+
     <!-- -->
     <div class="control-group">
-    <label class="control-label" for="to">To</label>
-    <div class="controls">
-    <select  multiple="multiple">   
-        <option>Option 1</option>
-        <option>Option 2</option>
-        <option>Option 3</option>
-        <option>Option 4</option>
-        <option>Option 5</option>
-    </select>
-    </div>
-    </div>
-        <!-- -->
-    <div class="control-group">
-    <label class="control-label" for="to">To</label>
-    <div class="controls">
-    <input type="text" name="to" placeholder="To">
-    </div>
-    </div>
-    <!-- -->
-    <div class="control-group">
-    <label class="control-label" for="subject">Subject</label>
+    <label class="control-label" for="subject">Título</label>
     <div class="controls">
     <input type="text" name="subject" placeholder="Subject">
     </div>
     </div>
     <!-- -->
     <div class="control-group">
-    <label class="control-label" for="body">Body</label>
+    <label class="control-label" for="body">Cuerpo</label>
     <div class="controls">
-   <textarea rows="5" name="body"></textarea>
+   <textarea rows="5" name="body" placeholder="Body"></textarea>
     </div>
     </div>
     <!-- -->
     <div class="control-group">
     <div class="controls">
-    <button type="submit" class="btn">Send</button>
+    <button type="submit" class="btn">Enviar</button>
     </div>
     </div>
     </form>

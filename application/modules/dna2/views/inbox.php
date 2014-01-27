@@ -20,11 +20,12 @@
                 <a href="#" data-toggle="tooltip" data-placement="bottom" title="{msg_time}" class="tip"><span class="msg_date" >{msg_date}</span></a>
                 <a class="icon {icon_star}" href="#"></a>
                 <a class="subject {read}" href="#">{subject}</a>
-                <a class="pull-right" href="#" ><i class="fa fa-times"></i></a>
+
                 <div class="detail">
                     <div class="from"><strong>De: </strong><span>{sender}</span></div>
                     <div class="body">{body}</div>   
                 </div>
+                <a class="pull-right tip" href="#" data-toggle="tooltip" data-placement="bottom" title="delete" ><i class="icon icon-remove"></i></a>
             </li>
             {/mymsgs}
         </ul>

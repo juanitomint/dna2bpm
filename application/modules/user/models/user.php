@@ -342,7 +342,7 @@ class User extends CI_Model {
         return $rs;
     }
 
-    function get_users($offset = 0, $limit = 50, $order = null, $query_txt = null, $idgroup = null) {
+    function get_users($offset = 0, $limit = 50, $order = null, $query_txt = null, $idgroup = null, $match='both') {
         $this->db->get('users');
         //var_dump($start,$limit,$idgroup, $order, $idgroup);
         if ($idgroup) {
@@ -350,10 +350,10 @@ class User extends CI_Model {
         }
 
         if ($query_txt) {
-            $this->db->or_like('nick', $query_txt);
-            $this->db->or_like('name', $query_txt);
-            $this->db->or_like('lastname', $query_txt);
-            $this->db->or_like('email', $query_txt);
+            $this->db->or_like('nick', $query_txt,$match);
+            $this->db->or_like('name', $query_txt,$match);
+            $this->db->or_like('lastname', $query_txt,$match);
+            $this->db->or_like('email', $query_txt,$match);
 
             if (is_numeric($query_txt)) {
                 $this->db->or_where('idu', (int) $query_txt);
