@@ -25,17 +25,24 @@ class Inbox extends MX_Controller {
     function Index() {
 
         $customData['user'] = (array) $this->user->get_user($this->idu);
-        $customData['inbox_icon'] = 'icon-envelope';
-        $customData['inbox_title'] = $this->lang->line('Inbox');
+        $customData['inbox_icon'] = 'icon-envelope';    
         $customData['js'] = array($this->module_url . "assets/jscript/inbox.js"=>'Inbox JS'); 
         $customData['css'] = array($this->module_url . "assets/css/dashboard.css" => 'Dashboard CSS');
-        //debug
-
-
-        $mymgs = $this->msg->get_msgs($this->idu);
+        
+        // Determino el folder
+        $folders=array('inbox','trash','outbox');
+        $source='to';
+        if($this->uri->segment(4) && in_array($this->uri->segment(4),$folders)){
+            $folder=$this->uri->segment(4);
+        }else{
+            $folder='inbox';
+        }
+        $customData['inbox_title'] = ucfirst($folder);
+        $mymgs = $this->msg->get_msgs($this->idu,$folder);
         
         foreach ($mymgs as $msg) {
             $msg['msgid'] = $msg['_id'];
+            $msg['subject']=(strlen($msg['subject'])!=0)?($msg['subject']):("No Subject");
             $msg['msg_date'] = substr($msg['checkdate'], 0, 10);
             $msg['msg_time'] = date('l jS \of F Y h:i:s A',strtotime($msg['checkdate']));
             $msg['icon_star'] = (isset($msg['star']) && $msg['star']==true) ? ('icon-star') : ('icon-star-empty');
@@ -151,6 +158,7 @@ class Inbox extends MX_Controller {
         Modules::run('dna2/dna2/render','inbox_new',$customData);
     }
     
+    // Get list of users
     function get_users(){
        
         $row_array = array();
@@ -163,10 +171,17 @@ class Inbox extends MX_Controller {
         $ret['results']=$row_array;
         echo json_encode($ret);
         
-       
-
     }
     
+    // Move msg to trash
+    
+    function move(){
+        $msgid=$this->input->post('msgid');
+        $folder=$this->input->post('folder');
+        $this->msg->move($msgid,$folder);
+    }
+    
+
 
     
 } //

@@ -5,21 +5,36 @@ if (!defined('BASEPATH'))
 
 class Msg extends CI_Model {
 
-    function Msg() {
+//    function Msg() {
+//        parent::__construct();
+//    }
+    function __construct() {
         parent::__construct();
+        $this->idu = $this->session->userdata('iduser');
+//        $this->config->load('user/config');
+        $this->load->library('cimongo/cimongo');
+        $this->db = $this->cimongo;
+        
     }
+    
 
     //---get that msg
     function get_msgs($iduser, $folder=null) {
 
-        $query = array('to' =>(double) $iduser);
-        if (isset($folder))
-        $query['folder'] = $folder;
-        $result = $this->mongo->db->msg->find($query)->sort(array('checkdate'=>-1));        
-        //var_dump($query, json_encode($query), $result->count());
+        if($folder=='outbox'){
+            $query = array('from' =>(double) $iduser);
+        }else{
+            // Para outbox
+            $query = array('to' =>(double) $iduser);
+            if (isset($folder))
+                $query['folder'] = $folder;
+        }
+        
+
+        $result = $this->mongo->db->msg->find($query)->sort(array('checkdate'=>-1));   
+
         return $result;
-
-
+       
     }
 
     //---send msg multiple users
@@ -51,6 +66,14 @@ class Msg extends CI_Model {
         $criteria = array('_id' => $mongoid);
         return $this->mongo->db->msg->remove($criteria, $options);
     }
+    
+    function move($id,$folder='trash') {
+    $mongoid=new MongoId($id);
+    $query=array('$set' =>array('folder'=>$folder));
+    $criteria = array('_id' => $mongoid);
+    $rs=$this->mongo->db->msg->update($criteria, $query);
+    }
+    
 
     // Save a msg
     function save($msg) {
@@ -85,6 +108,6 @@ class Msg extends CI_Model {
     }
 
 
-}
+}//
 
 ?>

@@ -44,10 +44,10 @@
                             <a class="sInbox" title="" href="{module_url}inbox/">inbox</a>
                         </li>
                         <li>
-                            <a class="sOutbox" title="" href="#">outbox</a>
+                            <a class="sOutbox" title="" href="{module_url}inbox/index/outbox">outbox</a>
                         </li>
                         <li>
-                            <a class="sTrash" title="" href="#">trash</a>
+                            <a class="sTrash" title="" href="{module_url}inbox/index/trash">trash</a>
                         </li>
                     </ul>
                 </li>

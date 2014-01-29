@@ -6,7 +6,7 @@
     <a href="#" title="Go to Home" class="tip-bottom">
         <i class="icon-home">
         </i> Home</a>
-    <a href="#" class="current">Inbox</a>
+    <a href="#" class="current">{inbox_title}</a>
 </div>
 <!-- INBOX WIDGET -->
 <div class="container-fluid">
@@ -17,7 +17,7 @@
             <ul class="msgs">
             {mymsgs}
             <li id="{msgid}">
-                <a href="#" data-toggle="tooltip" data-placement="bottom" title="{msg_time}" class="tip"><span class="msg_date" >{msg_date}</span></a>
+                <a href="#" data-toggle="tooltip" data-placement="bottom" title="{msg_time}" class="tip"><span class="msg_date muted" >{msg_date}</span></a>
                 <a class="icon {icon_star}" href="#"></a>
                 <a class="subject {read}" href="#">{subject}</a>
 
@@ -25,7 +25,7 @@
                     <div class="from"><strong>De: </strong><span>{sender}</span></div>
                     <div class="body">{body}</div>   
                 </div>
-                <a class="pull-right tip" href="#" data-toggle="tooltip" data-placement="bottom" title="delete" ><i class="icon icon-remove"></i></a>
+                <a class="pull-right tip" href="#" data-msgid="{msgid}" data-toggle="tooltip" data-placement="bottom" title="delete" name="delete"><i class="icon icon-remove"></i></a>
             </li>
             {/mymsgs}
         </ul>
