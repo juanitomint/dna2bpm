@@ -5,9 +5,10 @@
 <div id="breadcrumb">
     <a href="#" title="Go to Home" class="tip-bottom">
         <i class="icon-home">
-        </i> Home</a>
+        </i> Home </a>
     <a href="#" class="current">{inbox_title}</a>
 </div>
+
 <!-- INBOX WIDGET -->
 <div class="container-fluid">
     <!-- 2row block -->
@@ -17,15 +18,19 @@
             <ul class="msgs">
             {mymsgs}
             <li id="{msgid}">
-                <a href="#" data-toggle="tooltip" data-placement="bottom" title="{msg_time}" class="tip"><span class="msg_date muted" >{msg_date}</span></a>
+                <a href="#"  title="{msg_time}" ><span class="msg_date muted" >{msg_date}</span></a>
                 <a class="icon {icon_star}" href="#"></a>
-                <a class="subject {read}" href="#">{subject}</a>
-
+                <a class="subject {read}" href="#">{subject}</a>   
+                <a class="btn btn-default btn-mini pull-right " href="#" data-msgid="{msgid}" title="delete" name="delete"><i class="icon icon-trash"></i></a>
+                <a class="btn btn-default btn-mini pull-right " href="{module_url}inbox/new_msg/{msgid}" data-msgid="{msgid}" title="reply" name="reply"><i class="icon icon-reply"></i></a>
                 <div class="detail">
-                    <div class="from"><strong>De: </strong><span>{sender}</span></div>
+                    {if {inbox_title}==Outbox}
+                    <div class="from"><strong>To: </strong><a href="#" data-idu="{to}"><span>{to_name}</span></a></div>
+                    {else}
+                    <div class="from"><strong>From: </strong><a href="#" data-idu="{from}"><span>{from_name}</span></a></div>
+                    {/if}
                     <div class="body">{body}</div>   
-                </div>
-                <a class="pull-right tip" href="#" data-msgid="{msgid}" data-toggle="tooltip" data-placement="bottom" title="delete" name="delete"><i class="icon icon-remove"></i></a>
+                </div>  
             </li>
             {/mymsgs}
         </ul>

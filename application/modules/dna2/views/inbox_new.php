@@ -5,19 +5,28 @@
 <div id="breadcrumb">
     <a href="#" title="Go to Home" class="tip-bottom">
         <i class="icon-home">
-        </i> Home</a>
+        </i> Home </a>
     <a href="#" class="current">New Message</a>
 </div>
 <!-- INBOX WIDGET -->
+       {if {reply}}
+          <input type="hidden" name="reply" value="1" />
+         <input type="hidden" name="reply_name" value="{reply_name}" />
+         <input type="hidden" name="reply_title" value="{reply_title}" />
+         <input type="hidden" name="reply_body" value="{reply_body}" />
+         <input type="hidden" name="reply_idu" value="{reply_idu}" />
+          <input type="hidden" name="reply_date" value="{reply_date}" />
+        {/if}
 <div class="container-fluid">
     <!-- 2row block -->
     <div class="row-fluid">
         <!-- Start 2nd col -->
 
+        
     <form class="form-horizontal" id="inbox_new">
         
             
-        
+
         
     <!-- -->
 <!--      <div class="control-group">

@@ -85,7 +85,7 @@ class Msg extends CI_Model {
     function get_msg($id) {
     $mongoid=new MongoId($id);
     $query = array('_id' => $mongoid);
-    $result = $this->mongo->db->msg->find($query);
+    $result = $this->mongo->db->msg->findOne($query);
     return $result;
     }
 

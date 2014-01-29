@@ -9,7 +9,7 @@ class Inbox extends MX_Controller {
         $this->load->library('ui');
         $this->load->model('msg');
         $this->load->model('user');
-        
+
         //---base variables
         $this->base_url = base_url();
         $this->module_url = base_url() . $this->router->fetch_module().'/';
@@ -18,6 +18,8 @@ class Inbox extends MX_Controller {
         $this->lang->load('library', $this->config->item('language'));
         $this->idu = (int) $this->session->userdata('iduser');
         
+
+
         
     }
     
@@ -38,6 +40,7 @@ class Inbox extends MX_Controller {
             $folder='inbox';
         }
         $customData['inbox_title'] = ucfirst($folder);
+
         $mymgs = $this->msg->get_msgs($this->idu,$folder);
         
         foreach ($mymgs as $msg) {
@@ -47,18 +50,16 @@ class Inbox extends MX_Controller {
             $msg['msg_time'] = date('l jS \of F Y h:i:s A',strtotime($msg['checkdate']));
             $msg['icon_star'] = (isset($msg['star']) && $msg['star']==true) ? ('icon-star') : ('icon-star-empty');
             $msg['read'] = (isset($msg['read'])&&$msg['read']==true) ? ('muted') : ('');
-            if(isset($msg['from'])){
-                $userdata = $this->user->get_user($msg['from']);
-                if(!is_null($userdata))$msg['sender'] = $userdata->nick;
-                else $msg['sender'] = "No sender";              
-            }else{
-                 $msg['sender'] = "System"; 
-            }
-
             
+            $userdata = $this->user->get_user($msg['from']);
+            $msg['from_name']=(empty($userdata))?('No user'):($userdata->nick);
+            
+            $userdata = $this->user->get_user($msg['to']);
+            $msg['to_name']=(empty($userdata))?('No user'):($userdata->nick);            
 
             $customData['mymsgs'][] = $msg;
         }
+
 
         Modules::run('dna2/dna2/render','inbox',$customData);
     }
@@ -142,6 +143,23 @@ class Inbox extends MX_Controller {
     
     function new_msg(){
         $customData['user'] = (array) $this->user->get_user($this->idu);
+
+        // REPLY: segment 4 is msgid 
+        $customData['reply']=0;
+        if($this->uri->segment(4)){
+            $msgid=$this->uri->segment(4);
+            $mymgs = $this->msg->get_msg($msgid);
+            
+            $sender=$this->user->get_user($mymgs['from']);
+
+            $customData['reply']=1;
+            $customData['reply_name']=$sender->nick;
+            $customData['reply_idu']=$sender->idu;
+            $customData['reply_body']=$mymgs['body'];
+            $customData['reply_title']=$mymgs['subject'];
+            $customData['reply_date']=$mymgs['checkdate'];
+        }
+                
 
         $customData['js'] = array(
             $this->base_url . "jscript/select2-3.4.5/select2.min.js"=>'Select JS',
