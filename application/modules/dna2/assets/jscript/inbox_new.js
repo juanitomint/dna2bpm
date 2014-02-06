@@ -36,7 +36,7 @@ $(document).ready(function(){
         var reply_body=$('[name="reply_body"]').val();
         var reply_date=$('[name="reply_date"]').val();
         $(".select2").select2("data", [{id:reply_idu,text:reply_name}]);
-        $("[name='subject']").val("Reply: "+reply_title);
+        $("[name='subject']").val("Reply:[ "+reply_title+" ]");
         $("[name='body']").val(">>>>>>>>>>>>> "+reply_date+" >>>>>>>>>>>>>\n"+reply_body);
      };
     

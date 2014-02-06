@@ -40,7 +40,9 @@ class Inbox extends MX_Controller {
             $folder='inbox';
         }
         $customData['inbox_title'] = ucfirst($folder);
-
+        $customData['delete_title'] = ($folder=='trash')?('delete'):('move to trash');
+        
+        // Messages Loop
         $mymgs = $this->msg->get_msgs($this->idu,$folder);
         
         foreach ($mymgs as $msg) {
@@ -198,7 +200,13 @@ class Inbox extends MX_Controller {
         $folder=$this->input->post('folder');
         $this->msg->move($msgid,$folder);
     }
+   
+        // Move msg to trash
     
+    function remove(){
+        $msgid=$this->input->post('msgid');
+        $this->msg->remove($msgid);
+    }
 
 
     
