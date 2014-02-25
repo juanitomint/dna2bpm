@@ -5,8 +5,8 @@
 $(document).ready(function(){
 
 // Open msg area
-    $('UL.msgs .subject').live('click',function(event){
-    $(this).next().slideToggle();
+    $('UL.msgs .subject').on('click',function(event){ 
+    $(this).nextAll('div').slideToggle();
     event.preventDefault();
     var msgid=$(this).parent().attr('id');
     $.post(globals.module_url+'inbox/set_read',{'state':1,'msgid':msgid},function(data){})
@@ -14,7 +14,7 @@ $(document).ready(function(){
     });
     
 // add star
-$('.icon-star-empty').live('click',function(){
+$('.icon-star-empty').on('click',function(){
     $(this).removeClass('icon-star-empty');
     $(this).addClass('icon-star');
     var msgid=$(this).parent().attr('id');
@@ -22,28 +22,36 @@ $('.icon-star-empty').live('click',function(){
 });
 
 // remove star
-$('.icon-star').live('click',function(){
+$('.icon-star').on('click',function(){
     $(this).addClass('icon-star-empty');
     $(this).removeClass('icon-star')
     var msgid=$(this).parent().attr('id');
     $.post(globals.module_url+'inbox/set_star',{'state':0,'msgid':msgid},function(data){});
 });
 
-// New Message Ajax Submit
-$("form").on( "submit", function( event ) {
-event.preventDefault();
-var data=$(this).serializeArray();
-$.post(globals.module_url+'inbox/send',{'data':data},function(resp){alert(resp)});
+// delete && Move
+$("a[name='delete']").on('click',function(){
+    var msgid=$(this).attr('data-msgid');
+    if($('[name="whereim"]').val()=='Trash'){
+        // estoy en Trash, elimino mensaje
+        $.post(globals.module_url+'inbox/remove',{'msgid':msgid},function(data){
+        $('#'+msgid).hide('500');
+    });
+    }else{
+        // Mando a Trash
+        $.post(globals.module_url+'inbox/move',{'msgid':msgid,'folder':'trash'},function(data){
+        $('#'+msgid).hide('500');
+    });
+    }
+    // refresh count in lateral menu & top menu only in inbox
+    if($('[name="whereim"]').val()=='Inbox'){
+    var count=$('#inbox span.label').text();
+    $('#inbox span.label').text(count-1);
+    $('#menu-messages a span.label').text(count-1);
+    }
 
 });
-
-
-
-
-//$('#inbox_new #to').live('change',function(){
-//    var to=$(this).val();
-//    alert(to);
-//});
-
       
-});
+  
+      
+});//
