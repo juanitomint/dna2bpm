@@ -19,12 +19,17 @@
             {mymsgs}
             <li id="{msgid}">
                 <a href="#"  title="{msg_time}" ><span class="msg_date muted" >{msg_date}</span></a>
-                <a class="icon {icon_star}" href="#"></a>
+                {if {inbox_title}==Inbox}
+                 <a class="icon {icon_star}" href="#"></a>
+                {/if}
                 <a class="subject {read}" href="#">{subject}</a>  
+
                 {if {inbox_title}!=Outbox}
+                   
                     <a class="btn btn-default btn-mini pull-right " href="#" data-msgid="{msgid}" title="{delete_title}" name="delete"><i class="icon icon-trash"></i></a>     
                     <a class="btn btn-default btn-mini pull-right " href="{module_url}inbox/new_msg/{msgid}" data-msgid="{msgid}" title="reply" name="reply"><i class="icon icon-reply"></i></a>             
                 {/if}
+
                  <div class="detail">
                     {if {inbox_title}==Outbox}
                     <div class="from"><strong>To: </strong><a href="#" data-idu="{to}"><span>{to_name}</span></a></div>

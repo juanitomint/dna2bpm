@@ -52,7 +52,7 @@ class Inbox extends MX_Controller {
             $msg['msg_time'] = date('l jS \of F Y h:i:s A',strtotime($msg['checkdate']));
             $msg['icon_star'] = (isset($msg['star']) && $msg['star']==true) ? ('icon-star') : ('icon-star-empty');
             $msg['read'] = (isset($msg['read'])&&$msg['read']==true) ? ('muted') : ('');
-            
+            $msg['body']=nl2br($msg['body']);
             $userdata = $this->user->get_user($msg['from']);
             $msg['from_name']=(empty($userdata))?('No user'):($userdata->nick);
             
