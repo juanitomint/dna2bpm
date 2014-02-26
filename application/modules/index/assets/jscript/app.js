@@ -30,9 +30,25 @@ Ext.onReady(function() {
                 maxWidth: 450,
                 collapsible: true,
                 margins: '0 0 0 0',
-                layout: 'fit'
-                        ,
-                items: [propsGrid]
+                align: 'stretch',
+                pack: 'start',
+                items: [///-------Pgrid
+                    {
+                        xtype: 'panel',
+                        title: 'Menu Item properties',
+                        flex: 1,
+                        items: [
+                            propsGrid
+                        ]
+                    }
+                    , {
+                        title: 'Groups',
+                        height: 300,
+                        items: [
+                            user_selector
+                        ]
+                    }
+                ]
             }
     );
     var center = Ext.create('Ext.Panel',
@@ -41,12 +57,11 @@ Ext.onReady(function() {
                 id: 'centerPanel',
                 layout: 'fit',
                 margins: '0 0 0 0'
-                        ,
+                ,
                 items: [
-                    
                     tree
                 ]
-                
+
             });
     //---Create Application
     Ext.application({

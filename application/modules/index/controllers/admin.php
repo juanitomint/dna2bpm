@@ -59,6 +59,7 @@ class admin extends MX_Controller {
             $this->module_url . "assets/jscript/tree_menu.js" => 'Menu Tree',
             $this->module_url . "assets/jscript/ext.load_props.js" => 'Properties Loader',
             $this->module_url . "assets/jscript/propertyGrid.js" => 'Menu Properties Editor',
+            $this->module_url . "assets/jscript/ext.group_selector.js" => 'Group Selector',
             $this->module_url . "assets/jscript/app.js" => 'Viewport',
         );
 
