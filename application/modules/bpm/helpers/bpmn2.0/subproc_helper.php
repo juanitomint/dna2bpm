@@ -1,10 +1,12 @@
 <?php
 function run_CollapsedSubprocess($shape,$wf,$CI){
+    //--@todo load proper model in chilshapes.
     run_Subprocess($shape, $wf,$CI);
 }
 function run_Subprocess($shape, $wf,$CI) {
     $CI = & get_instance();
     $debug = (isset($CI->debug[__FUNCTION__])) ? $CI->debug[__FUNCTION__] : false;
+    $debug=true;
     $token = $CI->bpm->get_token($wf->idwf, $wf->case, $shape->resourceId);
     switch ($token['status']) {
         case 'running':
@@ -28,7 +30,7 @@ function run_Subprocess($shape, $wf,$CI) {
         default:
             //---SAME AS STARTING A CASE
             //---Get start shape
-            $start_shapes = $CI->bpm->get_shape_byname('StartNoneEvent', $shape);
+            $start_shapes = $CI->bpm->get_start_shapes( $shape);
             $start_shape = $start_shapes[0];
             if ($debug) {
                 echo '<h2>$start_shapes</h2>';
