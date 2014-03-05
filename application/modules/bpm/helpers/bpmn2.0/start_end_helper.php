@@ -114,6 +114,11 @@ function run_EndNoneEvent($shape, $wf, $CI, $moveForward = true) {
                 //---Finish the process
                 $CI->bpm->movenext($parent, $wf);
                 break;
+            
+            case 'CollapsedSubprocess':
+                //---Finish the process
+                $CI->bpm->movenext($parent, $wf);
+                break;
 
             default:
                 //----Set status 4 Case
