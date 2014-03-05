@@ -61,8 +61,8 @@ class Bpm extends CI_Model {
                             break;
                     }
                     //----4 now we do the same for all: load the model into the shape
-                    if ($item['properties']['processref']) {
-                        $wf = $this->bpm->load($item['properties']['processref'], true);
+                    if ($item['properties']['entry']) {
+                        $wf = $this->bpm->load($item['properties']['entry'], true);
                         //var_dump2('linked',$wf['data']['childShapes']);
                         $item['childShapes'] = $wf['data']['childShapes'];
                     }
@@ -1014,8 +1014,8 @@ class Bpm extends CI_Model {
         if ($debug)
             echo '<h2>' . __FUNCTION__ . '</h2>';
         //----ignore certainshapes
-        $ignore_shapes=array('TextAnnotation');
-        if(in_array($shape_src->stencil->id,$ignore_shapes)){
+        $ignore_shapes = array('TextAnnotation');
+        if (in_array($shape_src->stencil->id, $ignore_shapes)) {
             return;
         }
         //---set default status
@@ -1197,7 +1197,7 @@ class Bpm extends CI_Model {
                     $idgroup = $this->group->genid();
                     $group = array();
                     $group['idgroup'] = $idgroup;
-                    $group['name'] =$group_name;
+                    $group['name'] = $group_name;
                     $this->group->save($group);
                 } else {
                     $idgroup = -1;
