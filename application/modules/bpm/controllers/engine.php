@@ -53,7 +53,7 @@ class Engine extends MX_Controller {
         $this->debug['show_modal'] = null;
 
         //---debug Helpers
-        $this->debug['run_Task'] = true;
+        $this->debug['run_Task'] = null;
         $this->debug['run_Exclusive_Databased_Gateway'] = null;
         $this->debug['run_IntermediateEventThrowing'] = null;
         $this->debug['run_IntermediateLinkEventThrowing'] = null;
