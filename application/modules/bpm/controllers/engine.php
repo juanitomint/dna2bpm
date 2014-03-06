@@ -37,13 +37,15 @@ class Engine extends MX_Controller {
         $this->lang->load('bpm', $this->config->item('language'));
         //---Set the shapes that will be digged
         $this->digInto = array('Pool', 'Subprocess', 'CollapsedSubprocess', 'Lane');
+        //---Set if suprocess has to be loaded: Default=true
+        $this->expandSubProcess = false;
         //---Debug options
-        $this->debug['triggers'] = null;
         $this->debug['Run'] = null;
+        $this->debug['manual_task'] = null;
+        $this->debug['triggers'] = null;
         $this->debug['Startcase'] = null;
         $this->debug['get_inbound_shapes'] = null;
         $this->debug['load_data'] = null;
-        $this->debug['manual_task'] = null;
         /*
          * true: don't show modal msgs
          * null: no debug
@@ -67,12 +69,20 @@ class Engine extends MX_Controller {
         
     }
 
-    function Newcase($model, $idwf, $manual = false) {
+    function Newcase($model, $idwf, $manual = false, $parent = null) {
         //---Gen new case ID
         $case = $this->bpm->gen_case($idwf);
         if ($manual) {
             $mycase = $this->bpm->get_case($case);
             $mycase['run_manual'] = true;
+
+            $this->bpm->save_case($mycase);
+        }
+        
+        //----save parent data if any
+        if ($parent) {
+            $mycase = $this->bpm->get_case($case);
+            $mycase['parent'] = $parent;
             $this->bpm->save_case($mycase);
         }
         //---Start the case (will move next on startnone shapes)
@@ -87,7 +97,7 @@ class Engine extends MX_Controller {
         $this->bpm->clear_tokens($idwf, $case);
         $this->bpm->clear_case($case);
         //---start a case and insert start tokens in database
-        $mywf = $this->bpm->load($idwf, true);
+        $mywf = $this->bpm->load($idwf, $this->expandSubProcess);
 
         $wf = bindArrayToObject($mywf['data']);
 
@@ -148,7 +158,7 @@ class Engine extends MX_Controller {
 
             if ($debug)
                 echo "<h2>" . __FUNCTION__ . '</h2>';
-            $mywf = $this->bpm->load($idwf, true);
+            $mywf = $this->bpm->load($idwf, $this->expandSubProcess);
             $mywf['data']['idwf'] = $idwf;
             $mywf['data']['case'] = $case;
             $mywf['data']['folder'] = $mywf['folder'];
@@ -199,7 +209,7 @@ class Engine extends MX_Controller {
     function run_post($model, $idwf, $case, $resourceId) {
 
         $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
-        $mywf = $this->bpm->load($idwf, true);
+        $mywf = $this->bpm->load($idwf, $this->expandSubProcess);
         $mywf['data']['idwf'] = $idwf;
         $mywf['data']['case'] = $case;
         $wf = bindArrayToObject($mywf['data']);
@@ -228,7 +238,7 @@ class Engine extends MX_Controller {
     function run_gate($model, $idwf, $case, $resourceId, $flowId) {
         $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
         $data = array();
-        $mywf = $this->bpm->load($idwf, true);
+        $mywf = $this->bpm->load($idwf, $this->expandSubProcess);
         $mywf['data']['idwf'] = $idwf;
         $mywf['data']['case'] = $case;
         $wf = bindArrayToObject($mywf['data']);
@@ -282,7 +292,7 @@ class Engine extends MX_Controller {
         $renderData['case'] = $idcase;
         $renderData['resourceId'] = $resourceId;
         //-----load bpm
-        $mywf = $this->bpm->load($idwf, true);
+        $mywf = $this->bpm->load($idwf, $this->expandSubProcess);
         $mywf['data']['idwf'] = $idwf;
         $mywf['data']['case'] = $idcase;
         $wf = bindArrayToObject($mywf['data']);
@@ -312,7 +322,7 @@ class Engine extends MX_Controller {
         $renderData['idcase'] = $idcase;
         $renderData['resourceId'] = $resourceId;
         //-----load bpm
-        $mywf = $this->bpm->load($idwf, true);
+        $mywf = $this->bpm->load($idwf, $this->expandSubProcess);
         $mywf['data']['idwf'] = $idwf;
         $mywf['data']['case'] = $idcase;
         $wf = bindArrayToObject($mywf['data']);
@@ -368,7 +378,7 @@ class Engine extends MX_Controller {
         $renderData['idcase'] = $idcase;
         $renderData['gateId'] = $resourceId;
         //-----load bpm
-        $mywf = $this->bpm->load($idwf, true);
+        $mywf = $this->bpm->load($idwf, $this->expandSubProcess);
         $mywf['data']['idwf'] = $idwf;
         $mywf['data']['case'] = $idcase;
         $wf = bindArrayToObject($mywf['data']);
@@ -438,7 +448,7 @@ class Engine extends MX_Controller {
                 echo '<hr/>';
             }
             //$this->$strStor= bindArrayToObject($this->app->getall($item,$container));
-            $this->data->$strStor = (object)$this->$conn->get_data($resource);
+            $this->data->$strStor = (object) $this->$conn->get_data($resource);
 
             //----4 debug
             if ($debug) {
@@ -674,9 +684,9 @@ class Engine extends MX_Controller {
                                         $rendering = trim($shape->properties->rendering);
                                         if ($rendering) {
                                             $token_id = $first['_id'];
-                                            $streval='return '.$rendering.';';
+                                            $streval = 'return ' . $rendering . ';';
                                             $rendering = eval($streval);
-                                            
+
                                             if (strstr($rendering, 'http')) {
                                                 $querystr = array_filter(
                                                         array(
@@ -689,7 +699,7 @@ class Engine extends MX_Controller {
                                                 $q = '';
                                                 foreach ($querystr as $key => $value)
                                                     $q.='&' . $key . '=' . $value;
-                                                $redir = $rendering .$q;
+                                                $redir = $rendering . $q;
                                             } else {
                                                 $redir = $this->base_url . "dna2/render/edit/" . $shape->properties->rendering . "/$id/id/token/" . $token_id;
                                             }

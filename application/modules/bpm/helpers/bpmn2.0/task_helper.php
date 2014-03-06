@@ -185,10 +185,10 @@ function run_Task($shape, $wf, $CI) {
             $data_store = ($shape->properties->operationref <> '') ? $shape->properties->operationref : $shape->properties->name;
             //---define $data_store if not exists
             if (!property_exists($DS, $data_store))
-                $DS->$data_store = 0;
+                $DS->$data_store = null;
             if ($debug)
                 var_dump2('$DS original:', $DS);
-            if ($streval) {
+            if (strlen($streval)) {
                 switch ($script_language) {
                     case 'php';
 //---TODO sanitize EVAL----------
@@ -198,11 +198,8 @@ function run_Task($shape, $wf, $CI) {
                         }
 ///--ecxecute BE CAREFULL EXTREMLY DANGEROUS
                         try {
-                            $DS->$data_store = eval($streval) or die(
-                                            "<h1>SCRIPT DIE! :(" .
-                                            var_dump(
-                                                    'Name', $shape->properties->name, '$data_store', $data_store, 'type', $shape->properties->tasktype, 'streval', $streval
-                            ));
+                            $DS->$data_store = eval($streval);
+                            
                         } catch (ErrorException $e) {
                             echo 'Caught exception: ', $e->getMessage(), "<br/>";
                         }
