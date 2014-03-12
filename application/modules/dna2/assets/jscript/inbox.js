@@ -51,7 +51,16 @@ $("a[name='delete']").on('click',function(){
     }
 
 });
+
+// Recover
+$("a[name='recover']").on('click',function(){
+    var msgid=$(this).attr('data-msgid');
+        // Mando a inbox
+        $.post(globals.module_url+'inbox/move',{'msgid':msgid,'folder':'inbox'},function(data){
+        $('#'+msgid).hide('500');
+    });
+});
       
-  
+
       
 });//
