@@ -24,10 +24,12 @@
                 {/if}
                 <a class="subject {read}" href="#">{subject}</a>  
                 {if {inbox_title}==Trash}                 
-                    <a class="btn btn-default btn-mini pull-right " href="#" data-msgid="{msgid}" title="recover" name="recover"><i class="icon icon-retweet"></i></a>                 
-                {/if}
-                {if {inbox_title}!=Outbox}                 
-                    <a class="btn btn-default btn-mini pull-right " href="#" data-msgid="{msgid}" title="delete" name="delete"><i class=" icon-trash"></i></a>     
+                    <a class="btn btn-default btn-mini pull-right " href="#" data-msgid="{msgid}" title="{move to inbox}" name="recover"><i class="icon icon-retweet"></i></a>                 
+                    <a class="btn btn-default btn-mini pull-right " href="#" data-msgid="{msgid}" title="{move to trash}" name="delete"><i class=" icon-trash"></i></a>     
+                    <a class="btn btn-default btn-mini pull-right " href="{module_url}inbox/new_msg/{msgid}" data-msgid="{msgid}" title="reply" name="reply"><i class="icon icon-reply"></i></a>  
+                    {/if}
+                {if {inbox_title}==Inbox}                 
+                    <a class="btn btn-default btn-mini pull-right " href="#" data-msgid="{msgid}" title="{delete}" name="delete"><i class=" icon-trash"></i></a>     
                     <a class="btn btn-default btn-mini pull-right " href="{module_url}inbox/new_msg/{msgid}" data-msgid="{msgid}" title="reply" name="reply"><i class="icon icon-reply"></i></a>             
                 {/if}
 
