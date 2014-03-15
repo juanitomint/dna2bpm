@@ -34,11 +34,13 @@ $("a[name='delete']").on('click',function(){
     var msgid=$(this).attr('data-msgid');
     if($('[name="whereim"]').val()=='Trash'){
         // estoy en Trash, elimino mensaje
+          $('#'+msgid).append('<span class="pull-right" style="margin-right:5px"><i class="icon-spinner icon-spin icon-large"></i> Wait... </span> ');
         $.post(globals.module_url+'inbox/remove',{'msgid':msgid},function(data){
         $('#'+msgid).hide('500');
     });
     }else{
         // Mando a Trash
+          $('#'+msgid).append('<span class="pull-right" style="margin-right:5px"><i class="icon-spinner icon-spin icon-large"></i> Wait... </span> ');
         $.post(globals.module_url+'inbox/move',{'msgid':msgid,'folder':'trash'},function(data){
         $('#'+msgid).hide('500');
     });
@@ -51,7 +53,17 @@ $("a[name='delete']").on('click',function(){
     }
 
 });
+
+// Recover
+$("a[name='recover']").on('click',function(){
+    var msgid=$(this).attr('data-msgid');
+        // Mando a inbox     
+        $('#'+msgid).append('<span class="pull-right" style="margin-right:5px"><i class="icon-spinner icon-spin icon-large"></i> Wait... </span> ');
+        $.post(globals.module_url+'inbox/move',{'msgid':msgid,'folder':'inbox'},function(data){
+        $('#'+msgid).hide('500');
+    });
+});
       
-  
+
       
 });//

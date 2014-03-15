@@ -38,10 +38,11 @@
         </div>
       </div>-->
 
+
     <div class="control-group">
     <label class="control-label" for="subject">Destinatario</label>
-    <div class="controls">
-    <input type="hidden" name="to" class="select2" multiple="multiple" />
+    <div class="controls" >
+    <input type="hidden" name="to" class="select2 "  style="width:80%;" multiple="multiple" />
     </div>
     </div>
 
@@ -49,7 +50,7 @@
     <div class="control-group">
     <label class="control-label" for="subject">Título</label>
     <div class="controls">
-    <input type="text" name="subject" placeholder="Subject">
+    <input type="text" name="subject" placeholder="Subject" >
     </div>
     </div>
     <!-- -->
