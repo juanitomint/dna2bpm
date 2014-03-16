@@ -11,14 +11,14 @@ class mongo_connector extends CI_Model {
 
     function get_data($resource) {
         //---connect to database and retrive data as specified
-        if (isset($resource['itemstoreref']) && isset($resource['query'])) {
+        if (isset($resource['datastoreref']) && isset($resource['query'])) {
             $fields = (isset($resource['fields'])) ? $resource['fields'] : null;
             $query = $resource['query'];
             $query = (is_array($query)) ? $query : json_decode($query);
             if (isset($fields)) {
-                $rs = $this->mongo->db->selectCollection($resource['itemstoreref'])->find($query, $fields);
+                $rs = $this->mongo->db->selectCollection($resource['datastoreref'])->find($query, $fields);
             } else {
-                $rs = $this->mongo->db->selectCollection($resource['itemstoreref'])->find($query);
+                $rs = $this->mongo->db->selectCollection($resource['datastoreref'])->find($query);
             }
             if (isset($resource['sort']))
                 $rs->sort($sort);

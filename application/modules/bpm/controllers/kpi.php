@@ -289,18 +289,21 @@ class Kpi extends MX_Controller {
     }
 
     function Render($kpi = null) {
+        $debug=false;
         $exists = false;
         //---load type extension
         if (!method_exists($this, $kpi['type'])) {
             $file_custom = $this->types_path . $kpi['type'] . '/kpi_controller.php';
             if (is_file($file_custom)) {
-                $exists = true;
+                //$exists = true;
                 if ($debug)
                     echo "Loaded Custom Render:$file_custom<br/>";
                 require_once($file_custom);
+                
             } else {
                 $rtn = $this->ShowMsg('<strong>Warning!</strong>Function:' . $kpi['type'] . '<br/>' . $kpi['title'] . '<br/>Does not exists. ', 'alert');
             }
+            $rtn = $kpi['type']($kpi,$this);
         } else {
             $exists = true;
         }
@@ -333,35 +336,6 @@ class Kpi extends MX_Controller {
         return $filter;
     }
 
-    function sla_time($kpi) {
-        $filter = $this->get_filter($kpi);
-        $filter['status'] = 'closed';
-        $cases = $this->bpm->get_cases_byFilter($filter);
-        //var_dump($filter, $cases);
-        $cpData = $kpi;
-        $sla_in = array();
-        $sla_out = array();
-        $cpData['total'] = count($cases);
-        foreach ($cases as $case) {
-            $d1 = new DateTime($case['checkdate']);
-            $d3 = new DateTime($case['checkdate']);
-            $d2 = new DateTime($case['checkoutdate']);
-            $interval = $d1->diff($d2);
-            $ref = date_interval_create_from_date_string($kpi['time_limit']);
-            $d3->add($ref);
-            if ($d2 > $d3) {
-                $cpData['on_time'][] = $case;
-            } else {
-                $cpData['out_time'][] = $case;
-            }
-        }
-        $cpData['sla_percent'] =  100*(count($cpData['on_time'])/$cpData['total']);
-        $cpData['sla_percent_out'] =  100*(count($cpData['out_time'])/$cpData['total']);
-        $cpData['sla']=  number_format($cpData['sla_percent'],2).'% ('. count($cpData['on_time']).')';
-        $cpData['sla_out'] =number_format($cpData['sla_percent_out'],2).'% ('. count($cpData['out_time']).')';
-        $rtn = $this->parser->parse('bpm/kpi_sla_time', $cpData, true);
-        return $rtn;
-    }
 
     function time_avg_all($kpi) {
         $filter = $this->get_filter($kpi);

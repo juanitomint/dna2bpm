@@ -44,7 +44,12 @@
                 </span>
             </div>
         </form>
-
+        <div class="div_text">
+            <span id="plugins" >
+                {plugins}
+            </span>
+            
+        </div>
     </div> 
 </div> 
 <!-- /container -->

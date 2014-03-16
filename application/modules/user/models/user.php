@@ -5,14 +5,15 @@ if (!defined('BASEPATH'))
 
 class User extends CI_Model {
 
+        
+        
     function __construct() {
         parent::__construct();
         $this->idu = $this->session->userdata('iduser');
-
+        $this->config->load('user/config');
         $this->load->library('cimongo/cimongo');
         $this->db = $this->cimongo;
-
-        //$this->load->database();
+        
     }
 
     function add($user_data) {
@@ -86,6 +87,7 @@ class User extends CI_Model {
     }
 
     function authorize($reqlevel = null) {
+//        $CI=& get_instance();
         $this->load->model('user/rbac');
         //---check if already logged in
         $this->isloggedin();
@@ -114,8 +116,8 @@ class User extends CI_Model {
                 'idu' => $this->idu
             ));
 
-            //---give access if belong to group 1=ADMINS
-            if (in_array(1, $thisUser->group)) {
+            //---give access if belong to group ADMINS
+            if ($this->isAdmin($thisUser)) {
                 $canaccess = true;
             } else {
                 //----$reqlevel override $path
@@ -139,7 +141,7 @@ class User extends CI_Model {
     function isAdmin($user) {
         if ($this->isloggedin()) {
             //---this is the ADMIN policy
-            if (in_array('1', $user->group)) {
+            if (in_array($this->config->item('groupAdmin'), $user->group)) {
                 return true;
             }
         }
@@ -340,7 +342,7 @@ class User extends CI_Model {
         return $rs;
     }
 
-    function get_users($offset = 0, $limit = 50, $order = null, $query_txt = null, $idgroup = null) {
+    function get_users($offset = 0, $limit = 50, $order = null, $query_txt = null, $idgroup = null, $match='both') {
         $this->db->get('users');
         //var_dump($start,$limit,$idgroup, $order, $idgroup);
         if ($idgroup) {
@@ -348,10 +350,10 @@ class User extends CI_Model {
         }
 
         if ($query_txt) {
-            $this->db->or_like('nick', $query_txt);
-            $this->db->or_like('name', $query_txt);
-            $this->db->or_like('lastname', $query_txt);
-            $this->db->or_like('email', $query_txt);
+            $this->db->or_like('nick', $query_txt,$match);
+            $this->db->or_like('name', $query_txt,$match);
+            $this->db->or_like('lastname', $query_txt,$match);
+            $this->db->or_like('email', $query_txt,$match);
 
             if (is_numeric($query_txt)) {
                 $this->db->or_where('idu', (int) $query_txt);
@@ -366,7 +368,7 @@ class User extends CI_Model {
             #@todo //--check order like
             $this->db->order_by($order);
         }
-        $result = $this->db->get('users', $limit, $offset);
+        $result = $this->db->get('users', $limit, $offset)->result();
         return $result;
     }
 

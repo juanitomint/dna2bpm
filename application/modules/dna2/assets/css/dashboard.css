@@ -13,8 +13,11 @@
 } 
 
 .msgs{list-style-type: none;}
-.msgs LI{padding-bottom:10px;}
-
+.msgs LI{
+    padding:10px 0px;
+    border-bottom: 1px solid #E5E5E5;
+}
+.msg_date{text-shadow: 1px 1px 0 #FFFFFF;padding-right:5px;font-size:12px}
 .msgs .from{
 border-bottom:1px solid #ccc;
 padding-bottom:4px;
@@ -25,5 +28,5 @@ padding-top:4px;
 }
 
 .control-group{
-    border-top:0px !important;
+ border-top:0px !important;
 }

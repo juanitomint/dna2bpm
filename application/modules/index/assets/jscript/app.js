@@ -21,18 +21,36 @@ Ext.onReady(function() {
     //----right
     var right = Ext.create('Ext.Panel',
             {
+                id: 'rightPanel',
                 region: 'east',
-                id: 'rightPanel', // see Ext.getCmp() below
-                title: 'Item Details',
-                split: true,
-                width: 370,
-                minWidth: 0,
-                maxWidth: 450,
+                animCollapse: true,
                 collapsible: true,
+                animCollapse: false,
+                        split: true,
+                width: 400, // give east and west regions a width
+                minWidth: 300,
+                maxWidth: 400,
                 margins: '0 0 0 0',
-                layout: 'fit'
-                        ,
-                items: [propsGrid]
+                align: 'stretch',
+                pack: 'start',
+                items: [
+                    ///-------Pgrid
+                    {
+                        xtype: 'panel',
+                        title: 'App properties',
+                        flex: 1,
+                        items: [
+                            propsGrid
+                        ]
+                    }, {
+                        title: 'Groups',
+                        height: 300,
+                        items: [
+                            user_selector
+                        ]
+                    }
+                ]
+
             }
     );
     var center = Ext.create('Ext.Panel',
@@ -41,12 +59,11 @@ Ext.onReady(function() {
                 id: 'centerPanel',
                 layout: 'fit',
                 margins: '0 0 0 0'
-                        ,
+                ,
                 items: [
-                    
                     tree
                 ]
-                
+
             });
     //---Create Application
     Ext.application({

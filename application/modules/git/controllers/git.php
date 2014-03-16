@@ -2,6 +2,7 @@
 
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
+
 /**
  * Actualiza los archivos segun la rama configurada
  * 
@@ -23,7 +24,7 @@ class Git extends MX_Controller {
 
         //---base variables
         $this->base_url = base_url();
-        $this->module_url = base_url() . $this->router->fetch_module().'/';
+        $this->module_url = base_url() . $this->router->fetch_module() . '/';
 
         //---Output Profiler
         //$this->output->enable_profiler(TRUE);
@@ -59,6 +60,11 @@ class Git extends MX_Controller {
                 fclose($fp);
             }
         }
+    }
+
+    function viewlog() {
+        $log = $página_inicio = file_get_contents('update-git.log');
+        echo nl2br($log);
     }
 
 }

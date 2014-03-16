@@ -4,6 +4,7 @@ if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
 class Authenticate extends MX_Controller {
+
     /**
      * Athenticate User
      * 
@@ -13,6 +14,7 @@ class Authenticate extends MX_Controller {
     public function __construct() {
         parent::__construct();
         $this->load->config('config');
+        
     }
 
     function Index() {
@@ -20,10 +22,9 @@ class Authenticate extends MX_Controller {
          * Default method
          *
          */
-        
         $segments = $this->uri->segments;
         $debug = (in_array('debug', $segments)) ? true : false;
-        $this->load->model('user');
+        
         $idu = $this->user->authenticate($this->input->post('username'), $this->input->post('password'));
         if ((bool) $idu) {
             //---register if it has logged is
@@ -31,8 +32,8 @@ class Authenticate extends MX_Controller {
             //---register the user id
             $this->session->set_userdata('iduser', $idu);
             //---register level string
-            $redir=$this->session->userdata('redir');
-            $redir = ($this->session->userdata('redir')) ? $this->session->userdata('redir') : base_url() .$this->config->item('default_controller');
+            $redir = $this->session->userdata('redir');
+            $redir = ($this->session->userdata('redir')) ? $this->session->userdata('redir') : base_url() . $this->config->item('default_controller');
             log_message('debug', 'Redirecting user:' . $this->session->userdata('iduser') . ' to:' . $redir);
             //---clear redir from session
             $this->session->unset_userdata('redir');
@@ -43,13 +44,13 @@ class Authenticate extends MX_Controller {
             $rtnArr['success'] = true;
             $rtnArr['msg'] = 'User authentication: OK!';
             $rtnArr['redir'] = $redir;
-            header('Location: '.$redir);
+            header('Location: ' . $redir);
             exit;
         } else {
-            
+
             $rtnArr['success'] = false;
-            $this->session->set_userdata('msg','nouser');
-            header('Location: '.base_url().'user/login');
+            $this->session->set_userdata('msg', 'nouser');
+            header('Location: ' . base_url() . 'user/login');
             exit;
         }
     }
@@ -72,7 +73,7 @@ class Authenticate extends MX_Controller {
             //---register level string
             $this->session->set_userdata('level', $this->user->getlevel($idu));
 
-            $redir = ($this->session->userdata('redir')) ? $this->session->userdata('redir') : base_url() .$this->config->item('default_controller');
+            $redir = ($this->session->userdata('redir')) ? $this->session->userdata('redir') : base_url() . $this->config->item('default_controller');
             log_message('debug', 'Redirecting user:' . $this->session->userdata('iduser') . ' to:' . $redir);
             header("Location: $redir");
             //echo "si";

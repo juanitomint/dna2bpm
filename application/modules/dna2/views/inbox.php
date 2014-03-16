@@ -5,9 +5,10 @@
 <div id="breadcrumb">
     <a href="#" title="Go to Home" class="tip-bottom">
         <i class="icon-home">
-        </i> Home</a>
-    <a href="#" class="current">Inbox</a>
+        </i> Home </a>
+    <a href="#" class="current">{inbox_title}</a>
 </div>
+<input type="hidden" name="whereim" value="{inbox_title}" >
 <!-- INBOX WIDGET -->
 <div class="container-fluid">
     <!-- 2row block -->
@@ -17,14 +18,29 @@
             <ul class="msgs">
             {mymsgs}
             <li id="{msgid}">
-                <span class="label label-default">{date}</span>
-                <a class="icon {icon_star}" href="#"></a>
-                <a class="icon icon-user" href="#" title="{sender}"></a>
-                <a class="subject {read}" href="#">{subject}</a>
-                <div class="detail">
-                    <div class="from"><strong>De: </strong><span>{sender}</span></div>
+                <a href="#"  title="{msg_time}" ><span class="msg_date muted" >{msg_date}</span></a>
+                {if {inbox_title}==Inbox}
+                 <a class="icon {icon_star}" href="#"></a>
+                {/if}
+                <a class="subject {read}" href="#">{subject}</a>  
+                {if {inbox_title}==Trash}                 
+                    <a class="btn btn-default btn-mini pull-right " href="#" data-msgid="{msgid}" title="{move to inbox}" name="recover"><i class="icon icon-retweet"></i></a>                 
+                    <a class="btn btn-default btn-mini pull-right " href="#" data-msgid="{msgid}" title="{move to trash}" name="delete"><i class=" icon-trash"></i></a>     
+                    <a class="btn btn-default btn-mini pull-right " href="{module_url}inbox/new_msg/{msgid}" data-msgid="{msgid}" title="reply" name="reply"><i class="icon icon-reply"></i></a>  
+                    {/if}
+                {if {inbox_title}==Inbox}                 
+                    <a class="btn btn-default btn-mini pull-right " href="#" data-msgid="{msgid}" title="{delete}" name="delete"><i class=" icon-trash"></i></a>     
+                    <a class="btn btn-default btn-mini pull-right " href="{module_url}inbox/new_msg/{msgid}" data-msgid="{msgid}" title="reply" name="reply"><i class="icon icon-reply"></i></a>             
+                {/if}
+
+                 <div class="detail">
+                    {if {inbox_title}==Outbox}
+                    <div class="from"><strong>To: </strong><a href="#" data-idu="{to}"><span>{to_name}</span></a></div>
+                    {else}
+                    <div class="from"><strong>From: </strong><a href="#" data-idu="{from}"><span>{from_name}</span></a></div>
+                    {/if}
                     <div class="body">{body}</div>   
-                </div>
+                </div>  
             </li>
             {/mymsgs}
         </ul>

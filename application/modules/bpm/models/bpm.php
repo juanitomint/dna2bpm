@@ -17,6 +17,7 @@ class Bpm extends CI_Model {
         $this->idu = (int) $this->session->userdata('iduser');
         $this->load->library('cimongo/cimongo');
         $this->db = $this->cimongo;
+        $this->load->config('bpm/config');
     }
 
     function load($idwf, $replace = false) {
@@ -60,8 +61,8 @@ class Bpm extends CI_Model {
                             break;
                     }
                     //----4 now we do the same for all: load the model into the shape
-                    if ($item['properties']['processref']) {
-                        $wf = $this->bpm->load($item['properties']['processref'], true);
+                    if ($item['properties']['entry']) {
+                        $wf = $this->bpm->load($item['properties']['entry'], true);
                         //var_dump2('linked',$wf['data']['childShapes']);
                         $item['childShapes'] = $wf['data']['childShapes'];
                     }
@@ -100,7 +101,7 @@ class Bpm extends CI_Model {
         $mywf['idwf'] = $idwf;
         $mywf['data'] = (isset($data)) ? $data : $mywf['data'];
         $mywf['svg'] = (isset($svg)) ? $svg : $mywf['svg'];
-        $mywf['version'] = (isset($mywf['version'])) ? $mywf['version']++ : 1;
+        $mywf['version'] = (isset($mywf['version'])) ? $mywf['version'] ++ : 1;
         array_filter($mywf);
         //--only save if 
         //var_dump2($mywf);
@@ -723,7 +724,8 @@ class Bpm extends CI_Model {
         $user_groups = $user->group;
         $query = array(
             //'type' =>array('$in'=>array('Task','Exclusive_Databased_Gateway')),
-            'tasktype' => array('$in' => array('User', 'Manual')),
+            //'tasktype' => array('$in' => array('User', 'Manual')),
+            'type' => array('$in' => array('Task', 'Exclusive_Databased_Gateway')),
             'title' => array('$exists' => true),
             'status' => array('$nin' => array('waiting')),
             '$or' => array(
@@ -734,7 +736,7 @@ class Bpm extends CI_Model {
         );
         if ($idcase)
             $query['idcase'] = $idcase;
-        //var_dump2(json_encode($query));
+        //var_dump(json_encode($query));
         return $this->mongo->db->tokens->find($query);
     }
 
@@ -1011,7 +1013,11 @@ class Bpm extends CI_Model {
 
         if ($debug)
             echo '<h2>' . __FUNCTION__ . '</h2>';
-
+        //----ignore certainshapes
+        $ignore_shapes = array('TextAnnotation');
+        if (in_array($shape_src->stencil->id, $ignore_shapes)) {
+            return;
+        }
         //---set default status
         $status = 'pending';
         //---mark this shape as FINISHED
@@ -1178,7 +1184,9 @@ class Bpm extends CI_Model {
 
         if ($parent) {
             //----try to get group by name
-            $group = $this->group->get_byname($parent->properties->name);
+//            $group_name = $wf->idwf . '/' . $parent->properties->name;
+            $group_name = $wf->folder . '/' . $parent->properties->name;
+            $group = $this->group->get_byname($group_name);
             if ($group) {
                 $data['idgroup'][] = $group['idgroup'];
                 //---if group exists add it to the array
@@ -1187,9 +1195,9 @@ class Bpm extends CI_Model {
                 //---autocreate group here
                 if ($this->config->item('auto_create_groups')) {
                     $idgroup = $this->group->genid();
-                    $group = new stdClass();
-                    $group->idgroup = $idgroup;
-                    $group->name = $parent->properties->name;
+                    $group = array();
+                    $group['idgroup'] = $idgroup;
+                    $group['name'] = $group_name;
                     $this->group->save($group);
                 } else {
                     $idgroup = -1;

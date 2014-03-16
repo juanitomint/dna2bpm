@@ -20,9 +20,7 @@ class admin extends MX_Controller {
     function __construct() {
         parent::__construct();
         $this->load->library('parser');
-        $this->load->model('user/user');
-        $this->load->model('user/group');
-        $this->load->model('user/rbac');
+
         $this->load->model('index/menu');
         $this->user->authorize();
         //---base variables
@@ -61,6 +59,7 @@ class admin extends MX_Controller {
             $this->module_url . "assets/jscript/tree_menu.js" => 'Menu Tree',
             $this->module_url . "assets/jscript/ext.load_props.js" => 'Properties Loader',
             $this->module_url . "assets/jscript/propertyGrid.js" => 'Menu Properties Editor',
+            $this->module_url . "assets/jscript/ext.group_selector.js" => 'Group Selector',
             $this->module_url . "assets/jscript/app.js" => 'Viewport',
         );
 

@@ -20,12 +20,12 @@ $lang["refuse"] = 'rechazar';
 $lang['newTask'] = 'Nueva Tarea';
 $lang['newTaskBody'] = "{from_user name} {from_user lastname} te ha asignado una nueva tarea: {shape name}
     <br/>
-    Haz click <a href='{basedir}/bpm/engine/run/model/{idwf}/{idcase}'>>>>aquí<<<</a> para completarla";
+    Haz click <a href='{basedir}/bpm/engine/run/model/{idwf}/{idcase}'>>>>aquï¿½<<<</a> para completarla";
 $lang['lock'] = 'Bloqueo';
 $lang['message'] = 'Mensaje';
 $lang["caseLocked"] = "<i class='icon-lock'></i> Este caso hs sido bloqueado por:<br/> {user_lock}<br/> desde el: {time}";
 $lang["taskLocked"] = "<i class='icon-lock'></i> Esta tarea ha sido bloqueada por:<br/> {user_lock}<br/> desde el: {time}";
-$lang["noMoreTasks"] = "Ud no tiene m&aacute;s tareas pendientes por ahora";
+$lang["noMoreTasks"] = "Ud no tiene mÃ¡s tareas pendientes por ahora";
 $lang["caseClosed"] = "El proceso ha finalizado.";
 $lang["closedCases"] = "Casos Cerrados";
 /* --WF-conditions----- */

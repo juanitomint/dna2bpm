@@ -85,3 +85,74 @@ Ext.create('Ext.data.TreeStore', {
 
 });
 
+//--4 Data Grid
+function renderGroups(){
+    store=Ext.data.StoreManager.lookup('GroupStore');
+    grid=Ext.getCmp('UserGroupGrid');
+    grid.store.removeAll();
+    groupField={};
+    groupField.value=propsGrid.getProperty('groups');
+    if(groupField.value){
+        groups=groupField.value.split(',');  
+        for(i in groups){
+            value=groups[i];
+            record=store.getAt(store.find('idgroup',value));
+            if(record){
+                grid.store.add(record);
+            }
+        //html+=record.data.name+'<br/>';
+        }
+    }
+    
+}
+/*
+ *                      GROUPS
+ */
+
+Ext.define('Group', {
+    extend: 'Ext.data.Model',
+    fields: [
+    'idgroup',
+    'name',
+    'desc',
+    {
+        name: 'disabled', 
+        type: 'bool'
+    },
+    'users'
+    ]
+});
+
+Ext.create('Ext.data.Store', {
+    id:'GroupStore',
+    model: 'Group',
+    autoLoad: false,
+    proxy: {
+        type: 'ajax',
+        noCache: false,//---get rid of the ?dc=.... in urls
+        method:'post',
+        api: {
+            create  : globals.base_url+'user/admin/group/create',
+            read    : globals.base_url+'user/admin/group/read',
+            update  : globals.base_url+'user/admin/group/update',
+            destroy : globals.base_url+'user/admin/group/destroy'
+        },
+        reader: {
+            type: 'json',
+            root: 'rows',
+            totalProperty: 'totalCount'
+        },
+        writer: {
+            type: 'json'
+        }
+    },
+    sorters: [{
+        property: 'idgroup',
+        direction: 'ASC'
+    }]
+    ,
+    listeners:{
+        //load: onGroupStoreLoad
+    }
+    
+});

@@ -16,7 +16,7 @@ class test extends CI_Controller {
     function __construct() {
         parent::__construct();
         $this->base_url = base_url();
-        $this->module_url = base_url() . $this->router->fetch_module().'/';
+        $this->module_url = base_url() . $this->router->fetch_module() . '/';
         $this->debug_manual = null;
         $this->load->config();
         $this->load->model('user/user');
@@ -39,11 +39,15 @@ class test extends CI_Controller {
 
     function get_shape_byname() {
         $mywf = $this->bpm->load('13preaprobado', true);
-        $wf =$this->bpm->bindArrayToObject($mywf['data']);
-        $startMessage=$this->bpm->get_shape_byname("/^StartMessageEvent$/", $wf);
-        $startMessage['count']=count($startMessage);
+        $wf = $this->bpm->bindArrayToObject($mywf['data']);
+        $startMessage = $this->bpm->get_shape_byname("/^StartMessageEvent$/", $wf);
+        $startMessage['count'] = count($startMessage);
         //header('Content-type: application/json;charset=UTF-8');
         var_dump($startMessage);
+    }
+
+    function get_tasks() {
+        $tasks=$this->bpm->get_tasks(1);
     }
 
 }

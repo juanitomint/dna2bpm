@@ -9,25 +9,24 @@ class Login extends MX_Controller {
         parent::__construct();
         //---base variables
         $this->base_url = base_url();
-        $this->module_url = base_url() . $this->router->fetch_module().'/';
+        $this->module_url = base_url() . $this->router->fetch_module() . '/';
         //----load parser
         $this->load->library('parser');
         $this->load->config('config');
-        
-        
     }
 
     function Nouser() {
         $msg = $this->session->userdata('msg');
         $this->lang->load('login', $this->config->item('language'));
         //---add language data
-        $data = $this->lang->language;
-        $data['authUrl'] = base_url() . 'user/authenticate';
-        $data['base_url'] = base_url();
-        $data['show_warn'] = $this->config->item('show_warn');
-        $data['theme'] = $this->config->item('theme');
+        $cpData = $this->lang->language;
+        $cpData['authUrl'] = base_url() . 'user/authenticate';
+        $cpData['base_url'] = base_url();
+        $cpData['show_warn'] = $this->config->item('show_warn');
+        $cpData['theme'] = $this->config->item('theme');
+        $cpData['plugins'] =(class_exists('Userlayer')) ? implode(',', $this->config->item('user_plugin')):array();
         //----load login again with msg 
-        $this->parser->parse('user/login', $data);
+        $this->parser->parse('user/login', $cpData);
     }
 
     function Index() {
@@ -42,6 +41,7 @@ class Login extends MX_Controller {
         $cpData['base_url'] = $this->base_url;
         $cpData['module_url'] = $this->module_url;
         $cpData['theme'] = $this->config->item('theme');
+        $cpData['plugins'] =(class_exists('Userlayer')) ? implode(',', $this->config->item('user_plugin')):array();
         //----NO USER
 
         if ($msg == 'nouser') {
@@ -57,7 +57,7 @@ class Login extends MX_Controller {
         if ($msg == 'hastolog') {
             $cpData['msgcode'] = $this->lang->line('hastolog') . "<br>" . $this->session->userdata('redir');
         }
-        
+
         $this->session->set_userdata('msg', $msg);
         //---build UI 
         //---define files to viewport
@@ -65,25 +65,23 @@ class Login extends MX_Controller {
             $this->module_url . "assets/css/login.css" => 'Login Specific',
         );
         $cpData['js'] = array(
-            //$this->module_url . "assets/jscript/login.js" => 'Login',
+                //$this->module_url . "assets/jscript/login.js" => 'Login',
         );
         //---
         $cpData['global_js'] = array(
             'base_url' => $this->base_url,
             'module_url' => $this->module_url,
-            'show_warn' =>$this->config->item('show_warn'),
+            'show_warn' => $this->config->item('show_warn'),
             'msg' => $msg,
             'msgcode' => (isset($cpData['msgcode'])) ? $cpData['msgcode'] : '',
-            'authUrl' => $this->base_url. 'user/authenticate'
+            'authUrl' => $this->base_url . 'user/authenticate'
         );
-        $cpData['show_warn']=($this->config->item('show_warn') and $msg<>'');
+        $cpData['show_warn'] = ($this->config->item('show_warn') and $msg <> '');
         //----clear data
-         $this->session->unset_userdata('msg');
+        $this->session->unset_userdata('msg');
         //$this->ui->makeui('user/ext.ui.php', $cpData);
         //$this->parser->parse('user/login', $cpData);
-        $this->ui->compose('user/login.bootstrap.php','user/bootstrap.ui.php',$cpData);
+        $this->ui->compose('user/login.bootstrap.php', 'user/bootstrap.ui.php', $cpData);
     }
 
 }
-
-?>

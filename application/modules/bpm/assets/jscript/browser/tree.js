@@ -12,7 +12,7 @@ var FolderAdd = Ext.create('Ext.Action', {
                         id: text,
                         text    : text +' <span class="text-new">[new]</span>',
                         leaf    : false,
-                        checked : n.data.checked
+                        loaded: true
                     };
                     n.appendChild(node);
                     n.set('leaf',false);
@@ -138,7 +138,7 @@ var reloadTree = Ext.create('Ext.Action', {
     text:'Reload',
     iconCls:'icon-refresh',
     handler:function(){
-        Ext.data.StoreManager.lookup('TreeStore').load();
+        Ext.data.StoreManager.lookup('TreeStore').reload();
         //tree.load_checked(dataview.selModel.getLastSelected().data.idgroup);
     }
 });

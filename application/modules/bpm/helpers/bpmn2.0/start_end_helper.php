@@ -115,17 +115,29 @@ function run_EndNoneEvent($shape, $wf, $CI, $moveForward = true) {
                 $CI->bpm->movenext($parent, $wf);
                 break;
 
+            case 'CollapsedSubprocess':
+                //---Finish the process
+                $CI->bpm->movenext($parent, $wf);
+                break;
+
             default:
                 //----Set status 4 Case
                 //---close process if all end events have been finished (or canceled)
                 $active_tokens = $CI->bpm->get_pending($wf->case, array('user', 'waiting', 'pending'), array());
                 if ($active_tokens->count() == 0)
-                    $CI->bpm->update_case($wf->case, 
-                            array(
-                                'status' => 'closed',
-                                'checkoutdate' => date('Y-m-d H:i:s')
-                                )
-                            );
+                    $CI->bpm->update_case($wf->case, array(
+                        'status' => 'closed',
+                        'checkoutdate' => date('Y-m-d H:i:s')
+                            )
+                    );
+                //----update parent case if any
+                $mycase = $CI->bpm->get_case($wf->case);
+                if (isset($mycase['parent'])) {
+                    $parent = $mycase['parent'];
+                    // run_post($model, $idwf, $case, $resourceId)
+                    //echo '/bpm/engine/run_post/model/' . $parent['idwf'] . '/' . $parent['case'] . '/' . $parent['token']['resourceId'];
+                    Module::run('/bpm/engine/run_post', 'model', $parent['idwf'], $parent['case'], $parent['token']['resourceId']);
+                }
                 break;
         }
     }
@@ -139,7 +151,7 @@ function run_EndMessageEvent($shape, $wf, $CI) {
     //---call the event throwing
     run_IntermediateEventThrowing($shape, $wf, $CI);
     //then finish like none
-    run_EndNoneEvent($shape, $wf, $CI,false);
+    run_EndNoneEvent($shape, $wf, $CI, false);
 }
 
 function run_EndEscalationEvent($shape, $wf, $CI) {

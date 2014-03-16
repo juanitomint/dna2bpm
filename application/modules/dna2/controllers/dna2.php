@@ -19,8 +19,6 @@ class Dna2 extends MX_Controller {
         $this->load->library('parser');
         $this->load->library('ui');
         $this->load->model('app');
-        $this->load->model('user/user');
-        $this->load->model('user/rbac');
         $this->load->model('bpm/bpm');
         $this->load->model('msg');
 
@@ -88,6 +86,28 @@ class Dna2 extends MX_Controller {
     }
 
     function Dashboard() {
+        $user = $this->user->get_user($this->idu);
+
+        //---hook para genios
+        if (in_array(98, $user->group) or in_array(92, $user->group)) {
+            redirect('/genias/');
+        }
+        
+        //---hook para SGR
+        if (in_array(58, $user->group)){
+            redirect('/sgr/');
+        }
+        
+        //---hook para inventory
+        if (array_intersect(array(
+                    62, //---1.3 Gestión
+                    64, //---1.3 Evaluadores
+                    66, //---1.1 Evaluadores
+                    82, //---1.1 Evaluadores Administrativos
+                    83, //---PACC mesa de entradas
+                        ), $user->group)) {
+            redirect('/inventory/');
+        }
         $customData = array();
         $customData['base_url'] = $this->base_url;
         $customData['module_url'] = $this->module_url;
@@ -102,7 +122,7 @@ class Dna2 extends MX_Controller {
         $customData['cases_widget'] = $this->parser->parse('cases', $customData, true);
 
         //Inbox Msgs
-        $mymgs = $this->msg->get_msgs($this->idu);
+        $mymgs = $this->msg->get_msgs($this->idu,'inbox');
         $customData['inbox_count'] = $mymgs->count();
 
         $customData['show_task_detail'] = true;
@@ -124,6 +144,7 @@ class Dna2 extends MX_Controller {
     }
 
     function Index() {
+
         $this->Dashboard();
     }
 
@@ -157,8 +178,6 @@ class Dna2 extends MX_Controller {
     }
 
     function render($file, $customData) {
-
-        $this->load->model('user/user');
         $this->load->model('app');
         $this->load->model('bpm/bpm');
         $this->user->authorize();
@@ -190,8 +209,11 @@ class Dna2 extends MX_Controller {
          */
         $cpData['cases'] = $cases_data['cases'];
         //----get Apps from DB
+        $cpData['apps'] = array();
+        $cpData['apps']['SumApps'] = 0;
         $apps = $this->app->get_apps();
-        if ($apps) {
+
+        if ($apps->count()) {
             //----check if the user has access to thi app
             foreach ($apps as $thisApp) {
                 $authorized = false;
@@ -213,17 +235,19 @@ class Dna2 extends MX_Controller {
                     );
                 }
             }
-            if ($cpData['apps']) {
-                $cpData['apps']['SumApps'] = count($cpData['apps']);
+            if (isset($cpData['apps'])) {
+                
             }
+        } else {
+            
         }
-
         /* Inbox Count MSgs */
-        $mymgs = $this->msg->get_msgs($this->idu);
+        $mymgs = $this->msg->get_msgs($this->idu,'inbox');
         $cpData['inbox_count'] = $mymgs->count();
 
 
         $cpData+=$customData;
+
         $this->ui->compose($file, 'dna2/unicorn.ui.php', $cpData);
     }
 

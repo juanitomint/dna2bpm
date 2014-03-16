@@ -11,14 +11,14 @@ class Repository extends MX_Controller {
         $this->load->model('user');
         $this->load->model('bpm');
         $this->load->helper('bpm');
-        //---TODO set propper roles 4 access
+//---TODO set propper roles 4 access
         $this->user->authorize();
-        //----LOAD LANGUAGE
+//----LOAD LANGUAGE
         $this->lang->load('library', $this->config->item('language'));
         $this->idu = (int) $this->session->userdata('iduser');
         $this->debug = array();
         $this->base_url = base_url();
-        $this->module_url = base_url() . $this->router->fetch_module().'/';
+        $this->module_url = base_url() . $this->router->fetch_module() . '/';
 
 //---LOAD CORE Functions
         /*
@@ -37,15 +37,15 @@ class Repository extends MX_Controller {
 
     function save() {
         $data = json_decode($this->input->post('data'));
-        //---fresh modification date
+//---fresh modification date
         $data->properties->modificationdate = date('Y-m-d') . 'T00:00:00';
         $svg = $this->input->post('svg');
-        //
-        //---if has name then save it
+//
+//---if has name then save it
         if ($data) {
             $idwf = $data->resourceId;
             header('Content-Type:text/plain');
-            //---check Existing revision.
+//---check Existing revision.
             $this->bpm->save($idwf, $data, $svg);
         } else {
             show_error('No name defined<br>', 500);
@@ -56,7 +56,7 @@ class Repository extends MX_Controller {
         $data = json_decode($this->input->post('data'));
         $svg = $this->input->post('svg');
         $title = "title";
-        //$idwf = $this->input->post('edit_model_title');
+//$idwf = $this->input->post('edit_model_title');
         $idwf = $this->input->post('title');
         $data->resourceId = $idwf;
         $query = array('idwf' => $idwf);
@@ -69,7 +69,7 @@ class Repository extends MX_Controller {
     }
 
     function add() {
-        //---check if has post
+//---check if has post
         if (!$this->input->post('idwf')) {
             show_error("Can't access this page directly");
         }
@@ -85,7 +85,7 @@ class Repository extends MX_Controller {
         $wf['data'] = array(
             'stencilset' =>
             array(
-                #'url' => $this->base_url . 'jscript/bpm-dna2/stencilsets/bpmn2.0/bpmn2.0_2.json',
+#'url' => $this->base_url . 'jscript/bpm-dna2/stencilsets/bpmn2.0/bpmn2.0_2.json',
                 'url' => '../../jscript/bpm-dna2/stencilsets/bpmn2.0/bpmn2.0_2.json',
                 'namespace' => 'http://b3mn.org/stencilset/bpmn2.0#'
             ),
@@ -124,9 +124,8 @@ class Repository extends MX_Controller {
         }
     }
 
-
     function load($model, $idwf, $mode = '', $debug = false) {
-        //---decode url string
+//---decode url string
         $idwf = urldecode($idwf);
         $mywf = $this->bpm->load($idwf);
         if (!$debug)
@@ -135,7 +134,7 @@ class Repository extends MX_Controller {
             'resourceId' => $idwf,
             'stencilset' =>
             array(
-                #'url' => $this->base_url . 'jscript/bpm-dna2/stencilsets/bpmn2.0/bpmn2.0_2.json',
+#'url' => $this->base_url . 'jscript/bpm-dna2/stencilsets/bpmn2.0/bpmn2.0_2.json',
                 'url' => '../../jscript/bpm-dna2/stencilsets/bpmn2.0/bpmn2.0_2.json',
                 'namespace' => 'http://b3mn.org/stencilset/bpmn2.0#'
             ),
@@ -153,7 +152,7 @@ class Repository extends MX_Controller {
 
     function edit($model = '', $idwf = '') {
         $wfData = $this->lang->language;
-        //var_dump($level);
+//var_dump($level);
         $wfData['theme'] = $this->config->item('theme');
         $wfData['base_url'] = $this->base_url;
         $wfData['module_url'] = $this->module_url;
@@ -172,7 +171,7 @@ class Repository extends MX_Controller {
         ini_set('xdebug.var_display_max_data', 512);
         ini_set('xdebug.var_display_max_depth', -1);
 
-        //$this->parser->parse('bpm/json_editor', $wfData);
+//$this->parser->parse('bpm/json_editor', $wfData);
         header('Content-type: application/json;charset=UTF-8');
         echo json_encode($wfData);
     }
@@ -186,16 +185,16 @@ class Repository extends MX_Controller {
          * cho '<svg width="'.$width.'" height="'.$heigth.'" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">';
          */
         echo $svg;
-        //echo '</svg>';
+//echo '</svg>';
     }
 
     function svg($idwf) {
-        //$svg = $this->bpm->svg($idwf);
-        //$this->parser->parse('bpm/svg', $svg);
+//$svg = $this->bpm->svg($idwf);
+//$this->parser->parse('bpm/svg', $svg);
 
         $mywf = $this->bpm->load($idwf);
         $svg[] = $mywf['svg'];
-        //var_dump($svg);
+//var_dump($svg);
         $data['svg'] = str_replace('>', ">\n", $mywf['svg']);
         $data['idwf'] = $idwf;
         header("Content-Type: application/xhtml+xml");
@@ -204,14 +203,13 @@ class Repository extends MX_Controller {
         $this->parser->parse('bpm/svg', $data);
     }
 
-
     function get_shapes($model, $idwf, $debug = false) {
         $data['idwf'] = $idwf;
-        //---load WF
+//---load WF
         $mywf = $this->bpm->load($idwf, true);
         $mywf['data']['idwf'] = $idwf;
         $wf = bindArrayToObject($mywf['data']);
-        //---------------------------------------
+//---------------------------------------
         $shapes = $this->bpm->get_all_shapes($wf);
         foreach ($shapes as $shape) {
             $data['shapes'][$shape->resourceId] = $shape;
@@ -237,11 +235,11 @@ class Repository extends MX_Controller {
         $data['idwf'] = $idwf;
         $wf = $this->bpm->load($idwf);
         $data+=$wf['data']['properties'];
-        //var_dump($wfData);
-        //---read model SVG
+//var_dump($wfData);
+//---read model SVG
         $data['svgfile'] = "images/svg/$idwf.svg";
         $data['SVG'] = htmlspecialchars(read_file($data['svgfile']));
-        //---OUTPUT AS XML
+//---OUTPUT AS XML
         header("Content-Type: application/xhtml+xml");
         echo '<?xml version="1.0" encoding="UTF-8"?>';
         echo $this->parser->parse('bpm/view-model.php', $data, true);
@@ -256,13 +254,13 @@ class Repository extends MX_Controller {
         $data['htmltitle'] .= ' | Tokens:' . $idcase;
         $data['theme'] = $this->config->item('theme');
         $data['base_url'] = $this->base_url;
-        //---load WF
+//---load WF
         $mywf = $this->bpm->load($idwf, true);
         $mywf['data']['idwf'] = $idwf;
         $mywf['data']['case'] = $idcase;
         $wf = bindArrayToObject($mywf['data']);
         $status = array('$regex' => $filter_status);
-        //$status=array('$regex'=>'^wa*');
+//$status=array('$regex'=>'^wa*');
         $case = $this->bpm->get_case($wf->case);
         $open = $case['history'];
         $data['count'] = count($open);
@@ -287,30 +285,30 @@ class Repository extends MX_Controller {
             $token_wf = $this->bpm->get_shape($token['resourceId'], $wf);
             $token['icon-status'] = $this->bpm->get_status_icon($token['status']);
             $token['icon'] = $this->bpm->get_icon($token['type']);
-            //var_dump($token);
+//var_dump($token);
             if ($token_wf) {
                 $token+=bindObjectToArray($token_wf->properties);
-                //---set subtye
-                // 4 task
+//---set subtye
+// 4 task
                 if (property_exists($token_wf->properties, 'tasktype'))
                     $token['subtype'] = $token_wf->properties->tasktype;
-                //---4 gateway
+//---4 gateway
                 if (property_exists($token_wf->properties, 'gatewaytype'))
                     $token['subtype'] = $token_wf->properties->gatewaytype;
-                //---4 flow
+//---4 flow
                 if (property_exists($token_wf->properties, 'conditionexpression'))
-                //var_dump($token_wf->properties->conditionexpression);
+//var_dump($token_wf->properties->conditionexpression);
                     $token['name'] = $token_wf->properties->conditionexpression;
 
                 $token['subtype'] = isset($token['subtype']) ? $token['subtype'] : null;
             }
             $data['tokens'][] = $token;
         }
-        //---read model SVG
+//---read model SVG
         $data['svgfile'] = "images/svg/$idwf.svg";
         $data['SVG'] = htmlspecialchars(read_file($data['svgfile']));
-        //$data['SVG'] = str_replace('black', 'green', $data['SVG']);
-        //---OUTPUT AS XML
+//$data['SVG'] = str_replace('black', 'green', $data['SVG']);
+//---OUTPUT AS XML
         header("Content-Type: application/xhtml+xml");
         echo '<?xml version="1.0" encoding="UTF-8"?>';
         echo $this->parser->parse('bpm/tokens.php', $data, true);
@@ -318,7 +316,7 @@ class Repository extends MX_Controller {
 
     function get_comments($model, $idwf, $resourceId) {
         $wfData = $this->lang->language;
-        //var_dump($level);
+//var_dump($level);
         $wfData['htmltitle'] = 'WF-Manager:' . $idwf;
         $wfData['theme'] = $this->config->item('theme');
         $wfData['base_url'] = $this->base_url;
@@ -328,7 +326,7 @@ class Repository extends MX_Controller {
         $shape = $this->bpm->get_shape($resourceId, $wf);
         echo $shape->stencil->id . '<br/>';
         echo $shape->properties->documentation;
-        //$this->parser->parse('bpm/comments.php', $wfData);
+//$this->parser->parse('bpm/comments.php', $wfData);
     }
 
     function upload() {
@@ -341,14 +339,22 @@ class Repository extends MX_Controller {
         $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
         if ($debug)
             echo '<h2>' . __FUNCTION__ . '</h2>';
-        //---load needed libraries
+//---load needed libraries
         $this->load->helper('form');
         $this->load->helper('url');
         $this->load->helper('file');
         $filePath = "images/zip/";
-
-        //---handle  the upload
+        //@todo better warning manager
+        try {
+            if (!is_dir($filePath)) {
+                mkdir($filePath, 0775, true);
+            }
+        } catch (Exception $e) {
+            var_dump($e);
+        }
+//---handle  the upload
         $config['upload_path'] = './' . $filePath;
+
         $config['allowed_types'] = 'zip';
         $config['overwrite'] = true;
         $this->load->library('upload', $config);
@@ -365,7 +371,7 @@ class Repository extends MX_Controller {
                 $svg = '';
                 $exten = '';
                 $err = false;
-                //---check for post
+//---check for post
                 $file_import = $upload_data['full_path'];
                 $filename = $upload_data['file_name'];
 
@@ -388,7 +394,7 @@ class Repository extends MX_Controller {
                     $svg = read_file($filename_svg);
                     if ($raw = read_file($filename)) {
                         $data = json_decode($raw, false);
-                        //---if exists set the internal id of the old one
+//---if exists set the internal id of the old one
                         $thisModel['idwf'] = $idwf;
                         $thisModel['data'] = $data;
                         $thisModel['folder'] = 'General';
