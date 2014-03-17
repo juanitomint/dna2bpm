@@ -13,7 +13,7 @@ class Admin extends MX_Controller {
         $this->load->model('bpm');
         //---base variables
         $this->base_url = base_url();
-        $this->module_url = base_url() . $this->router->fetch_module().'/';
+        $this->module_url = base_url() . $this->router->fetch_module() . '/';
         $this->user->authorize();
         //----LOAD LANGUAGE
         $this->lang->load('library', $this->config->item('language'));
@@ -138,7 +138,8 @@ class Admin extends MX_Controller {
     }
 
     function get_tree2() {
-        //$this->load->helper('ext');
+        $m_arr = array();
+//$this->load->helper('ext');
         $debug = false;
         //---get models
         $order = 'data.properties.name';
@@ -208,7 +209,7 @@ class Admin extends MX_Controller {
                             'id' => $key,
                             'text' => $key,
                             'leaf' => false,
-                            'cls' =>'folder',
+                            'cls' => 'folder',
                             'checked' => ($this->config->item('browser_tree_checkable_folders')) ? false : null,
                             'expanded' => ($this->config->item('browser_tree_expanded')) ? true : false,
                             'children' => array_filter($this->convert_to_ext($value))
@@ -230,7 +231,6 @@ class Admin extends MX_Controller {
         }
         return array_filter($rtn_arr);
     }
-
 
     function import_form() {
         $this->load->helper('file');
