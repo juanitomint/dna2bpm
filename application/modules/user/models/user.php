@@ -512,7 +512,7 @@ class User extends CI_Model {
         //-----make basic object
         $insert['id'] = $id;
         //----Allocate id in the collection (may result in empty docs)
-        $this->mongo->db->selectCollection($container)->save($insert);
+        //$this->mongo->db->selectCollection($container)->save($insert);
         return $id;
     }
 
