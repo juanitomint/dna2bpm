@@ -30,7 +30,7 @@ class Inbox extends MX_Controller {
         $customData['inbox_icon'] = 'icon-envelope';    
         $customData['js'] = array($this->module_url . "assets/jscript/inbox.js"=>'Inbox JS'); 
         $customData['css'] = array($this->module_url . "assets/css/dashboard.css" => 'Dashboard CSS');
-        
+
         // Determino el folder
         $folders=array('inbox','trash','outbox');
         $source='to';
@@ -40,7 +40,7 @@ class Inbox extends MX_Controller {
             $folder='inbox';
         }
         $customData['inbox_title'] = ucfirst($folder);
-        $customData['delete_title'] = ($folder=='trash')?('delete'):('move to trash');
+
         
         // Messages Loop
         $mymgs = $this->msg->get_msgs($this->idu,$folder);
@@ -55,7 +55,6 @@ class Inbox extends MX_Controller {
             $msg['body']=nl2br($msg['body']);
             $userdata = $this->user->get_user($msg['from']);
             $msg['from_name']=(empty($userdata))?('No user'):($userdata->nick);
-            
             $userdata = $this->user->get_user($msg['to']);
             $msg['to_name']=(empty($userdata))?('No user'):($userdata->nick);            
 

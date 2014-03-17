@@ -17,6 +17,7 @@ function run_CollapsedSubprocess($shape, $wf, $CI) {
 function run_Subprocess($shape, $wf, $CI) {
     $CI = & get_instance();
     $debug = (isset($CI->debug[__FUNCTION__])) ? $CI->debug[__FUNCTION__] : false;
+    $debug=true;
     $token = $CI->bpm->get_token($wf->idwf, $wf->case, $shape->resourceId);
     switch ($token['status']) {
         case 'waiting':
