@@ -16,4 +16,6 @@ $common = array(
     'idwf' => 'string',
     'group'=>'int',
     'order'=>'int',
+    'list_fields'=>'string',
+    'details_fields'=>'string',
 );
