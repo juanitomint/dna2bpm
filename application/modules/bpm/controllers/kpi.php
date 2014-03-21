@@ -287,6 +287,44 @@ class Kpi extends MX_Controller {
 
         $this->ui->makeui('test.kpi.ui.php', $cpData);
     }
+    function list_cases($idwf,$kpi) {
+        $this->load->model('bpm');
+        $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
+        if ($debug)
+            echo '<h2>' . __FUNCTION__ . '</h2>';
+        $this->load->library('ui');
+        $level = $this->user->getlevel($this->idu);
+        $cpData = $this->lang->language;
+        $segments = $this->uri->segment_array();
+        //var_dump($level);
+        $cpData['theme'] = $this->config->item('theme');
+        $cpData['title'] = "Kpi Preview";
+        $cpData['level'] = $level;
+        $cpData['base_url'] = $this->base_url;
+        $cpData['module_url'] = $this->module_url;
+        $cpData['idwf'] = $idwf;
+        $kpis = $this->kpi_model->get_model($idwf);
+
+//----PROCESS KPIS
+        $kpi_show = array();
+        foreach ($kpis as $kpi) {
+            //echo $kpi['type'].'<hr/>';
+            $kpi_show[] = $this->render($kpi);
+        }
+        $cpData['content'] = implode($kpi_show);
+        //----define Globals
+        $cpData['global_js'] = array(
+            'base_url' => $this->base_url,
+            'module_url' => $this->module_url
+        );
+        $cpData['js'] = array(
+            $this->module_url . 'assets/canv-gauge-master/gauge.js' => 'Jscript Gauge',
+            $this->module_url . 'assets/jscript/gauge/gauge.init_1.js' => 'Init Gauges',
+            $this->module_url . 'assets/jscript/gauge/gauge.init_reverse.js' => 'Init Gauges reverse',
+        );
+
+        $this->ui->makeui('test.kpi.ui.php', $cpData);
+    }
 
     function Render($kpi = null) {
         $debug=false;
@@ -327,7 +365,7 @@ class Kpi extends MX_Controller {
                     'iduser' => $this->idu
                 );
                 break;
-            default: //---filter by idwf
+            default:     //---filter by idwf
                 $filter = array(
                     'idwf' => $kpi['idwf']
                 );
