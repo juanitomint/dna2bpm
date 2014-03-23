@@ -288,7 +288,7 @@ class Kpi extends MX_Controller {
         $this->ui->makeui('test.kpi.ui.php', $cpData);
     }
 
-    function list_cases($idkpi) {
+    function list_cases($idkpi,$offset=null) {
         $this->load->model('bpm');
         $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
         if ($debug)
@@ -303,16 +303,7 @@ class Kpi extends MX_Controller {
         $kpi = $this->kpi_model->get($idkpi);
         $cases = $this->Get_cases($kpi);
         $parseArr = array();
-        foreach ($cases as $idcase) {
-            $case = $this->bpm->get_case($idcase);
-            //---Flatten data a bit so it can be parsed
-            $parseArr[] = array_merge(array(
-                'idwf' => $case['idwf'],
-                'checkdate' => $case['checkdate'],
-                'user' => (array)$this->user->get_user_safe($case['iduser']),
-                    ), $case['data']);
-        }
-        var_dump($parseArr);exit;
+
         //----create headers values 4 templates
         $tdata = json_decode($kpi['list_fields']);
         if ($tdata) {
@@ -320,17 +311,30 @@ class Kpi extends MX_Controller {
                 $header[] = '<th>' . $key . '</th>';
                 $values[] = "<td>{" . $value . "}</td>\n";
             }
+            //---parse each row and add it to $tlist
+            foreach ($cases as $idcase) {
+                $case = $this->bpm->get_case($idcase);
+                //---Flatten data a bit so it can be parsed
+                $parseArr = array_merge(array(
+                    'idwf' => $case['idwf'],
+                    'checkdate' => date($this->lang->line('dateFmt'),  strtotime($case['checkdate'])),
+                    'user' => (array) $this->user->get_user_safe($case['iduser']),
+                        ), $case['data']);
+                $tlist[] = $this->parser->parse_string('<tr>' . implode($values) . "</tr>\n", $parseArr, true);
+            }
+            //var_dump($parseArr); //exit;
             $template = '<table class="table">';
             $template.='<thead>';
             $template.='<tr>' . implode($header) . '</tr>';
             $template.='</thead>';
             //body
             $template.='<tbody>';
-            $template.='{cases}<tr>' . implode($values) . "</tr>{/cases}\n";
+            // $template.='{cases}<tr>' . implode($values) . "</tr>{/cases}\n";
+            $template.=implode($tlist);
             $template.='</tbody>';
             $template.='</table>';
         }
-           $cpData['content']=$this->parser->parse_string($template,array('cases'=>$parseArr),true);
+        $cpData['content'] = $this->parser->parse_string($template, array('cases' => $parseArr), true);
 
         //----PROCESS KPIS
         $this->ui->makeui('list.kpi.ui.php', $cpData);
