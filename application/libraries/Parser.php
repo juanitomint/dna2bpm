@@ -448,6 +448,8 @@ class CI_Parser {
 						else
 						{
 							$temp = $this->_parse_pair($key, $val, $temp);
+                            // parse array elements
+                            $temp=  $this->_parse_array_elems($key, $val, $temp);
 						}
 					}
 					$str .= $temp;
