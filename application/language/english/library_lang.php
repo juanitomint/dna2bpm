@@ -92,8 +92,14 @@ $lang["caseClosed"]="This case is marked as 'closed'";
 $lang["openCases"]="Open cases";
 $lang["closedCases"]="Closed Cases";
 /*--WF-conditions-----*/ 
-$lang['true']='Si';
+$lang['true']='Yes';
 $lang['false']='No';
+/*--RECORDS-----------*/
+$lang['records']='records';
+$lang['of']='of';
+$lang['to']='to';
+$lang['total']='total';
+
 
 
 /* 
