@@ -26,7 +26,7 @@ class Kpi extends MX_Controller {
         $this->lang->load('library', $this->config->item('language'));
         $this->idu = (int) $this->session->userdata('iduser');
         $this->base_url = base_url();
-        $this->module_url = base_url() . $this->router->fetch_module().'/';
+        $this->module_url = base_url() . $this->router->fetch_module() . '/';
     }
 
     function Index() {
@@ -287,47 +287,58 @@ class Kpi extends MX_Controller {
 
         $this->ui->makeui('test.kpi.ui.php', $cpData);
     }
-    function list_cases($idwf,$kpi) {
+
+    function list_cases($idkpi) {
         $this->load->model('bpm');
         $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
         if ($debug)
             echo '<h2>' . __FUNCTION__ . '</h2>';
         $this->load->library('ui');
-        $level = $this->user->getlevel($this->idu);
         $cpData = $this->lang->language;
-        $segments = $this->uri->segment_array();
         //var_dump($level);
         $cpData['theme'] = $this->config->item('theme');
-        $cpData['title'] = "Kpi Preview";
-        $cpData['level'] = $level;
+        $cpData['title'] = "Kpi List Cases";
         $cpData['base_url'] = $this->base_url;
         $cpData['module_url'] = $this->module_url;
-        $cpData['idwf'] = $idwf;
-        $kpis = $this->kpi_model->get_model($idwf);
-
-//----PROCESS KPIS
-        $kpi_show = array();
-        foreach ($kpis as $kpi) {
-            //echo $kpi['type'].'<hr/>';
-            $kpi_show[] = $this->render($kpi);
+        $kpi = $this->kpi_model->get($idkpi);
+        $cases = $this->Get_cases($kpi);
+        $parseArr = array();
+        foreach ($cases as $idcase) {
+            $case = $this->bpm->get_case($idcase);
+            //---Flatten data a bit so it can be parsed
+            $parseArr[] = array_merge(array(
+                'idwf' => $case['idwf'],
+                'checkdate' => $case['checkdate'],
+                'user' => (array)$this->user->get_user_safe($case['iduser']),
+                    ), $case['data']);
         }
-        $cpData['content'] = implode($kpi_show);
-        //----define Globals
-        $cpData['global_js'] = array(
-            'base_url' => $this->base_url,
-            'module_url' => $this->module_url
-        );
-        $cpData['js'] = array(
-            $this->module_url . 'assets/canv-gauge-master/gauge.js' => 'Jscript Gauge',
-            $this->module_url . 'assets/jscript/gauge/gauge.init_1.js' => 'Init Gauges',
-            $this->module_url . 'assets/jscript/gauge/gauge.init_reverse.js' => 'Init Gauges reverse',
-        );
+        var_dump($parseArr);exit;
+        //----create headers values 4 templates
+        $tdata = json_decode($kpi['list_fields']);
+        if ($tdata) {
+            foreach ($tdata as $key => $value) {
+                $header[] = '<th>' . $key . '</th>';
+                $values[] = "<td>{" . $value . "}</td>\n";
+            }
+            $template = '<table class="table">';
+            $template.='<thead>';
+            $template.='<tr>' . implode($header) . '</tr>';
+            $template.='</thead>';
+            //body
+            $template.='<tbody>';
+            $template.='{cases}<tr>' . implode($values) . "</tr>{/cases}\n";
+            $template.='</tbody>';
+            $template.='</table>';
+        }
+           $cpData['content']=$this->parser->parse_string($template,array('cases'=>$parseArr),true);
 
-        $this->ui->makeui('test.kpi.ui.php', $cpData);
+        //----PROCESS KPIS
+        $this->ui->makeui('list.kpi.ui.php', $cpData);
     }
 
     function Render($kpi = null) {
-        $debug=false;
+        $debug = false;
+
         $exists = false;
         //---load type extension
         if (!method_exists($this, $kpi['type'])) {
@@ -337,16 +348,39 @@ class Kpi extends MX_Controller {
                 if ($debug)
                     echo "Loaded Custom Render:$file_custom<br/>";
                 require_once($file_custom);
-                
             } else {
                 $rtn = $this->ShowMsg('<strong>Warning!</strong>Function:' . $kpi['type'] . '<br/>' . $kpi['title'] . '<br/>Does not exists. ', 'alert');
             }
-            $rtn = $kpi['type']($kpi,$this);
+            $rtn = $kpi['type']($kpi, $this);
         } else {
             $exists = true;
         }
         if ($exists)
             $rtn = $this->$kpi['type']($kpi);
+        return $rtn;
+    }
+
+    function Get_cases($kpi = null) {
+        $debug = false;
+
+        $exists = false;
+        //---load type extension
+        if (!method_exists($this, $kpi['type'])) {
+            $file_custom = $this->types_path . $kpi['type'] . '/kpi_controller.php';
+            if (is_file($file_custom)) {
+                //$exists = true;
+                if ($debug)
+                    echo "Loaded Custom Render:$file_custom<br/>";
+                require_once($file_custom);
+            } else {
+                $rtn = $this->ShowMsg('<strong>Warning!</strong>Function:' . $kpi['type'] . '<br/>' . $kpi['title'] . '<br/>Does not exists. ', 'alert');
+            }
+            $rtn = $kpi['type']($kpi, $this);
+        } else {
+            $exists = true;
+        }
+        if ($exists)
+            $rtn = $this->$kpi['type']($kpi, true);
         return $rtn;
     }
 
@@ -373,7 +407,6 @@ class Kpi extends MX_Controller {
         }
         return $filter;
     }
-
 
     function time_avg_all($kpi) {
         $filter = $this->get_filter($kpi);
@@ -412,14 +445,18 @@ class Kpi extends MX_Controller {
         $filter = $this->get_filter($kpi);
         $tokens = $this->bpm->get_tokens_byResourceId($kpi['resourceId'], $filter);
         $cpData = $kpi;
+        $cpData['base_url'] = $this->base_url;
+        $cpData['module_url'] = $this->module_url;
         //var_dump($tokens);
         $cpData['count'] = count($tokens);
         $rtn = $this->parser->parse('bpm/kpi_count', $cpData, true);
         return $rtn;
     }
 
-    function state($kpi) {
+    function state($kpi, $list = null) {
         $filter = array();
+        //----return cases if list=true
+        $cases = array();
         switch ($kpi['filter']) {
             case 'group':
                 break;
@@ -450,11 +487,21 @@ class Kpi extends MX_Controller {
         //$filter['status'] = array('$in' => (array) $status); //@todo include other statuses
         $tokens = $this->bpm->get_tokens_byResourceId($kpi['resourceId'], $filter);
         $cpData = $kpi;
+        $cpData['base_url'] = $this->base_url;
+        $cpData['module_url'] = $this->module_url;
         //var_dump($tokens);
         //$cpData['tokens']=$tokens;
         $cpData['count'] = count($tokens);
-        $rtn = $this->parser->parse('bpm/kpi_count', $cpData, true);
-        return $rtn;
+        if (!$list) {
+            $rtn = $this->parser->parse('bpm/kpi_count', $cpData, true);
+            return $rtn;
+        } else { //----return cases matched
+            //---map tokens to get case
+            $cases = array_map(function ($token) {
+                return $token['case'];
+            }, $tokens);
+            return $cases;
+        }
     }
 
     function Save_properties() {
