@@ -17,10 +17,17 @@
     <body>
         <div class="widget-box">
             <div class="widget-title">
-                <span class="icon"><i class="icon-time"></i></span>
-                <h5>List</h5>
+                <span class="icon"><i class="icon-list"></i></span>
+                <h5>
+                    List ::{kpi title}
+                </h5>
+                <span class="label label-warning tip-left" title="" data-original-title="Page">pag: {page} / {pages}</span>
+
             </div>
             {content}
+            <div id="pagination">
+                {lang records} {start} {lang to} {top} {lang of} {total} <br/> {pagination}
+            </div>
         </div>
 
         <div id="loading-msg"></div>

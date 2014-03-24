@@ -288,22 +288,48 @@ class Kpi extends MX_Controller {
         $this->ui->makeui('test.kpi.ui.php', $cpData);
     }
 
-    function list_cases($idkpi,$offset=null) {
+    function list_cases($idkpi, $offset= 0) {
         $this->load->model('bpm');
+        $this->load->library('pagination');
         $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
         if ($debug)
             echo '<h2>' . __FUNCTION__ . '</h2>';
         $this->load->library('ui');
-        $cpData = $this->lang->language;
+        $cpData['lang'] = $this->lang->language;
         //var_dump($level);
         $cpData['theme'] = $this->config->item('theme');
         $cpData['title'] = "Kpi List Cases";
         $cpData['base_url'] = $this->base_url;
         $cpData['module_url'] = $this->module_url;
         $kpi = $this->kpi_model->get($idkpi);
+        $cpData['kpi'] = $kpi;
+
         $cases = $this->Get_cases($kpi);
         $parseArr = array();
+        //-----prepare pagination;
+        $pagesize = (isset($kpi['list_records'])) ? $kpi['list_records'] : 50;
+        $page = ($offset) ? $offset/$pagesize : 1;
+        //$offset = ($page - 1) * $pagesize;
+        $total = count($cases);
+        $pages = round($total / $pagesize, 0, PHP_ROUND_HALF_UP);
+        $top = min(array($offset + $pagesize, $total));
 
+        $cpData['start'] = $offset;
+        $cpData['top'] = $top;
+        $cpData['total'] = $total;
+        $cpData['page'] = $page;
+        $cpData['pages'] = $pages;
+        //----make content
+        for ($i = $offset; $i < $top; $i++) {
+            $idcase = $cases[$i];
+            $case = $this->bpm->get_case($idcase);
+            //---Flatten data a bit so it can be parsed
+            $parseArr[] = array_merge(array(
+                'idwf' => $case['idwf'],
+                'checkdate' => date($this->lang->line('dateFmt'),  strtotime($case['checkdate'])),
+                'user' => (array) $this->user->get_user_safe($case['iduser']),
+                    ), $case['data']);
+        }
         //----create headers values 4 templates
         $tdata = json_decode($kpi['list_fields']);
         if ($tdata) {
@@ -311,31 +337,28 @@ class Kpi extends MX_Controller {
                 $header[] = '<th>' . $key . '</th>';
                 $values[] = "<td>{" . $value . "}</td>\n";
             }
-            //---parse each row and add it to $tlist
-            foreach ($cases as $idcase) {
-                $case = $this->bpm->get_case($idcase);
-                //---Flatten data a bit so it can be parsed
-                $parseArr = array_merge(array(
-                    'idwf' => $case['idwf'],
-                    'checkdate' => date($this->lang->line('dateFmt'),  strtotime($case['checkdate'])),
-                    'user' => (array) $this->user->get_user_safe($case['iduser']),
-                        ), $case['data']);
-                $tlist[] = $this->parser->parse_string('<tr>' . implode($values) . "</tr>\n", $parseArr, true);
-            }
-            //var_dump($parseArr); //exit;
             $template = '<table class="table">';
             $template.='<thead>';
             $template.='<tr>' . implode($header) . '</tr>';
             $template.='</thead>';
             //body
             $template.='<tbody>';
-            // $template.='{cases}<tr>' . implode($values) . "</tr>{/cases}\n";
-            $template.=implode($tlist);
+            $template.='{cases}<tr>' . implode($values) . "</tr>{/cases}\n";
             $template.='</tbody>';
             $template.='</table>';
         }
         $cpData['content'] = $this->parser->parse_string($template, array('cases' => $parseArr), true);
+        //----Pagination
+        $config['base_url'] = $this->module_url . 'kpi/list_cases/' . $idkpi . '/';
+        $config['total_rows'] = $total;
+        $config['per_page'] = $pagesize;
+        $config['num_links'] = 3;
+        $config['uri_segment'] = 5;
 
+
+        $this->pagination->initialize($config);
+
+        $cpData['pagination'] = $this->pagination->create_links();
         //----PROCESS KPIS
         $this->ui->makeui('list.kpi.ui.php', $cpData);
     }

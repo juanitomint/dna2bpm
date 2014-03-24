@@ -1,4 +1,8 @@
 //----Extra
+config.sourceConfig['list_records']=
+{
+    displayName:'Records per Page',
+    };
 config.sourceConfig['list_fields']=
 {
     displayName:'List Fields'
