@@ -11,16 +11,16 @@
  * 
  */
 
-function count($kpi, $CI, $list = null) {
-    $filter = $this->get_filter($kpi);
-    $tokens = $this->bpm->get_tokens_byResourceId($kpi['resourceId'], $filter);
+function count_cases($kpi, $CI, $list = null) {
+    $filter = $CI->get_filter($kpi);
+    $tokens = $CI->bpm->get_tokens_byResourceId($kpi['resourceId'], $filter);
     $cpData = $kpi;
-    $cpData['base_url'] = $this->base_url;
-    $cpData['module_url'] = $this->module_url;
+    $cpData['base_url'] = $CI->base_url;
+    $cpData['module_url'] = $CI->module_url;
     //var_dump($tokens);
     $cpData['count'] = count($tokens);
     if (!$list) {
-        $rtn = $this->parser->parse('bpm/kpi_count', $cpData, true);
+        $rtn = $CI->parser->parse('bpm/kpi_count', $cpData, true);
         return $rtn;
     } else { //----return cases matched
         //---map tokens to get case

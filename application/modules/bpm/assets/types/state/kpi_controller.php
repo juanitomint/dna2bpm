@@ -1,4 +1,5 @@
 <?php
+
 /*
  * KPI STATE Controller function
  * This file contains the function necesary to filter cases by a shape state
@@ -9,47 +10,23 @@
  * @version 	1.0 (2014-03-24)
  * 
  */
+
 function state($kpi, $CI, $list = null) {
-    $filter = array();
-    //----return cases if list=true
-    $cases = array();
-    switch ($kpi['filter']) {
-        case 'group':
-            break;
-        case 'user':
-            $filter = array(
-                'idwf' => $kpi['idwf'],
-                'iduser' => $this->idu
-            );
-            break;
-        default: //---filter by idwf
-            $filter = array(
-                'idwf' => $kpi['idwf']
-            );
-            break;
+
+    $filter = $CI->get_filter($kpi);
+    //---add status filter if status has been specified or else return any status
+    if ($kpi['status'] <> '') {
+        $filter['status'] = array('$in' => (array) $filter['status'] );
     }
-    /*
-     *  'pending'
-      'manual'
-      'user'
-      'waiting'
-     */
-    $status = array(
-        'pending',
-        'manual',
-        'user',
-        'waiting'
-    );
-    //$filter['status'] = array('$in' => (array) $status); //@todo include other statuses
-    $tokens = $this->bpm->get_tokens_byResourceId($kpi['resourceId'], $filter);
+    $tokens = $CI->bpm->get_tokens_byResourceId($kpi['resourceId'], $filter);
     $cpData = $kpi;
-    $cpData['base_url'] = $this->base_url;
-    $cpData['module_url'] = $this->module_url;
+    $cpData['base_url'] = $CI->base_url;
+    $cpData['module_url'] = $CI->module_url;
     //var_dump($tokens);
     //$cpData['tokens']=$tokens;
     $cpData['count'] = count($tokens);
     if (!$list) {
-        $rtn = $this->parser->parse('bpm/kpi_count', $cpData, true);
+        $rtn = $CI->parser->parse('bpm/kpi_count', $cpData, true);
         return $rtn;
     } else { //----return cases matched
         //---map tokens to get case

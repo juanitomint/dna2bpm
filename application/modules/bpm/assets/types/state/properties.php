@@ -10,5 +10,6 @@ $type_props['list_detail']='string';
 $type_props['list_template']='string';
 $type_props['list_detail_template']='string';
 $type_props['list_records']='integer';
+$type_props['status']='string';
 
 

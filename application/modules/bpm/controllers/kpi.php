@@ -307,7 +307,7 @@ class Kpi extends MX_Controller {
         $cases = $this->Get_cases($kpi);
         $parseArr = array();
         //-----prepare pagination;
-        $pagesize = (isset($kpi['list_records'])) ? $kpi['list_records'] : 50;
+        $pagesize = ($kpi['list_records']) ? $kpi['list_records'] : 50;
         $page = ($offset) ? $offset / $pagesize : 1;
         //$offset = ($page - 1) * $pagesize;
         $total = count($cases);
@@ -336,6 +336,7 @@ class Kpi extends MX_Controller {
 
             //----create headers values 4 templates
             $tdata = json_decode($kpi['list_fields']);
+           
             if ($tdata) {
                 foreach ($tdata as $key => $value) {
                     $header[] = '<th>' . $key . '</th>';
@@ -350,6 +351,8 @@ class Kpi extends MX_Controller {
                 $template.='{cases}<tr>' . implode($values) . "</tr>{/cases}\n";
                 $template.='</tbody>';
                 $template.='</table>';
+            } else {
+                show_error('KPI:"'.$kpi['title'].'" does not have a valid "list_fields" value');
             }
             
         }
