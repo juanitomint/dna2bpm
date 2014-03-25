@@ -288,7 +288,7 @@ class Kpi extends MX_Controller {
         $this->ui->makeui('test.kpi.ui.php', $cpData);
     }
 
-    function list_cases($idkpi, $offset= 0) {
+    function list_cases($idkpi, $offset = 0) {
         $this->load->model('bpm');
         $this->load->library('pagination');
         $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
@@ -308,7 +308,7 @@ class Kpi extends MX_Controller {
         $parseArr = array();
         //-----prepare pagination;
         $pagesize = (isset($kpi['list_records'])) ? $kpi['list_records'] : 50;
-        $page = ($offset) ? $offset/$pagesize : 1;
+        $page = ($offset) ? $offset / $pagesize : 1;
         //$offset = ($page - 1) * $pagesize;
         $total = count($cases);
         $pages = round($total / $pagesize, 0, PHP_ROUND_HALF_UP);
@@ -326,26 +326,32 @@ class Kpi extends MX_Controller {
             //---Flatten data a bit so it can be parsed
             $parseArr[] = array_merge(array(
                 'idwf' => $case['idwf'],
-                'checkdate' => date($this->lang->line('dateFmt'),  strtotime($case['checkdate'])),
+                'checkdate' => date($this->lang->line('dateFmt'), strtotime($case['checkdate'])),
                 'user' => (array) $this->user->get_user_safe($case['iduser']),
                     ), $case['data']);
         }
-        //----create headers values 4 templates
-        $tdata = json_decode($kpi['list_fields']);
-        if ($tdata) {
-            foreach ($tdata as $key => $value) {
-                $header[] = '<th>' . $key . '</th>';
-                $values[] = "<td>{" . $value . "}</td>\n";
+        if ($kpi['list_template'] <> '') {
+            $template=$kpi['list_template'];
+        } else {
+
+            //----create headers values 4 templates
+            $tdata = json_decode($kpi['list_fields']);
+            if ($tdata) {
+                foreach ($tdata as $key => $value) {
+                    $header[] = '<th>' . $key . '</th>';
+                    $values[] = "<td>{" . $value . "}</td>\n";
+                }
+                $template = '<table class="table">';
+                $template.='<thead>';
+                $template.='<tr>' . implode($header) . '</tr>';
+                $template.='</thead>';
+                //body
+                $template.='<tbody>';
+                $template.='{cases}<tr>' . implode($values) . "</tr>{/cases}\n";
+                $template.='</tbody>';
+                $template.='</table>';
             }
-            $template = '<table class="table">';
-            $template.='<thead>';
-            $template.='<tr>' . implode($header) . '</tr>';
-            $template.='</thead>';
-            //body
-            $template.='<tbody>';
-            $template.='{cases}<tr>' . implode($values) . "</tr>{/cases}\n";
-            $template.='</tbody>';
-            $template.='</table>';
+            
         }
         $cpData['content'] = $this->parser->parse_string($template, array('cases' => $parseArr), true);
         //----Pagination
