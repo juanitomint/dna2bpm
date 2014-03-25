@@ -444,9 +444,7 @@ class Kpi extends MX_Controller {
         return $filter;
     }
 
-    function time_avg_all($kpi) {
-        $filter = $this->get_filter($kpi);
-    }
+    
 
     function time_avg($kpi) {
         $timesum = 0;
