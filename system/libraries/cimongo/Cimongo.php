@@ -58,6 +58,8 @@ class Cimongo extends Cimongo_extras {
         }
         if ($this->debug){
             var_dump('Wheres',$this->wheres);
+            var_dump('Selects',$this->selects);
+            
         }
         $cursor = $this->db->selectCollection($collection)->find($this->wheres, $this->selects);
         $cimongo_cursor = new Cimongo_cursor($cursor);
