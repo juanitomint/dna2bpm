@@ -15,8 +15,10 @@ function state($kpi, $CI, $list = null) {
 
     $filter = $CI->get_filter($kpi);
     //---add status filter if status has been specified or else return any status
-    if ($kpi['status'] <> '') {
-        $filter['status'] = array('$in' => (array) $filter['status'] );
+    if (isset($kpi['status'])) {
+        if ($kpi['status'] <> '') {
+            $filter['status'] = array('$in' => (array) $filter['status']);
+        }
     }
     $tokens = $CI->bpm->get_tokens_byResourceId($kpi['resourceId'], $filter);
     $cpData = $kpi;
