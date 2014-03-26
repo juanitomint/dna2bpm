@@ -384,6 +384,25 @@ class Bpm extends CI_Model {
                 ->result_array();
         return $result;
     }
+    function get_last_token($idwf, $idcase) {
+        $query = array_filter(
+                array(
+                    'idwf' => $idwf,
+                    'case' => $idcase,
+                )
+        );
+
+        //var_dump2(json_encode($query));
+        $result = $this->db
+                ->where($query)
+                ->order_by(array('_id' => -1))
+                ->get('tokens',1)
+                ->result_array();
+        if(count($result)){
+            return end($result);
+        }
+        return false;
+    }
 
     function assign_task($token, $users) {
         //---this function is for manually assign a certain task
@@ -420,6 +439,7 @@ class Bpm extends CI_Model {
 
         return $rs;
     }
+    
 
     function get_pending($case, $status = 'user', $filter) {
         $query = array(
