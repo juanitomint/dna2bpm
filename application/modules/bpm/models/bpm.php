@@ -28,7 +28,8 @@ class Bpm extends CI_Model {
         if ($result) {
             $wf = $result[0];
         } else {
-            show_error("Model: '$idwf' not found<br>Contact your system Administrator");
+            return false;
+            //show_error("Model: '$idwf' not found<br>Contact your system Administrator");
         }
 
         if ($wf) {
@@ -153,7 +154,7 @@ class Bpm extends CI_Model {
         
     }
 
-    function get_cases_byFilter($filter,$fields=array()) {
+    function get_cases_byFilter($filter, $fields = array()) {
         //$this->db->debug=true;
         $this->db->where($filter);
         $this->db->select($fields);
@@ -184,24 +185,26 @@ class Bpm extends CI_Model {
         if (count($tarr)) {
             foreach ($tarr as $idcase => $qtty) {
                 $case = $this->bpm->get_case($idcase);
-                $mybpm = $this->bpm->load($case['idwf'], true);
-                //unset($case['_id']);
-                $case['name'] = $mybpm['data']['properties']['name'];
-                $case['documentation'] = $mybpm['data']['properties']['documentation'];
-                //$case['mytasks'] = $tasks;
-                $case['task_count'] = $qtty;
-                $case['date'] = date($this->lang->line('dateFmt'), strtotime($case['checkdate']));
-                if (count($filter_status)) {
-                    if (in_array($case['status'], $filter_status)) {
+                if ($case) {
+                    $mybpm = $this->bpm->load($case['idwf'], true);
+                    //unset($case['_id']);
+                    $case['name'] = $mybpm['data']['properties']['name'];
+                    $case['documentation'] = $mybpm['data']['properties']['documentation'];
+                    //$case['mytasks'] = $tasks;
+                    $case['task_count'] = $qtty;
+                    $case['date'] = date($this->lang->line('dateFmt'), strtotime($case['checkdate']));
+                    if (count($filter_status)) {
+                        if (in_array($case['status'], $filter_status)) {
+                            $data['cases'][] = $case;
+                            $sort_date[] = $case['checkdate'];
+                        }
+                    } else {
                         $data['cases'][] = $case;
                         $sort_date[] = $case['checkdate'];
                     }
-                } else {
-                    $data['cases'][] = $case;
-                    $sort_date[] = $case['checkdate'];
-                }
 
-                //----order Cases
+                    //----order Cases
+                }
             }
 
             //---sort by ddate desc
@@ -384,6 +387,7 @@ class Bpm extends CI_Model {
                 ->result_array();
         return $result;
     }
+
     function get_last_token($idwf, $idcase) {
         $query = array_filter(
                 array(
@@ -396,9 +400,9 @@ class Bpm extends CI_Model {
         $result = $this->db
                 ->where($query)
                 ->order_by(array('_id' => -1))
-                ->get('tokens',1)
+                ->get('tokens', 1)
                 ->result_array();
-        if(count($result)){
+        if (count($result)) {
             return end($result);
         }
         return false;
@@ -439,7 +443,6 @@ class Bpm extends CI_Model {
 
         return $rs;
     }
-    
 
     function get_pending($case, $status = 'user', $filter) {
         $query = array(
@@ -535,7 +538,8 @@ class Bpm extends CI_Model {
         if ($result) {
             return $result[0];
         } else {
-            show_error("Case: '$idcase' not found<br>Contact your system Administrator");
+            return false;
+            //show_error("Case: '$idcase' not found<br>Contact your system Administrator");
         }
     }
 
