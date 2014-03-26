@@ -106,7 +106,7 @@ class Case_manager extends MX_Controller {
                     $cases = $this->bpm->get_all_cases($start, $limit, $sort, $query, $model);
                     $out['totalcount'] = count($cases);
                     foreach ($cases as $case) {
-                        unset($case['history']);
+                        //unset($case['history']);
                         //--set user
                         if (!isset($case['iduser']))
                             break;
@@ -180,7 +180,7 @@ class Case_manager extends MX_Controller {
                         $all_tokens[$resourceId] = array(
                             'idwf' => $idwf,
                             'resourceId' => $resourceId,
-                            'title' => $token['title'],
+                            'title' => (isset($token['title'])) ? $token['title']:'',
                             'type' => $token['type'],
                             'run' => 1,
                             'icon' => "<img src='" . $this->base_url . $this->bpm->get_icon($token['type']) . "' />"
