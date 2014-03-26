@@ -303,7 +303,6 @@ class Kpi extends MX_Controller {
         $cpData['module_url'] = $this->module_url;
         $kpi = $this->kpi_model->get($idkpi);
         $cpData['kpi'] = $kpi;
-
         $cases = $this->Get_cases($kpi);
         $parseArr = array();
         //-----prepare pagination;
