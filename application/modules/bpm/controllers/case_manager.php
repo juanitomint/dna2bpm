@@ -18,6 +18,7 @@ class Case_manager extends MX_Controller {
         $this->load->library('parser');
         $this->load->model('user');
         $this->load->model('bpm');
+        $this->load->helper('bpm');
         $this->load->model('user/group');
         $this->user->authorize('ADM,WFADM');
         //----LOAD LANGUAGE
@@ -27,7 +28,7 @@ class Case_manager extends MX_Controller {
         $this->lang->load('library', $this->config->item('language'));
         $this->idu = (int) $this->session->userdata('iduser');
         $this->base_url = base_url();
-        $this->module_url = base_url() . $this->router->fetch_module().'/';
+        $this->module_url = base_url() . $this->router->fetch_module() . '/';
     }
 
     function Browse($model, $idwf, $case = null, $action = '') {
@@ -107,10 +108,11 @@ class Case_manager extends MX_Controller {
                     foreach ($cases as $case) {
                         unset($case['history']);
                         //--set user
-                        if(!isset($case['iduser'])) break;
+                        if (!isset($case['iduser']))
+                            break;
                         $user = $this->user->get_user($case['iduser']);
-                        
-                        $case['user'] =($user) ? $user->nick:'???';
+
+                        $case['user'] = ($user) ? $user->nick : '???';
                         //----set pseudo status (add locked to statuses)
                         if (isset($case['locked'])) {
                             if ($case['locked'])
@@ -130,7 +132,7 @@ class Case_manager extends MX_Controller {
                         $case['locked'] = $thisCase->locked;
                         $case['lockedBy'] = $this->idu;
                         $case['lockedDate'] = date('Y-m-d H:i:s');
-                        $result=$this->bpm->save_case($case);
+                        $result = $this->bpm->save_case($case);
                         $out = array('status' => 'ok');
                     }
                     break;
@@ -151,42 +153,78 @@ class Case_manager extends MX_Controller {
         }
     }
 
-    function Tokens($action, $model, $idcase) {
+    function Tokens($action, $idwf, $idcase) {
         $segments = $this->uri->segment_array();
         $debug = (in_array('debug', $segments)) ? true : false;
         $out = array();
-        //--get case
-        $case = $this->bpm->get_case($idcase);
-        $idwf = $case['idwf'];
+        //----if selected all tokens status
+        if ($idcase == 'all') {
+            $tokens = array();
+            $all_tokens = array();
+            $filter['idwf'] = $idwf;
+            $allcases = $this->bpm->get_cases_byFilter($filter, array('id'));
+//            $mywf = $this->bpm->load($idwf);
+//
+//            $wf = bindArrayToObject($mywf['data']);
+            $cases = array();
+            foreach ($allcases as $case) {
+                $token = $this->bpm->get_last_token($idwf, $case['id']);
+                if ($token) {
+                    $resourceId = $token['resourceId'];
 
-        if (isset($model) && isset($idcase)) {
-            switch ($action) {
-                case 'history':
-                    $tokens = array_slice($case['history'], 0, 100);
-                    break;
-                case 'status':
-                    // select all tokens
-                    $status = array('$regex' => '');
-                    $tokens = $this->bpm->get_tokens($idwf, $idcase, $status);
-                    break;
+                    if (isset($all_tokens[$resourceId])) {
+                        $all_tokens[$resourceId]['run'] ++;
+                    } else {
+                        //$data = $this->bpm->get_shape($resourceId, $wf);
+
+                        $all_tokens[$resourceId] = array(
+                            'idwf' => $idwf,
+                            'resourceId' => $resourceId,
+                            'title' => $token['title'],
+                            'type' => $token['type'],
+                            'run' => 1,
+                            'icon' => "<img src='" . $this->base_url . $this->bpm->get_icon($token['type']) . "' />"
+                        );
+                    }
+                }
+            }//---end foreach cases
+            foreach ($all_tokens as $token)
+                $tokens[] = $token;
+            $out['rows'] = $tokens;
+        } else {
+            //--get case
+            $case = $this->bpm->get_case($idcase);
+            $idwf = $case['idwf'];
+
+            if (isset($idwf) && isset($idcase)) {
+                switch ($action) {
+                    case 'history':
+                        $tokens = array_slice($case['history'], 0, 100);
+                        break;
+                    case 'status':
+                        // select all tokens
+                        $status = array('$regex' => '');
+                        $tokens = $this->bpm->get_tokens($idwf, $idcase, $status);
+                        break;
+                }
+            }
+            foreach ($tokens as $token) {
+                //--set user
+                $token['iduser'] = (isset($token['iduser'])) ? isset($token['iduser']) : isset($token['idu']);
+
+                unset($token['history']);
+                unset($token['_id']);
+                //---get the user who locked
+                $token['lockedBy'] = isset($token['lockedBy']) ? $token['lockedBy'] : null;
+                $user = $this->user->get_user($token['iduser']);
+                $token['user'] = $user->nick;
+                //----set date
+                $token['date'] = isset($token['checkdate']) ? date($this->lang->line('dateFmt'), strtotime($token['checkdate'])) : '???';
+                $token['icon'] = "<img src='" . $this->base_url . $this->bpm->get_icon($token['type']) . "' />";
+                $out['rows'][] = $token;
             }
         }
         $out['totalcount'] = count($tokens);
-        foreach ($tokens as $token) {
-            //--set user
-            $token['iduser'] = (isset($token['iduser'])) ? isset($token['iduser']) : isset($token['idu']);
-
-            unset($token['history']);
-            unset($token['_id']);
-            //---get the user who locked
-            $token['lockedBy'] = isset($token['lockedBy']) ? $token['lockedBy'] : null;
-            $user = $this->user->get_user($token['iduser']);
-            $token['user'] = $user->nick;
-            //----set date
-            $token['date'] =isset($token['checkdate']) ? date($this->lang->line('dateFmt'), strtotime($token['checkdate'])):'???';
-            $token['icon'] = "<img src='" . $this->base_url . $this->bpm->get_icon($token['type']) . "' />";
-            $out['rows'][] = $token;
-        }
         if (!$debug) {
             header('Content-type: application/json;charset=UTF-8');
             echo json_encode($out);
