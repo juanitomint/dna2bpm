@@ -138,10 +138,12 @@ class User extends CI_Model {
      * Check if the user belong to Admin Group 
      */
 
-    function isAdmin($user) {
+    function isAdmin($thisUser = null) {
+        if (!$thisUser)
+            $thisUser = $this->user->get_user($this->idu);
         if ($this->isloggedin()) {
             //---this is the ADMIN policy
-            if (in_array($this->config->item('groupAdmin'), $user->group)) {
+            if (in_array($this->config->item('groupAdmin'), $thisUser->group)) {
                 return true;
             }
         }
