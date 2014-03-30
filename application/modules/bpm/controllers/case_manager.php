@@ -162,22 +162,21 @@ class Case_manager extends MX_Controller {
             $tokens = array();
             $all_tokens = array();
             $filter['idwf'] = $idwf;
-            $allcases = $this->bpm->get_cases_byFilter($filter, array('id'));
+            $allcases = $this->bpm->get_cases_byFilter($filter, array('id','token_status'));
 //            $mywf = $this->bpm->load($idwf);
 //
 //            $wf = bindArrayToObject($mywf['data']);
             $cases = array();
             foreach ($allcases as $case) {
                 $tokens = (isset($case['token_status'])) ? $case['token_status'] : null;
-                $this->bpm->get_token_status($idwf, $case['id']);
-                //var_dump($tokens);exit;
+                //var_dump($case,$tokens);exit;
                 if ($tokens) {
-                    foreach ($tokens as $token) {
-                        $resourceId = $token['resourceId'];
-
+                    foreach ($tokens as $resourceId) {
                         if (isset($all_tokens[$resourceId])) {
                             $all_tokens[$resourceId]['run'] ++;
                         } else {
+                            $token = $this->bpm->get_token($idwf, $case['id'], $resourceId);
+                            //var_dump($token);exit;
                             //$data = $this->bpm->get_shape($resourceId, $wf);
 
                             $all_tokens[$resourceId] = array(

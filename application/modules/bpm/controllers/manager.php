@@ -119,6 +119,12 @@ class Manager extends MX_Controller {
             $task['icon_status'] = $this->bpm->get_status_icon($task['status']);
             //---alias status key,parsing work-around
             $task['tstatus'] = $task['status'];
+            //---Run url
+            $task['run_url'] = $this->module_url.
+                    'engine/do_pending/model/'.
+                    $task['idwf'].'/'.
+                    $task['case'].'/'.
+                    $task['resourceId'];
 
 
             //----filter by status

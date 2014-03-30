@@ -36,7 +36,7 @@
                     {mytasks}
                     <li>
                         <img src="{base_url}{icon}" style="vertical-align: middle" />
-                        {title}
+                        <a href="{run_url}">{title}</a>
                         {if {claimable}}
                         <button class="claimTask" title="claim" idwf="{idwf}" case="{case}" resourceId="{resourceId}">{lang claim}</button>
                         {/if}
