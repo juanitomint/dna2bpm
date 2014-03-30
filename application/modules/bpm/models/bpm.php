@@ -414,7 +414,7 @@ class Bpm extends CI_Model {
                 array(
                     'idwf' => $idwf,
                     'case' => $idcase,
-                    'status' => array('$nin' => array('finished','canceled'))
+                    'status' => array('$nin' => array('finished', 'canceled'))
                 )
         );
         $tokens = $this->db
@@ -422,7 +422,7 @@ class Bpm extends CI_Model {
                 ->get('tokens')
                 ->result_array();
         if (count($tokens)) {
-        $result=array_map(function ($token) {
+            $result = array_map(function ($token) {
                 return $token['resourceId'];
             }, $tokens);
             return $result;
@@ -434,12 +434,12 @@ class Bpm extends CI_Model {
         //---this function is for manually assign a certain task
         //--- can be invoked from script tasks.
         //---check if property exists
-        if (!isset($token['asign']))
-            $token['asign'] = array();
+        if (!isset($token['assign']))
+            $token['assign'] = array();
         //---merge user arrays
-        $token['asign']+=$users;
+        $token['assign']+=$users;
         //---ensure uniqness
-        array_unique($token['asign']);
+        array_unique($token['assign']);
         $this->save_token($token);
     }
 
@@ -662,7 +662,7 @@ class Bpm extends CI_Model {
         //---now
         $dateOut = new DateTime();
         $data['interval'] = date_diff($dateOut, $dateIn, true);
-        //---asign user
+        //---assign user
         if (!isset($data['iduser']))
             $data['iduser'] = (int) $this->session->userdata('iduser');
         //----update case with latest token status
@@ -787,7 +787,8 @@ class Bpm extends CI_Model {
             //'tasktype' => array('$in' => array('User', 'Manual')),
             'type' => array('$in' => array('Task', 'Exclusive_Databased_Gateway')),
             'title' => array('$exists' => true),
-            'status' => array('$nin' => array('waiting')),
+            //'status' => array('$nin' => array('finished','canceled')),
+            'status' => 'user',
             '$or' => array(
                 array('iduser' => $iduser), //---task i've done or i've started
                 array('assign' => $iduser), //----assigned to me
@@ -1271,7 +1272,7 @@ class Bpm extends CI_Model {
             $data['assign'] = array_merge($resources['assign'], $data['assign']);
             $data['idgroup'] = array_merge($resources['idgroup'], $data['idgroup']);
         }
-        //---now get spacific task asignements
+        //---now get spacific task assignements
         if (isset($shape->properties->resources->items)) {
             //---merge assignment with specific data.
             $resources = $this->get_resources($shape, $wf);
