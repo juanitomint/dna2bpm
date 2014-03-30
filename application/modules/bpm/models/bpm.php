@@ -414,16 +414,19 @@ class Bpm extends CI_Model {
                 array(
                     'idwf' => $idwf,
                     'case' => $idcase,
-                    'status' => array('$ne' => array('finished','canceled'))
+                    'status' => array('$nin' => array('finished','canceled'))
                 )
         );
-
-        //var_dump2(json_encode($query));
-        $result = $this->db
+        var_dump2(json_encode($query));
+        $tokens = $this->db
                 ->where($query)
                 ->get('tokens')
                 ->result_array();
-        if (count($result)) {
+        if (count($tokens)) {
+        $result=array_map(function ($token) {
+                return $token['resourceId'];
+            }, $tokens);
+        var_dump2($result);
             return $result;
         }
         return false;
@@ -643,16 +646,16 @@ class Bpm extends CI_Model {
                 ->update($this->bpm_container, $data);
     }
 
-    function update_case_token_status($idwf,$idcase) {
+    function update_case_token_status($idwf, $idcase) {
         $data['token_status'] = $this->get_token_status($idwf, $idcase);
         $query = array('$set' => (array) $data);
-        $criteria = array('idwf'=>$idwf,'id' => $idcase);
-        $options = array('upsert' => true, 'safe' => true);
+        $criteria = array('idwf' => $idwf, 'id' => $idcase);
+        $options = array('upsert' => false, 'safe' => true);
         //var_dump2($query,$criteria,$options);
         $this->mongo->db->case->update($criteria, $query, $options);
     }
 
-    function update_case($idwf,$id, $data) {
+    function update_case($idwf, $id, $data) {
 
         $data['id'] = $id;
         $case = $this->get_case($id);
@@ -1142,7 +1145,7 @@ class Bpm extends CI_Model {
         //---SAVE Token as finished
         $this->save_token($token);
         //---Update case status
-        $this->update_case_token_status($wf->idwf,$wf->case);
+        $this->update_case_token_status($wf->idwf, $wf->case);
         //---process outgoing
         if ($process_out) {
             if ($shape_src->outgoing) {
