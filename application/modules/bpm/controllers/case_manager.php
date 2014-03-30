@@ -168,23 +168,27 @@ class Case_manager extends MX_Controller {
 //            $wf = bindArrayToObject($mywf['data']);
             $cases = array();
             foreach ($allcases as $case) {
-                $token = $this->bpm->get_last_token($idwf, $case['id']);
-                if ($token) {
-                    $resourceId = $token['resourceId'];
+                $tokens = (isset($case['token_status'])) ? $case['token_status'] : null;
+                $this->bpm->get_token_status($idwf, $case['id']);
+                //var_dump($tokens);exit;
+                if ($tokens) {
+                    foreach ($tokens as $token) {
+                        $resourceId = $token['resourceId'];
 
-                    if (isset($all_tokens[$resourceId])) {
-                        $all_tokens[$resourceId]['run'] ++;
-                    } else {
-                        //$data = $this->bpm->get_shape($resourceId, $wf);
+                        if (isset($all_tokens[$resourceId])) {
+                            $all_tokens[$resourceId]['run'] ++;
+                        } else {
+                            //$data = $this->bpm->get_shape($resourceId, $wf);
 
-                        $all_tokens[$resourceId] = array(
-                            'idwf' => $idwf,
-                            'resourceId' => $resourceId,
-                            'title' => (isset($token['title'])) ? $token['title']:'',
-                            'type' => $token['type'],
-                            'run' => 1,
-                            'icon' => "<img src='" . $this->base_url . $this->bpm->get_icon($token['type']) . "' />"
-                        );
+                            $all_tokens[$resourceId] = array(
+                                'idwf' => $idwf,
+                                'resourceId' => $resourceId,
+                                'title' => (isset($token['title'])) ? $token['title'] : '',
+                                'type' => $token['type'],
+                                'run' => 1,
+                                'icon' => "<img src='" . $this->base_url . $this->bpm->get_icon($token['type']) . "' />"
+                            );
+                        }
                     }
                 }
             }//---end foreach cases
