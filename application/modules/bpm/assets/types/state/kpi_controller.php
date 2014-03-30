@@ -21,16 +21,9 @@ function state($kpi, $CI, $list = null) {
         }
     }
     $filter['idwf'] = $kpi['idwf'];
-    $allcases = $CI->bpm->get_cases_byFilter($filter, array('id'));
-    $cases = array();
-    foreach ($allcases as $case) {
-        $token = $CI->bpm->get_last_token($kpi['idwf'], $case['id']);
-        if ($token) {
-            if ($token['resourceId'] == $kpi['resourceId']) { //---the case mathed
-                $cases[] = $case;
-            }
-        }
-    }
+    $filter['token_status']=array($kpi['resourceId']);
+    ///----way too ineficient
+    $cases = $CI->bpm->get_cases_byFilter($filter, array('id'));
     $cpData = $kpi;
     $cpData['base_url'] = $CI->base_url;
     $cpData['module_url'] = $CI->module_url;
