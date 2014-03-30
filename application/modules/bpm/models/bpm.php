@@ -417,7 +417,6 @@ class Bpm extends CI_Model {
                     'status' => array('$nin' => array('finished','canceled'))
                 )
         );
-        var_dump2(json_encode($query));
         $tokens = $this->db
                 ->where($query)
                 ->get('tokens')
@@ -426,7 +425,6 @@ class Bpm extends CI_Model {
         $result=array_map(function ($token) {
                 return $token['resourceId'];
             }, $tokens);
-        var_dump2($result);
             return $result;
         }
         return false;
