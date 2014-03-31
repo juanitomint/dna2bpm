@@ -191,6 +191,7 @@ class Case_manager extends MX_Controller {
                     }
                 }
             }//---end foreach cases
+            $tokens=array();
             foreach ($all_tokens as $token)
                 $tokens[] = $token;
             $out['rows'] = $tokens;
