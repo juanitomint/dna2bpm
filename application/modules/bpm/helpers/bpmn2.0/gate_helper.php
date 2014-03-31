@@ -78,14 +78,7 @@ function run_Exclusive_Databased_Gateway($shape, $wf, $CI) {
                 var_dump($streval);
             $result[$shape_out->resourceId]['streval'] = $streval;
             $result[$shape_out->resourceId]['shape'] = $shape_out;
-            //----test condition and if fails raise an error
-            if (!eval($streval)) {
-                show_error(
-                        $shape->stencil->id.'<br/>'.
-                        $shape->properties->name.
-                        "<hr/>Condition eval error in: $streval"
-                        );
-            }
+            
             try {
                 $result[$shape_out->resourceId]['eval'] = eval($streval);
             } catch (Exception $e) {
