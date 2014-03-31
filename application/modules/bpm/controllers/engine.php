@@ -662,7 +662,7 @@ class Engine extends MX_Controller {
         //var_dump('case',$case,'run_manual',$run_manual);
         if ($case['status'] == 'open') {
             //----load WF data
-            $myTasks = $this->bpm->get_pending($idcase, array('user', 'manual'), $filter);
+            $myTasks = $this->bpm->get_pending($idwf,$idcase, array('user', 'manual'), $filter);
             //var_dump(json_encode($filter),$myTasks);exit;
             $first = $myTasks->getNext();
             if ($first) {

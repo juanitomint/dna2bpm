@@ -123,7 +123,7 @@ function run_EndNoneEvent($shape, $wf, $CI, $moveForward = true) {
             default:
                 //----Set status 4 Case
                 //---close process if all end events have been finished (or canceled)
-                $active_tokens = $CI->bpm->get_pending($wf->case, array('user', 'waiting', 'pending'), array());
+                $active_tokens = $CI->bpm->get_pending($wf->idwf,$wf->case, array('user', 'waiting', 'pending'), array());
                 if ($active_tokens->count() == 0)
                     $CI->bpm->update_case($wf->idwf,$wf->case, array(
                         'status' => 'closed',

@@ -466,8 +466,9 @@ class Bpm extends CI_Model {
         return $rs;
     }
 
-    function get_pending($case, $status = 'user', $filter) {
+    function get_pending($idwf,$case, $status = 'user', $filter) {
         $query = array(
+            'idwf'=>$idwf,
             'case' => $case,
             'status' => array('$in' => (array) $status),
         );
