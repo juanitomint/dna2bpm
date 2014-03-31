@@ -214,6 +214,7 @@ class Engine extends MX_Controller {
                     }
                 }
             }
+            $this->bpm->update_case_token_status($idwf,$case);
             $this->get_pending('model', $idwf, $case);
         }
     }
