@@ -89,9 +89,13 @@ $lang['lock'] = 'Bloqueo';
 $lang['message'] = 'Mensaje';
 $lang["closedCases"] = "Casos Cerrados";
 /* --WF-conditions----- */
-$lang['true'] = 'Yes';
+$lang['true'] = 'Si';
 $lang['false'] = 'No';
-
+/*--RECORDS-----------*/
+$lang['records']='registros';
+$lang['of']='de';
+$lang['to']='al';
+$lang['total']='total';
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.

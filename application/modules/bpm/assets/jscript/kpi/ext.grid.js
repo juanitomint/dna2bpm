@@ -21,6 +21,8 @@ function gridClick (view,record,item,index,e,options ){
             panel.add(propsGrid);
                                                 
             propsGrid.idkpi=thisid
+            //---allow natural order
+            propsGrid.store.sorters.items=[];
             var url=globals.module_url+'kpi/get_properties/'+thisid;
             //--------------------------------------------------------------
             //--------LOAD PROPERTIES---------------------------------------

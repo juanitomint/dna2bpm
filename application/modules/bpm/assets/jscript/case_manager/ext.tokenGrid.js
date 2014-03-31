@@ -264,7 +264,7 @@ var tokenGrid=Ext.create('Ext.grid.Panel',
     {
         text: "Name",
         flex:1,
-        dataIndex: 'name',
+        dataIndex: 'title',
         sortable: true
            
     }

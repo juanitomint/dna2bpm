@@ -16,7 +16,7 @@ Ext.define('tokenModel', {
     extend:"Ext.data.Model",
     fields:[
         'icon',
-        'name',
+        'title',
         'resourceId',
         'idwf',
         'iduser',

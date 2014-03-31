@@ -26,7 +26,7 @@ class Kpi extends MX_Controller {
         $this->lang->load('library', $this->config->item('language'));
         $this->idu = (int) $this->session->userdata('iduser');
         $this->base_url = base_url();
-        $this->module_url = base_url() . $this->router->fetch_module().'/';
+        $this->module_url = base_url() . $this->router->fetch_module() . '/';
     }
 
     function Index() {
@@ -288,8 +288,95 @@ class Kpi extends MX_Controller {
         $this->ui->makeui('test.kpi.ui.php', $cpData);
     }
 
+    function list_cases($idkpi, $offset = 0) {
+        $this->load->model('bpm');
+        $this->load->library('pagination');
+        $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
+        if ($debug)
+            echo '<h2>' . __FUNCTION__ . '</h2>';
+        $this->load->library('ui');
+        $cpData['lang'] = $this->lang->language;
+        //var_dump($level);
+        $cpData['theme'] = $this->config->item('theme');
+        $cpData['title'] = "Kpi List Cases";
+        $cpData['base_url'] = $this->base_url;
+        $cpData['module_url'] = $this->module_url;
+        $kpi = $this->kpi_model->get($idkpi);
+        $cpData['kpi'] = $kpi;
+        $cases = $this->Get_cases($kpi);
+        $parseArr = array();
+        //-----prepare pagination;
+        $pagesize = ($kpi['list_records']) ? $kpi['list_records'] : 50;
+        $page = ($offset) ? $offset / $pagesize : 1;
+        //$offset = ($page - 1) * $pagesize;
+        $total = count($cases);
+        $pages = round($total / $pagesize, 0, PHP_ROUND_HALF_UP);
+        $top = min(array($offset + $pagesize, $total));
+
+        $cpData['start'] = $offset;
+        $cpData['top'] = $top;
+        $cpData['total'] = $total;
+        $cpData['page'] = $page;
+        $cpData['pages'] = $pages;
+        //----make content
+        for ($i = $offset; $i < $top; $i++) {
+            $idcase = $cases[$i];
+            $case = $this->bpm->get_case($idcase);
+            //---Ensures $case['data'] exists
+            $case['data']=(isset($case['data']))?$case['data']:array();
+            //---Flatten data a bit so it can be parsed
+            $parseArr[] = array_merge(array(
+                'idwf' => $case['idwf'],
+                'idcase' => $case['id'],
+                'checkdate' => date($this->lang->line('dateFmt'), strtotime($case['checkdate'])),
+                'user' => (array) $this->user->get_user_safe($case['iduser']),
+                    ), $case['data']);
+        }
+        if ($kpi['list_template'] <> '') {
+            $template=$kpi['list_template'];
+        } else {
+
+            //----create headers values 4 templates
+            $tdata = json_decode($kpi['list_fields']);
+           
+            if ($tdata) {
+                foreach ($tdata as $key => $value) {
+                    $header[] = '<th>' . $key . '</th>';
+                    $values[] = "<td>{" . $value . "}</td>\n";
+                }
+                $template = '<table class="table">';
+                $template.='<thead>';
+                $template.='<tr>' . implode($header) . '</tr>';
+                $template.='</thead>';
+                //body
+                $template.='<tbody>';
+                $template.='{cases}<tr>' . implode($values) . "</tr>{/cases}\n";
+                $template.='</tbody>';
+                $template.='</table>';
+            } else {
+                show_error('KPI:"'.$kpi['title'].'" does not have a valid "list_fields" value');
+            }
+            
+        }
+        $cpData['content'] = $this->parser->parse_string($template, array('cases' => $parseArr), true);
+        //----Pagination
+        $config['base_url'] = $this->module_url . 'kpi/list_cases/' . $idkpi . '/';
+        $config['total_rows'] = $total;
+        $config['per_page'] = $pagesize;
+        $config['num_links'] = 3;
+        $config['uri_segment'] = 5;
+
+
+        $this->pagination->initialize($config);
+
+        $cpData['pagination'] = $this->pagination->create_links();
+        //----PROCESS KPIS
+        $this->ui->makeui('list.kpi.ui.php', $cpData);
+    }
+
     function Render($kpi = null) {
-        $debug=false;
+        $debug = false;
+
         $exists = false;
         //---load type extension
         if (!method_exists($this, $kpi['type'])) {
@@ -299,16 +386,39 @@ class Kpi extends MX_Controller {
                 if ($debug)
                     echo "Loaded Custom Render:$file_custom<br/>";
                 require_once($file_custom);
-                
             } else {
                 $rtn = $this->ShowMsg('<strong>Warning!</strong>Function:' . $kpi['type'] . '<br/>' . $kpi['title'] . '<br/>Does not exists. ', 'alert');
             }
-            $rtn = $kpi['type']($kpi,$this);
+            $rtn = $kpi['type']($kpi, $this);
         } else {
             $exists = true;
         }
         if ($exists)
             $rtn = $this->$kpi['type']($kpi);
+        return $rtn;
+    }
+
+    function Get_cases($kpi = null) {
+        $debug = false;
+
+        $exists = false;
+        //---load type extension
+        if (!method_exists($this, $kpi['type'])) {
+            $file_custom = $this->types_path . $kpi['type'] . '/kpi_controller.php';
+            if (is_file($file_custom)) {
+                //$exists = true;
+                if ($debug)
+                    echo "Loaded Custom Render:$file_custom<br/>";
+                require_once($file_custom);
+            } else {
+                $rtn = $this->ShowMsg('<strong>Warning!</strong>Function:' . $kpi['type'] . '<br/>' . $kpi['title'] . '<br/>Does not exists. ', 'alert');
+            }
+            $rtn = $kpi['type']($kpi, $this,true);
+        } else {
+            $exists = true;
+        }
+        if ($exists)
+            $rtn = $this->$kpi['type']($kpi,$this, true);
         return $rtn;
     }
 
@@ -327,7 +437,7 @@ class Kpi extends MX_Controller {
                     'iduser' => $this->idu
                 );
                 break;
-            default: //---filter by idwf
+            default:     //---filter by idwf
                 $filter = array(
                     'idwf' => $kpi['idwf']
                 );
@@ -336,10 +446,7 @@ class Kpi extends MX_Controller {
         return $filter;
     }
 
-
-    function time_avg_all($kpi) {
-        $filter = $this->get_filter($kpi);
-    }
+    
 
     function time_avg($kpi) {
         $timesum = 0;
@@ -370,54 +477,6 @@ class Kpi extends MX_Controller {
         return $rtn;
     }
 
-    function count($kpi) {
-        $filter = $this->get_filter($kpi);
-        $tokens = $this->bpm->get_tokens_byResourceId($kpi['resourceId'], $filter);
-        $cpData = $kpi;
-        //var_dump($tokens);
-        $cpData['count'] = count($tokens);
-        $rtn = $this->parser->parse('bpm/kpi_count', $cpData, true);
-        return $rtn;
-    }
-
-    function state($kpi) {
-        $filter = array();
-        switch ($kpi['filter']) {
-            case 'group':
-                break;
-            case 'user':
-                $filter = array(
-                    'idwf' => $kpi['idwf'],
-                    'iduser' => $this->idu
-                );
-                break;
-            default: //---filter by idwf
-                $filter = array(
-                    'idwf' => $kpi['idwf']
-                );
-                break;
-        }
-        /*
-         *  'pending'
-          'manual'
-          'user'
-          'waiting'
-         */
-        $status = array(
-            'pending',
-            'manual',
-            'user',
-            'waiting'
-        );
-        //$filter['status'] = array('$in' => (array) $status); //@todo include other statuses
-        $tokens = $this->bpm->get_tokens_byResourceId($kpi['resourceId'], $filter);
-        $cpData = $kpi;
-        //var_dump($tokens);
-        //$cpData['tokens']=$tokens;
-        $cpData['count'] = count($tokens);
-        $rtn = $this->parser->parse('bpm/kpi_count', $cpData, true);
-        return $rtn;
-    }
 
     function Save_properties() {
         $this->load->helper('dbframe');
