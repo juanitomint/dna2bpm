@@ -90,7 +90,7 @@ class Engine extends MX_Controller {
     }
 
     function Start($model, $idwf, $case, $silent = false) {
-        Startcase($model, $idwf, $case, $silent = false);
+        $this->Startcase($model, $idwf, $case, $silent = false);
     }
 
     function Startcase($model, $idwf, $case, $silent = false) {
