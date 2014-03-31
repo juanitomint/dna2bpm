@@ -20,6 +20,7 @@ config.sourceConfig['list_template'] =
             displayName: 'List Template'
         };
 
+/*
 var statuses = Ext.create('Ext.data.Store', {
     fields: ['name'],
     data: [
@@ -43,4 +44,4 @@ config.sourceConfig['status'] = {
         displayField: 'name',
         valueField: 'name',
     })
-}    
+} */   

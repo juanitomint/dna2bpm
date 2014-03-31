@@ -322,9 +322,12 @@ class Kpi extends MX_Controller {
         for ($i = $offset; $i < $top; $i++) {
             $idcase = $cases[$i];
             $case = $this->bpm->get_case($idcase);
+            //---Ensures $case['data'] exists
+            $case['data']=(isset($case['data']))?$case['data']:array();
             //---Flatten data a bit so it can be parsed
             $parseArr[] = array_merge(array(
                 'idwf' => $case['idwf'],
+                'idcase' => $case['id'],
                 'checkdate' => date($this->lang->line('dateFmt'), strtotime($case['checkdate'])),
                 'user' => (array) $this->user->get_user_safe($case['iduser']),
                     ), $case['data']);

@@ -14,14 +14,19 @@
 function state($kpi, $CI, $list = null) {
 
     $filter = $CI->get_filter($kpi);
+    /*
     //---add status filter if status has been specified or else return any status
     if (isset($kpi['status'])) {
         if ($kpi['status'] <> '') {
-            $filter['status'] = array('$in' => (array) $filter['status']);
+            $filter['status'] = array('$in' => (array) $kpi['status']);
         }
     }
+     * 
+     */
     $filter['idwf'] = $kpi['idwf'];
-    $filter['token_status']=array($kpi['resourceId']);
+    $filter['token_status']=$kpi['resourceId'];
+    //var_dump(json_encode($filter));
+    
     ///----way too ineficient
     $cases = $CI->bpm->get_cases_byFilter($filter, array('id'));
     $cpData = $kpi;
