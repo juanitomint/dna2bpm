@@ -298,7 +298,7 @@ class Bpm extends CI_Model {
         if (!isset($data['iduser']))
             $data['iduser'] = (int) $this->session->userdata('iduser');
 
-        if (!isset($idwf) or !isset($case) or !isset($resourceId)) {
+        if (!isset($idwf) or ! isset($case) or ! isset($resourceId)) {
             show_error("Can't update whith: idwf:$idwf case:$case  resourceId:$resourceId<br/>Incomplete Data.");
         }
         //$title=(isset($shape->properties->title))?$shape->properties->title;$shape->stencil->id;
@@ -650,14 +650,15 @@ class Bpm extends CI_Model {
 
     function update_case_token_status($idwf, $idcase) {
         $case = $this->get_case($idcase);
-        if ($case['status'] <> 'closed') {
-
-            $data['token_status'] = $this->get_token_status($idwf, $idcase);
-            $query = array('$set' => (array) $data);
-            $criteria = array('idwf' => $idwf, 'id' => $idcase);
-            $options = array('upsert' => false, 'safe' => true);
-            //var_dump2($query,$criteria,$options);
-            $this->mongo->db->case->update($criteria, $query, $options);
+        if (isset($case['status'])) {
+            if ($case['status'] <> 'closed') {
+                $data['token_status'] = $this->get_token_status($idwf, $idcase);
+                $query = array('$set' => (array) $data);
+                $criteria = array('idwf' => $idwf, 'id' => $idcase);
+                $options = array('upsert' => false, 'safe' => true);
+                //var_dump2($query,$criteria,$options);
+                $this->mongo->db->case->update($criteria, $query, $options);
+            }
         }
     }
 
@@ -1306,7 +1307,7 @@ class Bpm extends CI_Model {
         $data = array_filter($data);
 
         //---if assignment not set then assign task to "Initiator"
-        if (!isset($data['assign']) and !isset($data['idgroup'])) {
+        if (!isset($data['assign']) and ! isset($data['idgroup'])) {
             $data['assign'] = $this->user->Initiator;
         }
 
