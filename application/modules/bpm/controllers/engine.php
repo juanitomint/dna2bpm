@@ -89,6 +89,10 @@ class Engine extends MX_Controller {
         $this->Startcase($model, $idwf, $case);
     }
 
+    function Start($model, $idwf, $case, $silent = false) {
+        $this->Startcase($model, $idwf, $case, $silent = false);
+    }
+
     function Startcase($model, $idwf, $case, $silent = false) {
         $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
         if ($debug)
@@ -210,6 +214,7 @@ class Engine extends MX_Controller {
                     }
                 }
             }
+            $this->bpm->update_case_token_status($idwf,$case);
             $this->get_pending('model', $idwf, $case);
         }
     }
@@ -604,7 +609,7 @@ class Engine extends MX_Controller {
         while ($it->valid()) {
             var_dump($it->getSubIterator(), $it->key(), $it->current());
             echo '<hr/>';
-            if (((isset($index) AND ( $it->key() == $index)) OR ( !isset($index))) AND ( $it->current() == $needle)) {
+            if (((isset($index) AND ( $it->key() == $index)) OR (!isset($index))) AND ( $it->current() == $needle)) {
                 //return $aIt->key();
                 echo "****  FOUND ****";
                 return (array) $it->getSubIterator();
@@ -662,7 +667,7 @@ class Engine extends MX_Controller {
         //var_dump('case',$case,'run_manual',$run_manual);
         if ($case['status'] == 'open') {
             //----load WF data
-            $myTasks = $this->bpm->get_pending($idwf,$idcase, array('user', 'manual'), $filter);
+            $myTasks = $this->bpm->get_pending($idwf, $idcase, array('user', 'manual'), $filter);
             //var_dump(json_encode($filter),$myTasks);exit;
             $first = $myTasks->getNext();
             if ($first) {
@@ -711,7 +716,7 @@ class Engine extends MX_Controller {
                             switch ($shape->properties->tasktype) {
 
                                 case 'User':
-                                    if (property_exists($shape->properties, 'rendering') and ! $run_manual) {
+                                    if (property_exists($shape->properties, 'rendering') and !$run_manual) {
                                         $rendering = trim($shape->properties->rendering);
                                         if ($rendering) {
                                             $token_id = $first['_id'];
