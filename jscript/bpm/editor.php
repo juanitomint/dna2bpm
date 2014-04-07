@@ -49,7 +49,7 @@ window.onOryxResourcesLoaded = function() {
     
 new ORYX.Editor({id: 'oryx-canvas123',stencilset: {url: ''+stencilset}});
 }else{
-    ORYX.Editor.createByUrl('/beta/ci/worflow/respositry/load/'+location.hash.slice(1)+'/json', {id: 'oryx-canvas123'});
+    ORYX.Editor.createByUrl('bpm/respository/load/'+location.hash.slice(1)+'/json', {id: 'oryx-canvas123'});
 };
 } //---end function
 }

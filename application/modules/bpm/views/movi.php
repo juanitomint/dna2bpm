@@ -67,7 +67,7 @@ echo '<?xml version="1.0" encoding="utf-8"?>';
 				function() {
 
 					modelviewer = new MOVI.widget.ModelViewer("modelviewer");
-					modelviewer.loadModel("http://localhost/beta/ci/bpm/repository/movi/model/{idwf}/",
+					modelviewer.loadModel("bpm/repository/movi/model/{idwf}/",
 						{ onSuccess: init }
 					);
 
