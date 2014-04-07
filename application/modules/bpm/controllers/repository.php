@@ -64,16 +64,17 @@ class Repository extends MX_Controller {
         if ($mywf) {
             show_error('Name Already Exists', 404);
         } else {
+            $new=$this->add($idwf);
             $this->bpm->save($idwf, $data, $svg);
         }
     }
 
-    function add() {
+    function add($new_idwf=null) {
 //---check if has post
-        if (!$this->input->post('idwf')) {
+        if (!($this->input->post('idwf')or $new_idwf)) {
             show_error("Can't access this page directly");
         }
-        $idwf = $this->input->post('idwf');
+        $idwf =($new_idwf)? $new_idwf:$this->input->post('idwf');
         $folder = $this->input->post('folder');
         $name = ($this->input->post('name')) ? $this->input->post('name') : $this->lang->line('New_Model');
         $user = $this->user->get_user($this->idu);
