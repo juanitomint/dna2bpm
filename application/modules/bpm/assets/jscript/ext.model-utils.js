@@ -35,11 +35,11 @@ function load_data(idwf) {
 
                 st1 = model_svg.select('.stencils:first');
                 obj = st1.elements[0];
-
+                if(obj){
                 xy = obj.getAttribute('transform').replace('translate(', '').replace(')', '').split(',');
                 offset_x = parseInt(xy[0]);
                 offset_y = parseInt(xy[1]);
-
+                }
 
                 /*
                  stencils=model_svg.select('.stencils')
