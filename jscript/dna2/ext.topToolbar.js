@@ -78,9 +78,7 @@ function viewClick(){
 
     })
     );
-        
-//"http://localhost/beta/ci/dna2/be/get_properties/1628/L1628/146"
-            
+                    
 }
 var topToolbar=Ext.create(Ext.Panel, {
     xtype: 'buttongroup',

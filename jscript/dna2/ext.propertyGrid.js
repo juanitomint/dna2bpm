@@ -7,7 +7,7 @@ var propsGrid = Ext.create('Ext.grid.property.Grid', {
         borderWidth: 'Border Width'
     },
     loader: {
-        url: 'http://localhost/beta/ci/jscript/dna2/testgrid.json',
+        url: '/jscript/dna2/testgrid.json',
         renderer: 'data',
         params: {
             userId: 1
