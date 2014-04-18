@@ -19,7 +19,7 @@ class Manager extends MX_Controller {
         $this->lang->load('bpm', $this->config->item('language'));
         $this->idu = (int) $this->session->userdata('iduser');
         $this->base_url = base_url();
-        $this->module_url = base_url() . $this->router->fetch_module().'/';
+        $this->module_url = base_url() . $this->router->fetch_module() . '/';
     }
 
     function Index() {
@@ -31,8 +31,8 @@ class Manager extends MX_Controller {
         //@todo make a flexible manager for cases
         //$this->parser->parse('bpm/manager', $wfData);
     }
-    
-    function get_kpi($model){
+
+    function get_kpi($model) {
         
     }
 
@@ -119,6 +119,12 @@ class Manager extends MX_Controller {
             $task['icon_status'] = $this->bpm->get_status_icon($task['status']);
             //---alias status key,parsing work-around
             $task['tstatus'] = $task['status'];
+            //---Run url
+            $task['run_url'] = $this->module_url .
+                    'engine/do_pending/model/' .
+                    $task['idwf'] . '/' .
+                    $task['case'] . '/' .
+                    $task['resourceId'];
 
 
             //----filter by status
@@ -142,22 +148,24 @@ class Manager extends MX_Controller {
 
         foreach ($tarr as $idcase => $tasks) {
             $case = $this->bpm->get_case($idcase);
-            $mybpm = $this->bpm->load($case['idwf'], true);
-            $sort_date[] = $case['checkdate'];
-            $case['name'] = $mybpm['data']['properties']['name'];
-            $case['documentation'] = $mybpm['data']['properties']['documentation'];
-            $case['mytasks'] = $tasks;
-            $case['task_count'] = count($tasks);
-            //---Parse title with case data
-            foreach ($case['mytasks'] as $key => &$value) {
-                if (isset($case['data'])) {
-                    $value['title'] = $this->parser->parse_string($value['title'], $case['data'], true, true);
+            if ($case) {
+                $mybpm = $this->bpm->load($case['idwf'], true);
+                $sort_date[] = $case['checkdate'];
+                $case['name'] = $mybpm['data']['properties']['name'];
+                $case['documentation'] = $mybpm['data']['properties']['documentation'];
+                $case['mytasks'] = $tasks;
+                $case['task_count'] = count($tasks);
+                //---Parse title with case data
+                foreach ($case['mytasks'] as $key => &$value) {
+                    if (isset($case['data'])) {
+                        $value['title'] = $this->parser->parse_string($value['title'], $case['data'], true, true);
+                    }
                 }
-            }
-            //$case['mytasks']=array(array('task_title'=>'titulo1'),array('task_title'=>'titulo2'));
-            //var_dump($case);
+                //$case['mytasks']=array(array('task_title'=>'titulo1'),array('task_title'=>'titulo2'));
+                //
             $case['date'] = date($this->lang->line('dateFmt'), strtotime($case['checkdate']));
-            $cpData['cases'][] = $case; // + $tasks;
+                $cpData['cases'][] = $case; // + $tasks;
+            }
         };
         $cpData['cases_count'] = count($tarr);
         if (is_array($cpData['cases']) and is_array($sort_date))

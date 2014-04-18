@@ -107,6 +107,19 @@ var ModelCloudImport= Ext.create('Ext.Action', {
     handler:function (){}
 });
 
+var ModelStatus= Ext.create('Ext.Action', {
+    text:'Status',
+    iconCls:'icon icon-heart',
+    handler:function (){
+          n=tree.getSelectionModel().getSelection()[0];
+        //---only do something if its leaf=model
+        if(n && n.isLeaf()){
+            url= globals.module_url+'tokens/status/'+n.data.id;
+            window.open(url);
+        }
+    }
+});
+
 var ModelView = Ext.create('Ext.Action', {
     text:'View',
     iconCls:'icon-file',
@@ -197,8 +210,10 @@ var toolBar=Ext.create('Ext.toolbar.Toolbar', {
     ModelRunManual,
     ModelImport,
     ModelExport,
-    ModelCloudImport,
+    ModelStatus
+    /*    ModelCloudImport,
     ModelCloudExport
+         */
     ]
 });
 

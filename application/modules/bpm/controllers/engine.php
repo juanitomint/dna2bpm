@@ -78,7 +78,7 @@ class Engine extends MX_Controller {
 
             $this->bpm->save_case($mycase);
         }
-        
+
         //----save parent data if any
         if ($parent) {
             $mycase = $this->bpm->get_case($case);
@@ -87,6 +87,10 @@ class Engine extends MX_Controller {
         }
         //---Start the case (will move next on startnone shapes)
         $this->Startcase($model, $idwf, $case);
+    }
+
+    function Start($model, $idwf, $case, $silent = false) {
+        $this->Startcase($model, $idwf, $case, $silent = false);
     }
 
     function Startcase($model, $idwf, $case, $silent = false) {
@@ -138,7 +142,15 @@ class Engine extends MX_Controller {
         }
     }
 
-    function Run($model, $idwf, $case) {
+    /*
+     * Engine core, here is where the functions for each shape get called
+     * @param string='model'
+     * @param string
+     * @param string
+     * @param string
+     */
+
+    function Run($model, $idwf, $case, $run_resourceId = null) {
         $this->data = (object) null;
         $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
         //---check if case is locked
@@ -202,6 +214,7 @@ class Engine extends MX_Controller {
                     }
                 }
             }
+            $this->bpm->update_case_token_status($idwf,$case);
             $this->get_pending('model', $idwf, $case);
         }
     }
@@ -216,6 +229,7 @@ class Engine extends MX_Controller {
         //---check if not finished yet
         $token = $this->bpm->get_token($wf->idwf, $wf->case, $resourceId);
         if ($token['status'] <> 'finished') {
+            //@todo check permissions
             if ($resourceId) {
                 $shape = $this->bpm->get_shape($resourceId, $wf);
                 if ($shape) {
@@ -607,7 +621,25 @@ class Engine extends MX_Controller {
         return false;
     }
 
-    function get_pending($model, $idwf, $idcase, $filter = null) {
+    /*
+     * This is for url calls, execute this resourceId specifically
+     */
+
+    function do_pending($model, $idwf, $idcase, $run_resourceId = null) {
+        //---load $wf for url calls: /bpm/engine/get_pending/model/$idwf/$idwcase
+        if (!$this->wf) {
+            $mywf = $this->bpm->load($idwf, $this->expandSubProcess);
+            $mywf['data']['idwf'] = $idwf;
+            $mywf['data']['case'] = $idcase;
+            $mywf['data']['folder'] = $mywf['folder'];
+            $wf = bindArrayToObject($mywf['data']);
+            //----make it publicly available to other methods
+            $this->wf = $wf;
+            $this->get_pending($model, $idwf, $idcase, $run_resourceId);
+        }
+    }
+
+    function get_pending($model, $idwf, $idcase, $run_resourceId = null) {
         $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
         //if no filter passed then set default to me
         //$debug = true;
@@ -624,7 +656,10 @@ class Engine extends MX_Controller {
             $filter['$or'][] = array('assign' => $this->idu);
             $filter['$or'][] = array('idgroup' => array('$in' => $user->group));
         }
-
+        //----if specific token has been passed then run this token
+        if ($run_resourceId) {
+            $filter['resourceId'] = $run_resourceId;
+        }
         //----Load Case
         $case = $this->bpm->get_case($idcase);
         //----set manual flag 4 test
@@ -632,7 +667,8 @@ class Engine extends MX_Controller {
         //var_dump('case',$case,'run_manual',$run_manual);
         if ($case['status'] == 'open') {
             //----load WF data
-            $myTasks = $this->bpm->get_pending($idcase, array('user', 'manual'), $filter);
+            $myTasks = $this->bpm->get_pending($idwf, $idcase, array('user', 'manual'), $filter);
+            //var_dump(json_encode($filter),$myTasks);exit;
             $first = $myTasks->getNext();
             if ($first) {
                 //-----get id from token---------

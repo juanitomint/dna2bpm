@@ -16,18 +16,22 @@ class bpm extends CI_Controller {
     function __construct() {
         parent::__construct();
         $this->load->config('config');
-        
+        //---base variables
+        $this->base_url = base_url();
+        $this->module_url = base_url() . $this->router->fetch_module() . '/';
+        $this->user->authorize();
     }
 
+//@todo remove this function
     function Index() {
-        if($this->config->item('run_mode')=='development'){
-            $links=array(
-                'Get tasks manager/get_tasks/$user/$filter' => 'manager/get_tasks',
+        if ($this->config->item('run_mode') == 'development') {
+            $links = array(
+                'Show tasks manager/show_tasks/$user/$filter' => 'manager/show_tasks',
                 'BPM Browser' => 'browser',
                 'Fix stencil.url' => 'repository/repair_stencil_path',
             );
-            foreach($links as $text=>$url){
-                echo "<a href='./bpm/".$url."'>$text</a><hr/>";
+            foreach ($links as $text => $url) {
+                echo "<a href='".$this->module_url. $url . "'>$text</a><hr/>";
             }
         }
     }

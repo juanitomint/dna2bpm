@@ -28,7 +28,8 @@ class Bpm extends CI_Model {
         if ($result) {
             $wf = $result[0];
         } else {
-            show_error("Model: '$idwf' not found<br>Contact your system Administrator");
+            return false;
+            //show_error("Model: '$idwf' not found<br>Contact your system Administrator");
         }
 
         if ($wf) {
@@ -106,7 +107,7 @@ class Bpm extends CI_Model {
         //--only save if 
         //var_dump2($mywf);
         unset($mywf['_id']);
-        $wf = $this->db->where($query)->update('workflow', $mywf);
+        $wf = $this->db->where($query)->update('workflow', $mywf,array('upsert'=>true));
         $this->save_image_file($idwf, $svg);
         $this->save_mode_file($idwf, $data);
         $this->zip_model($idwf, $data);
@@ -153,8 +154,10 @@ class Bpm extends CI_Model {
         
     }
 
-    function get_cases_byFilter($filter) {
+    function get_cases_byFilter($filter, $fields = array()) {
+        //$this->db->debug=true;
         $this->db->where($filter);
+        $this->db->select($fields);
         $rs = $this->db->get('case');
         return $rs->result_array();
     }
@@ -182,24 +185,26 @@ class Bpm extends CI_Model {
         if (count($tarr)) {
             foreach ($tarr as $idcase => $qtty) {
                 $case = $this->bpm->get_case($idcase);
-                $mybpm = $this->bpm->load($case['idwf'], true);
-                //unset($case['_id']);
-                $case['name'] = $mybpm['data']['properties']['name'];
-                $case['documentation'] = $mybpm['data']['properties']['documentation'];
-                //$case['mytasks'] = $tasks;
-                $case['task_count'] = $qtty;
-                $case['date'] = date($this->lang->line('dateFmt'), strtotime($case['checkdate']));
-                if (count($filter_status)) {
-                    if (in_array($case['status'], $filter_status)) {
+                if ($case) {
+                    $mybpm = $this->bpm->load($case['idwf'], true);
+                    //unset($case['_id']);
+                    $case['name'] = $mybpm['data']['properties']['name'];
+                    $case['documentation'] = $mybpm['data']['properties']['documentation'];
+                    //$case['mytasks'] = $tasks;
+                    $case['task_count'] = $qtty;
+                    $case['date'] = date($this->lang->line('dateFmt'), strtotime($case['checkdate']));
+                    if (count($filter_status)) {
+                        if (in_array($case['status'], $filter_status)) {
+                            $data['cases'][] = $case;
+                            $sort_date[] = $case['checkdate'];
+                        }
+                    } else {
                         $data['cases'][] = $case;
                         $sort_date[] = $case['checkdate'];
                     }
-                } else {
-                    $data['cases'][] = $case;
-                    $sort_date[] = $case['checkdate'];
-                }
 
-                //----order Cases
+                    //----order Cases
+                }
             }
 
             //---sort by ddate desc
@@ -293,7 +298,7 @@ class Bpm extends CI_Model {
         if (!isset($data['iduser']))
             $data['iduser'] = (int) $this->session->userdata('iduser');
 
-        if (!isset($idwf) or !isset($case) or !isset($resourceId)) {
+        if (!isset($idwf) or ! isset($case) or ! isset($resourceId)) {
             show_error("Can't update whith: idwf:$idwf case:$case  resourceId:$resourceId<br/>Incomplete Data.");
         }
         //$title=(isset($shape->properties->title))?$shape->properties->title;$shape->stencil->id;
@@ -383,16 +388,61 @@ class Bpm extends CI_Model {
         return $result;
     }
 
+    function get_last_token($idwf, $idcase) {
+        $query = array_filter(
+                array(
+                    'idwf' => $idwf,
+                    'case' => $idcase,
+                )
+        );
+
+        //var_dump2(json_encode($query));
+        $result = $this->db
+                ->where($query)
+                ->order_by(array('_id' => -1))
+                ->get('tokens', 1)
+                ->result_array();
+        if (count($result)) {
+            return end($result);
+        }
+        return false;
+    }
+
+    function get_token_status($idwf, $idcase) {
+        //----filter all statuses
+        $query = array_filter(
+                array(
+                    'idwf' => $idwf,
+                    'case' => $idcase,
+                    'status' => array('$nin' => array('finished', 'canceled'))
+                )
+        );
+//        $this->db->debug=true;
+        $tokens = $this->db
+                ->where($query)
+                ->get('tokens')
+                ->result_array();
+//        $this->db->debug=false;
+//        var_dump2($idwf,$idcase,json_encode($query),$tokens);
+        if (count($tokens)) {
+            $result = array_map(function ($token) {
+                return $token['resourceId'];
+            }, $tokens);
+            return $result;
+        }
+        return false;
+    }
+
     function assign_task($token, $users) {
         //---this function is for manually assign a certain task
         //--- can be invoked from script tasks.
         //---check if property exists
-        if (!isset($token['asign']))
-            $token['asign'] = array();
+        if (!isset($token['assign']))
+            $token['assign'] = array();
         //---merge user arrays
-        $token['asign']+=$users;
+        $token['assign']+=$users;
         //---ensure uniqness
-        array_unique($token['asign']);
+        array_unique($token['assign']);
         $this->save_token($token);
     }
 
@@ -419,8 +469,9 @@ class Bpm extends CI_Model {
         return $rs;
     }
 
-    function get_pending($case, $status = 'user', $filter) {
+    function get_pending($idwf, $case, $status = 'user', $filter) {
         $query = array(
+            'idwf' => $idwf,
             'case' => $case,
             'status' => array('$in' => (array) $status),
         );
@@ -513,7 +564,8 @@ class Bpm extends CI_Model {
         if ($result) {
             return $result[0];
         } else {
-            show_error("Case: '$idcase' not found<br>Contact your system Administrator");
+            return false;
+            //show_error("Case: '$idcase' not found<br>Contact your system Administrator");
         }
     }
 
@@ -539,6 +591,8 @@ class Bpm extends CI_Model {
         $query = array(
             'id' => $case['id']
         );
+        //----get the status tokens
+        //$case['token_status'] = $this->get_token_status($case['idwf'], $case['id']);
         return $this->db->where($query)->update('case', $case);
     }
 
@@ -594,7 +648,21 @@ class Bpm extends CI_Model {
                 ->update($this->bpm_container, $data);
     }
 
-    function update_case($id, $data) {
+    function update_case_token_status($idwf, $idcase) {
+        $case = $this->get_case($idcase);
+        if (isset($case['status'])) {
+            if ($case['status'] <> 'closed') {
+                $data['token_status'] = $this->get_token_status($idwf, $idcase);
+                $query = array('$set' => (array) $data);
+                $criteria = array('idwf' => $idwf, 'id' => $idcase);
+                $options = array('upsert' => false, 'safe' => true);
+                //var_dump2($query,$criteria,$options);
+                $this->mongo->db->case->update($criteria, $query, $options);
+            }
+        }
+    }
+
+    function update_case($idwf, $id, $data) {
 
         $data['id'] = $id;
         $case = $this->get_case($id);
@@ -603,10 +671,11 @@ class Bpm extends CI_Model {
         //---now
         $dateOut = new DateTime();
         $data['interval'] = date_diff($dateOut, $dateIn, true);
-        //---asign user
+        //---assign user
         if (!isset($data['iduser']))
             $data['iduser'] = (int) $this->session->userdata('iduser');
-
+        //----update case with latest token status
+        $data['token_status'] = (isset($data['set_token_status'])) ? $data['set_token_status'] : $this->get_token_status($case['idwf'], $case['id']);
         $query = array('$set' => (array) $data);
         $criteria = array('id' => $id);
         $options = array('upsert' => true, 'safe' => true);
@@ -727,7 +796,8 @@ class Bpm extends CI_Model {
             //'tasktype' => array('$in' => array('User', 'Manual')),
             'type' => array('$in' => array('Task', 'Exclusive_Databased_Gateway')),
             'title' => array('$exists' => true),
-            'status' => array('$nin' => array('waiting')),
+            //'status' => array('$nin' => array('finished','canceled')),
+            'status' => 'user',
             '$or' => array(
                 array('iduser' => $iduser), //---task i've done or i've started
                 array('assign' => $iduser), //----assigned to me
@@ -1082,6 +1152,8 @@ class Bpm extends CI_Model {
         $token = array_filter($token);
         //---SAVE Token as finished
         $this->save_token($token);
+        //---Update case status
+        $this->update_case_token_status($wf->idwf, $wf->case);
         //---process outgoing
         if ($process_out) {
             if ($shape_src->outgoing) {
@@ -1209,7 +1281,7 @@ class Bpm extends CI_Model {
             $data['assign'] = array_merge($resources['assign'], $data['assign']);
             $data['idgroup'] = array_merge($resources['idgroup'], $data['idgroup']);
         }
-        //---now get spacific task asignements
+        //---now get spacific task assignements
         if (isset($shape->properties->resources->items)) {
             //---merge assignment with specific data.
             $resources = $this->get_resources($shape, $wf);
@@ -1235,7 +1307,7 @@ class Bpm extends CI_Model {
         $data = array_filter($data);
 
         //---if assignment not set then assign task to "Initiator"
-        if (!isset($data['assign']) and !isset($data['idgroup'])) {
+        if (!isset($data['assign']) and ! isset($data['idgroup'])) {
             $data['assign'] = $this->user->Initiator;
         }
 

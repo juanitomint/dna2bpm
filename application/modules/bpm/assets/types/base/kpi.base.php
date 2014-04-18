@@ -2,18 +2,18 @@
 
 //---order of properties should be respected
 $common = array(
+    'icon' => 'string',
     'title' => 'string',
-    'idkpi' => 'int',
     'desc' => 'string',
     'help' => 'string',
+    'type' => 'string',
+    'idkpi' => 'int',
+    'idwf' => 'string',
     'idu' => 'double',
     'hidden' => 'boolean',
     'locked' => 'boolean',
-    'icon' => 'string',
-    'type' => 'string',
     'filter' => 'string',
     'resourceId' => 'string',
-    'idwf' => 'string',
     'group'=>'int',
     'order'=>'int',
 );

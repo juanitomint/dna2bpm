@@ -49,7 +49,7 @@ Ext.create('Ext.data.Store', {
     },
     {
         category:"Business Process - Key Performance Indicators",
-        type:"count",
+        type:"count_cases",
         idwf:globals.idwf,
         title:"Cases that have passed this point"
     },

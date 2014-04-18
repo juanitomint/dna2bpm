@@ -30,7 +30,7 @@
 
         if(!ORYX.CONFIG) ORYX.CONFIG = {};
 
-//ORYX.CONFIG.ROOT_PATH ="/porretti/";
+
 ORYX.CONFIG.PROFILE_PATH="../../jscript/bpm/profiles/";
 ORYX.CONFIG.PLUGINS_CONFIG=ORYX.CONFIG.PROFILE_PATH + 'bpmn2.0.xml';
 //ORYX.CONFIG.SS_EXTENSIONS_CONFIG='../../jscript/bpm/stencilsets/extensions/extensions.json';
@@ -41,17 +41,6 @@ if ('undefined' == typeof(window.onOryxResourcesLoaded)) {
     ORYX.Log.warn('No adapter to repository specified, default used. You need a function window.onOryxResourcesLoaded that obtains model-JSON from your repository');
 
 }
-/*
-window.onOryxResourcesLoaded = function() {
-    if (location.hash.slice(1).length == 0 || location.hash.slice(1).indexOf('new')!=-1){
-        var stencilset=ORYX.Utils.getParamFromUrl('stencilset')?ORYX.Utils.getParamFromUrl('stencilset'):'stencilsets/bpmn2.0/bpmn2.0.json';
-
-new ORYX.Editor({id: 'oryx-canvas123',stencilset: {url: ''+stencilset}});
-}else{
-    ORYX.Editor.createByUrl('/beta/ci/worflow/respositry/load/'+location.hash.slice(1)+'/json', {id: 'oryx-canvas123'});
-};
-} //---end function
-*/
         </script>
         <link rel="Stylesheet" media="screen" href="css/theme_norm.css" type="text/css" />
         <!-- erdf schemas -->
