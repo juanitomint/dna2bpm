@@ -107,7 +107,7 @@ class Bpm extends CI_Model {
         //--only save if 
         //var_dump2($mywf);
         unset($mywf['_id']);
-        $wf = $this->db->where($query)->update('workflow', $mywf);
+        $wf = $this->db->where($query)->update('workflow', $mywf,array('upsert'=>true));
         $this->save_image_file($idwf, $svg);
         $this->save_mode_file($idwf, $data);
         $this->zip_model($idwf, $data);
