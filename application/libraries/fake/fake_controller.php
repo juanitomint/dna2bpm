@@ -178,9 +178,9 @@ class MX_Controller {
 	
 	/**
 	 *
-	 * @var bpm
+	 * @var Rbac
 	 */
-	public $bpm;
+	public $rbac;
 	
 	
 	/**
