@@ -4,3 +4,6 @@
 /tmp/
 /update-git.log
 /tests/
+/.buildpath
+/.project
+/.settings/
