@@ -15,7 +15,7 @@ class admin extends MX_Controller {
         'priority' => 'int',
         'info' => 'string',
         'hidden' => 'boolean',
-        'groups' => 'array',
+        'callBack' => 'string',
     );
 
     function __construct() {
@@ -56,11 +56,10 @@ class admin extends MX_Controller {
 
         $cpData['js'] = array(
             $this->module_url . "assets/jscript/ext.settings.js" => 'Settings',
-            $this->module_url . "assets/jscript/data.js" => 'Group Data Objects',
+            $this->module_url . "assets/jscript/data.js" => 'Data Objects',
             $this->module_url . "assets/jscript/tree_menu.js" => 'Menu Tree',
             $this->module_url . "assets/jscript/ext.load_props.js" => 'Properties Loader',
             $this->module_url . "assets/jscript/propertyGrid.js" => 'Menu Properties Editor',
-            $this->module_url . "assets/jscript/ext.group_selector.js" => 'Group Selector',
             $this->module_url . "assets/jscript/app.js" => 'Viewport',
         );
 
@@ -77,7 +76,7 @@ class admin extends MX_Controller {
         $this->user->authorize();
         $segments = $this->uri->segments;
         $debug = (in_array('debug', $segments)) ? true : false;
-        $idgroup = (int) $this->input->post('idgroup');
+        
         //--get paths from db
         $rtnArr['paths'] = $this->menu->get_paths();
 
@@ -201,7 +200,6 @@ class admin extends MX_Controller {
         array_shift($path_arr);
         $path = implode('/', $path_arr);
         //---Convert Group string to array;
-        $data->groups= json_decode($data->groups);
         $menu_item = new dbframe($data, $this->template);
         $properties = array(
             "source" => "User",
@@ -217,6 +215,10 @@ class admin extends MX_Controller {
         } else {
             var_dump($menu_item->toShow());
         }
+    }
+    
+    function get_menu($repoId){
+        //---return HTML menu
     }
 
 }

@@ -43,12 +43,15 @@ Ext.onReady(function() {
                         items: [
                             propsGrid
                         ]
-                    }, {
+                    }
+                    /*
+                    , {
                         title: 'Groups',
                         items: [
                             user_selector
                         ]
                     }
+            */
                 ]
 
             }

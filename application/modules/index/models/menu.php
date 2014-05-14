@@ -23,6 +23,10 @@ class Menu extends CI_Model {
 
             $query = array('$set' => array('repoId' => (string) $repoId, 'path' => $path, 'properties' => $properties));
             $options = array('upsert' => true, 'safe' => true);
+            //----save path in rbac
+            $rbac_path = "Menu/" . $repoId . '/' . $path;
+            $this->rbac->put_path($rbac_path);
+            
             return $this->mongo->db->selectCollection($this->container)->update($criteria, $query, $options);
         }
     }
