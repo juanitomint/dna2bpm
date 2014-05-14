@@ -74,12 +74,38 @@ var removePath = Ext.create('Ext.Action', {
         }
     }
 });
-//---Saves checked nodes
 var saveTree = Ext.create('Ext.Action', {
     iconCls: 'icon-save',
     text: 'Save',
     handler: function(widget, event) {
-        tree.sync();
+
+        paths = new Array();
+        
+        tree.getRootNode().cascade(function(rec) {
+            paths.push(rec.data.id);
+        });
+
+        tree.setLoading('Saving');
+        Ext.Ajax.request({
+            // the url to the remote source
+            url: globals.module_url + 'admin/repository/sync',
+            method: 'POST',
+            // define a handler for request success
+            params: {
+                //---get the active group
+                'idgroup': dataview.selModel.getLastSelected().data.idgroup,
+                'paths[]': paths
+            },
+            success: function(response, options) {
+                tree.setLoading(false);
+            },
+            // NO errors ! ;)
+            failure: function(response, options) {
+                alert('Error Loading:' + response.err);
+                tree.setLoading(false);
+
+            }
+        });
     }
 });
 //---4 context menu
@@ -186,6 +212,11 @@ var tree = Ext.create('Ext.tree.Panel', {
         }
 
     ],
+    viewConfig: {
+        plugins: {
+            ptype: 'treeviewdragdrop'
+        }
+    },
     listeners: {
         checkchange: checkchange,
         itemclick: itemclick,
@@ -198,10 +229,10 @@ var tree = Ext.create('Ext.tree.Panel', {
     },
     dockedItems: [{
             xtype: 'toolbar', items: [
-                
                 reloadTree,
                 addPath,
-                removePath
+                removePath,
+                saveTree
             ]
         }]
 });

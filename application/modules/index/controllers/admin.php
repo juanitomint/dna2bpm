@@ -140,29 +140,17 @@ class admin extends MX_Controller {
                 //var_dump($repo);
                 $rtnArr = (property_exists($rtnArr[0], 'children')) ? $rtnArr[0]->children : array();
                 break;
-            case 'save':
+            case 'sync':
                 $rtnArr['success'] = false;
                 $paths = $this->input->post('paths');
-                //--remove all paths
-                $this->menu->clear_paths($repoId);
-                //----load repo to check if something is new
-                $repo = array_keys($this->menu->get_repository($repoId));
+                                
                 if ($paths) {
+                    $i=0;
                     foreach ($paths as $path) {
-                        $this->menu->put_path_to_group($path, $idgroup);
-                        if (!in_array($path, $repo)) {
-
-                            $path_arr = explode('/', $path);
-                            array_shift($path_arr);
-                            $path = implode('/', $path_arr);
-
-                            $this->menu->put_path($path, array(
-                                'source' => 'RepoAdmin',
-                                'checkdate' => date('Y-m-d H:i:s'),
-                                'idu' => $this->idu
-                                    )
-                            );
-                        }
+                        $item=$this->menu->get_path($repoId, $path);
+                        $item->properties['priority']=$i++;
+                        $this->menu->put_path($path, $item->properties);
+                   
                     }
                 }
                 $rtnArr['success'] = true;
