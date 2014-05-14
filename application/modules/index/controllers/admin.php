@@ -89,13 +89,27 @@ class admin extends MX_Controller {
     }
 
     function get_properties() {
+        $debug = false;
         $data['id'] = $this->input->post('id');
         $repoId = ($this->input->post('repoId')) ? (int) $this->input->post('repoId') : 0;
 
         $data = $this->menu->get_path($repoId, $this->input->post('id'));
         $this->load->helper('dbframe');
-        $debug = false;
-        $menu_item = new dbframe($data['properties'], $this->tree_item);
+        $menu_item = new dbframe();
+        $template = array(
+            'id' => 'integer',
+            'title' => 'string',
+            'target' => 'string',
+            'text' => 'string',
+            'cls' => 'string',
+            'iconCls' => 'string',
+            'priority' => 'int',
+            'info' => 'string',
+            'hidden' => 'boolean',
+            'groups' => 'array',
+        );
+        
+        $menu_item->load($data, $template);
         if (!$debug) {
             header('Content-type: application/json;charset=UTF-8');
             echo json_encode($menu_item->toShow());
