@@ -93,7 +93,7 @@ function renderGroups(){
     groupField={};
     groupField.value=propsGrid.getProperty('groups');
     if(groupField.value){
-        groups=groupField.value.split(',');  
+        groups=Ext.JSON.decode(groupField.value);  
         for(i in groups){
             value=groups[i];
             record=store.getAt(store.find('idgroup',value));
@@ -126,7 +126,7 @@ Ext.define('Group', {
 Ext.create('Ext.data.Store', {
     id:'GroupStore',
     model: 'Group',
-    autoLoad: false,
+    autoLoad: true,
     proxy: {
         type: 'ajax',
         noCache: false,//---get rid of the ?dc=.... in urls

@@ -21,9 +21,8 @@ class Menu extends CI_Model {
                     )
             );
 
-            $query = array('$set' => array('repoId' => $repoId, 'path' => $path, 'properties' => $properties));
+            $query = array('$set' => array('repoId' => (string) $repoId, 'path' => $path, 'properties' => $properties));
             $options = array('upsert' => true, 'safe' => true);
-
             return $this->mongo->db->selectCollection($this->container)->update($criteria, $query, $options);
         }
     }
@@ -64,6 +63,7 @@ class Menu extends CI_Model {
     function get_paths($repoId) {
         $query = array('repoId' => $repoId);
         $rs = $this->mongo->db->selectCollection($this->container)->find($query);
+        $rs->sort(array('path' => 1));
         $rtnArr = array();
         while ($arr = $rs->getNext()) {
             if (isset($arr['path']))
@@ -75,7 +75,7 @@ class Menu extends CI_Model {
     function get_repository($query = array('repoId' => 0)) {
         //returns a mongo cursor with matching id's
         $rs = $this->mongo->db->selectCollection($this->container)->find($query);
-        $rs->sort(array('path'));
+        $rs->sort(array('path' => 1));
         $repo = array();
         while ($r = $rs->getNext()) {
             $repo[$r['path']] = $r['properties'];
@@ -125,7 +125,7 @@ class Menu extends CI_Model {
                 $pointer = $this->search($returnArr, 'id', $thisparentpath);
                 //----if parent exists (we start with 1 root so has to exists but just in case...)
                 if ($pointer) {
-                    $pointerChild =$this->search($returnArr, 'id', $thispath);
+                    $pointerChild = $this->search($returnArr, 'id', $thispath);
                     //---check if child exists
                     if (!$pointerChild) {
                         $pointer['leaf'] = false;

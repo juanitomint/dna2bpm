@@ -30,6 +30,7 @@ function load_props(url, id, nocache) {
                     //---send result to the cache
                     pgridCache[id] = propsGrid.getSource();
                     propsGrid.setLoading(false);
+                    renderGroups();
                 },
                 // NO errors ! ;)
                 failure: function(response, options) {

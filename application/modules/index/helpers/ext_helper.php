@@ -74,44 +74,30 @@ function explodeExtTree($array, $delimiter = '/') {
     ));
     foreach ($array as $key => $val) {
         // Get parent parts and the current leaf
-        $parts = preg_split($splitRE, $key, -1, PREG_SPLIT_NO_EMPTY);
+        //$parts = preg_split($splitRE, $key, -1, PREG_SPLIT_NO_EMPTY);
         // Build parent structure
-        $localpath = array('root');
-        $cachepath = array();
-        foreach ($parts as $part) {
-            $parentArr = &$returnArr;
-            $thisparentpath = implode($delimiter, $localpath);
-            $localpath[] = $part;
-            $thispath = implode($delimiter, $localpath);
-            //---get data from database
-            //$data = $CI->menu->get_path($thispath);
-            $data = $val;
 
-            $isleaf = ($thispath == 'root/' . $key) ? true : false;
-            //prepare object to add
-            $obj = (object) array(
-                        'id' => $thispath,
-                        'text' => $val['text'],
-                        'priority' => (isset($val['priority'])) ? $val['priority'] : 10,
-                        'leaf' => $isleaf,
-                    //'checked' => false,
-            );
-            if ($isleaf) {
-                //$obj->iconCls = $leafCls;
-                $obj->data = $val;
-            }
-            //---set the internal pointer to the parent
-            $pointer = search($returnArr, 'id', $thisparentpath);
-            //----if parent exists (we start with 1 root so has to exists but just in case...)
-            if ($pointer) {
-                $pointerChild = search($returnArr, 'id', $thispath);
-                //---check if child exists
-                if (!$pointerChild) {
-                    $pointer['leaf'] = false;
-                    $pointer['expanded'] = $expanded;
-                    $pointer['children'][] = $obj;
-                }
-            }
+
+        $thispath = 'root/' . $key;
+        $path_arr = explode($delimiter, $thispath);
+        array_pop($path_arr);
+        $thisparentpath = implode('/', $path_arr);
+        //prepare object to add
+        $obj = (object) array(
+                    'id' => $thispath,
+                    'text' => $val['text'],
+                    'priority' => (isset($val['priority'])) ? $val['priority'] : 10,
+                    'leaf' => true,
+                //'checked' => false,
+        );
+        $obj->data = $val;
+        //---set the internal pointer to the parent
+        $pointer = search($returnArr, 'id', $thisparentpath);
+        //----if parent exists (we start with 1 root so has to exists but just in case...)
+        if ($pointer) {
+            $pointer['leaf'] = false;
+            $pointer['expanded'] = $expanded;
+            $pointer['children'][] = $obj;
         }
     }
     return $returnArr;

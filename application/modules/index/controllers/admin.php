@@ -5,7 +5,7 @@ if (!defined('BASEPATH'))
 
 class admin extends MX_Controller {
 
-    public $tree_item = array(
+    public $template = array(
         'id' => 'string',
         'title' => 'string',
         'target' => 'string',
@@ -15,6 +15,7 @@ class admin extends MX_Controller {
         'priority' => 'int',
         'info' => 'string',
         'hidden' => 'boolean',
+        'groups' => 'array',
     );
 
     function __construct() {
@@ -29,18 +30,6 @@ class admin extends MX_Controller {
         //----LOAD LANGUAGE
         $this->lang->load('library', $this->config->item('language'));
         $this->idu = (int) $this->session->userdata('iduser');
-        $this->template = array(
-            'id' => 'integer',
-            'title' => 'string',
-            'target' => 'string',
-            'text' => 'string',
-            'cls' => 'string',
-            'iconCls' => 'string',
-            'priority' => 'int',
-            'info' => 'string',
-            'hidden' => 'boolean',
-            'groups' => 'array',
-        );
     }
 
     function Menu($repoId = 0) {
@@ -103,13 +92,14 @@ class admin extends MX_Controller {
     function get_properties() {
         $debug = false;
         $data['id'] = $this->input->post('id');
-        $repoId = ($this->input->post('repoId')) ? (int) $this->input->post('repoId') : 0;
+        $repoId = ($this->input->post('repoId')) ? $this->input->post('repoId') : '0';
 
         $data = $this->menu->get_path($repoId, $this->input->post('id'));
+
         $this->load->helper('dbframe');
         $menu_item = new dbframe();
-        
-        $menu_item->load($data, $this->template);
+
+        $menu_item->load($data['properties'], $this->template);
         if (!$debug) {
             header('Content-type: application/json;charset=UTF-8');
             echo json_encode($menu_item->toShow());
@@ -119,7 +109,7 @@ class admin extends MX_Controller {
     }
 
     function repository($repoId = 0, $action) {
-        $repoId = (int) $repoId;
+        $repoId = $repoId;
         $this->user->authorize();
         $this->load->helper('ext');
         $segments = $this->uri->segments;
@@ -203,27 +193,29 @@ class admin extends MX_Controller {
         $post = json_decode(file_get_contents('php://input'));
         $this->load->helper('dbframe');
         $rtnArr['success'] = false;
+        $repoId=$post->repoId;
         $path = $post->path;
         $data = $post->data;
         //---strip root
         $path_arr = explode('/', $path);
         array_shift($path_arr);
         $path = implode('/', $path_arr);
-
-        $menu_item = new dbframe($data, $this->tree_item,$this->template);
+        //---Convert Group string to array;
+        $data->groups= json_decode($data->groups);
+        $menu_item = new dbframe($data, $this->template);
         $properties = array(
             "source" => "User",
             "checkdate" => date('Y-m-d H:i:s'),
             "idu" => $this->idu
         );
-        $result = $this->menu->put_path($path, array_merge($properties, $menu_item->toSave()));
+        $result = $this->menu->put_path($repoId,$path, array_merge($properties, $menu_item->toSave()));
 
-        $rtnArr = $menu_item->toShow();
+
         if (!$debug) {
             header('Content-type: application/json;charset=UTF-8');
-            echo json_encode($rtnArr);
+            echo json_encode($menu_item->toShow());
         } else {
-            var_dump($rtnArr);
+            var_dump($menu_item->toShow());
         }
     }
 
