@@ -108,7 +108,6 @@ class admin extends MX_Controller {
             'hidden' => 'boolean',
             'groups' => 'array',
         );
-        
         $menu_item->load($data, $template);
         if (!$debug) {
             header('Content-type: application/json;charset=UTF-8');

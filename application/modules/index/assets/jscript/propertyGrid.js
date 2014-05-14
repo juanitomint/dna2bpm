@@ -71,7 +71,8 @@ var propsGrid = Ext.create('Ext.grid.property.Grid', {
         'cls' :'Class',
         'iconCls' :'IconClass',
         'priority' :'Priority',
-        'info' :'Info', 
+        'info' :'Info',
+        'groups':'Groups'
     }
     ,
     customEditors: {

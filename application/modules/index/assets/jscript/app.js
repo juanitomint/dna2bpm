@@ -44,7 +44,6 @@ Ext.onReady(function() {
                         ]
                     }, {
                         title: 'Groups',
-                        height: 300,
                         items: [
                             user_selector
                         ]
