@@ -29,6 +29,18 @@ class admin extends MX_Controller {
         //----LOAD LANGUAGE
         $this->lang->load('library', $this->config->item('language'));
         $this->idu = (int) $this->session->userdata('iduser');
+        $this->template = array(
+            'id' => 'integer',
+            'title' => 'string',
+            'target' => 'string',
+            'text' => 'string',
+            'cls' => 'string',
+            'iconCls' => 'string',
+            'priority' => 'int',
+            'info' => 'string',
+            'hidden' => 'boolean',
+            'groups' => 'array',
+        );
     }
 
     function Menu($repoId = 0) {
@@ -96,19 +108,8 @@ class admin extends MX_Controller {
         $data = $this->menu->get_path($repoId, $this->input->post('id'));
         $this->load->helper('dbframe');
         $menu_item = new dbframe();
-        $template = array(
-            'id' => 'integer',
-            'title' => 'string',
-            'target' => 'string',
-            'text' => 'string',
-            'cls' => 'string',
-            'iconCls' => 'string',
-            'priority' => 'int',
-            'info' => 'string',
-            'hidden' => 'boolean',
-            'groups' => 'array',
-        );
-        $menu_item->load($data, $template);
+        
+        $menu_item->load($data, $this->template);
         if (!$debug) {
             header('Content-type: application/json;charset=UTF-8');
             echo json_encode($menu_item->toShow());
@@ -209,7 +210,7 @@ class admin extends MX_Controller {
         array_shift($path_arr);
         $path = implode('/', $path_arr);
 
-        $menu_item = new dbframe($data, $this->tree_item);
+        $menu_item = new dbframe($data, $this->tree_item,$this->template);
         $properties = array(
             "source" => "User",
             "checkdate" => date('Y-m-d H:i:s'),
