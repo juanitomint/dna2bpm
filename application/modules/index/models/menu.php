@@ -76,7 +76,7 @@ class Menu extends CI_Model {
         return $rtnArr;
     }
 
-    function get_repository($query = array('repoId' => 0)) {
+    function get_repository($query = array('repoId' => '0')) {
         //returns a mongo cursor with matching id's
         $rs = $this->mongo->db->selectCollection($this->container)->find($query);
         $rs->sort(array('path' => 1));
