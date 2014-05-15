@@ -82,7 +82,8 @@ var saveTree = Ext.create('Ext.Action', {
         paths = new Array();
         
         tree.getRootNode().cascade(function(rec) {
-            paths.push(rec.data.id);
+            rec_id=rec.data.id.split('/').pop();
+            paths.push(rec.data.parentNode.data.id);
         });
 
         tree.setLoading('Saving');
@@ -93,7 +94,6 @@ var saveTree = Ext.create('Ext.Action', {
             // define a handler for request success
             params: {
                 //---get the active group
-                'idgroup': dataview.selModel.getLastSelected().data.idgroup,
                 'paths[]': paths
             },
             success: function(response, options) {
@@ -219,17 +219,7 @@ var tree = Ext.create('Ext.tree.Panel', {
         },
         listeners: {       
             drop: function ( dom_node, data, overModel, dropPosition, eOpts ) {         
-                var me=data.records[0];
-                var parent=data.records[0].parentNode;
-                
-                //---rebuild path
-                parent_path=parent.data.id;
-                new_path=overModel.data.id;
-                me_path=me.data.id.replace(parent_path,new_path);
-                
-            	debugger;
-            	me.data.id=me_path;
-   
+               
             }
         }     
                  

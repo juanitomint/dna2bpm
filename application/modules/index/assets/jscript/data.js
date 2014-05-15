@@ -43,6 +43,7 @@ Ext.define('MenuItem', {
         'iconCls',
         'priority',
         'info',
+        'path'
     ]
 }
 );

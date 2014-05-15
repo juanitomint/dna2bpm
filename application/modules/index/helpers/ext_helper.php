@@ -88,6 +88,7 @@ function explodeExtTree($array, $delimiter = '/') {
                     'text' => $val['text'],
                     'priority' => (isset($val['priority'])) ? $val['priority'] : 10,
                     'leaf' => true,
+                    'path'=>$thispath
                 //'checked' => false,
         );
         $obj->data = $val;
