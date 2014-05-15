@@ -215,7 +215,24 @@ var tree = Ext.create('Ext.tree.Panel', {
     viewConfig: {
         plugins: {
             ptype: 'treeviewdragdrop'
-        }
+            	
+        },
+        listeners: {       
+            drop: function ( dom_node, data, overModel, dropPosition, eOpts ) {         
+                var me=data.records[0];
+                var parent=data.records[0].parentNode;
+                
+                //---rebuild path
+                parent_path=parent.data.id;
+                new_path=overModel.data.id;
+                me_path=me.data.id.replace(parent_path,new_path);
+                
+            	debugger;
+            	me.data.id=me_path;
+   
+            }
+        }     
+                 
     },
     listeners: {
         checkchange: checkchange,
