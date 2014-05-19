@@ -22,12 +22,14 @@ Ext.onReady(function() {
     var right = Ext.create('Ext.Panel',
             {
                 id: 'rightPanel',
+                title: 'Properties',
                 region: 'east',
+                split: true,
                 animCollapse: true,
                 collapsible: true,
                 animCollapse: false,
                         split: true,
-                width: 400, // give east and west regions a width
+                        width: 400, // give east and west regions a width
                 minWidth: 300,
                 maxWidth: 400,
                 margins: '0 0 0 0',
@@ -37,18 +39,19 @@ Ext.onReady(function() {
                     ///-------Pgrid
                     {
                         xtype: 'panel',
-                        title: 'App properties',
                         flex: 1,
                         items: [
                             propsGrid
                         ]
-                    }, {
+                    }
+                    /*
+                    , {
                         title: 'Groups',
-                        height: 300,
                         items: [
                             user_selector
                         ]
                     }
+            */
                 ]
 
             }
@@ -71,12 +74,15 @@ Ext.onReady(function() {
         launch: function() {
             Ext.create('Ext.container.Viewport', {
                 layout: 'border',
-                items: [center, right,
-                    {
-                        region: 'north',
-                        title: '<h3><i class="icon icon-list"></i> Menú Manager</h3>',
-                        cls: 'page_header'
-                    },
+                items: [center, right
+                            /*
+                             ,
+                             {
+                             region: 'north',
+                             title: '<h3><i class="icon icon-list"></i> Menú Manager</h3>',
+                             cls: 'page_header'
+                             }
+                             */
                 ],
                 listeners: {
                     afterrender: function() {

@@ -3,7 +3,7 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-class Menu extends CI_Model {
+class Menu_model extends CI_Model {
 
     function __construct() {
         parent::__construct();
@@ -21,9 +21,12 @@ class Menu extends CI_Model {
                     )
             );
 
-            $query = array('$set' => array('repoId' => $repoId, 'path' => $path, 'properties' => $properties));
+            $query = array('$set' => array('repoId' => (string) $repoId, 'path' => $path, 'properties' => $properties));
             $options = array('upsert' => true, 'safe' => true);
-
+            //----save path in rbac
+            $rbac_path = "Menu/" . $repoId . $path;
+            $this->rbac->put_path($rbac_path);
+            
             return $this->mongo->db->selectCollection($this->container)->update($criteria, $query, $options);
         }
     }
@@ -37,6 +40,8 @@ class Menu extends CI_Model {
             );
             $this->db->where($criteria);
             $this->db->delete($this->container);
+            $rbac_path = "Menu/" . $repoId . $path;
+            $this->rbac->remove_path($rbac_path);
             return true;
         }
     }
@@ -51,10 +56,11 @@ class Menu extends CI_Model {
         }
     }
 
-    function get_path($repoId, $path) {
-        if ($path) {
-            $query = array('repoId' => $repoId, 'properties.id' => $path);
+    function get_path($repoId, $id) {
+        if ($id) {
+            $query = array('repoId' => $repoId, 'properties.id' => $id);
             $rs = $this->mongo->db->selectCollection($this->container)->findOne($query);
+            $rs['id']=$id;
             return $rs;
         } else {
             return null;
@@ -64,6 +70,7 @@ class Menu extends CI_Model {
     function get_paths($repoId) {
         $query = array('repoId' => $repoId);
         $rs = $this->mongo->db->selectCollection($this->container)->find($query);
+        $rs->sort(array('path' => 1));
         $rtnArr = array();
         while ($arr = $rs->getNext()) {
             if (isset($arr['path']))
@@ -72,10 +79,10 @@ class Menu extends CI_Model {
         return $rtnArr;
     }
 
-    function get_repository($query = array('repoId' => 0)) {
+    function get_repository($query = array('repoId' => '0')) {
         //returns a mongo cursor with matching id's
         $rs = $this->mongo->db->selectCollection($this->container)->find($query);
-        $rs->sort(array('path'));
+        $rs->sort(array('properties.priority'=>1));
         $repo = array();
         while ($r = $rs->getNext()) {
             $repo[$r['path']] = $r['properties'];
@@ -125,7 +132,7 @@ class Menu extends CI_Model {
                 $pointer = $this->search($returnArr, 'id', $thisparentpath);
                 //----if parent exists (we start with 1 root so has to exists but just in case...)
                 if ($pointer) {
-                    $pointerChild =$this->search($returnArr, 'id', $thispath);
+                    $pointerChild = $this->search($returnArr, 'id', $thispath);
                     //---check if child exists
                     if (!$pointerChild) {
                         $pointer['leaf'] = false;

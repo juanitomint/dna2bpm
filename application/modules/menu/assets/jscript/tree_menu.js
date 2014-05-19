@@ -1,26 +1,54 @@
+var priority = 0;
 //---ACTIONS 4 Context
+function recalculate_tree() {
+    priority = 0;
+    tree.getRootNode().cascade(function(rec) {
+        if (!rec.isRoot()) {
+            //---fix node paths
+            rec.set('path', rec.getPath());
+            rec.set('priority', 10 * priority++);
+        }
+    });
+}
 function itemclick(me, record, item, index, e, eOpts) {
     id = record.data.id;
-    load_props(globals.module_url + 'admin/get_properties', id, true);
+    //load_props(globals.module_url + 'admin/get_properties', id, true);
+    //propsGrid.setSource(record.data);
+    node = Ext.create(MItem_clear, record.data);
+    propsGrid.setSource(node.data);
+    propsGrid.setLoading(false);
+    if (id != 'root') {
+        propsGrid.enable();
+    } else {
+        propsGrid.disable();
+        propsGrid.setLoading("Can't touch Root node");
+    }
+
 }
 var addPath = Ext.create('Ext.Action', {
     iconCls: 'icon-add',
     text: 'Add Path',
     handler: function(widget, event) {
         var n = tree.getSelectionModel().getSelection()[0];
+        n.set('expanded', true);
+        n.set('leaf', false);
         if (n) {
-            Ext.MessageBox.prompt('Path', 'Please enter obj name or funcion:', function(btn, text) {
+            Ext.MessageBox.prompt('MenuItem', 'Please enter obj name or funcion:<br/>You can use comma separated for multiple add<br/>ie: pico,nano,micro,mili', function(btn, text) {
                 if (btn == 'ok' && text)
+                    text_arr = text.split(',');
+                for (i in text_arr) {
                     node = {
-                        id: n.data.id + '/' + text,
-                        text: text,
+                        id: Ext.id(null, text_arr[i] + '_'),
+                        text: text_arr[i],
                         leaf: true,
-                        priority: 10,
+                        //expanded: true,
+                        //children: []
                     };
-                n.appendChild(node);
-                n.set('leaf', false);
-                n.set('iconCls', '');
-                tree.store.sync();
+                    ;
+                    new_node = n.appendChild(node);
+                    recalculate_tree();
+                    //tree.store.sync();
+                }
             }
             );
         }
@@ -43,13 +71,13 @@ var removePath = Ext.create('Ext.Action', {
                 fn: function(btn) {
                     if (btn == 'yes') {
                         m = n.parentNode;
-                        path = n.data.id;
+                        path = n.data.path;
                         n.remove();
                         //---remove from repo
                         tree.setLoading('Saving');
                         Ext.Ajax.request({
                             // the url to the remote source
-                            url: globals.module_url + 'admin/repository/delete',
+                            url: globals.module_url + 'repository/' + globals.repoId + '/delete',
                             method: 'POST',
                             // define a handler for request success
                             params: {
@@ -74,12 +102,39 @@ var removePath = Ext.create('Ext.Action', {
         }
     }
 });
-//---Saves checked nodes
 var saveTree = Ext.create('Ext.Action', {
     iconCls: 'icon-save',
     text: 'Save',
     handler: function(widget, event) {
-        tree.sync();
+
+        paths = new Array();
+
+        tree.getRootNode().cascade(function(rec) {
+            //---fix node paths
+            rec.set('path', rec.getPath());
+        });
+        tree.store.sync();
+        /*
+         Ext.Ajax.request({
+         // the url to the remote source
+         url: globals.module_url + 'admin/repository/sync',
+         method: 'POST',
+         // define a handler for request success
+         params: {
+         //---get the active group
+         'paths[]': paths
+         },
+         success: function(response, options) {
+         tree.setLoading(false);
+         },
+         // NO errors ! ;)
+         failure: function(response, options) {
+         alert('Error Loading:' + response.err);
+         tree.setLoading(false);
+         
+         }
+         });
+         */
     }
 });
 //---4 context menu
@@ -105,40 +160,7 @@ function uncheck_all() {
     checkchange(root, false);
 }
 
-//---load checked nodes
-function load_checked() {
-    idgroup = dataview.selModel.getLastSelected().data.idgroup;
-    tree.uncheck_all();
-    paths = [];
-    tree.setLoading('loading Checked');
-    Ext.Ajax.request({
-        // the url to the remote source
-        url: globals.module_url + 'rbac_admin/getpaths',
-        method: 'POST',
-        params: {
-            //---get the active group
-            'idgroup': idgroup
-        },
-        // define a handler for request success
-        success: function(response, options) {
-            obj = Ext.decode(response.responseText);
-            obj.paths.forEach(function(path) {
-                if (path.length) {
-                    n = tree.store.tree.getNodeById(path);
-                    if (n)
-                        n.set('checked', true);
-                }
-            });
-            tree.setLoading(false);
-        },
-        // NO errors ! ;)
-        failure: function(response, options) {
-            alert('Error Loading:' + response.err);
-            tree.setLoading(false);
 
-        }
-    });
-}
 //---Refresh Tree
 var reloadTree = Ext.create('Ext.Action', {
     text: 'Reload',
@@ -157,6 +179,7 @@ var tree = Ext.create('Ext.tree.Panel', {
         text: "Home",
         iconCls: 'icon-home',
         expanded: true,
+        path: '/root'
     },
     rootVisible: true,
     useArrows: true,
@@ -176,7 +199,7 @@ var tree = Ext.create('Ext.tree.Panel', {
             text: 'path',
             flex: 2,
             sortable: true,
-            dataIndex: 'id'
+            dataIndex: 'path'
         }
         , {
             text: 'priority',
@@ -186,8 +209,21 @@ var tree = Ext.create('Ext.tree.Panel', {
         }
 
     ],
+    viewConfig: {
+        plugins: {
+            ptype: 'treeviewdragdrop'
+
+        },
+        listeners: {
+            drop: function(dom_node, data, overModel, dropPosition, eOpts) {
+                recalculate_tree();
+            }
+        }
+
+    },
     listeners: {
         checkchange: checkchange,
+        itemdblclick: addPath,
         itemclick: itemclick,
         itemcontextmenu: function(view, rec, node, index, e) {
             e.stopEvent();
@@ -198,10 +234,10 @@ var tree = Ext.create('Ext.tree.Panel', {
     },
     dockedItems: [{
             xtype: 'toolbar', items: [
-                
                 reloadTree,
                 addPath,
-                removePath
+                removePath,
+                saveTree
             ]
         }]
 });
