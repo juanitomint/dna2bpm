@@ -104,7 +104,8 @@ var propsGrid = Ext.create('Ext.grid.property.Grid', {
     tbar: {
         id: 'propsGridTbar',
         items: [
-            {
+            /*
+             {
                 xtype: 'button',
                 text: 'Save',
                 icon: globals.base_url + 'css/ext_icons/save.gif',
@@ -113,7 +114,9 @@ var propsGrid = Ext.create('Ext.grid.property.Grid', {
                     save_props(url);
                 }
             }
-            , {
+            */
+            , 
+            {
                 xtype: 'button',
                 text: 'Refresh',
                 icon: globals.base_url + 'css/ext_icons/table_refresh.png',

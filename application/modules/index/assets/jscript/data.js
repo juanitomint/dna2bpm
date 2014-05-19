@@ -26,10 +26,6 @@ Ext.define('User', {
 /*
  *      Tree Store
  */
-Ext.define('TreeModel', {
-    extend: 'Ext.data.Model',
-    fields: ['priority', 'title', 'type', 'group', 'locked', 'hidden', 'required']
-});
 function onTreeStoreLoad() {
     //tree.load_checked();
 }
@@ -68,14 +64,18 @@ Ext.create('Ext.data.TreeStore', {
     autoLoad: false,
     allowSingle: false,
     model: MItem,
+//    root: {
+//        expanded: true,
+//        text: "My Root", path: 'root'
+//    },
     proxy: {
         type: 'ajax',
         noCache: false, //---get rid of the ?dc=.... in urls
         api: {
-            create: globals.module_url + 'admin/repository/'+globals.repoId+'/create',
-            read: globals.module_url + 'admin/repository/'+globals.repoId+'/read',
-            update: globals.module_url + 'admin/repository/'+globals.repoId+'/update',
-            destroy: globals.module_url + 'admin/repository/'+globals.repoId+'/destroy'
+            create: globals.module_url + 'admin/repository/' + globals.repoId + '/create',
+            read: globals.module_url + 'admin/repository/' + globals.repoId + '/read',
+            update: globals.module_url + 'admin/repository/' + globals.repoId + '/update',
+            destroy: globals.module_url + 'admin/repository/' + globals.repoId + '/destroy'
         },
         writer: {
             type: 'json',

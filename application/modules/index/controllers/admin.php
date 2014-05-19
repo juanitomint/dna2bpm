@@ -58,7 +58,7 @@ class admin extends MX_Controller {
             $this->module_url . "assets/jscript/ext.settings.js" => 'Settings',
             $this->module_url . "assets/jscript/data.js" => 'Data Objects',
             $this->module_url . "assets/jscript/tree_menu.js" => 'Menu Tree',
-            $this->module_url . "assets/jscript/ext.load_props.js" => 'Properties Loader',
+//            $this->module_url . "assets/jscript/ext.load_props.js" => 'Properties Loader',
             $this->module_url . "assets/jscript/propertyGrid.js" => 'Menu Properties Editor',
             $this->module_url . "assets/jscript/app.js" => 'Viewport',
         );
@@ -69,14 +69,14 @@ class admin extends MX_Controller {
             'repoId' => $repoId,
         );
 
-        $this->ui->makeui('user/ext.ui.php', $cpData);
+        $this->ui->makeui('index/ext.ui.php', $cpData);
     }
 
     function getpaths($repoId = 0) {
         $this->user->authorize();
         $segments = $this->uri->segments;
         $debug = (in_array('debug', $segments)) ? true : false;
-        
+
         //--get paths from db
         $rtnArr['paths'] = $this->menu->get_paths();
 
@@ -121,7 +121,7 @@ class admin extends MX_Controller {
                 $post = json_decode(file_get_contents('php://input'));
                 //----remove root from path
                 foreach ($post as $menuItem) {
-                    $path_arr = explode('/', $menuItem->id);
+                    $path_arr = explode('/', $menuItem->path);
                     array_shift($path_arr);
                     $path = implode('/', $path_arr);
                     $properties = array(
@@ -135,22 +135,27 @@ class admin extends MX_Controller {
                 break;
             case 'read':
                 $node = ($this->input->post('node')) ? $this->input->post('node') : 'root';
-                $repo = $this->menu->get_repository(array('repoId' => $repoId));
-                $rtnArr = explodeExtTree($repo, '/');
-                //var_dump($repo);
-                $rtnArr = (property_exists($rtnArr[0], 'children')) ? $rtnArr[0]->children : array();
+                if ($node == 'root') {
+                    $repo = $this->menu->get_repository(array('repoId' => $repoId));
+                    $rtnArr = explodeExtTree($repo, '/');
+                    //var_dump($repo);
+                    //----return skip root node
+                    $rtnArr = (property_exists($rtnArr[0], 'children')) ? $rtnArr[0]->children : array();
+                } else {
+
+                    $rtnArr = array();
+                }
                 break;
             case 'sync':
                 $rtnArr['success'] = false;
                 $paths = $this->input->post('paths');
-                                
+
                 if ($paths) {
-                    $i=0;
+                    $i = 0;
                     foreach ($paths as $path) {
-                        $item=$this->menu->get_path($repoId, $path);
-                        $item->properties['priority']=$i++;
+                        $item = $this->menu->get_path($repoId, $path);
+                        $item->properties['priority'] = $i++;
                         $this->menu->put_path($path, $item->properties);
-                   
                     }
                 }
                 $rtnArr['success'] = true;
@@ -180,7 +185,7 @@ class admin extends MX_Controller {
         $post = json_decode(file_get_contents('php://input'));
         $this->load->helper('dbframe');
         $rtnArr['success'] = false;
-        $repoId=$post->repoId;
+        $repoId = $post->repoId;
         $path = $post->path;
         $data = $post->data;
         //---strip root
@@ -194,7 +199,7 @@ class admin extends MX_Controller {
             "checkdate" => date('Y-m-d H:i:s'),
             "idu" => $this->idu
         );
-        $result = $this->menu->put_path($repoId,$path, array_merge($properties, $menu_item->toSave()));
+        $result = $this->menu->put_path($repoId, $path, array_merge($properties, $menu_item->toSave()));
 
 
         if (!$debug) {
@@ -204,8 +209,8 @@ class admin extends MX_Controller {
             var_dump($menu_item->toShow());
         }
     }
-    
-    function get_menu($repoId){
+
+    function get_menu($repoId) {
         //---return HTML menu
     }
 

@@ -3,9 +3,15 @@ function itemclick(me, record, item, index, e, eOpts) {
     id = record.data.id;
     //load_props(globals.module_url + 'admin/get_properties', id, true);
     //propsGrid.setSource(record.data);
-    node = Ext.create(MItem_clear, record.data);
-    propsGrid.setSource(node.data);
-    propsGrid.setLoading(false);
+        node = Ext.create(MItem_clear, record.data);
+        propsGrid.setSource(node.data);
+        propsGrid.setLoading(false);
+    if (id != 'root') {
+        propsGrid.enable();
+    } else {
+        propsGrid.disable();
+        propsGrid.setLoading("Can't touch Root node");
+    }
 
 }
 var addPath = Ext.create('Ext.Action', {
@@ -13,21 +19,26 @@ var addPath = Ext.create('Ext.Action', {
     text: 'Add Path',
     handler: function(widget, event) {
         var n = tree.getSelectionModel().getSelection()[0];
+        n.set('expanded',true);
+        n.set('leaf',false);
         if (n) {
-            Ext.MessageBox.prompt('Path', 'Please enter obj name or funcion:', function(btn, text) {
+            Ext.MessageBox.prompt('MenuItem', 'Please enter obj name or funcion:<br/>You can use comma separated for multiple add<br/>ie: pico,nano,micro,mili', function(btn, text) {
                 if (btn == 'ok' && text)
+                    text_arr = text.split(',');
+                for (i in text_arr) {
                     node = {
-                        id: Ext.id(null, text + '_'),
-                        text: text,
-                        leaf: false,
-                        priority: 10,
-                        expanded: true,
-                        children: []
+                        id: Ext.id(null, text_arr[i] + '_'),
+                        text: text_arr[i],
+                        leaf: true,
+                        priority: 10
+                        //expanded: true,
+                        //children: []
                     };
-
-                new_node = n.appendChild(node);
-                new_node.set('path', new_node.getPath());
-                //tree.store.sync();
+                    ;
+                    new_node = n.appendChild(node);
+                    new_node.set('path', new_node.getPath());
+                    //tree.store.sync();
+                }
             }
             );
         }
@@ -50,13 +61,13 @@ var removePath = Ext.create('Ext.Action', {
                 fn: function(btn) {
                     if (btn == 'yes') {
                         m = n.parentNode;
-                        path = n.data.id;
+                        path = n.data.path;
                         n.remove();
                         //---remove from repo
                         tree.setLoading('Saving');
                         Ext.Ajax.request({
                             // the url to the remote source
-                            url: globals.module_url + 'admin/repository/delete',
+                            url: globals.module_url + 'admin/repository/'+globals.repoId+'/delete',
                             method: 'POST',
                             // define a handler for request success
                             params: {
@@ -191,6 +202,7 @@ var tree = Ext.create('Ext.tree.Panel', {
         text: "Home",
         iconCls: 'icon-home',
         expanded: true,
+        path: '/root'
     },
     rootVisible: true,
     useArrows: true,

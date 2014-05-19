@@ -24,7 +24,7 @@ class Menu extends CI_Model {
             $query = array('$set' => array('repoId' => (string) $repoId, 'path' => $path, 'properties' => $properties));
             $options = array('upsert' => true, 'safe' => true);
             //----save path in rbac
-            $rbac_path = "Menu/" . $repoId . '/' . $path;
+            $rbac_path = "Menu/" . $repoId . $path;
             $this->rbac->put_path($rbac_path);
             
             return $this->mongo->db->selectCollection($this->container)->update($criteria, $query, $options);
@@ -40,6 +40,8 @@ class Menu extends CI_Model {
             );
             $this->db->where($criteria);
             $this->db->delete($this->container);
+            $rbac_path = "Menu/" . $repoId . $path;
+            $this->rbac->remove_path($rbac_path);
             return true;
         }
     }
