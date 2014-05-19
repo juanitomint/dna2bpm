@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Description of menu
  *
@@ -14,9 +13,7 @@ class Test extends MX_Controller {
 
     function __construct() {
         parent::__construct();
-        $this->load->model('menu/menu_model');
-        $this->load->helper('ext');
-        
+        $this->load->library('menu/ui');
     }
 
     /*
@@ -25,7 +22,11 @@ class Test extends MX_Controller {
 
     function Index() {
         //ini_set('xdebug.var_display_max_depth', 16);
-        $menu=modules::run('menu/menu/get_menu');
-        echo $menu;
+        $cpData['menu1'] = modules::run('menu/menu/get_menu', '0', 'nav btn-group');
+        $cpData['menu2'] = modules::run('menu/menu/get_menu_bs', '0', 'role="navigation" class="nav"');
+        $this->parser->parse('bootstrap.ui.php',$cpData,false,true);
+        //echo $cpData['menu1'];
+        //echo $cpData['menu2'];
     }
+
 }

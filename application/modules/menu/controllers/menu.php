@@ -73,7 +73,7 @@ class Menu extends MX_Controller {
             'repoId' => $repoId,
         );
 
-        $this->ui->makeui('index/ext.ui.php', $cpData);
+        $this->ui->makeui('menu/ext.ui.php', $cpData);
     }
 
     function getpaths($repoId = 0) {
@@ -141,7 +141,7 @@ class Menu extends MX_Controller {
                 $node = ($this->input->post('node')) ? $this->input->post('node') : 'root';
                 if ($node == 'root') {
                     $repo = $this->menu_model->get_repository(array('repoId' => $repoId));
-                    $rtnArr = explodeExtTree($repo, '/');
+                    $rtnArr = $this->explodeExtTree($repo, '/');
                     //var_dump($repo);
                     //----return skip root node
                     $rtnArr = (property_exists($rtnArr[0], 'children')) ? $rtnArr[0]->children : array();
@@ -224,15 +224,93 @@ class Menu extends MX_Controller {
      * @param string  $ulClass
      * @return string an HTML representation of your menu.
      */
-    function get_menu($repoId='0', $ulClass = '') {
+    function get_menu($repoId = '0', $ulClass = '') {
         //---return HTML menu
-        $query=array('repoId'=>$repoId);
+        $query = array('repoId' => $repoId);
         $repo = $this->menu_model->get_repository($query);
         //var_dump($m);
-        $tree = explodeExtTree($repo, '/');
-        var_dump($tree[0]->children);
+        $tree = $this->explodeExtTree($repo, '/');
         $menu = $this->get_ul($tree[0]->children, $ulClass);
         return $menu;
+    }
+
+    function get_menu_bs($repoId = '0', $ulAdd = '') {
+        //---return HTML menu
+        $query = array('repoId' => $repoId);
+        $repo = $this->menu_model->get_repository($query);
+        //var_dump($m);
+        $tree = $this->explodeExtTree($repo, '/');
+        $menu = $this->get_ul_submenu($tree[0]->children, $ulAdd);
+        return $menu;
+    }
+
+    /*
+     *  This function returns a pointer to the part of the array matching key=>value
+     */
+
+    function search(&$arr, $key, $value) {
+        $arrIt = new RecursiveIteratorIterator(new RecursiveArrayIterator($arr));
+        foreach ($arrIt as $sub) {
+            $subArray = $arrIt->getSubIterator();
+            $subArray->jj = true;
+            if (isset($subArray[$key]) && $subArray[$key] == $value) {
+                //return iterator_to_array($subArray);
+                return $subArray;
+            }
+        }
+        return null;
+    }
+
+    function explodeExtTree($array, $delimiter = '/') {
+        $CI = &get_instance();
+        if (!is_array($array))
+            return false;
+        //---Setings
+        $expanded = false;
+        $leafCls = 'dot-green';
+        $splitRE = '/' . preg_quote($delimiter, '/') . '/';
+        $returnArr = array((object) array(
+                "id" => 'root',
+                "text" => "Object Repository",
+                "cls" => "folder",
+                "icon-cls" => "icon-home",
+                "expanded" => true,
+                "leaf" => false,
+                "path" => '/root',
+                "children" => array(),
+        ));
+
+        foreach ($array as $thispath => $val) {
+            // Get parent parts and the current leaf
+            //$parts = preg_split($splitRE, $key, -1, PREG_SPLIT_NO_EMPTY);
+            // Build parent structure
+            //$thispath = '/root/' . $key;
+            $path_arr = explode($delimiter, $thispath);
+            array_pop($path_arr);
+            $thisparentpath = '/' . implode('/', $path_arr);
+            //prepare object to add
+            $obj = (object) array_merge(array(
+                        'id' => $val['id'],
+                        'text' => $val['text'],
+                        'priority' => (isset($val['priority'])) ? $val['priority'] : 10,
+                        'leaf' => false,
+                        'path' => $thispath,
+                        'expanded' => true,
+                        'children' => array()
+                            //'checked' => false,
+                            ), (array) $val);
+            $obj->leaf = false;
+            //$obj->data = $val;
+            //---set the internal pointer to the parent
+            $pointer = $this->search($returnArr, 'path', $thisparentpath);
+            //----if parent exists (we start with 1 root so has to exists but just in case...)
+            if ($pointer) {
+                $pointer['leaf'] = false;
+                $pointer['expanded'] = $expanded;
+                $pointer['children'][] = $obj;
+            }
+        }
+        return $returnArr;
     }
 
     function test_menu($repoId) {
@@ -245,27 +323,52 @@ class Menu extends MX_Controller {
         $returnStr.='<ul class="' . $ulClass . '">';
         foreach ($menu as $path => $node) {
 
-            if (property_exists($node, 'data')) {
-                $item = $node->data;
-            } else {
-                $item = array(
-                    'target' => '#',
-                    'title' => '',
-                    'text' => $node->text,
-                );
-            }
+
             $returnStr.='<li>';
 
-            $returnStr.='<a href="' . $item['target'] . '" title="' . $item['title'] . '">' . $item['text'];
-            if (isset($item['iconCls'])) {
-                if ($item['iconCls'] <> '')
-                    $returnStr.='<i class="icon ' . $item['iconCls'] . '"></i>';
+            $returnStr.='<a href="' . $node->target . '" title="' . $node->title . '">' . $node->text;
+            if (isset($node->iconCls)) {
+                if ($node->iconCls <> '')
+                    $returnStr.='<i class="icon ' . $node->iconCls . '"></i>';
             }
 
             $returnStr.='</a>';
             if (!$node->leaf) {
-                $returnStr.=$this->get_ul($node->children, $ulClass);
+                if (count($node->children))
+                    $returnStr.=$this->get_ul($node->children, 'dropdown');
             }
+            $returnStr.='</li>';
+        }
+        $returnStr.='</ul>';
+        return $returnStr;
+    }
+
+    function get_ul_submenu($menu, $ulAdd = '') {
+
+        $returnStr = '';
+        $returnStr.='<ul ' . $ulAdd . '>';
+        foreach ($menu as $path => $node) {
+            $liAdd = 'class="dropdown"';
+            $aAdd = 'data-toggle="dropdown" class="dropdown-toggle" role="button"';
+            $aCaret='';
+            if (count($node->children)) {
+                $ulAdd = 'class="dropdown-menu" aria-labelledby="' . $node->id . '"';
+                $aCaret='<b class="caret"></b>';
+            }
+            $returnStr.="<li $liAdd>";
+
+            $returnStr.='<a id="' . $node->id . '" href="' . $node->target . '" title="' . $node->title . '" ' . $aAdd . '>' . $node->text.$aCaret;
+            if (isset($node->iconCls)) {
+                if ($node->iconCls <> '')
+                    $returnStr.='<i class="icon ' . $node->iconCls . '"></i>';
+            }
+
+            $returnStr.='</a>';
+
+            if (count($node->children)) {
+                $returnStr.=$this->get_ul_submenu($node->children, $ulAdd);
+            }
+
             $returnStr.='</li>';
         }
         $returnStr.='</ul>';
