@@ -1,7 +1,12 @@
 //---ACTIONS 4 Context
 function itemclick(me, record, item, index, e, eOpts) {
     id = record.data.id;
-    load_props(globals.module_url + 'admin/get_properties', id, true);
+    //load_props(globals.module_url + 'admin/get_properties', id, true);
+    //propsGrid.setSource(record.data);
+    node = Ext.create(MItem_clear, record.data);
+    propsGrid.setSource(node.data);
+    propsGrid.setLoading(false);
+
 }
 var addPath = Ext.create('Ext.Action', {
     iconCls: 'icon-add',
@@ -12,15 +17,17 @@ var addPath = Ext.create('Ext.Action', {
             Ext.MessageBox.prompt('Path', 'Please enter obj name or funcion:', function(btn, text) {
                 if (btn == 'ok' && text)
                     node = {
-                        id: n.data.id + '/' + text,
+                        id: Ext.id(null, text + '_'),
                         text: text,
-                        leaf: true,
+                        leaf: false,
                         priority: 10,
+                        expanded: true,
+                        children: []
                     };
-                n.appendChild(node);
-                n.set('leaf', false);
-                n.set('iconCls', '');
-                tree.store.sync();
+
+                new_node = n.appendChild(node);
+                new_node.set('path', new_node.getPath());
+                //tree.store.sync();
             }
             );
         }
@@ -80,32 +87,33 @@ var saveTree = Ext.create('Ext.Action', {
     handler: function(widget, event) {
 
         paths = new Array();
-        
+
         tree.getRootNode().cascade(function(rec) {
-            rec_id=rec.data.id.split('/').pop();
-            paths.push(rec.data.parentNode.data.id);
+            //---fix node paths
+            rec.set('path', rec.getPath());
         });
-
-        tree.setLoading('Saving');
-        Ext.Ajax.request({
-            // the url to the remote source
-            url: globals.module_url + 'admin/repository/sync',
-            method: 'POST',
-            // define a handler for request success
-            params: {
-                //---get the active group
-                'paths[]': paths
-            },
-            success: function(response, options) {
-                tree.setLoading(false);
-            },
-            // NO errors ! ;)
-            failure: function(response, options) {
-                alert('Error Loading:' + response.err);
-                tree.setLoading(false);
-
-            }
-        });
+        tree.store.sync();
+        /*
+         Ext.Ajax.request({
+         // the url to the remote source
+         url: globals.module_url + 'admin/repository/sync',
+         method: 'POST',
+         // define a handler for request success
+         params: {
+         //---get the active group
+         'paths[]': paths
+         },
+         success: function(response, options) {
+         tree.setLoading(false);
+         },
+         // NO errors ! ;)
+         failure: function(response, options) {
+         alert('Error Loading:' + response.err);
+         tree.setLoading(false);
+         
+         }
+         });
+         */
     }
 });
 //---4 context menu
@@ -202,7 +210,7 @@ var tree = Ext.create('Ext.tree.Panel', {
             text: 'path',
             flex: 2,
             sortable: true,
-            dataIndex: 'id'
+            dataIndex: 'path'
         }
         , {
             text: 'priority',
@@ -215,17 +223,21 @@ var tree = Ext.create('Ext.tree.Panel', {
     viewConfig: {
         plugins: {
             ptype: 'treeviewdragdrop'
-            	
+
         },
-        listeners: {       
-            drop: function ( dom_node, data, overModel, dropPosition, eOpts ) {         
-               
+        listeners: {
+            drop: function(dom_node, data, overModel, dropPosition, eOpts) {
+                tree.getRootNode().cascade(function(rec) {
+                    //---fix node paths
+                    rec.set('path', rec.getPath());
+                });
             }
-        }     
-                 
+        }
+
     },
     listeners: {
         checkchange: checkchange,
+        itemdblclick: addPath,
         itemclick: itemclick,
         itemcontextmenu: function(view, rec, node, index, e) {
             e.stopEvent();

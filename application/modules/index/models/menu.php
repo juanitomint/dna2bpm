@@ -54,10 +54,11 @@ class Menu extends CI_Model {
         }
     }
 
-    function get_path($repoId, $path) {
-        if ($path) {
-            $query = array('repoId' => $repoId, 'properties.id' => $path);
+    function get_path($repoId, $id) {
+        if ($id) {
+            $query = array('repoId' => $repoId, 'properties.id' => $id);
             $rs = $this->mongo->db->selectCollection($this->container)->findOne($query);
+            $rs['id']=$id;
             return $rs;
         } else {
             return null;

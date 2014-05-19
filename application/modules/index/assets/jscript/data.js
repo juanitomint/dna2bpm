@@ -33,7 +33,7 @@ Ext.define('TreeModel', {
 function onTreeStoreLoad() {
     //tree.load_checked();
 }
-Ext.define('MenuItem', {
+Ext.define('MItem_clear', {
     extend: 'Ext.data.Model',
     fields: [
         'title',
@@ -43,7 +43,23 @@ Ext.define('MenuItem', {
         'iconCls',
         'priority',
         'info',
-        'path'
+        'path',
+        'callback'
+    ]
+}
+);
+Ext.define('MItem', {
+    extend: 'Ext.data.Model',
+    fields: [
+        'title',
+        'target',
+        'text',
+        'cls',
+        'iconCls',
+        'priority',
+        'info',
+        'path',
+        'callback'
     ]
 }
 );
@@ -51,7 +67,7 @@ Ext.create('Ext.data.TreeStore', {
     id: "TreeStore",
     autoLoad: false,
     allowSingle: false,
-    model: MenuItem,
+    model: MItem,
     proxy: {
         type: 'ajax',
         noCache: false, //---get rid of the ?dc=.... in urls

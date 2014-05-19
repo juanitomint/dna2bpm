@@ -69,7 +69,7 @@ function explodeExtTree($array, $delimiter = '/') {
             "icon-cls" => "icon-home",
             "expanded" => true,
             "leaf" => false,
-            "path" => '/',
+            "path" => 'root',
             "children" => array(),
     ));
     foreach ($array as $key => $val) {
@@ -84,7 +84,7 @@ function explodeExtTree($array, $delimiter = '/') {
         $thisparentpath = implode('/', $path_arr);
         //prepare object to add
         $obj = (object) array(
-                    'id' => $thispath,
+                    'id' => $val['id'],
                     'text' => $val['text'],
                     'priority' => (isset($val['priority'])) ? $val['priority'] : 10,
                     'leaf' => true,
@@ -93,7 +93,7 @@ function explodeExtTree($array, $delimiter = '/') {
         );
         $obj->data = $val;
         //---set the internal pointer to the parent
-        $pointer = search($returnArr, 'id', $thisparentpath);
+        $pointer = search($returnArr, 'path', $thisparentpath);
         //----if parent exists (we start with 1 root so has to exists but just in case...)
         if ($pointer) {
             $pointer['leaf'] = false;
