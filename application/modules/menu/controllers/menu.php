@@ -3,7 +3,7 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-class admin extends MX_Controller {
+class Menu extends MX_Controller {
 
     public $template = array(
         'id' => 'string',
@@ -22,7 +22,7 @@ class admin extends MX_Controller {
         parent::__construct();
         $this->load->library('parser');
 
-        $this->load->model('index/menu');
+        $this->load->model('menu/menu_model');
         $this->user->authorize();
         //---base variables
         $this->base_url = base_url();
@@ -32,7 +32,11 @@ class admin extends MX_Controller {
         $this->idu = (int) $this->session->userdata('iduser');
     }
 
-    function Menu($repoId = 0) {
+    function Index() {
+        $this->Admin();
+    }
+
+    function Admin($repoId = '0') {
         //    var_dump(base_url()); exit;
         //---only allow admins and Groups/Users enabled
         $this->load->library('ui');
@@ -78,7 +82,7 @@ class admin extends MX_Controller {
         $debug = (in_array('debug', $segments)) ? true : false;
 
         //--get paths from db
-        $rtnArr['paths'] = $this->menu->get_paths();
+        $rtnArr['paths'] = $this->menu_model->get_paths();
 
         if (!$debug) {
             header('Content-type: application/json;charset=UTF-8');
@@ -93,7 +97,7 @@ class admin extends MX_Controller {
         $data['id'] = $this->input->post('id');
         $repoId = ($this->input->post('repoId')) ? $this->input->post('repoId') : '0';
 
-        //$data = $this->menu->get_path($repoId, $this->input->post('id'));
+        //$data = $this->menu_model->get_path($repoId, $this->input->post('id'));
 
         $this->load->helper('dbframe');
         $menu_item = new dbframe();
@@ -129,14 +133,14 @@ class admin extends MX_Controller {
                         "checkdate" => date('Y-m-d H:i:s'),
                         "idu" => $this->idu
                     );
-                    $result = $this->menu->put_path($repoId, $path, array_merge($properties, (array) $menuItem));
+                    $result = $this->menu_model->put_path($repoId, $path, array_merge($properties, (array) $menuItem));
                 }
                 $rtnArr['success'] = true;
                 break;
             case 'read':
                 $node = ($this->input->post('node')) ? $this->input->post('node') : 'root';
                 if ($node == 'root') {
-                    $repo = $this->menu->get_repository(array('repoId' => $repoId));
+                    $repo = $this->menu_model->get_repository(array('repoId' => $repoId));
                     $rtnArr = explodeExtTree($repo, '/');
                     //var_dump($repo);
                     //----return skip root node
@@ -153,9 +157,9 @@ class admin extends MX_Controller {
                 if ($paths) {
                     $i = 0;
                     foreach ($paths as $path) {
-                        $item = $this->menu->get_path($repoId, $path);
+                        $item = $this->menu_model->get_path($repoId, $path);
                         $item->properties['priority'] = $i++;
-                        $this->menu->put_path($path, $item->properties);
+                        $this->menu_model->put_path($path, $item->properties);
                     }
                 }
                 $rtnArr['success'] = true;
@@ -169,7 +173,7 @@ class admin extends MX_Controller {
                 array_shift($path_arr);
                 $path = implode('/', $path_arr);
                 if ($path)
-                    $rtnArr['success'] = $this->menu->remove_path($repoId, $path);
+                    $rtnArr['success'] = $this->menu_model->remove_path($repoId, $path);
                 break;
         }
         if (!$debug) {
@@ -199,7 +203,7 @@ class admin extends MX_Controller {
             "checkdate" => date('Y-m-d H:i:s'),
             "idu" => $this->idu
         );
-        $result = $this->menu->put_path($repoId, $path, array_merge($properties, $menu_item->toSave()));
+        $result = $this->menu_model->put_path($repoId, $path, array_merge($properties, $menu_item->toSave()));
 
 
         if (!$debug) {
@@ -210,8 +214,62 @@ class admin extends MX_Controller {
         }
     }
 
-    function get_menu($repoId) {
+    /**
+     * 
+     * Returns the html representation of a menu
+     * 
+     * @param string $repoId <p>
+     * The name of yout repository
+     * </p>
+     * @param string  $ulClass
+     * @return string an HTML representation of your menu.
+     */
+    function get_menu($repoId='0', $ulClass = '') {
         //---return HTML menu
+        $query=array('repoId'=>$repoId);
+        $repo = $this->menu_model->get_repository($query);
+        //var_dump($m);
+        $tree = explodeExtTree($repo, '/');
+        var_dump($tree[0]->children);
+        $menu = $this->get_ul($tree[0]->children, $ulClass);
+        return $menu;
+    }
+
+    function test_menu($repoId) {
+        
+    }
+
+    function get_ul($menu, $ulClass = '') {
+
+        $returnStr = '';
+        $returnStr.='<ul class="' . $ulClass . '">';
+        foreach ($menu as $path => $node) {
+
+            if (property_exists($node, 'data')) {
+                $item = $node->data;
+            } else {
+                $item = array(
+                    'target' => '#',
+                    'title' => '',
+                    'text' => $node->text,
+                );
+            }
+            $returnStr.='<li>';
+
+            $returnStr.='<a href="' . $item['target'] . '" title="' . $item['title'] . '">' . $item['text'];
+            if (isset($item['iconCls'])) {
+                if ($item['iconCls'] <> '')
+                    $returnStr.='<i class="icon ' . $item['iconCls'] . '"></i>';
+            }
+
+            $returnStr.='</a>';
+            if (!$node->leaf) {
+                $returnStr.=$this->get_ul($node->children, $ulClass);
+            }
+            $returnStr.='</li>';
+        }
+        $returnStr.='</ul>';
+        return $returnStr;
     }
 
 }

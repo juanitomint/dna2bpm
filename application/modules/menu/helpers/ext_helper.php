@@ -87,8 +87,11 @@ function explodeExtTree($array, $delimiter = '/') {
                     'priority' => (isset($val['priority'])) ? $val['priority'] : 10,
                     'leaf' => false,
                     'path' => $thispath,
+                    'expanded' => true,
+                    'children' => array()
                         //'checked' => false,
                         ), (array) $val);
+        $obj->leaf=false;
         //$obj->data = $val;
         //---set the internal pointer to the parent
         $pointer = search($returnArr, 'path', $thisparentpath);

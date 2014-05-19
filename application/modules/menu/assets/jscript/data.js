@@ -72,10 +72,10 @@ Ext.create('Ext.data.TreeStore', {
         type: 'ajax',
         noCache: false, //---get rid of the ?dc=.... in urls
         api: {
-            create: globals.module_url + 'admin/repository/' + globals.repoId + '/create',
-            read: globals.module_url + 'admin/repository/' + globals.repoId + '/read',
-            update: globals.module_url + 'admin/repository/' + globals.repoId + '/update',
-            destroy: globals.module_url + 'admin/repository/' + globals.repoId + '/destroy'
+            create: globals.module_url + 'repository/' + globals.repoId + '/create',
+            read: globals.module_url + 'repository/' + globals.repoId + '/read',
+            update: globals.module_url + 'repository/' + globals.repoId + '/update',
+            destroy: globals.module_url + 'repository/' + globals.repoId + '/destroy'
         },
         writer: {
             type: 'json',
@@ -149,10 +149,10 @@ Ext.create('Ext.data.TreeStore', {
 //        noCache: false,//---get rid of the ?dc=.... in urls
 //        method:'post',
 //        api: {
-//            create  : globals.base_url+'user/admin/group/create',
-//            read    : globals.base_url+'user/admin/group/read',
-//            update  : globals.base_url+'user/admin/group/update',
-//            destroy : globals.base_url+'user/admin/group/destroy'
+//            create  : globals.base_url+'user/group/create',
+//            read    : globals.base_url+'user/group/read',
+//            update  : globals.base_url+'user/group/update',
+//            destroy : globals.base_url+'user/group/destroy'
 //        },
 //        reader: {
 //            type: 'json',

@@ -1,11 +1,22 @@
+var priority = 0;
 //---ACTIONS 4 Context
+function recalculate_tree() {
+    priority = 0;
+    tree.getRootNode().cascade(function(rec) {
+        if (!rec.isRoot()) {
+            //---fix node paths
+            rec.set('path', rec.getPath());
+            rec.set('priority', 10 * priority++);
+        }
+    });
+}
 function itemclick(me, record, item, index, e, eOpts) {
     id = record.data.id;
     //load_props(globals.module_url + 'admin/get_properties', id, true);
     //propsGrid.setSource(record.data);
-        node = Ext.create(MItem_clear, record.data);
-        propsGrid.setSource(node.data);
-        propsGrid.setLoading(false);
+    node = Ext.create(MItem_clear, record.data);
+    propsGrid.setSource(node.data);
+    propsGrid.setLoading(false);
     if (id != 'root') {
         propsGrid.enable();
     } else {
@@ -19,8 +30,8 @@ var addPath = Ext.create('Ext.Action', {
     text: 'Add Path',
     handler: function(widget, event) {
         var n = tree.getSelectionModel().getSelection()[0];
-        n.set('expanded',true);
-        n.set('leaf',false);
+        n.set('expanded', true);
+        n.set('leaf', false);
         if (n) {
             Ext.MessageBox.prompt('MenuItem', 'Please enter obj name or funcion:<br/>You can use comma separated for multiple add<br/>ie: pico,nano,micro,mili', function(btn, text) {
                 if (btn == 'ok' && text)
@@ -30,13 +41,12 @@ var addPath = Ext.create('Ext.Action', {
                         id: Ext.id(null, text_arr[i] + '_'),
                         text: text_arr[i],
                         leaf: true,
-                        priority: 10
                         //expanded: true,
                         //children: []
                     };
                     ;
                     new_node = n.appendChild(node);
-                    new_node.set('path', new_node.getPath());
+                    recalculate_tree();
                     //tree.store.sync();
                 }
             }
@@ -67,7 +77,7 @@ var removePath = Ext.create('Ext.Action', {
                         tree.setLoading('Saving');
                         Ext.Ajax.request({
                             // the url to the remote source
-                            url: globals.module_url + 'admin/repository/'+globals.repoId+'/delete',
+                            url: globals.module_url + 'repository/' + globals.repoId + '/delete',
                             method: 'POST',
                             // define a handler for request success
                             params: {
@@ -150,40 +160,7 @@ function uncheck_all() {
     checkchange(root, false);
 }
 
-//---load checked nodes
-function load_checked() {
-    idgroup = dataview.selModel.getLastSelected().data.idgroup;
-    tree.uncheck_all();
-    paths = [];
-    tree.setLoading('loading Checked');
-    Ext.Ajax.request({
-        // the url to the remote source
-        url: globals.module_url + 'rbac_admin/getpaths',
-        method: 'POST',
-        params: {
-            //---get the active group
-            'idgroup': idgroup
-        },
-        // define a handler for request success
-        success: function(response, options) {
-            obj = Ext.decode(response.responseText);
-            obj.paths.forEach(function(path) {
-                if (path.length) {
-                    n = tree.store.tree.getNodeById(path);
-                    if (n)
-                        n.set('checked', true);
-                }
-            });
-            tree.setLoading(false);
-        },
-        // NO errors ! ;)
-        failure: function(response, options) {
-            alert('Error Loading:' + response.err);
-            tree.setLoading(false);
 
-        }
-    });
-}
 //---Refresh Tree
 var reloadTree = Ext.create('Ext.Action', {
     text: 'Reload',
@@ -239,10 +216,7 @@ var tree = Ext.create('Ext.tree.Panel', {
         },
         listeners: {
             drop: function(dom_node, data, overModel, dropPosition, eOpts) {
-                tree.getRootNode().cascade(function(rec) {
-                    //---fix node paths
-                    rec.set('path', rec.getPath());
-                });
+                recalculate_tree();
             }
         }
 

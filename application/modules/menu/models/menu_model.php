@@ -3,7 +3,7 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-class Menu extends CI_Model {
+class Menu_model extends CI_Model {
 
     function __construct() {
         parent::__construct();
@@ -82,7 +82,7 @@ class Menu extends CI_Model {
     function get_repository($query = array('repoId' => '0')) {
         //returns a mongo cursor with matching id's
         $rs = $this->mongo->db->selectCollection($this->container)->find($query);
-        $rs->sort(array('path' => 1));
+        $rs->sort(array('properties.priority'=>1));
         $repo = array();
         while ($r = $rs->getNext()) {
             $repo[$r['path']] = $r['properties'];
