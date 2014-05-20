@@ -127,7 +127,8 @@ class Menu extends MX_Controller {
                 foreach ($post as $menuItem) {
 //                    $path_arr = explode('/', $menuItem->path);
 //                    array_shift($path_arr);
-//                    $path = str_replace('/root','',$menuItem->path);
+                    $path = str_replace('/root','',$menuItem->path);
+//                    $path = $menuItem->path;
                     $properties = array(
                         "source" => "User",
                         "checkdate" => date('Y-m-d H:i:s'),
@@ -140,7 +141,7 @@ class Menu extends MX_Controller {
             case 'read':
                 $node = ($this->input->post('node')) ? $this->input->post('node') : 'root';
                 if ($node == 'root') {
-                    $repo = $this->menu_model->get_repository(array('repoId' => $repoId));
+                    $repo = $this->menu_model->get_repository(array('repoId' => $repoId),false);
                     $rtnArr = $this->explodeExtTree($repo, '/');
                     //var_dump($repo);
                     //----return skip root node
@@ -227,10 +228,8 @@ class Menu extends MX_Controller {
      */
     function get_menu($repoId = '0', $ulClass = '', $check = true) {
         //---return HTML menu
-        
         $query = array('repoId' => $repoId);
         $repo = $this->menu_model->get_repository($query,$check);
-        //var_dump($repo);exit;
         $tree = $this->explodeExtTree($repo, '/');
         $menu = $this->get_ul($tree[0]->children, $ulClass);
         return $menu;
@@ -286,7 +285,7 @@ class Menu extends MX_Controller {
             // Get parent parts and the current leaf
             //$parts = preg_split($splitRE, $key, -1, PREG_SPLIT_NO_EMPTY);
             // Build parent structure
-            //$thispath = '/root/' . $thispath;
+            $thispath = 'root' . $thispath;
             $path_arr = explode($delimiter, $thispath);
             array_pop($path_arr);
             $thisparentpath = '/' . implode('/', $path_arr);
@@ -316,7 +315,7 @@ class Menu extends MX_Controller {
     }
 
     function test_menu($repoId) {
-        
+       echo $this->get_menu($repoId) ;
     }
 
     function get_ul($menu, $ulClass = '') {

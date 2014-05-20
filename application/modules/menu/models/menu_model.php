@@ -90,87 +90,19 @@ class Menu_model extends CI_Model {
             $repoId = $r['repoId'];
             $path = $r['path'];
             //---check if user has perm
+//            echo "checking "."root/Menu/" . $repoId . $path;
+//            var_dump($this->user->has("root/Menu/" . $repoId . $path,$user));
+//            echo '<hr>';
             if ($check) {
                 if ($this->user->has("root/Menu/" . $repoId . $path,$user)) {
                     $repo[$r['path']] = $r['properties'];
                 }
             } else {
-                
+                $repo[$r['path']] = $r['properties'];
             }
             //break;
         }
         return $repo;
-    }
-
-    function explodeExtTree($array, $delimiter = '/') {
-        if (!is_array($array))
-            return false;
-        //---Setings
-        $expanded = false;
-        $leafCls = 'dot-green';
-        $splitRE = '/' . preg_quote($delimiter, '/') . '/';
-        $returnArr = array((object) array(
-                "id" => 'root',
-                "text" => "Object Repository",
-                "cls" => "folder",
-                "expanded" => true,
-                "checked" => false,
-        ));
-        foreach ($array as $key => $val) {
-            // Get parent parts and the current leaf
-            $parts = preg_split($splitRE, $key, -1, PREG_SPLIT_NO_EMPTY);
-            // Build parent structure
-            $localpath = array('root');
-            $cachepath = array();
-            foreach ($parts as $part) {
-                $parentArr = &$returnArr;
-                $thisparentpath = implode($delimiter, $localpath);
-                $localpath[] = $part;
-                $thispath = implode($delimiter, $localpath);
-                $isleaf = ($thispath == 'root/' . $key) ? true : false;
-                //prepare object to add
-                $obj = (object) array(
-                            'id' => $thispath,
-                            'text' => $part,
-                            'leaf' => $isleaf,
-                            'checked' => false,
-                );
-                if ($isleaf) {
-                    $obj->iconCls = $leafCls;
-                    $obj->data = $val;
-                }
-                //---set the internal pointer to the parent
-                $pointer = $this->search($returnArr, 'id', $thisparentpath);
-                //----if parent exists (we start with 1 root so has to exists but just in case...)
-                if ($pointer) {
-                    $pointerChild = $this->search($returnArr, 'id', $thispath);
-                    //---check if child exists
-                    if (!$pointerChild) {
-                        $pointer['leaf'] = false;
-                        $pointer['expanded'] = $expanded;
-                        $pointer['children'][] = $obj;
-                    }
-                }
-            }
-        }
-        return $returnArr;
-    }
-
-    /*
-     *  This function returns a pointer to the part of the array matching key=>value
-     */
-
-    function search(&$arr, $key, $value) {
-        $arrIt = new RecursiveIteratorIterator(new RecursiveArrayIterator($arr));
-        foreach ($arrIt as $sub) {
-            $subArray = $arrIt->getSubIterator();
-            $subArray->jj = true;
-            if (isset($subArray[$key]) && $subArray[$key] == $value) {
-                //return iterator_to_array($subArray);
-                return $subArray;
-            }
-        }
-        return null;
     }
 
 }
