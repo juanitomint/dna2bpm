@@ -10,6 +10,7 @@ class Menu_model extends CI_Model {
         $this->container = 'container.menu';
         $this->load->library('cimongo/cimongo');
         $this->db = $this->cimongo;
+        $this->idu = $this->session->userdata('iduser');
     }
 
     //---add a path to repository
@@ -26,7 +27,7 @@ class Menu_model extends CI_Model {
             //----save path in rbac
             $rbac_path = "Menu/" . $repoId . $path;
             $this->rbac->put_path($rbac_path);
-            
+
             return $this->mongo->db->selectCollection($this->container)->update($criteria, $query, $options);
         }
     }
@@ -60,7 +61,7 @@ class Menu_model extends CI_Model {
         if ($id) {
             $query = array('repoId' => $repoId, 'properties.id' => $id);
             $rs = $this->mongo->db->selectCollection($this->container)->findOne($query);
-            $rs['id']=$id;
+            $rs['id'] = $id;
             return $rs;
         } else {
             return null;
@@ -79,13 +80,23 @@ class Menu_model extends CI_Model {
         return $rtnArr;
     }
 
-    function get_repository($query = array('repoId' => '0')) {
+    function get_repository($query = array('repoId' => '0'), $check = true) {
         //returns a mongo cursor with matching id's
         $rs = $this->mongo->db->selectCollection($this->container)->find($query);
-        $rs->sort(array('properties.priority'=>1));
+        $rs->sort(array('properties.priority' => 1));
         $repo = array();
+        $user = $this->user->get_user($this->idu);
         while ($r = $rs->getNext()) {
-            $repo[$r['path']] = $r['properties'];
+            $repoId = $r['repoId'];
+            $path = $r['path'];
+            //---check if user has perm
+            if ($check) {
+                if ($this->user->has("root/Menu/" . $repoId . $path,$user)) {
+                    $repo[$r['path']] = $r['properties'];
+                }
+            } else {
+                
+            }
             //break;
         }
         return $repo;
