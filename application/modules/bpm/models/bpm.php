@@ -126,14 +126,14 @@ class Bpm extends CI_Model {
     }
 
     function save_raw($mywf) {
-        $options = array('safe' => true, 'upsert' => true);
+        $options = array('w' => true, 'upsert' => true);
         $wf = $this->mongo->db->workflow->save($mywf, $options);
     }
 
     function update_folder($idwf, $folder) {
         $query = array('idwf' => $idwf);
         $action = array('$set' => array('folder' => $folder));
-        $options = array('upsert' => false, 'safe' => true);
+        $options = array('upsert' => false, 'w' => true);
         $rs = $this->mongo->db->workflow->update($query, $action, $options);
         return $rs;
     }
@@ -281,7 +281,7 @@ class Bpm extends CI_Model {
     }
 
     function delete($idwf) {
-        $options = array('safe' => true, 'justOne' => true);
+        $options = array('w' => true, 'justOne' => true);
         $criteria = array('idwf' => $idwf);
         //var_dump2($options,$criteria);
         $result = $this->mongo->db->workflow->remove($criteria, $options);
@@ -633,7 +633,7 @@ class Bpm extends CI_Model {
         $insert['idwf'] = $idwf;
         $insert['checkdate'] = date('Y-m-d H:i:s');
         //----Allocate id in the collection (may result in empty docs)
-        $options = array('safe' => true);
+        $options = array('w' => true);
         $this->db->insert('case', $insert);
         return $id;
     }
@@ -655,7 +655,7 @@ class Bpm extends CI_Model {
                 $data['token_status'] = $this->get_token_status($idwf, $idcase);
                 $query = array('$set' => (array) $data);
                 $criteria = array('idwf' => $idwf, 'id' => $idcase);
-                $options = array('upsert' => false, 'safe' => true);
+                $options = array('upsert' => false, 'w' => true);
                 //var_dump2($query,$criteria,$options);
                 $this->mongo->db->case->update($criteria, $query, $options);
             }
@@ -678,7 +678,7 @@ class Bpm extends CI_Model {
         $data['token_status'] = (isset($data['set_token_status'])) ? $data['set_token_status'] : $this->get_token_status($case['idwf'], $case['id']);
         $query = array('$set' => (array) $data);
         $criteria = array('id' => $id);
-        $options = array('upsert' => true, 'safe' => true);
+        $options = array('upsert' => true, 'w' => true);
         //var_dump2($query,$criteria,$options);
         $this->mongo->db->case->update($criteria, $query, $options);
     }
@@ -1068,7 +1068,7 @@ class Bpm extends CI_Model {
 
     function update_history($idcase, $data) {
         $query = array('id' => $idcase);
-        $options = array('safe' => true, 'justOne' => true);
+        $options = array('w' => true, 'justOne' => true);
         $action = array(
             '$push' => array(
                 'history' => $data
