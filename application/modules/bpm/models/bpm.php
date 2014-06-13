@@ -107,7 +107,7 @@ class Bpm extends CI_Model {
         //--only save if 
         //var_dump2($mywf);
         unset($mywf['_id']);
-        $wf = $this->db->where($query)->update('workflow', $mywf,array('upsert'=>true));
+        $wf = $this->db->where($query)->update('workflow', $mywf, array('upsert' => true));
         $this->save_image_file($idwf, $svg);
         $this->save_mode_file($idwf, $data);
         $this->zip_model($idwf, $data);
@@ -1084,7 +1084,7 @@ class Bpm extends CI_Model {
         if ($debug)
             echo '<h2>' . __FUNCTION__ . '</h2>';
         //----ignore certainshapes
-        $ignore_shapes = array('TextAnnotation');
+        $ignore_shapes = array('TextAnnotation', 'Association_Undirected');
         if (in_array($shape_src->stencil->id, $ignore_shapes)) {
             return;
         }
@@ -1166,6 +1166,10 @@ class Bpm extends CI_Model {
                         $status = 'pending';
                         //var_dump2('pointer', $pointer->resourceId);
                         $shape = $this->get_shape($pointer->resourceId, $wf);
+                        //----skip ignored
+                        if (in_array($shape->stencil->id, $ignore_shapes)) {
+                            continue;
+                        }
                         //var_dump2($shape);
                         if ($debug)
                             echo $shape->stencil->id . ' ' . $shape->resourceId . '<br/>';
@@ -1214,7 +1218,6 @@ class Bpm extends CI_Model {
 
     function assign($shape, $wf) {
         $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
-        //$debug = true;
         if ($debug)
             echo '<H1>Assign:' . $shape->properties->name . '</H1>';
         $token = $this->get_token($wf->idwf, $wf->case, $shape->resourceId);
@@ -1260,6 +1263,7 @@ class Bpm extends CI_Model {
             $group_name = $wf->folder . '/' . $parent->properties->name;
             $group = $this->group->get_byname($group_name);
             if ($group) {
+                $idgroup=$group['idgroup'];
                 $data['idgroup'][] = $group['idgroup'];
                 //---if group exists add it to the array
             } else {
@@ -1278,20 +1282,49 @@ class Bpm extends CI_Model {
             }
 
             $resources = $this->get_resources($parent, $wf);
-            $data['assign'] = array_merge($resources['assign'], $data['assign']);
-            $data['idgroup'] = array_merge($resources['idgroup'], $data['idgroup']);
+            if ($debug) {
+                echo "Get Resources result:<br/>";
+                var_dump($resources);
+            }
+            if (count($resources)) {
+                $data['assign'] = (isset($resources['assign'])) ? array_merge($resources['assign'], $data['assign']) : array();
+                $data['idgroup'] = (isset($resources['idgroup'])) ? array_merge($resources['idgroup'], $data['idgroup']) : array();
+            } else {
+                //----Assign the the shape to the runner if belongs to group
+                if ($debug)
+                    echo '<H3>Auto-Assign Runner have parent "LANE" but no resources found</H3>';
+                if (in_array($idgroup, $user->group)) {
+                    $data['assign'][] = $this->idu;
+                }
+            }
+        } 
+        
+        //----SHAPE HAS NO PARENT LANE
+        else {
+            if ($debug)
+                echo '<H3>Auto-Assign Runner have no parent "LANE"</H3>';
+            //----Assign the the shape to the runner
+            $data['assign'][] = $this->idu;
         }
-        //---now get spacific task assignements
+        //---now get spacific task assignements and added (if no parent lanes runner will be in assign group
         if (isset($shape->properties->resources->items)) {
             //---merge assignment with specific data.
             $resources = $this->get_resources($shape, $wf);
-            $data['assign'] = array_merge($resources['assign'], $data['assign']);
-            $data['idgroup'] = array_merge($resources['idgroup'], $data['idgroup']);
+            if (count($resources)) {
+                $data['assign'] = (isset($resources['assign'])) ? array_merge($resources['assign'], $data['assign']) : array();
+                $data['idgroup'] = (isset($resources['idgroup'])) ? array_merge($resources['idgroup'], $data['idgroup']) : array();
+            } else {
+                if ($debug)
+                    echo '<H3>Auto-Assign Runner no resources found, $shape->properties->resources->items is not set </H3>';
+                //----Assign the the shape to the runner
+                $data['assign'][] = $this->idu;
+            }
         }
 
         //---if the user who is running the process is an admin assign him
         if ($this->config->item('auto_assign_admin')) {
-
+            if ($debug)
+                echo '<H3>Auto-Assign Admin</H3>';
             if ($this->user->isAdmin($user)) {
                 $data['assign'][] = $this->idu;
             }
@@ -1316,32 +1349,6 @@ class Bpm extends CI_Model {
             var_dump2($data);
         //----SAVE TOKEN
         $this->set_token($wf->idwf, $wf->case, $shape->resourceId, $shape->stencil->id, $status, $data);
-        //--------------------------------------------------------------------------
-        //---------------------proccess msgs 4 inbox--------------------------------
-        //--------------------------------------------------------------------------
-        /* if (isset($data['assign'])) {
-          foreach ($data['assign'] as $to_user) {
-          if ($to_user <> $user['idu']) {//---make a msg only if the assigned user is diferent from executioner
-          $msg = array();
-          $msg['to'] = $to_user;
-          $msg['from'] = $this->idu;
-          //---make parse data available
-          $parse_data = $this->lang->language;
-          //$parse_data['wf'] = $mywf['data']['properties'];
-          $parse_data['shape'] = $this->bindObjectToArray($shape->properties);
-          $parse_data['token'] = $token;
-          $parse_data['case'] = $case;
-          $parse_data['from_user'] = $this->user->get_user($this->idu);
-
-          //---construct subject
-          $msg['subject'] = $this->parser->parse_string('{newTask}: ' . $shape->properties->name, $parse_data);
-          //---construct body
-          $msg['body'] = $this->parser->parse_string($this->lang->line('newTaskBody'), $parse_data);
-          $this->msg->send($msg, $to_user);
-          }
-          }//--end foreach
-          } //--end if isset
-         */
     }
 
     function find_parent($shape, $parent_name, $wf) {
@@ -1370,8 +1377,8 @@ class Bpm extends CI_Model {
 
     function get_resources($shape, $wf) {
         $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
-        //$debug = true;
-        $rtn = array('assign' => array(), 'idgroup' => array());
+        $debug = false;
+        $rtn = array();
         if (isset($shape->properties->resources->items)) {
             if ($debug)
                 echo 'Resources:' . count($shape->properties->resources->items) . '<br/>';
@@ -1381,16 +1388,28 @@ class Bpm extends CI_Model {
                     $resource = $rule->resource;
                     $resourceassignmentexpr = $rule->resourceassignmentexpr;
                     $ruleEval = 'return $this->' . $resource . '->' . $resourceassignmentexpr . ';';
-                    if ($debug)
-                        echo '  Rule:' . $rule->resourceassignmentexpr . '->' . $ruleEval . '<br/>';
-                    $matches = eval($ruleEval);
+                    //---allow resources to be passed by JSON
+                    if (json_decode($resourceassignmentexpr)) {
+                        if ($debug)
+                            echo '  JSON:' . $resourceassignmentexpr . '<br/>';
+
+                        $matches = json_decode($resourceassignmentexpr);
+                    } else {
+                        if ($debug)
+                            echo '  Rule:' . $rule->resourceassignmentexpr . '->' . $ruleEval . '<br/>';
+                        $matches = eval($ruleEval);
+                    }
+
                     switch ($resource) {
                         //---Add matched users to $data array
                         case 'user':
-                            foreach ($matches as $user) {
-                                $rtn['assign'][] = (int) $user['idu'];
-                                if ($debug)
-                                    echo "adding user:" . $user['idu'] . ':' . $user['name'] . ' ' . $user['lastname'] . '<br/>';
+                            foreach ($matches as $iduser) {
+
+                                $rtn['assign'][] = (int) $iduser;
+                                if ($debug) {
+                                    $user = $this->user->get_user($iduser);
+                                    echo "adding user:" . $user->nick . ':' . $user->idu . ':' . $user->name . ' ' . $user->lastname . '<br/>';
+                                }
                             }
                             break;
                         case 'group':
