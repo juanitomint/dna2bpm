@@ -35,10 +35,10 @@ function load_data(idwf) {
 
                 st1 = model_svg.select('.stencils:first');
                 obj = st1.elements[0];
-                if(obj){
-                xy = obj.getAttribute('transform').replace('translate(', '').replace(')', '').split(',');
-                offset_x = parseInt(xy[0]);
-                offset_y = parseInt(xy[1]);
+                if (obj) {
+                    xy = obj.getAttribute('transform').replace('translate(', '').replace(')', '').split(',');
+                    offset_x = parseInt(xy[0]);
+                    offset_y = parseInt(xy[1]);
                 }
 
                 /*
@@ -112,6 +112,10 @@ function paint(resourceId, color, stroke_width) {
             switch (shape.stencil.id) {
                 case "Task":
                     $('#' + shape.resourceId + ' .stencils .me [id*="_frame"]').attr('style', '').attr('stroke-width', stroke_with).attr('stroke', color);
+                    break;
+                case "ParallelGateway":
+                    $('#' + shape.resourceId + ' .stencils .me [id*="_frame"]').attr('style', '').attr('stroke-width', stroke_with).attr('stroke', color);
+
                     break;
                 case "Exclusive_Databased_Gateway":
                     $('#' + shape.resourceId + ' .stencils .me [id*="_frame"]').attr('style', '').attr('stroke-width', stroke_with).attr('stroke', color);
