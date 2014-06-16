@@ -370,7 +370,7 @@ class Bpm extends CI_Model {
         return $this->mongo->db->tokens->findOne($query);
     }
 
-    function get_tokens($idwf, $idcase, $status = 'pending') {
+    function get_tokens($idwf, $idcase, $status = 'pending',$type=null) {
         $query = array_filter(
                 array(
                     'idwf' => $idwf,
@@ -378,6 +378,10 @@ class Bpm extends CI_Model {
                     'status' => $status,
                 )
         );
+        if($type){
+        $query['type'] =$type;
+            
+        }
 
         //var_dump2(json_encode($query));
         $result = $this->db
@@ -631,6 +635,8 @@ class Bpm extends CI_Model {
         //-----make basic object
         $insert['id'] = $id;
         $insert['idwf'] = $idwf;
+        $insert['iduser'] = $this->idu;
+        $insert['status'] ='open';
         $insert['checkdate'] = date('Y-m-d H:i:s');
         //----Allocate id in the collection (may result in empty docs)
         $options = array('w' => true);
@@ -794,7 +800,7 @@ class Bpm extends CI_Model {
         $query = array(
             //'type' =>array('$in'=>array('Task','Exclusive_Databased_Gateway')),
             //'tasktype' => array('$in' => array('User', 'Manual')),
-            'type' => array('$in' => array('Task', 'Exclusive_Databased_Gateway')),
+            'type' => array('$in' => array('Task', 'Exclusive_Databased_Gateway','CollapsedSubprocess')),
             'title' => array('$exists' => true),
             //'status' => array('$nin' => array('finished','canceled')),
             'status' => 'user',
