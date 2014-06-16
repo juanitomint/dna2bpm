@@ -1,23 +1,34 @@
 <?php
 
 function run_CollapsedSubprocess($shape, $wf, $CI) {
-    //run_Subprocess($shape, $wf,$CI);
+    $debug = (isset($CI->debug[__FUNCTION__])) ? $CI->debug[__FUNCTION__] : false;
+    if ($debug)
+        echo '<H1>COLLAPSED SUBPROCESS:' . $shape->properties->name . '</H1>';
+
     $token = $CI->bpm->get_token($wf->idwf, $wf->case, $shape->resourceId);
-    $parent['token']=$token;
-    $parent['case']=$wf->case;
-    $parent['idwf']=$wf->idwf;
-    
-    if ($shape->properties->entry) {
-        $idwf=$shape->properties->entry;
-        Modules::run('bpm/engine/newcase','model',$idwf,false,$parent);
-        //$CI->engine->Newcase('model', $idwf, false, $parent);
+    $parent['token'] = $token;
+    $parent['case'] = $wf->case;
+    $parent['idwf'] = $wf->idwf;
+    $CI->bpm->set_token($wf->idwf, $wf->case, $shape->resourceId, $shape->stencil->id, 'waiting');
+    if (isset($token['child'])) {
+        $CI->Run('model', $token['child']['idwf'], $token['child']['case']);
+    } else {
+        if ($shape->properties->entry) {
+            $idwf = $shape->properties->entry;
+            //----Set token status to waiting
+            //----Create new child case
+            $silent=false;
+            $CI->newcase('model', $idwf, false, $parent,$silent);
+            
+        }
     }
 }
 
 function run_Subprocess($shape, $wf, $CI) {
     $CI = & get_instance();
     $debug = (isset($CI->debug[__FUNCTION__])) ? $CI->debug[__FUNCTION__] : false;
-    $debug=true;
+    if ($debug)
+        echo '<H1>SUBPROCESS:' . $shape->properties->name . '</H1>';
     $token = $CI->bpm->get_token($wf->idwf, $wf->case, $shape->resourceId);
     switch ($token['status']) {
         case 'waiting':

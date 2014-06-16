@@ -47,7 +47,15 @@ class test extends CI_Controller {
     }
 
     function get_tasks() {
-        $tasks=$this->bpm->get_tasks(1);
+        $tasks = $this->bpm->get_tasks(1);
+    }
+
+    function usercall() {
+     call_user_func_array (array($this,'user_callable'),array('aaaa','bbbb'));
+    }
+
+    function user_callable($a, $b) {
+        var_dump($a, $b);
     }
 
 }

@@ -137,7 +137,9 @@ function run_EndNoneEvent($shape, $wf, $CI, $moveForward = true) {
                     $parent = $mycase['parent'];
                     // run_post($model, $idwf, $case, $resourceId)
                     //echo '/bpm/engine/run_post/model/' . $parent['idwf'] . '/' . $parent['case'] . '/' . $parent['token']['resourceId'];
-                    Module::run('/bpm/engine/run_post', 'model', $parent['idwf'], $parent['case'], $parent['token']['resourceId']);
+                    //Module::run('/bpm/engine/run_post', 'model', $parent['idwf'], $parent['case'], $parent['token']['resourceId']);
+                    echo "RUNING parent";
+                    $CI->run_post('model',  $parent['idwf'], $parent['case'], $parent['token']['resourceId']);
                 }
                 break;
         }

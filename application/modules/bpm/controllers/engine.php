@@ -15,6 +15,7 @@ class Engine extends MX_Controller {
 
     private $debug = array();
     public $create_start_msg = false;
+    public $run_after_stack = array();
 
     function __construct() {
         parent::__construct();
@@ -32,15 +33,16 @@ class Engine extends MX_Controller {
 
         $this->load->library('parser');
         $this->load->helper('bpm');
-        //----LOAD LANGUAGE
+//----LOAD LANGUAGE
         $this->lang->load('library', $this->config->item('language'));
         $this->lang->load('bpm', $this->config->item('language'));
-        //---Set the shapes that will be digged
+//---Set the shapes that will be digged
         $this->digInto = array('Pool', 'Subprocess', 'CollapsedSubprocess', 'Lane');
-        //---Set if suprocess has to be loaded: Default=true
+//---Set if suprocess has to be loaded: Default=true
         $this->expandSubProcess = false;
-        //---Debug options
+//---Debug options
         $this->debug['Run'] = null;
+        $this->debug['run_post'] = null;
         $this->debug['manual_task'] = null;
         $this->debug['triggers'] = null;
         $this->debug['Startcase'] = null;
@@ -52,8 +54,9 @@ class Engine extends MX_Controller {
          */
         $this->debug['show_modal'] = null;
 
-        //---debug Helpers
+//---debug Helpers
         $this->debug['run_Task'] = null;
+        $this->debug['run_CollapsedSubprocess'] = null;
         $this->debug['run_Exclusive_Databased_Gateway'] = null;
         $this->debug['run_IntermediateEventThrowing'] = null;
         $this->debug['run_IntermediateLinkEventThrowing'] = null;
@@ -62,15 +65,15 @@ class Engine extends MX_Controller {
         $this->debug['get_start_shapes'] = null;
         $this->debug['get_shape_parent'] = null;
         $this->idu = (int) $this->session->userdata('iduser');
-        //$this->debug['get_shape_byname']=false;
+//$this->debug['get_shape_byname']=false;
     }
 
     function Index() {
         
     }
 
-    function Newcase($model, $idwf, $manual = false, $parent = null) {
-        //---Gen new case ID
+    function Newcase($model, $idwf, $manual = false, $parent = null,$silent=false) {
+//---Gen new case ID
         $case = $this->bpm->gen_case($idwf);
         if ($manual) {
             $mycase = $this->bpm->get_case($case);
@@ -79,14 +82,25 @@ class Engine extends MX_Controller {
             $this->bpm->save_case($mycase);
         }
 
-        //----save parent data if any
+//----save parent data if any
         if ($parent) {
             $mycase = $this->bpm->get_case($case);
             $mycase['parent'] = $parent;
             $this->bpm->save_case($mycase);
+            /*
+             * UPDATE PARENT
+             */
+//----set child process in parent
+            $token = $this->bpm->get_token($parent['token']['idwf'], $parent['token']['case'], $parent['token']['resourceId']);
+            $child = array(
+                'case' => $case,
+                'idwf' => $idwf,
+            );
+            $token['child'] = $child;
+            $this->bpm->save_token($token);
         }
-        //---Start the case (will move next on startnone shapes)
-        $this->Startcase($model, $idwf, $case);
+//---Start the case (will move next on startnone shapes)
+        $this->Startcase($model, $idwf, $case,$silent);
     }
 
     function Start($model, $idwf, $case, $silent = false) {
@@ -97,12 +111,14 @@ class Engine extends MX_Controller {
         $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
         if ($debug)
             var_dump($model, $idwf, $case, $debug);
-        //---Remove tokens from db if there are any
+//---Remove tokens from db if there are any
         $this->bpm->clear_tokens($idwf, $case);
         $this->bpm->clear_case($case);
-        //---start a case and insert start tokens in database
+//---start a case and insert start tokens in database
         $mywf = $this->bpm->load($idwf, $this->expandSubProcess);
-
+        if (!$mywf) {
+            show_error("Model referenced:$idwf does not exists");
+        }
         $wf = bindArrayToObject($mywf['data']);
 
         if ($debug) {
@@ -111,19 +127,19 @@ class Engine extends MX_Controller {
             echo '<hr>';
         }
 
-        //---Get all start points of diagram
+//---Get all start points of diagram
         $start_shapes = $this->bpm->get_start_shapes($wf);
 
 
-        //----Raise an error if doesn't found any start point
+//----Raise an error if doesn't found any start point
         if (!$start_shapes)
             show_error("The Schema doesn't have an start point");
-        //---Start all  StartNoneEvents as possible
+//---Start all  StartNoneEvents as possible
         foreach ($start_shapes as $start_shape) {
             $this->bpm->set_token($idwf, $case, $start_shape->resourceId, $start_shape->stencil->id, 'pending');
         }
         if ($this->create_start_msg) {
-            //------Create a message in the inbox.
+//------Create a message in the inbox.
             $msg = array(
                 'iduser' => $this->session->userdata('iduser'),
                 'subject' => $wf->properties->name . ':' . $case,
@@ -133,12 +149,12 @@ class Engine extends MX_Controller {
             );
             $this->user->create_message($this->session->userdata('iduser'), $msg);
         }
-        //---Redir the browser to engine Run
+//---Redir the browser to engine Run
         $redir = "bpm/engine/run/model/$idwf/$case";
         if (!$silent) {
             header("Location:" . $this->base_url . $redir);
         } else {
-            //$this->Run('model', $idwf, $case);
+//$this->Run('model', $idwf, $case);
         }
     }
 
@@ -153,7 +169,9 @@ class Engine extends MX_Controller {
     function Run($model, $idwf, $case, $run_resourceId = null) {
         $this->data = (object) null;
         $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
-        //---check if case is locked
+        if ($debug)
+            echo "<h2>" . __FUNCTION__ . '</h2>';
+//---check if case is locked
         $thisCase = $this->bpm->get_case($case);
         $locked = (isset($thisCase['locked'])) ? $thisCase['locked'] : false;
         if ($locked) {
@@ -168,34 +186,32 @@ class Engine extends MX_Controller {
             );
         } else {
 
-            if ($debug)
-                echo "<h2>" . __FUNCTION__ . '</h2>';
             $mywf = $this->bpm->load($idwf, $this->expandSubProcess);
             $mywf['data']['idwf'] = $idwf;
             $mywf['data']['case'] = $case;
             $mywf['data']['folder'] = $mywf['folder'];
             $wf = bindArrayToObject($mywf['data']);
-            //----make it publicly available to other methods
+//----make it publicly available to other methods
             $this->wf = $wf;
-            //------Automatic Run
+//------Automatic Run
             $i = 1;
-            //---LOAD CORE Functions---------------------------------
+//---LOAD CORE Functions---------------------------------
             $this->load->helper('bpmn2.0/start_end');
             $this->load->helper('bpmn2.0/gate');
             $this->load->helper('bpmn2.0/task');
             $this->load->helper('bpmn2.0/event');
             $this->load->helper('bpmn2.0/flow');
             $this->load->helper('bpmn2.0/subproc');
-            //---------------------------------------------------------
+//---------------------------------------------------------
             $this->load_data($wf, $case);
-            //$open = $this->bpm->get_tokens($idwf, $case, 'pending');
+//$open = $this->bpm->get_tokens($idwf, $case, 'pending');
             $status = 'pending';
             $wf->prevent_run = array();
             while ($i <= 100 and $open = $this->bpm->get_tokens($idwf, $case, $status)) {
                 $i++;
                 foreach ($open as $token) {
-                    //---only call tokens that correspond to user.
-                    //var_dump($token);
+//---only call tokens that correspond to user.
+//var_dump($token);
                     $resourceId = $token['resourceId'];
 
                     if (!in_array($resourceId, $wf->prevent_run)) {
@@ -214,22 +230,30 @@ class Engine extends MX_Controller {
                     }
                 }
             }
-            $this->bpm->update_case_token_status($idwf,$case);
+            $this->bpm->update_case_token_status($idwf, $case);
             $this->get_pending('model', $idwf, $case);
+            $this->run_after();
+        }
+    }
+
+    function run_after() {
+        foreach ($this->run_after_stack as $data) {
+            call_user_func_array(array($this, $data['func']), $data['args']);
         }
     }
 
     function run_post($model, $idwf, $case, $resourceId) {
-
         $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
+        if ($debug)
+            echo "<h2>" . __FUNCTION__ . '</h2>';
         $mywf = $this->bpm->load($idwf, $this->expandSubProcess);
         $mywf['data']['idwf'] = $idwf;
         $mywf['data']['case'] = $case;
         $wf = bindArrayToObject($mywf['data']);
-        //---check if not finished yet
+//---check if not finished yet
         $token = $this->bpm->get_token($wf->idwf, $wf->case, $resourceId);
         if ($token['status'] <> 'finished') {
-            //@todo check permissions
+//@todo check permissions
             if ($resourceId) {
                 $shape = $this->bpm->get_shape($resourceId, $wf);
                 if ($shape) {
@@ -238,8 +262,13 @@ class Engine extends MX_Controller {
                     show_error("The shape $resourceId doesn't exists anymore");
                 }
             }
+//----if its a subprocess try to run all other subprocesses
+            $subproc = $this->bpm->get_tokens($idwf, $idcase, $status = 'waiting', 'CollapsedSubprocess');
+            foreach ($subproc as $token) {
+                $this->bpm->set_token($idwf, $case, $token['resourceId'], $token['type'], 'pending');
+            }
         }
-        //---Redir the browser to engine Run
+//---Redir the browser to engine Run
 
         $redir = "bpm/engine/run/model/$idwf/$case";
         if (!$debug) {
@@ -251,6 +280,8 @@ class Engine extends MX_Controller {
 
     function run_gate($model, $idwf, $case, $resourceId, $flowId) {
         $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
+        if ($debug)
+            echo "<h2>" . __FUNCTION__ . '</h2>';
         $data = array();
         $mywf = $this->bpm->load($idwf, $this->expandSubProcess);
         $mywf['data']['idwf'] = $idwf;
@@ -261,16 +292,16 @@ class Engine extends MX_Controller {
         if ($resourceId) {
             $shape = $this->bpm->get_shape($resourceId, $wf);
             if ($shape) {
-                //-- check if isn't finished yet
+//-- check if isn't finished yet
                 $token = $this->bpm->get_token($idwf, $case, $resourceId);
                 if ($token['status'] <> 'finished') {
-                    //--mark gate as finished
+//--mark gate as finished
                     $token['status'] = 'finished';
                     $token['run'] = (isset($token['run'])) ? $token['run'] + 1 : 1;
                     $token['checkdate'] = date('Y-m-d H:i:s');
-                    //---Save token
+//---Save token
                     $this->bpm->save_token($token);
-                    //---update History
+//---update History
                     $history = array(
                         'checkdate' => date('Y-m-d H:i:s'),
                         'resourceId' => $shape->resourceId,
@@ -283,21 +314,21 @@ class Engine extends MX_Controller {
                     );
                     $this->bpm->update_history($wf->case, $history);
                     $shape_flow = $this->bpm->get_shape($flowId, $wf);
-                    //run_SequenceFlow(_flow, $wf);
+//run_SequenceFlow(_flow, $wf);
                     $this->bpm->movenext($shape_flow, $wf);
                 }
             } else {
                 show_error("The shape $resourceId doesn't exists anymore");
             }
         }
-        //---Redir the browser to engine Run
+//---Redir the browser to engine Run
         $redir = "bpm/engine/run/model/$idwf/$case";
         header("Location:" . $this->base_url . $redir);
     }
 
     function task_locked($model, $idwf, $idcase, $resourceId) {
         $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
-        //----prepare renderData
+//----prepare renderData
         $renderData = array();
         $renderData = $this->lang->language;
         $renderData['theme'] = $this->config->item('theme');
@@ -305,12 +336,12 @@ class Engine extends MX_Controller {
         $renderData['idwf'] = $idwf;
         $renderData['case'] = $idcase;
         $renderData['resourceId'] = $resourceId;
-        //-----load bpm
+//-----load bpm
         $mywf = $this->bpm->load($idwf, $this->expandSubProcess);
         $mywf['data']['idwf'] = $idwf;
         $mywf['data']['case'] = $idcase;
         $wf = bindArrayToObject($mywf['data']);
-        //---load data 4 templating
+//---load data 4 templating
         $this->load_data($wf, $idcase);
 
         if ($resourceId) {
@@ -326,8 +357,8 @@ class Engine extends MX_Controller {
     function manual_task($model, $idwf, $idcase, $resourceId) {
         $this->load->library('ui');
         $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
-        //$debug=true;
-        //----prepare renderData
+//$debug=true;
+//----prepare renderData
         $renderData = array();
         $renderData = $this->lang->language;
         $renderData['theme'] = $this->config->item('theme');
@@ -335,40 +366,43 @@ class Engine extends MX_Controller {
         $renderData['idwf'] = $idwf;
         $renderData['idcase'] = $idcase;
         $renderData['resourceId'] = $resourceId;
-        //-----load bpm
+//-----load bpm
         $mywf = $this->bpm->load($idwf, $this->expandSubProcess);
         $mywf['data']['idwf'] = $idwf;
         $mywf['data']['case'] = $idcase;
         $wf = bindArrayToObject($mywf['data']);
-        //---get case
+//---get case
         $case = $this->bpm->get_case($idcase);
-        //---get token
+//---get token
         $token = $this->bpm->get_token($idwf, $idcase, $resourceId);
-        //--get shape
+//--get shape
         $shape = $this->bpm->get_shape($token['resourceId'], $wf);
-        //-check if data is loaded
+//-check if data is loaded
         if (!isset($this->data))
             $this->load_data($wf, $idcase);
         $renderData['task_name'] = $shape->properties->name;
+        if ($case['parent']) {
+            $renderData['task_name'] = $case['parent']['token']['title'] . '<br/>' . $shape->properties->name;
+        }
         $renderData['task_documentation'] = $shape->properties->documentation;
         if ($resourceId) {
             $renderData+=$this->bindObjectToArray($this->data);
             $renderData['wf'] = $mywf['data']['properties'];
-            //$renderData+=$mywf['data']['properties'];
+//$renderData+=$mywf['data']['properties'];
             $renderData['token'] = $token;
             $renderData['case'] = $case;
-            //--parse documentation string
+//--parse documentation string
             $renderData['task_documentation'] = ($renderData['task_documentation'] == '') ? '' : $this->parser->parse_string(nl2br($renderData['task_documentation']), $renderData, true, true);
-            //--parse Name
+//--parse Name
             $renderData['task_name'] = ($renderData['task_name'] == '') ? '' : $this->parser->parse_string($renderData['task_name'], $renderData, true, true);
             if ($debug)
                 var_dump($renderData);
-            //---prepare UI
+//---prepare UI
             $renderData['title'] = 'Manual Task';
             $renderData['js'] = array(
                 $this->module_url . 'assets/jscript/manual_task.js' => 'Manual task JS'
             );
-            //---prepare globals 4 js
+//---prepare globals 4 js
             $renderData['global_js'] = array(
                 'base_url' => $this->base_url,
                 'module_url' => $this->module_url,
@@ -378,12 +412,14 @@ class Engine extends MX_Controller {
             );
             $this->ui->compose('bpm/manual_task', 'bpm/bootstrap.ui.php', $renderData);
         }
+        $this->output->_display();
+        exit();
     }
 
     function manual_gate($model, $idwf, $idcase, $resourceId) {
         $this->load->library('ui');
         $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
-        //----prepare renderData
+//----prepare renderData
         $renderData = array();
         $renderData = $this->lang->language;
         $renderData['theme'] = $this->config->item('theme');
@@ -391,12 +427,12 @@ class Engine extends MX_Controller {
         $renderData['idwf'] = $idwf;
         $renderData['idcase'] = $idcase;
         $renderData['gateId'] = $resourceId;
-        //-----load bpm
+//-----load bpm
         $mywf = $this->bpm->load($idwf, $this->expandSubProcess);
         $mywf['data']['idwf'] = $idwf;
         $mywf['data']['case'] = $idcase;
         $wf = bindArrayToObject($mywf['data']);
-        //---load data 4 templating
+//---load data 4 templating
         $this->load_data($wf, $idcase);
         $i = 1;
 
@@ -417,12 +453,12 @@ class Engine extends MX_Controller {
                 $renderData['documentation'] = $this->parser->parse_string(nl2br($renderData['documentation']), $renderData, true, true);
             }
 //var_dump(__FUNCTION__,'$renderData',$renderData);
-            //---prepare UI
+//---prepare UI
             $renderData['title'] = 'Manual Gate';
             $renderData['js'] = array(
                 $this->module_url . 'assets/jscript/manual_gate.js' => 'Manual Gate JS'
             );
-            //---prepare globals 4 js
+//---prepare globals 4 js
             $renderData['global_js'] = array(
                 'base_url' => $this->base_url,
                 'module_url' => $this->module_url,
@@ -432,26 +468,28 @@ class Engine extends MX_Controller {
             );
             $this->ui->compose('bpm/manual_gate', 'bpm/bootstrap.ui.php', $renderData);
         }
+        $this->output->_display();
+        exit();
     }
 
     function load_data($wf, $idcase) {
         $this->data = new stdClass();
         $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
-        //$debug = true;
+//$debug = true;
         if ($debug)
             echo '<h2>' . __FUNCTION__ . '</h2>' .
             "Called @ " . xdebug_call_file() . "<br/>Line:" . xdebug_call_line() . "<br/>from: <b>" . xdebug_call_function() . '</b><hr/>';
 
-        ////////////////////////////////////////////////////////////////////////
-        ///////////////////// Read From DataStore  ///////////////////////////
-        ////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
+///////////////////// Read From DataStore  ///////////////////////////
+////////////////////////////////////////////////////////////////////////
         $dataStores = $this->bpm->get_shape_byname('DataStore', $wf);
         foreach ($dataStores as $shape) {
-            //echo $shape->properties->name;
-            //---LOAD DATA CONNECTORS
+//echo $shape->properties->name;
+//---LOAD DATA CONNECTORS
             $modelname = 'bpm/connectors/' . $shape->properties->connector . '_connector';
             $this->load->model($modelname);
-            //---END LOAD DATA CONNECTORS
+//---END LOAD DATA CONNECTORS
             $strStor = $shape->properties->name;
             $conn = $shape->properties->connector . '_connector';
             $resource['query'] = $shape->properties->query;
@@ -461,25 +499,25 @@ class Engine extends MX_Controller {
                 var_dump('$strStor', $strStor, $resource);
                 echo '<hr/>';
             }
-            //$this->$strStor= bindArrayToObject($this->app->getall($item,$container));
+//$this->$strStor= bindArrayToObject($this->app->getall($item,$container));
             $this->data->$strStor = (object) $this->$conn->get_data($resource);
 
-            //----4 debug
+//----4 debug
             if ($debug) {
                 echo "<h3>Data Store:$strStor</h3>";
                 var_dump($this->data->$strStor);
             }
         }//--end foreach
-        ////////////////////////////////////////////////////////////////////////
-        ///////////////////// Read From DataObjects  ///////////////////////////
-        ////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
+///////////////////// Read From DataObjects  ///////////////////////////
+////////////////////////////////////////////////////////////////////////
         $dataStores = $this->bpm->get_shape_byname('DataObject', $wf);
         foreach ($dataStores as $shape) {
-            //echo $shape->properties->name;
-            //---LOAD DATA CONNECTORS
+//echo $shape->properties->name;
+//---LOAD DATA CONNECTORS
             $modelname = 'bpm/connectors/' . $shape->properties->name . '_connector';
             $this->load->model($modelname);
-            //---END LOAD DATA CONNECTORS
+//---END LOAD DATA CONNECTORS
             $strStor = $shape->properties->name;
             $conn = $shape->properties->connector . '_connector';
             $resource['source'] = (isset($shape->properties->source)) ? $shape->properties->source : null;
@@ -487,19 +525,19 @@ class Engine extends MX_Controller {
                 var_dump('$strStor', $strStor, $resource);
                 echo '<hr/>';
             }
-            //$this->$strStor= bindArrayToObject($this->app->getall($item,$container));
+//$this->$strStor= bindArrayToObject($this->app->getall($item,$container));
             $this->data->$strStor = $this->$conn->get_data($resource);
 
-            //----4 debug
+//----4 debug
             if ($debug) {
                 echo "<h3>Data Store:$strStor</h3>";
                 var_dump($this->data->$strStor);
             }
         }//--end foreach
-        ////////////////////////////////////////////////////////////////////////
-        //---Read from data from CASE
+////////////////////////////////////////////////////////////////////////
+//---Read from data from CASE
         $case = $this->bpm->get_case($idcase);
-        //---load mongo_connector by default
+//---load mongo_connector by default
         $this->load->model('bpm/connectors/mongo_connector');
         if (isset($case['data'])) {
             foreach ($case['data'] as $key => $value) {
@@ -536,16 +574,16 @@ class Engine extends MX_Controller {
             $mywf = $this->bpm->load($token['idwf'], true);
             $mywf['data']['idwf'] = $token['idwf'];
             $mywf['data']['case'] = $token['case'];
-            //---update the token so its finished
+//---update the token so its finished
             $wf = bindArrayToObject($mywf['data']);
             $shape = $this->bpm->get_shape($token['resourceId'], $wf);
-            //----trigger has occured then move to next shape
+//----trigger has occured then move to next shape
             $this->bpm->movenext($shape, $wf);
-            //---now run the whole process
+//---now run the whole process
             if ($debug)
                 echo "Run:" . $token['idwf'] . ':case:' . $token['case'] . "<br/>";
             $this->Run('model', $token['idwf'], $token['case']);
-            //---TODO write some logging about signals
+//---TODO write some logging about signals
         }
     }
 
@@ -553,8 +591,8 @@ class Engine extends MX_Controller {
         $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
         if ($debug)
             echo '<h2>' . __FUNCTION__ . '</h2>';
-        //$type=array('$regex'=>$filter_status);
-        //$status=array('$regex'=>'^wa*');
+//$type=array('$regex'=>$filter_status);
+//$status=array('$regex'=>'^wa*');
         $i = 0;
         $open = $this->bpm->get_triggers();
         $i++;
@@ -570,11 +608,36 @@ class Engine extends MX_Controller {
             $mywf['data']['case'] = $token['case'];
             $wf = bindArrayToObject($mywf['data']);
             $shape = $this->bpm->get_shape($token['resourceId'], $wf);
-            //----trigger has occured then move to next shape
+//----trigger has occured then move to next shape
             $this->bpm->movenext($shape, $wf);
-            //---now run the whole process
+//---now run the whole process
             $this->Run('model', $token['idwf'], $token['case']);
-            //---TODO write some logging about triggers
+//---TODO write some logging about triggers
+        }
+    }
+
+    function do_subproc($idcase = null) {
+        $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
+        if ($debug)
+            echo '<h2>' . __FUNCTION__ . '</h2>';
+//$type=array('$regex'=>$filter_status);
+//$status=array('$regex'=>'^wa*');
+        $i = 0;
+        $open = get_tokens($idwf, $idcase, $status = 'waiting', 'CollapsedSubprocess');
+        $i++;
+        if ($debug)
+            echo "TOKENS";
+        foreach ($open as $token) {
+            if ($debug) {
+                var_dump($token);
+                echo '<hr/>';
+            }
+//---Get childs
+//
+//---now run child processes
+            if (isset($token['child']))
+                $this->Run('model', $token['child']['idwf'], $token['child']['case']);
+//---TODO write some logging about triggers
         }
     }
 
@@ -610,7 +673,7 @@ class Engine extends MX_Controller {
             var_dump($it->getSubIterator(), $it->key(), $it->current());
             echo '<hr/>';
             if (((isset($index) AND ( $it->key() == $index)) OR (!isset($index))) AND ( $it->current() == $needle)) {
-                //return $aIt->key();
+//return $aIt->key();
                 echo "****  FOUND ****";
                 return (array) $it->getSubIterator();
             }
@@ -626,14 +689,14 @@ class Engine extends MX_Controller {
      */
 
     function do_pending($model, $idwf, $idcase, $run_resourceId = null) {
-        //---load $wf for url calls: /bpm/engine/get_pending/model/$idwf/$idwcase
+//---load $wf for url calls: /bpm/engine/get_pending/model/$idwf/$idwcase
         if (!$this->wf) {
             $mywf = $this->bpm->load($idwf, $this->expandSubProcess);
             $mywf['data']['idwf'] = $idwf;
             $mywf['data']['case'] = $idcase;
             $mywf['data']['folder'] = $mywf['folder'];
             $wf = bindArrayToObject($mywf['data']);
-            //----make it publicly available to other methods
+//----make it publicly available to other methods
             $this->wf = $wf;
             $this->get_pending($model, $idwf, $idcase, $run_resourceId);
         }
@@ -641,8 +704,8 @@ class Engine extends MX_Controller {
 
     function get_pending($model, $idwf, $idcase, $run_resourceId = null) {
         $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
-        //if no filter passed then set default to me
-        //$debug = true;
+//if no filter passed then set default to me
+//$debug = true;
         $renderData = array();
         $renderData = $this->lang->language;
         $renderData['theme'] = $this->config->item('theme');
@@ -651,29 +714,29 @@ class Engine extends MX_Controller {
         $renderData['case'] = $idcase;
         $user = $this->user->getuser($this->idu);
 
-        //----the task is assignet to the user or is for the group the user belong to
+//----the task is assignet to the user or is for the group the user belong to
         if (!isset($filter)) {
             $filter['$or'][] = array('assign' => $this->idu);
             $filter['$or'][] = array('idgroup' => array('$in' => $user->group));
         }
-        //----if specific token has been passed then run this token
+//----if specific token has been passed then run this token
         if ($run_resourceId) {
             $filter['resourceId'] = $run_resourceId;
         }
-        //----Load Case
+//----Load Case
         $case = $this->bpm->get_case($idcase);
-        //----set manual flag 4 test
+//----set manual flag 4 test
         $run_manual = (isset($case['run_manual'])) ? $case['run_manual'] : false;
-        //var_dump('case',$case,'run_manual',$run_manual);
+//var_dump('case',$case,'run_manual',$run_manual);
         if ($case['status'] == 'open') {
-            //----load WF data
+//----load WF data
             $myTasks = $this->bpm->get_pending($idwf, $idcase, array('user', 'manual'), $filter);
-            //var_dump(json_encode($filter),$myTasks);exit;
+//var_dump(json_encode($filter),$myTasks);exit;
             $first = $myTasks->getNext();
             if ($first) {
-                //-----get id from token---------
+//-----get id from token---------
                 $token = $first;
-                //var_dump('loaded token', $token);
+//var_dump('loaded token', $token);
                 switch ($token['type']) {
                     case 'Exclusive_Databased_Gateway':
                         $this->manual_gate($model, $idwf, $idcase, $first['resourceId']);
@@ -684,7 +747,7 @@ class Engine extends MX_Controller {
                         if ($shape and property_exists($shape->properties, 'operationref')) {
                             if ($shape->properties->operationref) {
                                 $opRef = $shape->properties->operationref;
-                                //--check if storage $opRf exists
+//--check if storage $opRf exists
                                 if (property_exists($this->data, $opRef)) {
                                     if ($debug)
                                         var_dump('data by opRef:' . $opRef, $this->data->$opRef);
@@ -695,7 +758,7 @@ class Engine extends MX_Controller {
                         }
 
                         if ($id == '') {
-                            //---try to assign id from token data passed
+//---try to assign id from token data passed
                             if (isset($token['data'])) {
                                 if (isset($token['data']['id'])) {
                                     $id = $token['data']['id'];
@@ -704,15 +767,15 @@ class Engine extends MX_Controller {
                                 }
                             }
                         }
-                        //-------------------------------------
-                        //---save lock status
+//-------------------------------------
+//---save lock status
                         $token['lockedBy'] = (isset($token['lockedBy'])) ? $token['lockedBy'] : $this->idu;
                         $token['lockedDate'] = (isset($token['lockedDate'])) ? $token['lockedDate'] : date('Y-m-d H:i:s');
 
                         $this->bpm->save_token($token);
 
                         if ($token['lockedBy'] == $this->idu) {
-                            //----route each typo to it's action
+//----route each typo to it's action
                             switch ($shape->properties->tasktype) {
 
                                 case 'User':
@@ -744,7 +807,7 @@ class Engine extends MX_Controller {
                                             else
                                                 echo "<a href='" . $redir . "'>" . $this->base_url . $redir . "</a>";
                                         } else {
-                                            //----if has no rendering directive then call manual
+//----if has no rendering directive then call manual
                                             if ($debug) {
                                                 echo "has no rendering directive then call manual<br>";
                                             }
@@ -754,7 +817,7 @@ class Engine extends MX_Controller {
                                         if ($debug) {
                                             echo "Manual directive set<br>";
                                         }
-                                        //----if has no rendering directive then call manual
+//----if has no rendering directive then call manual
                                         $this->manual_task($model, $idwf, $idcase, $first['resourceId']);
                                     }
                                     break;
@@ -767,7 +830,7 @@ class Engine extends MX_Controller {
                                     break;
                             }
                         } else {//--the token is locked by other user
-                            //---load  no pending taks
+//---load  no pending taks
                             $renderData['name'] = $this->lang->line('message');
                             $user_lock = (array) $this->user->get_user($token['lockedBy']);
                             $msg_data = array(
@@ -782,7 +845,7 @@ class Engine extends MX_Controller {
                         break;
                 }//--end switch token type
             } else {
-                //---load  no pending taks
+//---load  no pending taks
                 $renderData['name'] = $this->lang->line('message');
                 $renderData['documentation'] = $this->parser->parse_string($this->lang->line('noMoreTasks'), $case);
                 $this->show_modal(
@@ -807,16 +870,18 @@ class Engine extends MX_Controller {
         $renderData['name'] = $name;
         $renderData['text'] = $text;
         $renderData['title'] = $name;
-        //---prepare UI
+//---prepare UI
         $renderData['js'] = array(
             $this->module_url . 'assets/jscript/modal_window.js' => 'Modal Window Generic JS'
         );
-        //---prepare globals 4 js
+//---prepare globals 4 js
         $renderData['global_js'] = array(
             'base_url' => $this->base_url,
             'module_url' => $this->module_url,
         );
         $this->ui->compose('bpm/modal_msg', 'bpm/bootstrap.ui.php', $renderData);
+        $this->output->_display();
+        exit();
     }
 
 }
