@@ -376,7 +376,7 @@ class User extends CI_Model {
 
     function put_user($object) {
         //var_dump($object);
-        $options = array('upsert' => true, 'safe' => true);
+        $options = array('upsert' => true, 'w'=>true);
         return $this->mongo->db->users->save($object, $options);
     }
 
@@ -410,7 +410,7 @@ class User extends CI_Model {
 
     function save($data) {
         //var_dump($data);
-        $options = array('safe' => true, 'upsert' => true);
+        $options = array('w'=>true, 'upsert' => true);
         $result = $this->mongo->db->users->save($data, $options);
         return $result;
     }
@@ -418,7 +418,7 @@ class User extends CI_Model {
     //forgot password: change password token
     function save_token($object) {
         //var_dump($object);
-        $options = array('safe' => true, 'upsert' => true);
+        $options = array('w'=>true, 'upsert' => true);
         return $this->mongo->db->users_token->save($object, $options);
     }
 
@@ -432,7 +432,7 @@ class User extends CI_Model {
 
     function delete_group($idgroup) {
         $options_delete = array("justOne" => true, "safe" => true);
-        $options_save = array('upsert' => true, 'safe' => true);
+        $options_save = array('upsert' => true, 'w'=>true);
         $criteria = array('idgroup' => (int) $idgroup);
         //----make backup first
         $obj = $this->group->get($idgroup);

@@ -31,7 +31,7 @@ class Rbac extends CI_Model {
             $criteria = array_filter(array('path' => $path));
 
             $query = array('$set' => array('path' => $path, 'properties' => $properties));
-            $options = array('upsert' => true, 'safe' => true);
+            $options = array('upsert' => true, 'w'=>true);
 
             return $this->mongo->db->selectCollection($this->permRepo)->update($criteria, $query, $options);
         }
@@ -60,11 +60,11 @@ class Rbac extends CI_Model {
     function put_path_to_group($path, $idgroup) {
         $idgroup = (int) $idgroup;
         $obj = array('idgroup' => $idgroup, 'path' => $path);
-        $options = array('upsert' => true, 'safe' => true);
+        $options = array('upsert' => true, 'w'=>true);
         $criteria = array_filter($obj);
 
         $query = array('$set' => $obj);
-        $options = array('upsert' => true, 'safe' => true);
+        $options = array('upsert' => true, 'w'=>true);
 
         return $this->mongo->db->selectCollection($this->permGroups)->update($criteria, $query, $options);
     }

@@ -15,7 +15,7 @@ class Group extends CI_Model {
         $container = 'groups';
         $fieldname = 'idgroup';
 
-        $options = array('upsert' => true, 'safe' => true);
+        $options = array('upsert' => true, 'w'=>true);
         $query = array();
         $fields = array($fieldname);
         $sort = array($fieldname => -1);
@@ -58,7 +58,7 @@ class Group extends CI_Model {
 
     function save($object) {
         //var_dump($object);
-        $options = array('upsert' => true, 'safe' => true);
+        $options = array('upsert' => true, 'w'=>true);
         return $this->mongo->db->groups->save($object, $options);
     }
 
@@ -79,7 +79,7 @@ class Group extends CI_Model {
 
     function delete($idgroup) {
         $options_delete = array("justOne" => true, "safe" => true);
-        $options_save = array('upsert' => true, 'safe' => true);
+        $options_save = array('upsert' => true, 'w'=>true);
         $criteria = array('idgroup' => (int) $idgroup);
         //----make backup first
         $obj = $this->group->get($idgroup);

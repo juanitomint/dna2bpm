@@ -102,7 +102,11 @@ function explodeExtTree($array, $delimiter = '/') {
                 if (!$pointerChild){
                     $pointer['leaf']=false;
                     $pointer['expanded'] = $expanded;
+                    if(isset($pointer['children'])){
                     $pointer['children'][] = $obj;
+                    } else {
+                        $pointer['children']=array($obj);
+                    }
                     
                 }
             }

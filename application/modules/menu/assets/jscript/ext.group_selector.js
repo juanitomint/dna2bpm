@@ -33,13 +33,13 @@ var user_selector=Ext.create('Ext.panel.Panel',
                     groupField.value=propsGrid.getProperty('groups');
 
                     if(groupField.value){
-                        groups=groupField.value.split(',');                  
+                        groups=Ext.JSON.decode(groupField.value);                  
                     } else {
                         groups=new Array();
                     }
                     if(groups.indexOf(combo.value.toString())==-1){
                         groups.push(combo.value);
-                        propsGrid.setProperty('groups',groups.join(','));
+                        propsGrid.setProperty('groups',Ext.JSON.encode(groups));
                     }
                     renderGroups();
                 }

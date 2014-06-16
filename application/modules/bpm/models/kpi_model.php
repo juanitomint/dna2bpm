@@ -16,7 +16,7 @@ class Kpi_model extends CI_Model {
     }
 
     function delete($idkpi) {
-        $options = array('safe' => true, 'justOne' => true);
+        $options = array('w' => true, 'justOne' => true);
         $criteria = array('idkpi' => $idkpi);
         //var_dump2($options,$criteria);
         $result = $this->mongo->db->kpi->remove($criteria, $options);
@@ -43,7 +43,7 @@ class Kpi_model extends CI_Model {
     }
 
     function save($kpi) {
-        $options = array('safe' => true);
+        $options = array('w' => true);
         $wf = $this->mongo->db->kpi->save($kpi, $options);
     }
 

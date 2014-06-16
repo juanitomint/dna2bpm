@@ -10,5 +10,7 @@
 |
 */
 
+
+
 /* End of file hooks.php */
-/* Location: ./system/application/config/hooks.php */
+/* Location: ./application/config/hooks.php */
