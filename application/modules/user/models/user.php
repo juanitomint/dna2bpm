@@ -5,15 +5,12 @@ if (!defined('BASEPATH'))
 
 class User extends CI_Model {
 
-        
-        
     function __construct() {
         parent::__construct();
         $this->idu = $this->session->userdata('iduser');
         $this->config->load('user/config');
         $this->load->library('cimongo/cimongo');
         $this->db = $this->cimongo;
-        
     }
 
     function add($user_data) {
@@ -63,8 +60,9 @@ class User extends CI_Model {
 
     function authenticate($username = '', $password = '') {
         //----MD5 is used for password hashing
+        $this->db->debug = false;
         $query = array('nick' => $username, 'passw' => $this->hash($password));
-        $thisUser = $this->db->select('idu')->get_where('users', $query)->result();
+        $thisUser = $this->db->select(array('idu'))->get_where('users', $query)->result();
         if (isset($thisUser[0])) {
             $thisUser = $thisUser[0]; //---get first an d only first
             $this->update_lastacc($thisUser->idu);
@@ -344,7 +342,7 @@ class User extends CI_Model {
         return $rs;
     }
 
-    function get_users($offset = 0, $limit = 50, $order = null, $query_txt = null, $idgroup = null, $match='both') {
+    function get_users($offset = 0, $limit = 50, $order = null, $query_txt = null, $idgroup = null, $match = 'both') {
         $this->db->get('users');
         //var_dump($start,$limit,$idgroup, $order, $idgroup);
         if ($idgroup) {
@@ -352,10 +350,10 @@ class User extends CI_Model {
         }
 
         if ($query_txt) {
-            $this->db->or_like('nick', $query_txt,$match);
-            $this->db->or_like('name', $query_txt,$match);
-            $this->db->or_like('lastname', $query_txt,$match);
-            $this->db->or_like('email', $query_txt,$match);
+            $this->db->or_like('nick', $query_txt, $match);
+            $this->db->or_like('name', $query_txt, $match);
+            $this->db->or_like('lastname', $query_txt, $match);
+            $this->db->or_like('email', $query_txt, $match);
 
             if (is_numeric($query_txt)) {
                 $this->db->or_where('idu', (int) $query_txt);
@@ -376,7 +374,7 @@ class User extends CI_Model {
 
     function put_user($object) {
         //var_dump($object);
-        $options = array('upsert' => true, 'w'=>true);
+        $options = array('upsert' => true, 'w' => true);
         return $this->mongo->db->users->save($object, $options);
     }
 
@@ -410,7 +408,7 @@ class User extends CI_Model {
 
     function save($data) {
         //var_dump($data);
-        $options = array('w'=>true, 'upsert' => true);
+        $options = array('w' => true, 'upsert' => true);
         $result = $this->mongo->db->users->save($data, $options);
         return $result;
     }
@@ -418,7 +416,7 @@ class User extends CI_Model {
     //forgot password: change password token
     function save_token($object) {
         //var_dump($object);
-        $options = array('w'=>true, 'upsert' => true);
+        $options = array('w' => true, 'upsert' => true);
         return $this->mongo->db->users_token->save($object, $options);
     }
 
@@ -432,7 +430,7 @@ class User extends CI_Model {
 
     function delete_group($idgroup) {
         $options_delete = array("justOne" => true, "safe" => true);
-        $options_save = array('upsert' => true, 'w'=>true);
+        $options_save = array('upsert' => true, 'w' => true);
         $criteria = array('idgroup' => (int) $idgroup);
         //----make backup first
         $obj = $this->group->get($idgroup);
@@ -519,5 +517,3 @@ class User extends CI_Model {
     }
 
 }
-
-?>
