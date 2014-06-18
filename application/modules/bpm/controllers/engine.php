@@ -381,7 +381,7 @@ class Engine extends MX_Controller {
         if (!isset($this->data))
             $this->load_data($wf, $idcase);
         $renderData['task_name'] = $shape->properties->name;
-        if ($case['parent']) {
+        if (isset($case['parent'])) {
             $renderData['task_name'] = $case['parent']['token']['title'] . '<br/>' . $shape->properties->name;
         }
         $renderData['task_documentation'] = $shape->properties->documentation;
