@@ -150,15 +150,7 @@ class Bpm extends CI_Model {
      * 
      */
 
-    function get_cases_byId($id) {
-        //$this->db->debug=true;
-        $query = array('iduser' => $iduser);
-        $this->db->where($query);
-        $rs = $this->db->get('case');
-        $result = $this->mongo->db->case->find($query);
-        return $rs->result_array();
-    }
-
+  
     function get_cases_byId($id) {
         return $this->get_cases_byFilter(array('id' => $id));
     }
