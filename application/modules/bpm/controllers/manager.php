@@ -198,12 +198,14 @@ class Manager extends MX_Controller {
         //var_dump($wfData);
         $this->parser->parse('bpm/view-diagram.php', $wfData);
     }
-/*
- * This function will generate a minireport of a case it will accept 2 parameters
- * The case id and the output format
- * 
- */
-    function mini_report($idcase, $format = 'json') {
+
+    /*
+     * This function will generate a minireport of a case it will accept 2 parameters
+     * The case id and the output format
+     * 
+     */
+
+    function mini_report($idcase, $output = 'array') {
         $case = $this->bpm->get_case($idcase);
         $tokens = $this->bpm->get_tokens($case['idwf'], $idcase, array());
         $task2users = array();
@@ -215,64 +217,126 @@ class Manager extends MX_Controller {
                 }
             }
         }
-        /*
-         * ARRAY
-        */
-        if ($format == 'array') {
-            return $task2users;
-        }
-        
-        /*
-         * TEXT 
-        */
-        if ($format == 'text') {
-            foreach ($task2users as $iduser => $tasks) {
-                $user = $this->user->get_user($iduser);
-                //---load cards here
-                echo $user->name . '<br>';
-                foreach ($tasks as $task) {
-                    echo $task['title'] . '<br/>';
-                    echo $task['status'] . '<br/>';
+        switch ($output) {
+
+            /*
+             * TEXT 
+             */
+            case 'text':
+                foreach ($task2users as $iduser => $tasks) {
+                    $user = $this->user->get_user($iduser);
+                    //---load cards here
+                    echo $user->name . '<br>';
+                    foreach ($tasks as $task) {
+                        echo $task['title'] . '<br/>';
+                        echo $task['status'] . '<br/>';
+                    }
+                    echo '<hr/>';
                 }
-                echo '<hr/>';
-            }
-        }
-        
-        /*
-         * HTML
-        */
-        if ($format == 'html') {
-            foreach ($task2users as $iduser => $tasks) {
-                $user = $this->user->get_user($iduser);
-                //---load cards here
-                echo $user->name . '<br>';
-                foreach ($tasks as $task) {
-                    echo $task['title'] . '<br/>';
-                    echo $task['status'] . '<br/>';
+                break;
+
+            /*
+             * HTML
+             */
+            case 'html':
+                foreach ($task2users as $iduser => $tasks) {
+                    $user = $this->user->get_user($iduser);
+                    //---load cards here
+                    echo $user->name . '<br>';
+                    foreach ($tasks as $task) {
+                        echo $task['title'] . '<br/>';
+                        echo $task['status'] . '<br/>';
+                    }
+                    echo '<hr/>';
                 }
-                echo '<hr/>';
-            }
+                break;
+            /*
+             * JSON
+             */
+            case 'json':
+                $rtnArr = array();
+                foreach ($task2users as $iduser => $tasks) {
+                    $user = (array) $this->user->get_user_safe($iduser);
+
+                    $task['idu'] = $user['idu'];
+                    $task['nick'] = $user['nick'];
+                    $task['name'] = $user['name'];
+                    $task['lastname'] = $user['lastname'];
+                    $task['email'] = $user['email'];
+                    $task['tasks'] = $tasks;
+                    $rtnArr[] = $task;
+                }
+                header('Content-type: application/json;charset=UTF-8');
+                echo json_encode($rtnArr);
+                break;
+
+            /*
+             * ARRAY
+             */
+            default:
+                return $task2users;
+                break;
         }
-        /*
-         * JSON
-         */
-        if ($format == 'json') {
-        $rtnArr = array();
-            foreach ($task2users as $iduser => $tasks) {
-                $user =(array) $this->user->get_user_safe($iduser);
-                                 
-                $task['idu']=$user['idu'];
-                $task['nick']=$user['nick'];
-                $task['name']=$user['name'];
-                $task['lastname']=$user['lastname'];
-                $task['email']=$user['email'];
-                $task['tasks']=$tasks;
-                $rtnArr[]=$task;
-            }
-            header('Content-type: application/json;charset=UTF-8');
-            echo json_encode($rtnArr);
+    }
+
+    /*
+     * This function will generate a minireport of statuses from all cases it will accept 2 parameters
+     * The case id and the output format
+     * 
+     */
+
+    function mini_status($idwf,$output='array',$filter=array()) {
+        $filter['idwf'] = $idwf;
+        $tokens=$this->bpm->get_cases_stats($filter);
+        switch ($output) {
+
+            /*
+             * TEXT 
+             */
+            case 'text':
+                foreach ($tokens as $id => $tasks) {
+                    $user = $this->user->get_user($id);
+                    //---load cards here
+                    echo $user->name . '<br>';
+                    foreach ($tasks as $task) {
+                        echo $task['title'] . '<br/>';
+                        echo $task['status'] . '<br/>';
+                    }
+                    echo '<hr/>';
+                }
+                break;
+
+            /*
+             * HTML
+             */
+            case 'html':
+                foreach ($tokens as $id => $tasks) {
+                    $user = $this->user->get_user($id);
+                    //---load cards here
+                    echo $user->name . '<br>';
+                    foreach ($tasks as $task) {
+                        echo $task['title'] . '<br/>';
+                        echo $task['status'] . '<br/>';
+                    }
+                    echo '<hr/>';
+                }
+                break;
+            /*
+             * JSON
+             */
+            case 'json':
+                
+                header('Content-type: application/json;charset=UTF-8');
+                echo json_encode($tokens);
+                break;
+
+            /*
+             * ARRAY
+             */
+            default:
+                return $tokens;
+                break;
         }
-        
     }
 
 }

@@ -162,7 +162,36 @@ class Bpm extends CI_Model {
         $rs = $this->db->get('case');
         return $rs->result_array();
     }
+    function get_cases_stats($filter){
+        $all_tokens = array();
+        $allcases = $this->get_cases_byFilter($filter, array('id','idwf','token_status'));
+            foreach ($allcases as $case) {
+                $tokens = (isset($case['token_status'])) ? $case['token_status'] : null;
+                //var_dump($case,$tokens);exit;
+                if ($tokens) {
+                    foreach ($tokens as $resourceId) {
+                        if (isset($all_tokens[$resourceId])) {
+                            $all_tokens[$resourceId]['run'] ++;
+                        } else {
+                            
+                            $token = $this->bpm->get_token($case['idwf'], $case['id'], $resourceId);
+                            //var_dump($token);exit;
+                            //$data = $this->bpm->get_shape($resourceId, $wf);
 
+                            $all_tokens[$resourceId] = array(
+                                'idwf' => $case['idwf'],
+                                'resourceId' => $resourceId,
+                                'title' => (isset($token['title'])) ? $token['title'] : '',
+                                'type' => $token['type'],
+                                'run' => 1,
+                                'icon' => $this->get_icon($token['type'])
+                            );
+                        }
+                    }
+                }
+            }//---end foreach cases
+            return $all_tokens;
+    }
     function get_cases($user = null, $offset = 0, $limit = null, $filter_status = array()) {
         $data = array(
             'cases' => array(),
