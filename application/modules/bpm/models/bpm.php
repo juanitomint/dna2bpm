@@ -1309,6 +1309,7 @@ class Bpm extends CI_Model {
         $parent = $this->bpm->find_parent($shape, 'Lane', $wf);
 
         if ($parent) {
+            $data['parent']=$parent->resourceId;
             //----try to get group by name
 //            $group_name = $wf->idwf . '/' . $parent->properties->name;
             $group_name = $wf->folder . '/' . $parent->properties->name;
