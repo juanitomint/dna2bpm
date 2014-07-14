@@ -69,8 +69,8 @@ class Git extends MX_Controller {
 
     function tile() {
         $this->load->library('git/git');
-        $data['number']=$this->getBranchName();
-        $data['title']='Branch';
+        $data['title']=$this->getBranchName();
+        $data['number']='Branch';
         $data['icon']='ion-usb';
         $data['more_info_link']=$this->base_url.'git/viewlog';
         return $this->parser->parse('dashboard/tiles/tile-orange', $data, true, true);
