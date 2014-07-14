@@ -90,7 +90,7 @@ class Recover extends MX_Controller {
             $token=md5($dbobj['email'].$dbobj['idu']);
             //armamos el mail
             $content = $this->lang->line('mailsendpart1');
-            $content.=" <strong>{$dbobj['nick']}</strong></p>";
+            $content.=" <strong>{$dbobj['nick']}</strong> $this->base_url</p>";
             $content.=$this->lang->line('mailsendpart2');
             $content.="<a href='{$this->base_url}user/recover/new_pass/$token'>".$this->lang->line('mailsendpart3')."</a>";
 

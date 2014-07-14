@@ -1,0 +1,18 @@
+{
+    "createdBy": "Gabriel Fojo <trialvd@gmail.com>",
+    "title": "Profile",
+    "view": "",
+    "icon": "fa-users",
+    "zones": [
+        {
+            "widgets": [
+                {
+				"title": "Profile",
+				"module": "user",
+				"controller": "profile",
+				"function": "edit"
+                }
+            ]
+        }
+    ]
+}

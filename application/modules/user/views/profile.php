@@ -1,103 +1,162 @@
-<!-- / Breadcrumbs -->
-<ul class="breadcrumb navbar-static-top">
-  <li><a href="{base_url}dna2/dashboard">Dashboard</a> <span class="divider">/</span><a href="{module_url}profile/index">Profile</a> <span class="divider">/</span> View <span class="divider">/</span></li>
-</ul>
 
+ <form class="form-horizontal" action="{module_url}profile/save" enctype="multipart/form-data" method="POST" >
 
-<div class="container">
-    <legend>Usuario</legend>
+<!--  ==== NICK ==== -->
+  <div class="form-group">
+    <label class="col-sm-2 control-label"> Nick </label>
+    <div class="col-sm-10">
+	    <input type="text" name="nick" class="form-control" placeholder="Nick" value="{nick}" disabled="disabled">
+    </div>
+  </div>
+        
+<!--  ==== FILE ==== -->
+<div class="form-group">
+    <label class="col-sm-2 control-label">My picture</label>
+    <div class="col-sm-2">
+    <img src="{avatar}" id="avatar" >
+    </div>
+    <div class="col-sm-8">
+     {if "{disabled}"==""}
+		  <div class="form-group">
+					<div id="filelist">Your browser doesn't have Flash, Silverlight or HTML5 support.</div>
+					<br />
+					<div id="container">
+					    <a id="pickfiles" class="btn btn-primary btn-xs" href="javascript:;"><i class="fa fa-files-o"></i> Select files</a> 
+					    <a id="uploadfiles" class="btn btn-primary btn-xs" href="javascript:;"><i class="fa fa-cloud-upload"></i> Upload files</a>
+					</div>
+			
+			</div>
+	{/if}
+</div>
+</div>
+ 
+  <!--  ==== PASSW ==== -->
+  <div class="form-group">
+    <label class="col-sm-2 control-label">Password</label>
+    <div class="col-sm-10">
+	    <input type="password"  name="passw" value="" class="form-control" {disabled}>
+    </div>
+  </div>
+
+  
+    <!--  ==== NAME==== -->
+
+	  <div class="form-group">
+	    <label class="col-sm-2 control-label">Name</label>
+	    <div class="col-sm-10">
+		     <input type="text"  name="name" value="{name}" class="form-control" {disabled}>
+	    </div>
+	  </div>
+
+   <!--  ==== LASTNAME ==== -->
     
-    <div class="control-group">
-        <label class="control-label" for="nick">Nick: </label>
-        <div class="controls">
-        {nick}
-        </div>
-    </div>
-    <div class="control-group">
-        <label class="control-label" for="foto">Foto: </label>
-    </div>
-    <div class="control-group">
-        <div class="controls">
-        <img src="{base_url}{avatar}" style="width: 120px; height: 120px;" alt="imagen" id="imgusuario" class="img-polaroid">
-        </div>
-    </div>
-    
-    <div class="control-group">
-        <label class="control-label" for="nombre">Nombre:</label>
-        <div class="controls">
-        {name}
-        </div>
-    </div>
-    <div class="control-group">
-        <label class="control-label" for="apellido">Apellido:</label>
-        <div class="controls">
-        {lastname}
-        </div>
-    </div>
-     <div class="control-group">
-        <label class="control-label" for="apellido">Genero:</label>
-        <div class="controls">
-        {checkedG}
-        </div>
-    </div>
-    <div class="control-group">
-        <label class="control-label" for="dni">DNI:</label>
-        <div class="controls">
-       {idnumber}
-        </div>
-    </div>
-    <div class="control-group">
-        <label class="control-label" for="fechanac">Fecha de nacimiento:</label>
-        <div class="controls">
-        {birthdate}
-        </div>
-    </div>
-    <div class="control-group">
-        <label class="control-label" for="inputEmail">Email:</label>
-        <div class="controls">
-        {email}
-        </div>
-    </div>
-    
-    <div class="control-group">
-        <label class="control-label" for="nombre">Tel&eacute;fono:</label>
-        <div class="controls">
-        {phone}
-        </div>
-    </div>
-    <div class="control-group">
-        <label class="control-label" for="celular">Celular:</label>
-        <div class="controls">
-        {celular}
-        </div>
-    </div>
-    <div class="control-group">
-        <label class="control-label" for="domicilio">Domicilio:</label>
-        <div class="controls">
-        {address}
-        </div>
-    </div>
-    <div class="control-group">
-        <label class="control-label" for="cp">CP:</label>
-        <div class="controls">
-        {cp}
-        </div>
-    </div>
-    <div class="control-group">
-        <label class="control-label" for="ciudad">Ciudad: </label>
-        <div class="controls">
-        {city}
-        </div>
-    </div>
-
-<footer>
-  <p>&copy; Dna2 2013</p>
-</footer>
-
-</div> 
+		  <div class="form-group">
+		    <label class="col-sm-2 control-label">Lastname</label>
+		    <div class="col-sm-10">
+			     <input type="text"  name="lastname" value="{lastname}" class="form-control" {disabled}>
+		    </div>
+		  </div>
 
 
+  
+    <!--  ==== GENDER ==== -->
+  <div class="form-group">
+    <label class="col-sm-2 control-label">Gender</label>
+    <div class="col-sm-10 form-inline">
+			<div class="radio">
+			  <label>
+			 	 <input type="radio" name="gender" id="female" value="female" {checkedF} {disabled}>
+			    Femenino
+			  </label>
+			</div>
+			<div class="radio">
+			  <label>
+			    <input type="radio" name="gender" id="male" value="male" {checkedM} {disabled}>
+			    Masculino
+			  </label>
+			</div>
+    </div>
+  </div>
+  
+<!--  ==== DNI ==== -->
+  <div class="form-group">
+    <label class="col-sm-2 control-label">DNI</label>
+    <div class="col-sm-10">
+	      <input type="number" name="dni" value="{idnumber}" class="form-control" disabled="disabled">
+    </div>
+  </div>
+ 
+ <!--  ==== BIRTHDAY ==== -->
+  <div class="form-group">
+    <label class="col-sm-2 control-label">Birthday</label>
+    <div class="col-sm-10">
+		<div class="input-group">
+		  <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+		  <input class="calendar form-control" type="text"  name="birthdate" value="{birthdate}" {disabled}>   
+		</div>
+	</div>
+  </div>
+  
+<!--  ==== EMAIL ==== -->
+  <div class="form-group">
+    <label class="col-sm-2 control-label">Email</label>
+    <div class="col-sm-10">
+		<input type="text" name="email" value="{email}" class="form-control" {disabled}>
+    </div>
+  </div>
+   
+<!--  ==== TELEFONO ==== -->
+  <div class="form-group">
+    <label class="col-sm-2 control-label">Phone</label>
+    <div class="col-sm-10">
+       <input type="text" name="phone" value="{phone}" class="form-control" {disabled}>
+    </div>
+  </div>
+  
+<!--  ==== CELLPHONE ==== -->
+  <div class="form-group">
+    <label class="col-sm-2 control-label">CellPhone</label>
+    <div class="col-sm-10">
+       <input type="text" name="celular" value="{celular}" class="form-control" {disabled}>
+    </div>
+  </div>
+  
+<!--  ==== ADDRESS ==== -->
+  <div class="form-group">
+    <label class="col-sm-2 control-label">Address</label>
+    <div class="col-sm-10">
+      <input type="text" name="address" value="{address}" class="form-control" {disabled}>
+    </div>
+  </div>
+  
+  
+ <!--  ==== CPA ==== -->
+  <div class="form-group">
+    <label class="col-sm-2 control-label">CPA</label>
+    <div class="col-sm-10">
+      <input type="text" name="cp" value="{cp}" class="form-control" {disabled}>
+    </div>
+  </div>
+  
+   <!--  ==== CITY ==== -->
+  <div class="form-group">
+    <label class="col-sm-2 control-label">City</label>
+    <div class="col-sm-10">
+      <input type="text" name="city" value="{city}" class="form-control" {disabled}>
+    </div>
+  </div>
+  
+     <!--  ==== SUBMIT ==== -->
+     {if "{disabled}"==""}
+  <div class="form-group">
+      <label class="col-sm-2 control-label"></label>
+    <div class="col-sm-10">
+      <button type="submit" class="btn btn-primary form-control">Submit</button>
+    </div>
+       
+  </div>
+  {/if}
+   
 
-
-
+</form>
 

@@ -170,7 +170,7 @@ class Bpm extends CI_Model {
             $tokens = (isset($case['token_status'])) ? $case['token_status'] : null;
             //var_dump($case,$tokens);exit;
             if ($tokens) {
-                foreach ($tokens as $resourceId) {
+                foreach ($tokens as $resourceId=>$state) {
                     if (isset($all_tokens[$resourceId])) {
                         $all_tokens[$resourceId]['run'] ++;
                     } else {
@@ -464,7 +464,7 @@ class Bpm extends CI_Model {
                 array(
                     'idwf' => $idwf,
                     'case' => $idcase,
-                    'status' => array('$nin' => array('finished', 'canceled'))
+                //'status' => array('$nin' => array('finished', 'canceled'))
                 )
         );
 //        $this->db->debug=true;
@@ -473,12 +473,15 @@ class Bpm extends CI_Model {
                 ->get('tokens')
                 ->result_array();
 //        $this->db->debug=false;
-//        var_dump2($idwf,$idcase,json_encode($query),$tokens);
+        //     var_dump2($idwf,$idcase,json_encode($query),$tokens);
         if (count($tokens)) {
-            $result = array_map(function ($token) {
-                return $token['resourceId'];
-            }, $tokens);
-            return $result;
+            $reduced = array_reduce(
+                    $tokens, function (&$result, $token) {
+                $result[$token['resourceId']] = $token['status'];
+                return $result;
+            }, array()
+            );
+            return $reduced;
         }
         return false;
     }
@@ -646,6 +649,16 @@ class Bpm extends CI_Model {
         return $this->db->where($query)->update('case', $case);
     }
 
+    function archive_case($case) {
+        unset($case['_id']);
+        $query = array(
+            'id' => $case['id']
+        );
+        //----get the status tokens
+        //$case['token_status'] = $this->get_token_status($case['idwf'], $case['id']);
+        return $this->db->where($query)->update('case_archive', $case);
+    }
+
     function gen_case($idwf) {
         $insert = array();
         $trys = 10;
@@ -727,7 +740,8 @@ class Bpm extends CI_Model {
         if (!isset($data['iduser']))
             $data['iduser'] = (int) $this->session->userdata('iduser');
         //----update case with latest token status
-        $data['token_status'] = (isset($data['set_token_status'])) ? $data['set_token_status'] : $this->get_token_status($case['idwf'], $case['id']);
+//      $data['token_status'] = (isset($data['token_status'])) ? $data['token_status'] : $this->get_token_status($case['idwf'], $case['id']);
+        $data['token_status'] = $this->get_token_status($case['idwf'], $case['id']);
         $query = array('$set' => (array) $data);
         $criteria = array('id' => $id);
         $options = array('upsert' => true, 'w' => true);
@@ -1333,7 +1347,7 @@ class Bpm extends CI_Model {
             $group_name = $wf->folder . '/' . $parent->properties->name;
             $group = $this->group->get_byname($group_name);
             if ($group) {
-                $idgroup=$group['idgroup'];
+                $idgroup = $group['idgroup'];
                 $data['idgroup'][] = $group['idgroup'];
                 //---if group exists add it to the array
             } else {
@@ -1367,8 +1381,8 @@ class Bpm extends CI_Model {
                     $data['assign'][] = $this->idu;
                 }
             }
-        } 
-        
+        }
+
         //----SHAPE HAS NO PARENT LANE
         else {
             if ($debug)
@@ -1392,15 +1406,23 @@ class Bpm extends CI_Model {
         }
 
         //---if the user who is running the process is an admin assign him
-        if ($this->config->item('auto_assign_admin')) {
+        if ($this->config->item('auto_add_admin')) {
             if ($debug)
-                echo '<H3>Auto-Assign Admin</H3>';
+                echo '<H3>Auto Add Admin</H3>';
             if ($this->user->isAdmin($user)) {
                 $data['assign'][] = $this->idu;
             }
         }
+
+        if ($this->config->item('auto_assign_admin')) {
+            if ($debug)
+                echo '<H3>Auto-Assign Admin</H3>';
+            if ($this->user->isAdmin($user)) {
+                $data['assign'] = array($this->idu);
+            }
+        }
         //---clear assign
-        $data['assign'] =array_unique( array_filter($data['assign']));
+        $data['assign'] = array_unique(array_filter($data['assign']));
         //---clear idgroup
         $data['idgroup'] = array_unique(array_filter($data['idgroup']));
 
@@ -1422,10 +1444,11 @@ class Bpm extends CI_Model {
             $token = $this->get_token($wf->idwf, $wf->case, $parent->resourceId);
             $status = $token['status'];
             $data_parent['assign'] = (isset($token['assign'])) ? array_merge($token['assign'], $data['assign']) : $data['assign'];
-            $data_parent['assign'] =array_unique($data_parent['assign']);
+            $data_parent['assign'] = array_unique($data_parent['assign']);
             $data_parent = array_filter($data_parent);
             $this->set_token($wf->idwf, $wf->case, $parent->resourceId, $parent->stencil->id, $status, $data_parent);
         }
+        return $data;
     }
 
     function find_parent($shape, $parent_name, $wf) {

@@ -31,6 +31,18 @@ class Case_manager extends MX_Controller {
         $this->module_url = base_url() . $this->router->fetch_module() . '/';
     }
 
+    function Archive($model, $idwf, $idcase = null) {
+        $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
+        if ($debug)
+            echo '<h2>' . __FUNCTION__ . '</h2>';
+        $case = $this->bpm->get_case($idcase);
+        $this->bpm->archive_case($case);
+        echo "Moving case $idcase  to Archive...<br/>";
+        $this->bpm->delete_case($idwf, $idcase);
+        echo "Done";
+        
+        
+    }
     function Browse($model, $idwf, $case = null, $action = '') {
         $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
         if ($debug)

@@ -34,9 +34,9 @@ function state($kpi, $CI, $list = null) {
     $cpData['module_url'] = $CI->module_url;
     //var_dump($tokens);
     //$cpData['tokens']=$tokens;
-    $cpData['count'] = count($cases);
+    $cpData['number'] = count($cases);
     if (!$list) {
-        $rtn = $CI->parser->parse('bpm/kpi_count', $cpData, true);
+        $rtn = $CI->parser->parse('dashboard/'.$kpi['widget_type'].'/'.$kpi['widget'], $cpData, true);
         return $rtn;
     } else { //----return cases matched
         //---map tokens to get case

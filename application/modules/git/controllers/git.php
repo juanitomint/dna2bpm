@@ -31,7 +31,7 @@ class Git extends MX_Controller {
     }
 
     function update_git() {
-        echo "<h1>Update from GIT server V1.14.log</h1>";
+        echo "<h1>Update from GIT server V1.15.log</h1>";
 
 //----log to file
         $logtofile = true;
@@ -65,6 +65,28 @@ class Git extends MX_Controller {
     function viewlog() {
         $log = $página_inicio = file_get_contents('update-git.log');
         echo nl2br($log);
+    }
+
+    function tile() {
+        $this->load->library('git/git');
+        $data['number']=$this->getBranchName();
+        $data['title']='Branch';
+        $data['icon']='ion-usb';
+        $data['more_info_link']=$this->base_url.'git/viewlog';
+        return $this->parser->parse('dashboard/tiles/tile-orange', $data, true, true);
+        
+    }
+
+    public function getBranchName() {
+        if (is_file('.git/HEAD')) {
+            $stringfromfile = file('.git/HEAD', FILE_USE_INCLUDE_PATH);
+            $stringfromfile = $stringfromfile[0]; //get the string from the array
+
+            $explodedstring = explode("/", $stringfromfile); //seperate out by the "/" in the string
+
+            return trim(end($explodedstring)); //get the one that is always the branch name
+        }
+        return false;
     }
 
 }

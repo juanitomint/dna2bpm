@@ -396,9 +396,13 @@ class User extends CI_Model {
                 $result = $this->save($user_data);
                 $user = $user_data;
             } else {
-                
+	
+	        $options = array('safe' => true, 'upsert' => true);
+	        $query=array('idu'=>$user_data['idu']);
+	        $result = $this->mongo->db->users->update($query,array('$set'=>$user_data), $options);
+            	$user = $user_data;
             }
-            return $user;
+            return $result;
         }
     }
 

@@ -31,7 +31,7 @@ class Backend extends CI_Model {
     }
 
     function push_object($idobj, $idapp) {
-        $options = array('upsert' => true, 'safe' => true);
+        $options = array('upsert' => true, 'w' => true);
         $app = $this->backend->get_app((int) $idapp);
         foreach ($app['objs'] as $this_obj)
             $arr[] = $this_obj['#'];
@@ -48,7 +48,7 @@ class Backend extends CI_Model {
 
     function delete_object($idobj) {
         $options_delete = array("justOne" => true, "safe" => true);
-        $options_save = array('upsert' => true, 'safe' => true);
+        $options_save = array('upsert' => true, 'w' => true);
         $criteria = array('idobj' => $idobj);
         //----make backup first
         $obj = $this->app->get_object($idobj);
@@ -57,7 +57,7 @@ class Backend extends CI_Model {
     }
 
     function remove_from_app($idobj, $idapp) {
-        $options = array('upsert' => true, 'safe' => true);
+        $options = array('upsert' => true, 'w' => true);
         $app = $this->backend->get_app((int) $idapp);
 
         foreach ($app['objs'] as $key => $this_obj) {

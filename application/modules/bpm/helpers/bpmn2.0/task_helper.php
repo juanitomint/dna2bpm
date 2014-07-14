@@ -12,7 +12,7 @@ function run_Task($shape, $wf, $CI) {
 ////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
 //---check 4 looptype---
-    
+
     if (!property_exists($wf, 'task_run'))
         $wf->task_run = array();
     switch ($shape->properties->looptype) {
@@ -21,7 +21,7 @@ function run_Task($shape, $wf, $CI) {
         default:
             //only excutes task 1 time
             if (in_array($resourceId, $wf->task_run)) {
-                $wf->prevent_run[]=$resourceId;
+                $wf->prevent_run[] = $resourceId;
                 return;
             }
             break;
@@ -31,7 +31,7 @@ function run_Task($shape, $wf, $CI) {
 //---DATA LOAD--
 //----add $resourceId to the run stack
     $wf->task_run[] = $resourceId;
-    
+
     $data = array();
 //---get case data
     $case = $CI->bpm->get_case($wf->case);
@@ -199,7 +199,6 @@ function run_Task($shape, $wf, $CI) {
 ///--ecxecute BE CAREFULL EXTREMLY DANGEROUS
                         try {
                             $DS->$data_store = eval($streval);
-                            
                         } catch (ErrorException $e) {
                             echo 'Caught exception: ', $e->getMessage(), "<br/>";
                         }
@@ -218,26 +217,38 @@ function run_Task($shape, $wf, $CI) {
             $CI->bpm->movenext($shape, $wf, $data);
             break;
         case 'Send':
+            //----ASSIGN TASK to USER / GROUP
+            $token = $CI->bpm->assign($shape, $wf);
+
             $msg['from'] = $CI->idu;
             $msg['subject'] = $CI->parser->parse_string($shape->properties->name, $CI->data, true, true);
             $msg['body'] = $CI->parser->parse_string($shape->properties->documentation, $CI->data, true, true);
+            $msg['idwf']=$wf->idwf;
+            $msg['case']=$wf->case;
+            if($shape->properties->properties<>''){
+             foreach($shape->properties->properties->items as $property){
+                 $msg[$property->name]=$property->datastate;
+             }   
+            }
             $resources = $CI->bpm->get_resources($shape, $wf);
-
             //---if has no messageref and noone is assigned then
             //---fire a message to lane or self         
-            if (!count($resources['assign']) and !$shape->properties->messageref) {
-                $lane = $CI->bpm->find_parent($shape, 'Lane', $wf);
-                //---try to get resources from lane
-                if ($lane) {
-                    $resources = $CI->bpm->get_resources($lane, $wf);
-                }
-                //---if can't get resources from lane then assign it self as destinatary
-                if (!count($resources['assign']))
-                    $resources['assign'][] = $CI->user->Initiator;
-            }
+//            if (!count($resources['assign']) and !$shape->properties->messageref) {
+//                $lane = $CI->bpm->find_parent($shape, 'Lane', $wf);
+//                //---try to get resources from lane
+//                if ($lane) {
+//                    $resources = $CI->bpm->get_resources($lane, $wf);
+//                }
+//                //---if can't get resources from lane then assign it self as destinatary
+//                if (!count($resources['assign']))
+//                    $resources['assign'][] = $CI->user->Initiator;
+//            }
             //---process inbox--------------
-            foreach ($resources['assign'] as $to)
-                $msg = $CI->msg->send($msg, $to);
+            foreach ($token['assign'] as $to_user) {
+                if ($debug)
+                    echo "Sending msg to user:$to_user<br/>";
+                $CI->msg->send($msg, $to_user);
+            }
             //---fires triger if everything is ok
             if ($shape->properties->messageref)
                 run_IntermediateEventThrowing($shape, $wf);

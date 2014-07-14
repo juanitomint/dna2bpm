@@ -8,13 +8,13 @@
     <head>
         <title>{htmltitle}</title>
         <script type="text/javascript">
-                var i=0;
-                var thiscase;
-                var base_url='{base_url}';
-                var idwf='{idwf}';
-                var idcase='{idcase}';
-                var svgfile='{base_url}{svgfile}';
-                var intervalID;
+            var i = 0;
+            var thiscase;
+            var base_url = '{base_url}';
+            var idwf = '{idwf}';
+            var idcase = '{idcase}';
+            var svgfile = '{base_url}{svgfile}';
+            var intervalID;
         </script>
         <link  href="{base_url}css/layout.css" rel="stylesheet" type="text/css" />
         <!-- START  Jscript Block -->
@@ -29,25 +29,29 @@
         <script type="text/javascript" src="{module_url}assets/jscript/view-model.js"></script>
         <style type="text/css">
             .overlay{
-/*                border:2px dashed gray;*/
+                /*                border:2px dashed gray;*/
                 padding: 0px;
             }
             .overlay span{
-                    font-size: small;
-                    background-color: black;
-                    color: white;
-                    padding: 2px;
-                    font-family: monospace;
-}
+                font-size: small;
+                background-color: black;
+                color: white;
+                padding: 2px;
+                font-family: monospace;
+            }
+            #jsoneditor {
+                width: 500px;
+                height: 500px;
+            }
         </style>
     </head>
     <body>
         <div id="svg-box" style="border: 1px solid black">
-        <?php
-        echo html_entity_decode($SVG);
-        ?>
+            <?php
+            echo html_entity_decode($SVG);
+            ?>
         </div>
- <table class="ui-widget" id="tokens_table">
+        <table class="ui-widget" id="tokens_table">
             <thead class="ui-widget-header">
                 <th>icon</th>
                 <th>Name</th>

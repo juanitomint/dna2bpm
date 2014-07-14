@@ -72,7 +72,7 @@ class Engine extends MX_Controller {
         
     }
 
-    function Newcase($model, $idwf, $manual = false, $parent = null,$silent=false) {
+    function Newcase($model, $idwf, $manual = false, $parent = null, $silent = false) {
 //---Gen new case ID
         $case = $this->bpm->gen_case($idwf);
         if ($manual) {
@@ -100,7 +100,7 @@ class Engine extends MX_Controller {
             $this->bpm->save_token($token);
         }
 //---Start the case (will move next on startnone shapes)
-        $this->Startcase($model, $idwf, $case,$silent);
+        $this->Startcase($model, $idwf, $case, $silent);
     }
 
     function Start($model, $idwf, $case, $silent = false) {
@@ -207,7 +207,16 @@ class Engine extends MX_Controller {
 //$open = $this->bpm->get_tokens($idwf, $case, 'pending');
             $status = 'pending';
             $wf->prevent_run = array();
-            while ($i <= 100 and $open = $this->bpm->get_tokens($idwf, $case, $status)) {
+            $filter = array(
+                'idwf' => $idwf,
+                'case' => $case,
+                'status' => 'pending',
+            );
+            //----filter specific shape to run
+            if ($run_resourceId)
+                $filter['resourceId'] = $run_resourceId;
+
+            while ($i <= 100 and $open = $this->bpm->get_tokens_byFilter($filter)) {
                 $i++;
                 foreach ($open as $token) {
 //---only call tokens that correspond to user.
@@ -229,10 +238,13 @@ class Engine extends MX_Controller {
                         $result = (function_exists($callfunc)) ? $callfunc($shape, $wf, $this) : $this->bpm->movenext($shape, $wf);
                     }
                 }
+                //---clear resource id filter
             }
+
             $this->bpm->update_case_token_status($idwf, $case);
-            $this->get_pending('model', $idwf, $case);
+            $this->get_pending('model', $idwf, $case, $run_resourceId);
             $this->run_after();
+            $run_resourceId = null;
         }
     }
 
@@ -240,6 +252,10 @@ class Engine extends MX_Controller {
         foreach ($this->run_after_stack as $data) {
             call_user_func_array(array($this, $data['func']), $data['args']);
         }
+    }
+
+    function run_task($model, $idwf, $case, $resourceId) {
+        
     }
 
     function run_post($model, $idwf, $case, $resourceId) {
@@ -263,7 +279,7 @@ class Engine extends MX_Controller {
                 }
             }
 //----if its a subprocess try to run all other subprocesses
-            $subproc = $this->bpm->get_tokens($idwf, $idcase, $status = 'waiting', 'CollapsedSubprocess');
+            $subproc = $this->bpm->get_tokens($idwf, $case, $status = 'waiting', 'CollapsedSubprocess');
             foreach ($subproc as $token) {
                 $this->bpm->set_token($idwf, $case, $token['resourceId'], $token['type'], 'pending');
             }
@@ -672,7 +688,7 @@ class Engine extends MX_Controller {
         while ($it->valid()) {
             var_dump($it->getSubIterator(), $it->key(), $it->current());
             echo '<hr/>';
-            if (((isset($index) AND ( $it->key() == $index)) OR (!isset($index))) AND ( $it->current() == $needle)) {
+            if (((isset($index) AND ( $it->key() == $index)) OR ( !isset($index))) AND ( $it->current() == $needle)) {
 //return $aIt->key();
                 echo "****  FOUND ****";
                 return (array) $it->getSubIterator();
@@ -783,9 +799,10 @@ class Engine extends MX_Controller {
                                         $rendering = trim($shape->properties->rendering);
                                         if ($rendering) {
                                             $token_id = $first['_id'];
+                                            if(strstr($rendering, '$')){
                                             $streval = 'return ' . $rendering . ';';
+                                            } 
                                             $rendering = eval($streval);
-
                                             if (strstr($rendering, 'http')) {
                                                 $querystr = array_filter(
                                                         array(

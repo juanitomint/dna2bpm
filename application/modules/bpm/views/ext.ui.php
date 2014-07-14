@@ -3,7 +3,8 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>{title}</title>
         <link rel="stylesheet" type="text/css" href="{base_url}jscript/bootstrap/css/bootstrap.min.css" />
-        <link rel="stylesheet" type="text/css" href="{base_url}jscript/fontawesome/css/font-awesome.min.css" />
+        <link rel="stylesheet" type="text/css" href="{base_url}jscript/bootstrap-wysihtml5/css/font-awesome.min.css" />
+        <link rel="stylesheet" type="text/css" href="{base_url}jscript/bootstrap-wysihtml5/css/ionicons.min.css" />
         <link rel="stylesheet" type="text/css" href="{base_url}jscript/ext/resources/css/ext-all-neptune-debug.css" />
         <!--
         no funcionan los buttons

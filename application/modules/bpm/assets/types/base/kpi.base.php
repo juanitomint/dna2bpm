@@ -13,7 +13,9 @@ $common = array(
     'hidden' => 'boolean',
     'locked' => 'boolean',
     'filter' => 'string',
+    'filter_extra'=>'string',
     'resourceId' => 'string',
+    'widget_type'=>'string',
+    'widget'=>'string',
     'group'=>'int',
-    'order'=>'int',
 );

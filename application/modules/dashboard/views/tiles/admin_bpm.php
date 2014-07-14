@@ -1,0 +1,16 @@
+<div class="small-box bg-green">
+    <div class="inner">
+        <h3>
+            &nbsp;
+        </h3>
+        <p>
+            BPM Admin
+        </p>
+    </div>
+    <div class="icon">
+        <i class="fa fa-sitemap fa-rotate-270"></i>
+    </div>
+    <a class="small-box-footer" href="{base_url}bpm/admin" target="_blank">
+        open <i class="fa fa-arrow-circle-right"></i>
+    </a>
+</div>

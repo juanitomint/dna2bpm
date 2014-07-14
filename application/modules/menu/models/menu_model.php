@@ -23,7 +23,7 @@ class Menu_model extends CI_Model {
             );
 
             $query = array('$set' => array('repoId' => (string) $repoId, 'path' => $path, 'properties' => $properties));
-            $options = array('upsert' => true, 'safe' => true);
+            $options = array('upsert' => true, 'w' => true);
             //----save path in rbac
             $rbac_path = "Menu/" . $repoId . $path;
             $this->rbac->put_path($rbac_path);

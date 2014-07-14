@@ -62,7 +62,7 @@ class Msg extends CI_Model {
 
     function remove($mongoid) {
         $mongoid = (is_object($mongoid)) ? $mongoid : new MongoId($mongoid);
-        $options = array('safe' => true, 'justOne' => true);
+        $options = array('w' => true, 'justOne' => true);
         $criteria = array('_id' => $mongoid);
         return $this->mongo->db->msg->remove($criteria, $options);
     }
@@ -77,7 +77,7 @@ class Msg extends CI_Model {
 
     // Save a msg
     function save($msg) {
-        $options = array('upsert' => true, 'safe' => true);
+        $options = array('upsert' => true, 'w' => true);
         return $this->mongo->db->msg->save($msg, $options);
     }
 
@@ -92,10 +92,12 @@ class Msg extends CI_Model {
     // Set or unset star
     function set_star($status,$id) {
     $mongoid=new MongoId($id);
-    $status=($status==1)?(true):(false);
+     $status=($status=='on')?(true):(false);
     $query=array('$set' =>array('star'=>$status));
     $criteria = array('_id' => $mongoid);
+
     $rs=$this->mongo->db->msg->update($criteria, $query);
+
     }
 
     // Was message read?

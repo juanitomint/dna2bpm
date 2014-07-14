@@ -14,6 +14,8 @@ $lang["save"] = 'guardar';
 $lang["new_m"] = 'nueva';
 $lang["new_f"] = 'nuevo';
 $lang["folder"] = 'carpeta';
+$lang['page'] = 'página';
+$lang['of'] = 'de';
 $lang["name"] = 'name';
 $lang["viewData"] = "ver datos";
 $lang["showHistory"] = "ver historial";
@@ -31,6 +33,7 @@ $lang["add_app"] = '[+]Aplicación';
 $lang["user_logout"] = 'Salir';
 $lang["Inbox"] = 'Bandeja Entrada';
 $lang["Tasks"] = 'Tareas';
+$lang["Cases"] = 'Casos';
 $lang["Reports"] = 'Reportes';
 
 /* ---Control Panel ----- */
@@ -48,6 +51,9 @@ $lang["title"] = 'título';
 $lang["restart"] = 'reiniciar';
 $lang["readmark"] = 'leído';
 $lang["date"] = 'fecha';
+$lang["checkdate"] = 'fecha entrada';
+$lang["user"] = 'usuario';
+$lang["group"] = 'grupo';
 $lang["status"] = 'estado';
 $lang["models"] = 'Modelos';
 $lang["model"] = 'Modelo';
@@ -65,7 +71,6 @@ $lang["StartCase"] = 'Iniciar';
 $lang["Manage"] = 'Administrar';
 $lang["Delete"] = 'Borrar';
 
-
 /* ---WF-Tasks------ */
 $lang["MyTasks"] = 'Mis Tareas';
 $lang["byGroup"] = 'Por Grupo';
@@ -82,20 +87,26 @@ $lang["refuse"] = 'rechazar';
 
 /* --WF-Messages----- */
 $lang['newTask'] = 'Nueva Tarea';
-$lang['newTaskBody'] = "{from_user name} {from_user lastname} te ha asignado una nueva tarea: {shape name}
-    <br/>
+$lang['newTaskBody'] = "{from_user name} {from_user lastname} te ha asignado una nueva tarea: {shape name}    <br/>
     Haz click <a href='{basedir}/bpm/engine/run/model/{idwf}/{idcase}'>>>>aquí<<<</a> para completarla";
 $lang['lock'] = 'Bloqueo';
 $lang['message'] = 'Mensaje';
+$lang["caseLocked"] = "<i class='icon-lock'></i> Este caso ha sido bloqueado por:<br/>{user_lock}<br/> desde {time}";
+$lang["taskLocked"] = "<i class='icon-lock'></i> Esta tarea está bloqueada por:<br/>{user_lock}<br/> desde {time}";
+$lang["noMoreTasks"] = "No tiene más tareas pendientes por ahora";
+$lang["caseClosed"] = "Este caso está cerrado";
+$lang["openCases"] = "Casos abiertos";
 $lang["closedCases"] = "Casos Cerrados";
+/* --WF-Widgets----- */
+$lang['2do']="Tareas Pendientes";
 /* --WF-conditions----- */
 $lang['true'] = 'Si';
 $lang['false'] = 'No';
-/*--RECORDS-----------*/
-$lang['records']='registros';
-$lang['of']='de';
-$lang['to']='al';
-$lang['total']='total';
+/* --RECORDS----------- */
+$lang['records'] = 'registros';
+$lang['of'] = 'de';
+$lang['to'] = 'al';
+$lang['total'] = 'total';
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.

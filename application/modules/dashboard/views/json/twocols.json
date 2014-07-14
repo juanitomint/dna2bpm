@@ -1,0 +1,66 @@
+{
+    "createdBy": "Gabriel Fojo <trialvd@gmail.com>",
+    "title": "2 Cols",
+    "view": "layout_2cols",
+    "icon":"fa-bug",
+    "zones": [
+        {
+            "tiles": [
+                {
+                    "title": "Tile01",
+                    "module": "bpm",
+                    "controller": "bpmui",
+                    "function": "tile_tasks"
+                },
+                {
+                    "title": "Tile01",
+                    "module": "bpm",
+                    "controller": "bpmui",
+                    "function": "tile_tasks_done"
+                }
+                ,
+                {
+                    "title": "Tile01",
+                    "module": "bpm",
+                    "controller": "bpmui",
+                    "function": "tile_cases"
+                }
+            ]
+        },
+        {
+            "col1": [
+                {
+                    "title": "Tile01",
+                    "module": "bpm",
+                    "controller": "bpmui",
+                    "function": "tile_tasks_done"
+                    ,"span":12
+                }
+                ,
+                {
+                    "title": "Tile01",
+                    "module": "bpm",
+                    "controller": "bpmui",
+                    "function": "tile_cases"
+                    ,"span":12
+                }
+            ]
+        },
+        {
+            "col2": [
+                {
+                    "title": "2do",
+                    "module": "dashboard",
+                    "controller": "dashboard",
+                    "function": "knob"
+                },
+                {
+                    "title": "2do",
+                    "module": "dashboard",
+                    "controller": "dashboard",
+                    "function": "knob"
+                }
+            ]
+        }
+    ]
+}
