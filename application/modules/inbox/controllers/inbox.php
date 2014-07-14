@@ -144,10 +144,8 @@ class Inbox extends MX_Controller {
     function get_msg(){
     $msgid=$this->input->post('id');
     $mymgs = $this->msg->get_msg($msgid);
-     foreach ($mymgs as $msg) {
-        echo "<h3>{$msg["subject"]}</h3>";
-        echo "<div class=inbox_content>".$msg["body"]."</div>";
-     }
+    $this->msg->set_read(1,$msgid); // Marco leido
+	echo json_encode($mymgs);
     }
     
     // save star value

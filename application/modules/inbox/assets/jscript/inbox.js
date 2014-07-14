@@ -21,22 +21,48 @@ $(document).on("click",".fa-star-o",function(){
     $.post(globals.base_url+'inbox/inbox/set_star',{'state':'on','msgid':msgid},function(data){});
 });
 
-//$(document).on("click",".msg",function(){
-//	var msgid=$(this).attr('data-msgid');
-//	alert(msgid);	
-//});
-
-	
-//=============== OLD
-// Open msg area
-    $('UL.msgs .subject').on('click',function(event){ 
-    $(this).nextAll('div').slideToggle();
+// MSG Open
+$(document).on("click",".msg",function(){
+	var msgid=$(this).attr('data-msgid');
+	var this_msg=$(this);
     event.preventDefault();
-    var msgid=$(this).parent().attr('id');
-    $.post(globals.module_url+'inbox/set_read',{'state':1,'msgid':msgid},function(data){})
-        $(this).addClass('muted');
+//    var checked=$('.icheckbox_minimal',this).hasClass('checked'));
+    var url = globals.base_url+'inbox/inbox/get_msg';    
+    $.post(url,{id:msgid},function(data){
+    	var msg=JSON.parse(data);
+        $('#myModal').find('.modal-title').html(msg.subject);
+        $('#myModal').find('.modal-body').html(msg.body);
+        $('#myModal').modal('show');
+        this_msg.removeClass('unread');
+        this_msg.addClass('read');   
     });
-    
+});
+
+// Action dropdown handle
+$(document).on("click","#msg_action a",function(){
+	var action=$(this).attr('data-action');
+	var msgid=[];
+	$('.msg').each(function(i,data){
+		var checked=$(data).find('.icheckbox_minimal').hasClass('checked')
+		if(checked){
+			msgid.push($(data).attr('data-msgid'));
+
+		}
+	});
+	
+	// only if we have selection
+	if(!msgid.length){
+		
+		
+	}
+	console.log(msgid.length);
+});
+
+
+
+
+//=============== OLD
+
 
 // delete && Move
 $("a[name='delete']").on('click',function(){
