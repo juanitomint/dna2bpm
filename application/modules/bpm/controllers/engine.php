@@ -581,8 +581,6 @@ class Engine extends MX_Controller {
         }
         if ($debug)
             var_dump('$this->data', $this->data);
-        var_dump('$this->data', $this->data);
-        exit;
     }
 
     function do_signals($name) {
