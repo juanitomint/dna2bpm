@@ -556,13 +556,21 @@ class Engine extends MX_Controller {
 //---load mongo_connector by default
         $this->load->model('bpm/connectors/mongo_connector');
         if (isset($case['data'])) {
-            foreach ($case['data'] as $key => $value) {
+            foreach ($case['data'] as $data_conn) {
+                $keyval=each($data_conn);
+                $key=$keyval['key'];
+                $value=$keyval['value'];
                 if (is_array($value)) {
                     if (isset($value['connector'])) {
                         $conn = $value['connector'] . '_connector';
                         if ($debug)
                             echo "Calling Connector: $conn<br/>";
-                        $this->data->$key = $this->$conn->get_data($value);
+                        //---if not set initialize as array
+                        if(!isset($this->data->$key)){
+                        $this->data->$key=array();
+                        
+                        }
+                        array_push($this->data->$key , $this->$conn->get_data($value));
                     } else {
                         $this->data->$key = $value;
                     }
@@ -572,7 +580,9 @@ class Engine extends MX_Controller {
             }
         }
         if ($debug)
-            var_dump('$this->data->dna2params', $this->data->dna2params);
+            var_dump('$this->data', $this->data);
+        var_dump('$this->data', $this->data);
+        exit;
     }
 
     function do_signals($name) {
