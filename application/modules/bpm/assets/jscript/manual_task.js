@@ -2,7 +2,7 @@ $(document).ready(function(){
     
     $('#myModal').on('hidden', function () {
         
-        url=globals.base_url+'dna2/dashboard';
+        url=globals.base_url+'dashboard';
         window.location=url;
         
     });
