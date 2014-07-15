@@ -103,7 +103,7 @@ class Msg extends CI_Model {
     // Was message read?
     function set_read($status,$id) {
     $mongoid=new MongoId($id);
-    $status=($status==1)?(true):(false);
+    $status=($status=='read')?(true):(false);
     $query=array('$set' =>array('read'=>$status));
     $criteria = array('_id' => $mongoid);
     $rs=$this->mongo->db->msg->update($criteria, $query);

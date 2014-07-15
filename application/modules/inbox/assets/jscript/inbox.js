@@ -30,7 +30,7 @@ $(document).on("click",".msg",function(){
     var url = globals.base_url+'inbox/inbox/get_msg';    
     $.post(url,{id:msgid},function(data){
     	var msg=JSON.parse(data);
-        $('#myModal').find('.modal-title').html(msg.subject);
+        $('#myModal').find('.modal-title').html('<i class="fa fa-envelope"></i> '+msg.subject);
         $('#myModal').find('.modal-body').html(msg.body);
         $('#myModal').modal('show');
         this_msg.removeClass('unread');
@@ -46,20 +46,59 @@ $(document).on("click","#msg_action a",function(){
 		var checked=$(data).find('.icheckbox_minimal').hasClass('checked')
 		if(checked){
 			msgid.push($(data).attr('data-msgid'));
-
 		}
 	});
-	
+
 	// only if we have selection
-	if(!msgid.length){
-		
+	if(msgid.length){
+
+		switch(action){
+		case "read":
+		    var url = globals.base_url+'inbox/inbox/set_read';    
+		    $.post(url,{state:'read',msgid:msgid},function(data){
+		    	msgid.forEach(function(id){
+		    		$("[data-msgid='"+id+"']").removeClass('unread');
+		    		$("[data-msgid='"+id+"']").addClass('read');
+	    		});
+		    });
+			break;
+		case "unread":
+		    var url = globals.base_url+'inbox/inbox/set_read';    
+		    $.post(url,{state:'unread',msgid:msgid},function(data){
+		    	msgid.forEach(function(id){
+		    		$("[data-msgid='"+id+"']").removeClass('read');
+		    		$("[data-msgid='"+id+"']").addClass('unread');
+	    		});
+		    });
+			break;
+		case "junk":
+			alert("junk");
+			break;	
+	}
 		
 	}
 	console.log(msgid.length);
 });
-
-
-
+//
+//"use strict";
+////iCheck for checkbox and radio inputs
+//$('input[type="checkbox"]').iCheck({
+//    checkboxClass: 'icheckbox_minimal',
+//    radioClass: 'iradio_minimal'
+//});
+//
+////When unchecking the checkbox
+//$("#check-all").on('ifUnchecked', function(event) {
+//    //Uncheck all checkboxes
+//    $("input[type='checkbox']", ".table-mailbox").iCheck("uncheck");
+//});
+//
+////When checking the checkbox
+//$("#check-all").on('ifChecked', function(event) {
+//	alert(1);
+//    //Check all checkboxes
+//    $("input[type='checkbox']", ".table-mailbox").iCheck("check");
+//}
 
 //=============== OLD
 
