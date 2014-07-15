@@ -61,9 +61,11 @@ $lang["folder"] = 'Folder';
 $lang["to"] = 'to';
 $lang["off"] = 'off';
 //---actions
+$lang["open"] = 'Open';
 $lang["View"] = 'View';
 $lang["Edit"] = 'Edit';
 $lang["Dump"] = 'Dump';
+$lang["more_info"] = 'More info';
 $lang['Import'] = 'Import';
 $lang["Export"] = 'Export';
 $lang["Start_Manual_Case"] = 'Start Manual Case';

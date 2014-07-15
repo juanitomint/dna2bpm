@@ -1,6 +1,6 @@
 <div class="box box-info">
     <div class="box-header" style="cursor: move;">
-        <i class="ion ion-clipboard"></i>
+        <i class="ion ion-ios7-albums"></i>
         <h3 class="box-title">{title} ({qtty})</h3>
         <div class="box-tools pull-right">
         

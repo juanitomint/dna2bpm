@@ -11,6 +11,6 @@
         <i class="fa fa-sitemap fa-rotate-270"></i>
     </div>
     <a class="small-box-footer" href="{base_url}bpm/admin" target="_blank">
-        open <i class="fa fa-arrow-circle-right"></i>
+        {lang open} <i class="fa fa-arrow-circle-right"></i>
     </a>
 </div>

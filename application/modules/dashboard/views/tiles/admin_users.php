@@ -11,6 +11,6 @@
         <i class="ion ion-person-stalker"></i>
     </div>
     <a class="small-box-footer" href="{base_url}user/admin" target="_blank">
-        open <i class="fa fa-arrow-circle-right"></i>
+        {lang open} <i class="fa fa-arrow-circle-right"></i>
     </a>
 </div>
