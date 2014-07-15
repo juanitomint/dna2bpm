@@ -29,7 +29,7 @@ class Inbox extends MX_Controller {
         $customData['user'] = (array) $this->user->get_user($this->idu);
         $customData['inbox_icon'] = 'icon-envelope';    
         $customData['js'] = array($this->module_url . "assets/jscript/inbox.js"=>'Inbox JS'); 
-        $customData['css'] = array($this->module_url . "assets/css/dashboard.css" => 'Dashboard CSS');
+        $customData['css'] = array($this->module_url . "assets/css/inbox.css" => 'Dashboard CSS');
 
         // Determino el folder
         $folders=array('inbox','trash','outbox');
@@ -69,8 +69,8 @@ class Inbox extends MX_Controller {
 
      	$customData['user'] = (array) $this->user->get_user($this->idu);
      	$customData['inbox_icon'] = 'icon-envelope';
-     	$customData['js'] = array($this->module_url . "assets/jscript/inbox.js"=>'Inbox JS');
-     	$customData['css'] = array($this->module_url . "assets/css/dashboard.css" => 'Dashboard CSS');
+     	$customData['js'] = array('icheck',$this->module_url . "assets/jscript/inbox.js"=>'Inbox JS');
+     	$customData['css'] = array($this->module_url . "assets/css/inbox.css" => 'Dashboard CSS');
     
     	// Determino el folder
     	$folders=array('inbox','trash','outbox');
@@ -159,7 +159,9 @@ class Inbox extends MX_Controller {
     function set_read(){
     $state=$this->input->post('state');
     $id=$this->input->post('msgid');
-    $this->msg->set_read($state,$id);
+	    foreach($id as $myid){
+	    	$this->msg->set_read($state,$myid);
+	    }
     }
     
     function send(){
