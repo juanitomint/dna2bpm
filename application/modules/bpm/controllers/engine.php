@@ -688,7 +688,7 @@ class Engine extends MX_Controller {
         while ($it->valid()) {
             var_dump($it->getSubIterator(), $it->key(), $it->current());
             echo '<hr/>';
-            if (((isset($index) AND ( $it->key() == $index)) OR (!isset($index))) AND ( $it->current() == $needle)) {
+            if (((isset($index) AND ( $it->key() == $index)) OR ( !isset($index))) AND ( $it->current() == $needle)) {
 //return $aIt->key();
                 echo "****  FOUND ****";
                 return (array) $it->getSubIterator();
@@ -799,9 +799,9 @@ class Engine extends MX_Controller {
                                         $rendering = trim($shape->properties->rendering);
                                         if ($rendering) {
                                             $token_id = $first['_id'];
-                                            if (strstr($rendering, '$')) {
-                                                $streval = 'return ' . $rendering . ';';
-                                            }
+                                            if(strstr($rendering, '$')){
+                                            $streval = 'return ' . $rendering . ';';
+                                            } 
                                             $rendering = eval($streval);
                                             if (strstr($rendering, 'http')) {
                                                 $querystr = array_filter(

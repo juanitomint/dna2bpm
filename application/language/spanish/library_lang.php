@@ -61,9 +61,11 @@ $lang["folder"] = 'Carpeta';
 $lang["to"] = 'al';
 $lang["off"] = 'de';
 //---actions
+$lang["open"] = 'Abrir';
 $lang["View"] = 'Ver';
 $lang["Edit"] = 'Editar';
 $lang["Dump"] = 'Dump';
+$lang["more_info"] = 'Más información';
 $lang['Import'] = 'Importar';
 $lang["Export"] = 'Exportar';
 $lang["Start_Manual_Case"] = 'Iniciar Manual';

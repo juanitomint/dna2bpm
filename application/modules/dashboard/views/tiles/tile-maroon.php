@@ -11,6 +11,6 @@
         <i class="ion {icon}"></i>
     </div>
     <a class="small-box-footer {more_info_class}" href="{more_info_link}">
-        More info <i class="fa fa-arrow-circle-right"></i>
+        {lang more_info} <i class="fa fa-arrow-circle-right"></i>
     </a>
 </div>

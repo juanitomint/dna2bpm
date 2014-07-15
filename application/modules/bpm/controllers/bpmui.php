@@ -82,6 +82,7 @@ class Bpmui extends MX_Controller {
     }
 
     function tile_tasks() {
+        $data['lang'] = $this->lang->language;
         $data['title'] = 'My Tasks';
         $tasks = $this->bpm->get_tasks_byFilter(
                 array(
@@ -96,6 +97,7 @@ class Bpmui extends MX_Controller {
     }
 
     function tile_tasks_done() {
+        $data['lang'] = $this->lang->language;
         $data['title'] = 'My Tasks Done';
         $tasks = $this->bpm->get_tasks_byFilter(
                 array(
@@ -111,6 +113,7 @@ class Bpmui extends MX_Controller {
     }
 
     function tile_cases($idwf = null) {
+        $data['lang'] = $this->lang->language;
         $data['title'] = 'My Cases';
         $cases = $this->bpm->get_cases_byFilter(
                 array(
@@ -125,6 +128,7 @@ class Bpmui extends MX_Controller {
     }
 
     function tile_cases_closed($idwf = null) {
+        $data['lang'] = $this->lang->language;
         $data['title'] = 'Closed Cases';
         $cases = $this->bpm->get_cases_byFilter(
                 array(
@@ -156,6 +160,7 @@ class Bpmui extends MX_Controller {
                 ), array(), array('checkdate' => 'desc')
         );
         $data = $this->prepare_tasks($tasks, $chunk, $pagesize);
+        $data['lang']=$this->lang->language;
         $data['title'] = $this->lang->line('Tasks') . ' ' . $this->lang->line('Finished');
 
         $data['more_info_link'] = $this->base_url . 'bpm/';
@@ -171,6 +176,7 @@ class Bpmui extends MX_Controller {
                 ), array(), array('checkdate' => 'desc')
         );
         $data = $this->prepare_tasks($tasks, $chunk, $pagesize);
+        //$data['lang'] = $this->lang->language;
         $data['title'] = $this->lang->line('Tasks') . ' ' . $this->lang->line('Pending');
 
         $data['more_info_link'] = $this->base_url . 'bpm/';
@@ -186,6 +192,7 @@ class Bpmui extends MX_Controller {
                 ), array(), array('checkdate' => 'desc')
         );
         $data = $this->prepare_cases($cases, $chunk, $pagesize);
+        //$data['lang'] = $this->lang->language;
         $data['title'] = $this->lang->line('closedCases');
 
         $data['more_info_link'] = $this->base_url . 'bpm/';
@@ -200,6 +207,7 @@ class Bpmui extends MX_Controller {
                 ), array(), array('checkdate' => 'desc')
         );
         $data = $this->prepare_cases($cases, $chunk, $pagesize);
+        //$data['lang'] = $this->lang->language;
         $data['title'] = $this->lang->line('openCases');
 
         $data['more_info_link'] = $this->base_url . 'bpm/';

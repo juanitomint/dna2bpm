@@ -166,18 +166,21 @@ class Dashboard extends MX_Controller {
 
     // ==== Tiles fixed
     function tile_admin_users() {
+        $data['lang'] = $this->lang->language;
         $data['base_url'] = $this->base_url;
         $data['module_url'] = $this->module_url;
         return $this->parser->parse('tiles/admin_users', $data, true, true);
     }
 
     function tile_admin_bpm() {
+        $data['lang'] = $this->lang->language;
         $data['base_url'] = $this->base_url;
         $data['module_url'] = $this->module_url;
         return $this->parser->parse('tiles/admin_bpm', $data, true, true);
     }
 
     function tile($template, $data) {
+        $data['lang'] = $this->lang->language;
         $this->parser->parse($template, $data);
     }
 
