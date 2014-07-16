@@ -10,11 +10,11 @@
     <div class="modal-footer">
         <button id="closeTask" class="btn pull-left btn-danger" data-dismiss="modal" aria-hidden="true">
             <i class="icon-play icon-chevron-left icon-white"></i>
-            {closeTask}
+            {lang closeTask}
         </button>
         <button id="finishTask" class="btn btn-success">
             <i class="icon-play icon-white"></i>
-            {finishTask}
+            {lang finishTask}
         </button>
     </div>
 </div>

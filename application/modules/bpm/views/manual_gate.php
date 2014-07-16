@@ -21,7 +21,7 @@
     <div class="modal-footer">
         <button id="closeTask" class="btn pull-left btn-danger" data-dismiss="modal" aria-hidden="true">
             <i class="icon-play icon-chevron-left icon-white"></i>
-            {closeTask}
+            {lang closeTask}
         </button>
     </div>
 </div>
