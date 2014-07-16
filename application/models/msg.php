@@ -23,7 +23,14 @@ class Msg extends CI_Model {
 
         if($folder=='outbox'){
             $query = array('from' =>(double) $iduser);
+        }elseif($folder=='star'){
+        	$query = array(
+        			'to' =>(double) $iduser,
+        			'star'=>true,
+        			'folder'=>array('$ne'=>'trash')
+        	);
         }else{
+        
             // Para outbox
             $query = array('to' =>(double) $iduser);
             if (isset($folder))

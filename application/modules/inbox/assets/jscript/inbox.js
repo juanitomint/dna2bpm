@@ -72,12 +72,27 @@ $(document).on("click","#msg_action a",function(){
 		    });
 			break;
 		case "junk":
-			alert("junk");
+		    var url = globals.base_url+'inbox/inbox/move';    
+		    $.post(url,{'msgid':msgid,'folder':'trash'},function(data){
+		    	msgid.forEach(function(id){
+		    		$("[data-msgid='"+id+"']").hide('500');
+	    		});
+		    });
 			break;	
+		case "delete":
+		    var url = globals.base_url+'inbox/inbox/remove';    
+		    $.post(url,{'msgid':msgid},function(data){
+		    	msgid.forEach(function(id){
+		    		$("[data-msgid='"+id+"']").hide('500');
+	    		});
+		    });
+			break;
 	}
 		
 	}
 	console.log(msgid.length);
+
+    
 });
 //
 //"use strict";
@@ -111,7 +126,7 @@ $("a[name='delete']").on('click',function(){
           $('#'+msgid).append('<span class="pull-right" style="margin-right:5px"><i class="icon-spinner icon-spin icon-large"></i> Wait... </span> ');
         $.post(globals.module_url+'inbox/remove',{'msgid':msgid},function(data){
         $('#'+msgid).hide('500');
-    });
+        });
     }else{
         // Mando a Trash
           $('#'+msgid).append('<span class="pull-right" style="margin-right:5px"><i class="icon-spinner icon-spin icon-large"></i> Wait... </span> ');

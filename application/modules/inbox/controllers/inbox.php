@@ -71,18 +71,17 @@ class Inbox extends MX_Controller {
      	$customData['inbox_icon'] = 'icon-envelope';
      	$customData['js'] = array('icheck',$this->module_url . "assets/jscript/inbox.js"=>'Inbox JS');
      	$customData['css'] = array($this->module_url . "assets/css/inbox.css" => 'Dashboard CSS');
-    
+     	$customData['base_url'] = $this->base_url;
+     	$customData['module_url'] = $this->module_url;
     	// Determino el folder
-    	$folders=array('inbox','trash','outbox');
+    	$folders=array('inbox','trash','outbox','star');
     	$source='to';
-    	if($this->uri->segment(4) && in_array($this->uri->segment(4),$folders)){
-    		$folder=$this->uri->segment(4);
+    	if($this->uri->segment(3) && in_array($this->uri->segment(3),$folders)){
+    		$folder=$this->uri->segment(3);
     	}else{
     		$folder='inbox';
     	}
-    	$customData['inbox_title'] = ucfirst($folder);
-    
-    
+    	$customData['folder']=$folder;
     	// Messages Loop
     	$mymgs = $this->msg->get_msgs($this->idu,$folder);
     
@@ -101,7 +100,7 @@ class Inbox extends MX_Controller {
     
     		$customData['mymsgs'][] = $msg;
     	}
-    
+
     //var_dump($customData);
     $customData['content']=$this->parser->parse('inbox/inbox2', $customData, true, true);
     return $customData;
@@ -241,14 +240,19 @@ class Inbox extends MX_Controller {
     function move(){
         $msgid=$this->input->post('msgid');
         $folder=$this->input->post('folder');
-        $this->msg->move($msgid,$folder);
+        foreach($msgid as $msg){
+        	$this->msg->move($msg,$folder);
+        }
     }
    
         // Move msg to trash
     
     function remove(){
         $msgid=$this->input->post('msgid');
-        $this->msg->remove($msgid);
+        foreach($msgid as $msg){
+        	 $this->msg->remove($msg);
+        }
+       
     }
 
 
