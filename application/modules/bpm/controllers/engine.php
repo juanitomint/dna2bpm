@@ -376,7 +376,7 @@ class Engine extends MX_Controller {
 //$debug=true;
 //----prepare renderData
         $renderData = array();
-        $renderData = $this->lang->language;
+        $renderData['lang'] = $this->lang->language;
         $renderData['theme'] = $this->config->item('theme');
         $renderData['base_url'] = $this->base_url;
         $renderData['idwf'] = $idwf;
@@ -437,7 +437,7 @@ class Engine extends MX_Controller {
         $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
 //----prepare renderData
         $renderData = array();
-        $renderData = $this->lang->language;
+        $renderData['lang'] = $this->lang->language;
         $renderData['theme'] = $this->config->item('theme');
         $renderData['base_url'] = $this->base_url;
         $renderData['idwf'] = $idwf;
