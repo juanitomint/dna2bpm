@@ -39,9 +39,8 @@ if (is_file('.git/HEAD')) {
 }
 
 if(isset($_SERVER["HTTP_HOST"])){
-    define('ENVIRONMENT', isset($_SERVER["HTTP_HOST"])).$branch;
+    define('ENVIRONMENT', $_SERVER["HTTP_HOST"].$branch);
 }
-
 if (!defined('ENVIRONMENT'))
     define('ENVIRONMENT', 'development');
 /*
