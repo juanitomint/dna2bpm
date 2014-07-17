@@ -109,36 +109,6 @@ class Inbox extends MX_Controller {
     
   
 
-//    function fill_inbox($folder=null){
-//        $cpData = array();
-//        $cpData = $this->lang->language;
-//        $cpData['base_url'] = base_url();
-//        $mymgs = $this->msg->get_msgs($this->idu,$folder);
-//        $head = '{rows:[';
-//        $i=1;
-//        $linea="";
-//        foreach ($mymgs as $msg) {
-//         $fecha=date("d/m/Y",strtotime($msg["checkdate"]));
-//         $u = $this->user->get_user($msg["from"]);
-//         $usuario="{$u["name"]},    {$u["lastname"]}";
-//         $class_star=($msg["star"])?('star_on'):('');
-//         $class_read=($msg["read"])?('read_on'):('');
-//
-//             $data = "'{$msg["subject"]}^javascript:open_msg(&#39;".$msg["_id"]."&#39;)^_self',";
-//             //$data .= "{'value':'$usuario','title':'1'},";
-//             $data .= "'<span  class=\"read $class_read read{$msg["_id"]}\"></span>^javascript:read(&#39;".$msg["_id"]."&#39;)^_self',";
-//             $data .= "'<span  class=\"star $class_star star{$msg["_id"]}\"></span>^javascript:star(&#39;".$msg["_id"]."&#39;)^_self',";
-//             $data .= "'$usuario ({$msg["from"]})',";
-//             $data .= "'{$msg["folder"]}',";
-//             $data .= "'$fecha'";
-//             
-//        $linea.= "{id:".$i++.",data:[".$data."]},";
-//        }
-//        $tail = ']}';
-//        echo $head . $linea . $tail;
-//
-//    }
-
     // get msg by id
     function get_msg(){
     $msgid=$this->input->post('id');
@@ -186,38 +156,40 @@ class Inbox extends MX_Controller {
     }
     
     function new_msg(){
-        $customData['user'] = (array) $this->user->get_user($this->idu);
 
-        // REPLY: segment 4 is msgid 
-        $customData['reply']=0;
-        if($this->uri->segment(4)){
-            $msgid=$this->uri->segment(4);
-            $mymgs = $this->msg->get_msg($msgid);
+         $customData['user'] = (array) $this->user->get_user($this->idu);
+
+//         // REPLY: segment 4 is msgid 
+$customData['reply']=0;
+
+//         if($this->uri->segment(4)){
+//             $msgid=$this->uri->segment(4);
+//             $mymgs = $this->msg->get_msg($msgid);
             
-            $sender=$this->user->get_user($mymgs['from']);
+//             $sender=$this->user->get_user($mymgs['from']);
 
-            $customData['reply']=1;
-            $customData['reply_name']=$sender->nick;
-            $customData['reply_idu']=$sender->idu;
-            $customData['reply_body']=$mymgs['body'];
-            $customData['reply_title']=$mymgs['subject'];
-            $customData['reply_date']=$mymgs['checkdate'];
-        }
+//             $customData['reply']=1;
+//             $customData['reply_name']=$sender->nick;
+//             $customData['reply_idu']=$sender->idu;
+//             $customData['reply_body']=$mymgs['body'];
+//             $customData['reply_title']=$mymgs['subject'];
+//             $customData['reply_date']=$mymgs['checkdate'];
+//         }
                 
 
-        $customData['js'] = array(
-            $this->base_url . "jscript/select2-3.4.5/select2.min.js"=>'Select JS',
-            $this->module_url . "assets/jscript/inbox_new.js"=>'Inbox JS'
-            ); 
+//         $customData['js'] = array(
+//             $this->base_url . "jscript/select2-3.4.5/select2.min.js"=>'Select JS',
+//             $this->module_url . "assets/jscript/inbox_new.js"=>'Inbox JS'
+//             ); 
 
-        $customData['css'] = array(
-            $this->base_url . "jscript/select2-3.4.5/select2.css" => 'Select CSS',
-            $this->base_url . "jscript/select2-3.4.5/select2-bootstrap.css" => 'Select BT CSS',
-            $this->module_url . "assets/css/dashboard.css" => 'Dashboard CSS'
-            );
+//         $customData['css'] = array(
+//             $this->base_url . "jscript/select2-3.4.5/select2.css" => 'Select CSS',
+//             $this->base_url . "jscript/select2-3.4.5/select2-bootstrap.css" => 'Select BT CSS',
+//             $this->module_url . "assets/css/dashboard.css" => 'Dashboard CSS'
+//             );
 
-        
-        Modules::run('dna2/dna2/render','inbox_new',$customData);
+         $this->parser->parse('inbox/inbox_new', $customData);
+
     }
     
     // Get list of users
@@ -254,6 +226,7 @@ class Inbox extends MX_Controller {
         }
        
     }
+    
 
 
     
