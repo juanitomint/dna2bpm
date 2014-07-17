@@ -27,7 +27,7 @@
  * Different environments will load different config files
  * 
  */
-
+$branch='';
 if (is_file('.git/HEAD')) {
     $stringfromfile = file('.git/HEAD', FILE_USE_INCLUDE_PATH);
 
@@ -35,8 +35,13 @@ if (is_file('.git/HEAD')) {
 
     $explodedstring = explode("/", $stringfromfile); //seperate out by the "/" in the string
 
-    define('ENVIRONMENT', trim(end($explodedstring)));
+    $branch='_'.trim(end($explodedstring));
 }
+
+if(isset($_SERVER["HTTP_HOST"])){
+    define('ENVIRONMENT', isset($_SERVER["HTTP_HOST"])).$branch;
+}
+
 if (!defined('ENVIRONMENT'))
     define('ENVIRONMENT', 'development');
 /*
