@@ -109,10 +109,19 @@ class Dashboard extends MX_Controller {
         }
     }
 
-    function Show($json,$debug=false) {
+    function Show($file, $debug = false) {
         //---only admins can debug
-        $debug=($this->user->isAdmin()) ? $debug:false;
-        $this->Dashboard($json,$debug);
+        $debug = ($this->user->isAdmin()) ? $debug : false;
+        if (!is_file(FCPATH . APPPATH . "modules/dashboard/views/json/$file.json")) {
+            // Whoops, we don't have a page for that!
+            return null;
+        } else {
+            $myconfig = json_decode($this->load->view("json/$file.json", '', true), true);
+            if(isset($myconfig['private']) && $myconfig['private']==true){
+                return;
+            }
+            $this->Dashboard($file, $debug);
+        }
     }
 
     // =========== New Way ===========
@@ -122,15 +131,17 @@ class Dashboard extends MX_Controller {
         $customData['base_url'] = $this->base_url;
         $customData['module_url'] = $this->module_url;
         $customData['lang'] = $this->lang->language;
-
-        return $this->parser->parse('menu', $customData, true);
+        //---load custom menu
+        $menu_custom = Modules::run('menu/get_menu', '0', 'sidebar-menu', !$this->user->isAdmin());
+        $customData['menu_custom'] = $this->parser->parse_string($menu_custom, $customData, TRUE, TRUE);
+        return $this->parser->parse('dashboard/menu', $customData, true, true);
     }
 
     // ==== Dashboard
 
-    function Dashboard($json = 'dashboard',$debug=false) {
+    function Dashboard($json = 'dashboard', $debug = false) {
 
-        $myconfig = $this->parse_config($json,$debug);
+        $myconfig = $this->parse_config($json, $debug);
 
         $layout = ($myconfig['view'] <> '') ? $myconfig['view'] : 'layout';
         $customData = $myconfig;
@@ -191,7 +202,7 @@ class Dashboard extends MX_Controller {
     }
 
     // ============ Parse JSON config
-    function parse_config($file,$debug=false) {
+    function parse_config($file, $debug = false) {
         if (!is_file(FCPATH . APPPATH . "modules/dashboard/views/json/$file.json")) {
             // Whoops, we don't have a page for that!
             return null;
