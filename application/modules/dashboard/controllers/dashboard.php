@@ -109,10 +109,19 @@ class Dashboard extends MX_Controller {
         }
     }
 
-    function Show($json, $debug = false) {
+    function Show($file, $debug = false) {
         //---only admins can debug
         $debug = ($this->user->isAdmin()) ? $debug : false;
-        $this->Dashboard($json, $debug);
+        if (!is_file(FCPATH . APPPATH . "modules/dashboard/views/json/$file.json")) {
+            // Whoops, we don't have a page for that!
+            return null;
+        } else {
+            $myconfig = json_decode($this->load->view("json/$file.json", '', true), true);
+            if(isset($myconfig['private']) && $myconfig['private']==true){
+                return;
+            }
+            $this->Dashboard($file, $debug);
+        }
     }
 
     // =========== New Way ===========
@@ -125,7 +134,7 @@ class Dashboard extends MX_Controller {
         //---load custom menu
         $menu_custom = Modules::run('menu/get_menu', '0', 'sidebar-menu', !$this->user->isAdmin());
         $customData['menu_custom'] = $this->parser->parse_string($menu_custom, $customData, TRUE, TRUE);
-        return $this->parser->parse('menu', $customData, true, true);
+        return $this->parser->parse('dashboard/menu', $customData, true, true);
     }
 
     // ==== Dashboard
