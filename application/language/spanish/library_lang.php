@@ -28,12 +28,15 @@ $lang["edit"] = "Editar";
 $lang["groups"] = "Grupos";
 $lang["scheduler"] = "Agenda";
 $lang["application"] = '[+]Aplicación';
-$lang["applications"] = '[+]Aplicaciónes';
+$lang["applications"] = '[+]Aplicaciones';
 $lang["add_app"] = '[+]Aplicación';
 $lang["user_logout"] = 'Salir';
 $lang["Inbox"] = 'Bandeja Entrada';
 $lang["Tasks"] = 'Tareas';
+$lang["TasksDone"] = 'Tareas finalizadas';
+$lang["TasksPending"] = 'Tareas pendientes';
 $lang["Cases"] = 'Casos';
+$lang["CasesClosed"] = 'Casos Cerrados';
 $lang["Reports"] = 'Reportes';
 
 /* ---Control Panel ----- */
