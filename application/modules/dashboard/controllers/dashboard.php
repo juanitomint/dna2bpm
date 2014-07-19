@@ -102,7 +102,7 @@ class Dashboard extends MX_Controller {
     function Index() {
         if ($this->user->isAdmin()) {
 
-            $this->Dashboard('admin');
+            $this->Dashboard('dashboard/json/admin.json');
         } else {
 
             $this->Dashboard();
@@ -116,11 +116,11 @@ class Dashboard extends MX_Controller {
             // Whoops, we don't have a page for that!
             return null;
         } else {
-            $myconfig = json_decode($this->load->view("json/$file.json", '', true), true);
-            if(isset($myconfig['private']) && $myconfig['private']==true){
+            $myconfig = json_decode($this->load->view("dashboard/json/$file.json", '', true), true);
+            if (isset($myconfig['private']) && $myconfig['private'] == true) {
                 return;
             }
-            $this->Dashboard($file, $debug);
+            $this->Dashboard("dashboard/json/$file.json", $debug);
         }
     }
 
@@ -139,7 +139,7 @@ class Dashboard extends MX_Controller {
 
     // ==== Dashboard
 
-    function Dashboard($json = 'dashboard', $debug = false) {
+    function Dashboard($json = 'dashboard/json/dashboard', $debug = false) {
 
         $myconfig = $this->parse_config($json, $debug);
 
@@ -203,114 +203,113 @@ class Dashboard extends MX_Controller {
 
     // ============ Parse JSON config
     function parse_config($file, $debug = false) {
-        if (!is_file(FCPATH . APPPATH . "modules/dashboard/views/json/$file.json")) {
-            // Whoops, we don't have a page for that!
-            return null;
-        } else {
-            $myconfig = json_decode($this->load->view("json/$file.json", '', true), true);
+        $myconfig = json_decode($this->load->view($file, '', true), true);
 
 //             $return['js'] = array();
-            //Root config
-            foreach ($myconfig as $key => $value) {
-                if ($key != 'zones')
-                    $return[$key] = $value;
+        //Root config
+        foreach ($myconfig as $key => $value) {
+            if ($key != 'zones')
+                $return[$key] = $value;
+        }
+
+        //Zones
+        foreach ($myconfig['zones'] as $zones) {
+            $content = "";
+            $widgets = array();
+            $myzone = current($zones);
+
+            $myzone_key = key($zones);
+
+
+            foreach ($myzone as $item) {
+                $widgets[] = $item;
             }
 
-            //Zones
-            foreach ($myconfig['zones'] as $zones) {
-                $content = "";
-                $widgets = array();
-                $myzone = current($zones);
 
-                $myzone_key = key($zones);
+            // ==== Reparto de columnas
+            $cant = count($myzone);
+            if ($cant > 6 || $cant < 1)
+                continue;;
+            $suma = 0;
+            $row = array();
+            $auto = 0;
+            $resto = 0;
+            // Reparto inicial
+            foreach ($widgets as $k => $myWidget) {
 
-
-                foreach ($myzone as $item) {
-                    $widgets[] = $item;
+                if (!empty($myWidget['span'])) {
+                    $row[$k] = $myWidget['span'];
+                    $suma+=$myWidget['span'];
+                } else {
+                    $row[$k] = 0;
+                    $auto++;
                 }
+            }
+            $resto = 12 - $suma;
+            if ($auto != 0) {
+                // Hay sobrantes
+                $span = ($resto / $auto);
+            }
+            //Segunda pasada
+            foreach ($row as $k => $v) {
+                if ($v == 0)
+                    $row[$k] = $span;
+            }
+            // ____ Reparto de columnas
 
 
-                // ==== Reparto de columnas
-                $cant = count($myzone);
-                if ($cant > 6 || $cant < 1)
-                    continue;;
-                $suma = 0;
-                $row = array();
-                $auto = 0;
-                $resto = 0;
-                // Reparto inicial
-                foreach ($widgets as $k => $myWidget) {
+            $content.='<div class="row">';
 
-                    if (!empty($myWidget['span'])) {
-                        $row[$k] = $myWidget['span'];
-                        $suma+=$myWidget['span'];
-                    } else {
-                        $row[$k] = 0;
-                        $auto++;
-                    }
-                }
-                $resto = 12 - $suma;
-                if ($auto != 0) {
-                    // Hay sobrantes
-                    $span = ($resto / $auto);
-                }
-                //Segunda pasada
-                foreach ($row as $k => $v) {
-                    if ($v == 0)
-                        $row[$k] = $span;
-                }
-                // ____ Reparto de columnas
-
-
-                $content.='<div class="row">';
-
-                foreach ($widgets as $k => $myWidget) {
+            foreach ($widgets as $k => $myWidget) {
 //                     if (isset($myWidget['js']))
 //                         $return["js"] += $myWidget['js'];
-                    $span = $row[$k];
-                    if ($span == 0)
-                        continue;
-                    if (isset($myWidget['params'])) {
-                        $args = $myWidget['params'];
-                        array_unshift($args, $myWidget['module'] . '/' . $myWidget['controller'] . '/' . $myWidget['function']);
-                        $markup = $widget = call_user_func_array(array('Modules', 'run'), $args);
-                    } else {
-                        $markup = $widget = Modules::run($myWidget['module'] . '/' . $myWidget['controller'] . '/' . $myWidget['function']);
-                    }
-                    if ($debug)
-                        $markup = $myWidget['module'] . '/' . $myWidget['controller'] . '/' . $myWidget['function'] . $markup;
-                    // Si es un array uso el zonekey para identificar el markup
-                    if (is_array($markup)) {
-                        $content.="<div class='col-lg-$span connectedSortable'>{$markup['content']}</div>";
-                    } else {
-                        $content.="<div class='col-lg-$span connectedSortable'>$markup</div>";
-                    }
+                $span = $row[$k];
+                if ($span == 0)
+                    continue;
+                if (isset($myWidget['params'])) {
+                    $args = $myWidget['params'];
+                    array_unshift($args, $myWidget['module'] . '/' . $myWidget['controller'] . '/' . $myWidget['function']);
+                    $markup = $widget = call_user_func_array(array('Modules', 'run'), $args);
+                } else {
+                    $markup = $widget = Modules::run($myWidget['module'] . '/' . $myWidget['controller'] . '/' . $myWidget['function']);
                 }
-                $content.='</div>';
-
-                // Por si el widget devuelve un array en lugar del contenido solamente
+                if ($debug)
+                    $markup = $myWidget['module'] . '/' . $myWidget['controller'] . '/' . $myWidget['function'] . $markup;
+                // Si es un array uso el zonekey para identificar el markup
                 if (is_array($markup)) {
-                    if (isset($markup['content']))
-                        unset($markup['content']); // Content ahora es $myzone_key
-                    $return+=$markup;
+                    $content.="<div class='col-lg-$span connectedSortable'>{$markup['content']}</div>";
+                } else {
+                    $content.="<div class='col-lg-$span connectedSortable'>$markup</div>";
                 }
+            }
+            $content.='</div>';
 
-
-                $return[$myzone_key] = $content;
+            // Por si el widget devuelve un array en lugar del contenido solamente
+            if (is_array($markup)) {
+                if (isset($markup['content']))
+                    unset($markup['content']); // Content ahora es $myzone_key
+                $return+=$markup;
             }
 
-            return $return;
+
+            $return[$myzone_key] = $content;
         }
+
+        return $return;
     }
 
     // ============ Profile
-    function inbox($data = array()) {
-        $this->dashboard('inbox');
+    function Inbox($data = array()) {
+        $this->dashboard('dashboard/json/inbox');
     }
 
     // ============ Profile
-    function profile($data = array()) {
-        $this->dashboard('profile');
+    function Profile($data = array()) {
+        $this->dashboard('dashboard/json/profile');
+    }
+    // ============ Tasks
+    function Tasks($data = array()) {
+        $this->dashboard('dashboard/json/tasks');
     }
 
     // ============ Widgets
