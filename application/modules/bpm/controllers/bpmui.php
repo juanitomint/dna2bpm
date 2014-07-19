@@ -83,7 +83,7 @@ class Bpmui extends MX_Controller {
 
     function tile_tasks() {
         $data['lang'] = $this->lang->language;
-        $data['title'] = 'My Tasks';
+        $data['title'] = $this->lang->line('MyTasks');
         $tasks = $this->bpm->get_tasks_byFilter(
                 array(
                     'assign' => $this->idu,
@@ -98,7 +98,7 @@ class Bpmui extends MX_Controller {
 
     function tile_tasks_done() {
         $data['lang'] = $this->lang->language;
-        $data['title'] = 'My Tasks Done';
+        $data['title'] =$this->lang->line('TasksDone');
         $tasks = $this->bpm->get_tasks_byFilter(
                 array(
                     'assign' => $this->idu,
@@ -114,7 +114,7 @@ class Bpmui extends MX_Controller {
 
     function tile_cases($idwf = null) {
         $data['lang'] = $this->lang->language;
-        $data['title'] = 'My Cases';
+        $data['title'] =$this->lang->line('Cases');
         $cases = $this->bpm->get_cases_byFilter(
                 array(
                     'iduser' => $this->idu,
@@ -129,7 +129,7 @@ class Bpmui extends MX_Controller {
 
     function tile_cases_closed($idwf = null) {
         $data['lang'] = $this->lang->language;
-        $data['title'] = 'Closed Cases';
+        $data['title'] = $this->lang->line('CasesClosed');;
         $cases = $this->bpm->get_cases_byFilter(
                 array(
                     'iduser' => $this->idu,
