@@ -337,22 +337,24 @@ class Kpi extends MX_Controller {
         $cpData['start'] = $offset + 1;
         $cpData['top'] = $top;
         $cpData['qtty'] = $total;
-
         //----make content
+        
         for ($i = $offset; $i < $top; $i++) {
             $idcase = $cases[$i];
-            $case = $this->bpm->get_case($idcase);
-            //---Ensures $case['data'] exists
-            $case['data'] = (isset($case['data'])) ? $case['data'] : array();
-            //---Flatten data a bit so it can be parsed
-            $parseArr[] = array_merge(array(
-                'i' => $i + 1,
-                'idwf' => $case['idwf'],
-                'idcase' => $case['id'],
-                'checkdate' => date($this->lang->line('dateTimeFmt'), strtotime($case['checkdate'])),
-                'user' => (array) $this->user->get_user_safe($case['iduser']),
-                    ), $case['data']);
+            $case = $this->bpm->get_case($idcase, $kpi['idwf']);
+            $case['data']=$this->bpm->load_case_data($case);
+                //---Ensures $case['data'] exists
+                $case['data'] = (isset($case['data'])) ? $case['data'] : array();
+                //---Flatten data a bit so it can be parsed
+                $parseArr[] = array_merge(array(
+                    'i' => $i + 1,
+                    'idwf' => $kpi['idwf'],
+                    'idcase' => $idcase,
+                    'checkdate' => date($this->lang->line('dateTimeFmt'), strtotime($case['checkdate'])),
+                    'user' => (array) $this->user->get_user_safe($case['iduser']),
+                        ), $case['data']);
         }
+        //var_dump($parseArr);
         if ($kpi['list_template'] <> '') {
             $template = $kpi['list_template'];
         } else {
@@ -395,7 +397,7 @@ class Kpi extends MX_Controller {
             }
         }
         //var_dump($parseArr);exit;
-        $cpData['content'] = $this->parser->parse_string($template, array('cases' => $parseArr), true);
+        $cpData['content'] = $this->parser->parse_string($template, array('cases' => $parseArr), true,true);
         //----PROCESS KPIS
         $this->parser->parse('bpm/widgets/list.kpi.ui.php', $cpData);
     }
@@ -417,6 +419,26 @@ class Kpi extends MX_Controller {
             echo "Error: There is no kpi: $idkpi";
         }
     }
+
+    /*
+     * This function makes a Tile with kpi data
+     */
+
+    function Tile_kpi($kpi, $tile_file = 'tile-blue') {
+        if ($kpi) {
+            $this->load->model('bpm');
+            //var_dump($kpi);exit;
+            $kpi['widget_type'] = 'tiles';
+            $kpi['widget'] = (strstr($kpi['widget'], 'tile')) ? $kpi['widget'] : $tile_file;
+            $kpi_type = 'kpi_' . $kpi['type'];
+            $this->load->library($kpi_type);
+            echo $this->$kpi_type->tile($kpi);
+        }
+    }
+
+    /*
+     * This function makes a Tile with an idkpi 
+     */
 
     function Tile($model = null, $idkpi = null, $tile_file = 'tile-blue') {
 
@@ -540,7 +562,7 @@ class Kpi extends MX_Controller {
                     break;
             }
         }
-        $filter=array_merge((array)$filter_extra,$filter);
+        $filter = array_merge((array) $filter_extra, $filter);
         return $filter;
     }
 
@@ -573,10 +595,9 @@ class Kpi extends MX_Controller {
         $properties_template = $common + $type_props;
         //----load the data from post
         $kpi->load($postkpi, $properties_template);
-
         if ($idkpi == '') {
             //---create new ID for the frame
-            $idkpi = (int) $this->app->gen_inc('kpi', 'idkpi');
+            $idkpi =$this->kpi_model->gen_kpi($kpi->idwf);
             $kpi->idkpi = $idkpi;
         }
         $dbkpi = ($this->kpi_model->get($idkpi));
@@ -601,7 +622,7 @@ class Kpi extends MX_Controller {
             var_dump($obj);
         }
     }
-
+    
     function ShowMsg($msg, $class = 'alert') {
 
         return '<div class="' . $class . '">

@@ -98,7 +98,7 @@ class Bpmui extends MX_Controller {
 
     function tile_tasks_done() {
         $data['lang'] = $this->lang->language;
-        $data['title'] =$this->lang->line('TasksDone');
+        $data['title'] = $this->lang->line('TasksDone');
         $tasks = $this->bpm->get_tasks_byFilter(
                 array(
                     'assign' => $this->idu,
@@ -114,7 +114,7 @@ class Bpmui extends MX_Controller {
 
     function tile_cases($idwf = null) {
         $data['lang'] = $this->lang->language;
-        $data['title'] =$this->lang->line('Cases');
+        $data['title'] = $this->lang->line('Cases');
         $cases = $this->bpm->get_cases_byFilter(
                 array(
                     'iduser' => $this->idu,
@@ -129,7 +129,8 @@ class Bpmui extends MX_Controller {
 
     function tile_cases_closed($idwf = null) {
         $data['lang'] = $this->lang->language;
-        $data['title'] = $this->lang->line('CasesClosed');;
+        $data['title'] = $this->lang->line('CasesClosed');
+        ;
         $cases = $this->bpm->get_cases_byFilter(
                 array(
                     'iduser' => $this->idu,
@@ -160,7 +161,7 @@ class Bpmui extends MX_Controller {
                 ), array(), array('checkdate' => 'desc')
         );
         $data = $this->prepare_tasks($tasks, $chunk, $pagesize);
-        $data['lang']=$this->lang->language;
+        $data['lang'] = $this->lang->language;
         $data['title'] = $this->lang->line('Tasks') . ' ' . $this->lang->line('Finished');
 
         $data['more_info_link'] = $this->base_url . 'bpm/';
@@ -218,7 +219,7 @@ class Bpmui extends MX_Controller {
         $data = array();
         $data['module_url'] = $this->module_url;
         $data['base_url'] = $this->base_url;
-        $data['showPager']=false;
+        $data['showPager'] = false;
         $data['isAdmin'] = $this->user->isAdmin();
         //---get caller 4 urls
         $trace = debug_backtrace();
@@ -231,7 +232,11 @@ class Bpmui extends MX_Controller {
             $tasks = $parts[$chunk - 1];
             foreach ($tasks as $task) {
                 $model = $this->bpm->get_model($task['idwf'], array('data.properties'));
-                $task['title'] = $model->data['properties']['name'];
+                if ($model) {
+                    $task['title'] = $model->data['properties']['name'];
+                } else {
+                    $task['title'] = $task['idwf']. ':: Missing model';
+                }
                 $task['label'] = (isset($task['checkdate'])) ? $this->time_elapsed_string($task['checkdate']) : '';
                 $task['label-class'] = 'label-warning';
                 $task['body'] = date($this->lang->line('dateTimeFmt'), strtotime($task['checkdate']));
@@ -258,7 +263,7 @@ class Bpmui extends MX_Controller {
         $data = array();
         $data['module_url'] = $this->module_url;
         $data['base_url'] = $this->base_url;
-        $data['showPager']=false;
+        $data['showPager'] = false;
         $data['isAdmin'] = $this->user->isAdmin();
         $trace = debug_backtrace();
         $caller = $trace[1]['function'];
@@ -271,7 +276,12 @@ class Bpmui extends MX_Controller {
             $tasks = $parts[$chunk - 1];
             foreach ($tasks as $task) {
                 $model = $this->bpm->get_model($task['idwf'], array('data.properties'));
-                $title = $model->data['properties']['name'] . ' :: ' . $task['title'];
+                if ($model) {
+                    $title = $model->data['properties']['name'] . ' :: ' . $task['title'];
+                } else {
+                    $title = '???' . ' :: ' . $task['title']; //---missing model
+                }
+                $task['title'] = $title;
                 $task['label'] = (isset($task['checkdate'])) ? $this->time_elapsed_string($task['checkdate']) : '';
                 $task['label-class'] = 'label-warning';
                 $task['icon'] = $this->bpm->get_icon($task['type']);

@@ -35,7 +35,7 @@ class Case_manager extends MX_Controller {
         $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
         if ($debug)
             echo '<h2>' . __FUNCTION__ . '</h2>';
-        $case = $this->bpm->get_case($idcase);
+        $case = $this->bpm->get_case($idcase,$idwf);
         $this->bpm->archive_case($case);
         echo "Moving case $idcase  to Archive...<br/>";
         $this->bpm->delete_case($idwf, $idcase);
@@ -179,7 +179,7 @@ class Case_manager extends MX_Controller {
             $out['rows'] = $tokens;
         } else {
             //--get case
-            $case = $this->bpm->get_case($idcase);
+            $case = $this->bpm->get_case($idcase,$idwf);
             $idwf = $case['idwf'];
 
             if (isset($idwf) && isset($idcase)) {
@@ -238,7 +238,7 @@ class Case_manager extends MX_Controller {
         $rs = $this->bpm->get_tokens($idwf, $idcase, $status);
         $data['idwf'] = $idwf;
         $data['idcase'] = $idcase;
-        $case = $this->bpm->get_case($idcase);
+        $case = $this->bpm->get_case($idcase,$idwf);
         $dateIn = new DateTime($case['checkdate']);
         foreach ($rs as $token) {
             if (isset($token['interval'])) {
