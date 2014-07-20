@@ -28,7 +28,7 @@ class Kpi_model extends CI_Model {
     }
 
     function get($idkpi) {
-        $query = array('idkpi' => (int)$idkpi);
+        $query = array('idkpi' => $idkpi);
 //        var_dump2($query);
         $result = $this->db->get_where('kpi', $query)->result_array();
         if ($result)
@@ -41,7 +41,40 @@ class Kpi_model extends CI_Model {
         $result = $this->db->get_where('kpi', $query)->result_array();
         return $result;
     }
+    function gen_kpi($idwf) {
+        $insert = array();
+        $trys = 10;
+        $i = 0;
+        $id =$idwf.'_'. chr(64 + rand(1, 26)) . chr(64 + rand(1, 26));
+        //---if passed specific id
+        if (func_num_args() > 1) {
+            $id = func_get_arg(1);
+            $passed = true;
+            //echo "passed: $id<br>";
+        }
+        $hasone = false;
 
+        while (!$hasone and $i <= $trys) {//---search until found or $trys iterations
+            $query = array('id' => $id);
+            $result = $this->db->get_where('kpi', $query)->result();
+            $i++;
+            if ($result) {
+                if ($passed) {
+                    show_error("id:$id already Exists in db.case");
+                    $hasone = true;
+                    break;
+                } else {//---continue search for free id
+                    $id = $idwf.'_'. chr(64 + rand(1, 26)) . chr(64 + rand(1, 26));
+                }
+            } else {//---result is null
+                $hasone = true;
+            }
+        }
+        if (!$hasone) {//-----cant allocate free id
+            show_error("Can't allocate an id in 'case' after $trys attempts");
+        }
+        return $id;
+    }
     function save($kpi) {
         $options = array('w' => true);
         $wf = $this->mongo->db->kpi->save($kpi, $options);

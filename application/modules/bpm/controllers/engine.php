@@ -76,7 +76,7 @@ class Engine extends MX_Controller {
 //---Gen new case ID
         $case = $this->bpm->gen_case($idwf);
         if ($manual) {
-            $mycase = $this->bpm->get_case($case);
+            $mycase = $this->bpm->get_case($case,$idwf);
             $mycase['run_manual'] = true;
 
             $this->bpm->save_case($mycase);
@@ -84,7 +84,7 @@ class Engine extends MX_Controller {
 
 //----save parent data if any
         if ($parent) {
-            $mycase = $this->bpm->get_case($case);
+            $mycase = $this->bpm->get_case($case,$idwf);
             $mycase['parent'] = $parent;
             $this->bpm->save_case($mycase);
             /*
@@ -172,7 +172,7 @@ class Engine extends MX_Controller {
         if ($debug)
             echo "<h2>" . __FUNCTION__ . '</h2>';
 //---check if case is locked
-        $thisCase = $this->bpm->get_case($case);
+        $thisCase = $this->bpm->get_case($case,$idwf);
         $locked = (isset($thisCase['locked'])) ? $thisCase['locked'] : false;
         if ($locked) {
             $user_lock = (array) $this->user->get_user($thisCase['lockedBy']);
@@ -388,7 +388,7 @@ class Engine extends MX_Controller {
         $mywf['data']['case'] = $idcase;
         $wf = bindArrayToObject($mywf['data']);
 //---get case
-        $case = $this->bpm->get_case($idcase);
+        $case = $this->bpm->get_case($idcase,$idwf);
 //---get token
         $token = $this->bpm->get_token($idwf, $idcase, $resourceId);
 //--get shape
@@ -552,7 +552,7 @@ class Engine extends MX_Controller {
         }//--end foreach
 ////////////////////////////////////////////////////////////////////////
 //---Read from data from CASE
-        $case = $this->bpm->get_case($idcase);
+        $case = $this->bpm->get_case($idcase,$wf->idwf);
 //---load mongo_connector by default
         $this->load->model('bpm/connectors/mongo_connector');
         if (isset($case['data'])) {
@@ -740,7 +740,7 @@ class Engine extends MX_Controller {
             $filter['resourceId'] = $run_resourceId;
         }
 //----Load Case
-        $case = $this->bpm->get_case($idcase);
+        $case = $this->bpm->get_case($idcase,$idwf);
 //----set manual flag 4 test
         $run_manual = (isset($case['run_manual'])) ? $case['run_manual'] : false;
 //var_dump('case',$case,'run_manual',$run_manual);

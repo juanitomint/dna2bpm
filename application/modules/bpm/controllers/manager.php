@@ -206,6 +206,7 @@ class Manager extends MX_Controller {
      */
 
     function mini_report($idcase, $output = 'array') {
+        //@todo set idwf
         $case = $this->bpm->get_case($idcase);
         $tokens = $this->bpm->get_tokens($case['idwf'], $idcase, array());
         $task2users = array();

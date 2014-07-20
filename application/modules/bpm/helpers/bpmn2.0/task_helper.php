@@ -34,7 +34,7 @@ function run_Task($shape, $wf, $CI) {
 
     $data = array();
 //---get case data
-    $case = $CI->bpm->get_case($wf->case);
+    $case = $CI->bpm->get_case($wf->case,$wf->idwf);
 //---set initiator same as case creator.
     $CI->user->Initiator = (int) $case['iduser'];
 //----Get token data
