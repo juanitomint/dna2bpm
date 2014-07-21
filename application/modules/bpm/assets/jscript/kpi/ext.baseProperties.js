@@ -4,8 +4,19 @@ try {
                 text: 'Save',
                 iconCls: 'icon icon-save',
                 handler: function() {
-                    var url = globals.module_url + 'kpi/save_properties/' + Ext.getCmp('propsGrid').store.data.get('idkpi').data.value;
+                    //var url = globals.module_url + 'kpi/save_properties/' + Ext.getCmp('propsGrid').store.data.get('idkpi').data.value;
+                    var url = globals.module_url + 'kpi/save_properties/';
                     save_props(url);
+                }
+            });
+
+    var PropertiesDownload = Ext.create('Ext.Action',
+            {
+                text: 'Download',
+                iconCls: 'icon icon-save',
+                handler: function() {
+                    var url = globals.module_url + 'kpi/download/' + Ext.getCmp('propsGrid').store.data.get('idkpi').data.value;
+                    window.location = url;
                 }
             });
 
@@ -79,7 +90,7 @@ try {
             startedit: {
                 element: 'el', //bind to the underlying el property on the panel
                 fn: function() {
-                    
+
                 }
             }
         }
@@ -311,15 +322,7 @@ try {
 
                     }
                 }
-                , {
-                    xtype: 'button',
-                    text: 'Download',
-                    iconCls: 'ion ion-code-download',
-                    handler: function(me) {
-                        //load_props(propsGrid.url, propsGrid.idkpi, true);
-
-                    }
-                }
+                , PropertiesDownload
             ]
         }
 
