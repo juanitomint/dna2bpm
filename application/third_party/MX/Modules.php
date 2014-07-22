@@ -54,22 +54,25 @@ class Modules
 	* Output from module is buffered and returned.
 	**/
 	public static function run($module) {
-		
-		$method = 'index';
+        $method = 'index';
 		
 		if(($pos = strrpos($module, '/')) != FALSE) {
 			$method = substr($module, $pos + 1);		
 			$module = substr($module, 0, $pos);
+            //var_dump('$module',$module,'$method',$method);
 		}
-
+        
 		if($class = self::load($module)) {
 			
 			if (method_exists($class, $method))	{
-				ob_start();
+                /* update method */
 				$args = func_get_args();
-				$output = call_user_func_array(array($class, $method), array_slice($args, 1));
+                CI::$APP->router->method=$method;
+				ob_start();
+                $output = call_user_func_array(array($class, $method), array_slice($args, 1));
 				$buffer = ob_get_clean();
-				return ($output !== NULL) ? $output : $buffer;
+                return ($output !== NULL) ? $output : $buffer;
+                
 			}
 		}
 		
@@ -99,7 +102,9 @@ class Modules
 			/* load the controller class */
 			$class = $class.CI::$APP->config->item('controller_suffix');
 			self::load_file($class, $path);
-			
+			/* update router */
+            CI::$APP->router->class=$class;
+            CI::$APP->router->method='';
 			/* create and register the new controller */
 			$controller = ucfirst($class);	
 			self::$registry[$alias] = new $controller($params);
