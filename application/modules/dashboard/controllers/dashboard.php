@@ -137,10 +137,23 @@ class Dashboard extends MX_Controller {
         return $this->parser->parse('dashboard/menu', $customData, true, true);
     }
 
+    function hooks_group($user=null){
+        $user =($user)?$user: $this->user->get_user((int) $this->idu);
+        if(is_file(FCPATH . APPPATH . "modules/dashboard/views/hooks/groups.json")){
+        $config=json_decode($this->load->view('hooks/groups.json','',true));
+            foreach($config->hooks as $hook){
+                if(array_intersect($user->group,$hook->group))
+                    redirect ($this->base_url.$hook->redir);
+            }
+        }
+        
+    }
     // ==== Dashboard
 
     function Dashboard($json = 'dashboard/json/dashboard.json', $debug = false) {
-
+        /* eval Group hooks first */
+        $user = $this->user->get_user((int) $this->idu);
+        $this->hooks_group($user);
         $myconfig = $this->parse_config($json, $debug);
 
         $layout = ($myconfig['view'] <> '') ? $myconfig['view'] : 'layout';
@@ -149,7 +162,6 @@ class Dashboard extends MX_Controller {
         $customData['avatar'] = Modules::run('user/profile/get_avatar'); //Avatar URL
         $customData['base_url'] = $this->base_url;
         $customData['module_url'] = $this->module_url;
-        $user = $this->user->get_user((int) $this->idu);
 
         $customData['name'] = $user->name . ' ' . $user->lastname;
 
