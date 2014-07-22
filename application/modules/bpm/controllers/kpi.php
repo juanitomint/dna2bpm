@@ -19,7 +19,7 @@ class Kpi extends MX_Controller {
         $this->load->library('parser');
         $this->load->model('user');
         $this->load->model('user/group');
-        $this->user->authorize('ADM,WFADM');
+        $this->user->authorize();
         //----LOAD LANGUAGE
         $this->types_path = 'application/modules/bpm/assets/types/';
         $this->module_path = 'application/modules/bpm/';
@@ -123,6 +123,7 @@ class Kpi extends MX_Controller {
     }
 
     function Editor($model, $idwf) {
+        $this->user->authorize();
         $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
         if ($debug)
             echo '<h2>' . __FUNCTION__ . '</h2>';
@@ -338,21 +339,21 @@ class Kpi extends MX_Controller {
         $cpData['top'] = $top;
         $cpData['qtty'] = $total;
         //----make content
-        
+
         for ($i = $offset; $i < $top; $i++) {
             $idcase = $cases[$i];
             $case = $this->bpm->get_case($idcase, $kpi['idwf']);
-            $case['data']=$this->bpm->load_case_data($case);
-                //---Ensures $case['data'] exists
-                $case['data'] = (isset($case['data'])) ? $case['data'] : array();
-                //---Flatten data a bit so it can be parsed
-                $parseArr[] = array_merge(array(
-                    'i' => $i + 1,
-                    'idwf' => $kpi['idwf'],
-                    'idcase' => $idcase,
-                    'checkdate' => date($this->lang->line('dateTimeFmt'), strtotime($case['checkdate'])),
-                    'user' => (array) $this->user->get_user_safe($case['iduser']),
-                        ), $case['data']);
+            $case['data'] = $this->bpm->load_case_data($case);
+            //---Ensures $case['data'] exists
+            $case['data'] = (isset($case['data'])) ? $case['data'] : array();
+            //---Flatten data a bit so it can be parsed
+            $parseArr[] = array_merge(array(
+                'i' => $i + 1,
+                'idwf' => $kpi['idwf'],
+                'idcase' => $idcase,
+                'checkdate' => date($this->lang->line('dateTimeFmt'), strtotime($case['checkdate'])),
+                'user' => (array) $this->user->get_user_safe($case['iduser']),
+                    ), $case['data']);
         }
         //var_dump($parseArr);
         if ($kpi['list_template'] <> '') {
@@ -397,7 +398,7 @@ class Kpi extends MX_Controller {
             }
         }
         //var_dump($parseArr);exit;
-        $cpData['content'] = $this->parser->parse_string($template, array('cases' => $parseArr), true,true);
+        $cpData['content'] = $this->parser->parse_string($template, array('cases' => $parseArr), true, true);
         //----PROCESS KPIS
         $this->parser->parse('bpm/widgets/list.kpi.ui.php', $cpData);
     }
@@ -441,7 +442,6 @@ class Kpi extends MX_Controller {
      */
 
     function Tile($model = null, $idkpi = null, $tile_file = 'tile-blue') {
-
         $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
         if ($debug)
             echo '<h2>' . __FUNCTION__ . '</h2>';
@@ -566,14 +566,42 @@ class Kpi extends MX_Controller {
         return $filter;
     }
 
-    function Save_properties() {
+    function Download($idkpi) {
+        $this->load->helper('dbframe');
+        $kpi = new dbframe();
+        $types_path = $this->types_path;
+        $postkpi = $this->kpi_model->get($idkpi);
+        //---load base properties from helpers/types/base
+        //---defines $common
+        include($types_path . 'base/kpi.base.php');
+        //---load custom properties from specific type
+        $type_props = array();
+        if (isset($type)) {
+            $file_custom = $types_path . $type . '/properties.php';
+            if (is_file($file_custom)) {
+                if ($debug)
+                    echo "Loaded Custom:$file_custom<br/>";
+                include($file_custom);
+            }
+        }
+        $properties_template = $common + $type_props;
+        //----load the data from post
+        $kpi->load($postkpi, $properties_template);
+        header('Content-Description: File Transfer');
+        header('Content-Type: application/octet-stream');
+        header("Content-Disposition: attachment; filename=" . $idkpi . '.json');
+        header("Content-Transfer-Encoding: binary");
+        echo json_encode($kpi->toSave());
+    }
+
+    function Save_properties($data = null) {
         $this->load->helper('dbframe');
         $this->load->model('user/rbac');
         $this->load->model('app');
         $segments = $this->uri->segment_array();
         $debug = (in_array('debug', $segments)) ? true : false;
         $types_path = $this->types_path;
-        $postkpi = $_POST;
+        $postkpi = ($data) ? $data : $_POST;
         $idkpi = $postkpi['idkpi'];
         //---get type
         $type = $postkpi['type'];
@@ -597,7 +625,7 @@ class Kpi extends MX_Controller {
         $kpi->load($postkpi, $properties_template);
         if ($idkpi == '') {
             //---create new ID for the frame
-            $idkpi =$this->kpi_model->gen_kpi($kpi->idwf);
+            $idkpi = $this->kpi_model->gen_kpi($kpi->idwf);
             $kpi->idkpi = $idkpi;
         }
         $dbkpi = ($this->kpi_model->get($idkpi));
@@ -622,13 +650,29 @@ class Kpi extends MX_Controller {
             var_dump($obj);
         }
     }
-    
+
     function ShowMsg($msg, $class = 'alert') {
 
         return '<div class="' . $class . '">
     <button type="button" class="close" data-dismiss="alert">&times;</button>' .
                 $msg
                 . '</div>';
+    }
+
+    function import_kpi($module) {
+        if ($module && $this->user->isAdmin()) {
+            $this->load->helper('file');
+            $path = FCPATH . APPPATH . "modules/$module/views/kpi/"; //---don't 
+            $files = get_filenames($path);
+
+            foreach ($files as $file) {
+                echo "Importing: $file<br/>";
+                $content = file_get_contents($path . $file);
+                $data = json_decode($content, true);
+                Modules::run('bpm/kpi/save_properties', $data);
+                echo "ok!<br/>";
+            }
+        }
     }
 
 }

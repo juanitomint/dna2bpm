@@ -93,17 +93,16 @@ class User extends CI_Model {
         $canaccess = false;
         //--first check if user still exists
         $thisUser = $this->get_user($this->idu);
+            $class=$this->router->class;
+            $method=$this->router->method;
         if (!$thisUser) {
             //----user doesn't exists in db
             $canaccess = false;
         } else {
             //----user exists
             //---define the path for module auth
-            $path = str_replace('../', '', $this->router->fetch_directory() . implode('/', array(
-                        $this->router->class,
-                        $this->router->method,
-                            )
-            ));
+            //var_dump($this->router);
+            $path = str_replace('../', '', $this->router->fetch_directory() . implode('/', array_filter(array($class,$method))));
             /*
              * Auto-discover from existent will add all the paths it's hits
              * turn off for production
@@ -121,8 +120,11 @@ class User extends CI_Model {
                 //----$reqlevel override $path
                 $path = (isset($reqlevel)) ? $reqlevel : $path;
                 //---give access if have path exists
-                if ($this->user->has('root/' . $path, $thisUser))
+                if ($this->user->has('root/' . $path, $thisUser)) {
                     $canaccess = true;
+                } else {
+                    show_error("User doesn't have: $path </br>");
+                }
             }
         }
         if (!$canaccess) {
@@ -396,11 +398,11 @@ class User extends CI_Model {
                 $result = $this->save($user_data);
                 $user = $user_data;
             } else {
-	
-	        $options = array('safe' => true, 'upsert' => true);
-	        $query=array('idu'=>$user_data['idu']);
-	        $result = $this->mongo->db->users->update($query,array('$set'=>$user_data), $options);
-            	$user = $user_data;
+
+                $options = array('safe' => true, 'upsert' => true);
+                $query = array('idu' => $user_data['idu']);
+                $result = $this->mongo->db->users->update($query, array('$set' => $user_data), $options);
+                $user = $user_data;
             }
             return $result;
         }
