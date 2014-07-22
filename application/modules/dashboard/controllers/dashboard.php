@@ -139,7 +139,7 @@ class Dashboard extends MX_Controller {
 
     // ==== Dashboard
 
-    function Dashboard($json = 'dashboard/json/dashboard', $debug = false) {
+    function Dashboard($json = 'dashboard/json/dashboard.json', $debug = false) {
 
         $myconfig = $this->parse_config($json, $debug);
 
@@ -171,7 +171,6 @@ class Dashboard extends MX_Controller {
         // Flush!
         //var_dump(array_keys($customData));exit; 
         // var_dump($customData);    
-
         $this->ui->compose($layout, $customData);
     }
 
@@ -300,16 +299,17 @@ class Dashboard extends MX_Controller {
 
     // ============ Profile
     function Inbox($data = array()) {
-        $this->dashboard('dashboard/json/inbox');
+        $this->dashboard('dashboard/json/inbox.json');
     }
 
     // ============ Profile
     function Profile($data = array()) {
-        $this->dashboard('dashboard/json/profile');
+        $this->dashboard('dashboard/json/profile.json');
     }
+
     // ============ Tasks
     function Tasks($data = array()) {
-        $this->dashboard('dashboard/json/tasks');
+        $this->dashboard('dashboard/json/tasks.json');
     }
 
     // ============ Widgets
