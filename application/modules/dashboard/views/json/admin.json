@@ -24,19 +24,20 @@
                 },
                 {
                     "title": "Tile01",
+                    "module": "dashboard",
+                    "controller": "dashboard",
+                    "span": 2,
+                    "function": "tile_admin_menu"
+
+                },
+                {
+                    "title": "Tile01",
                     "module": "git",
                     "controller": "git",
                     "span": 2,
                     "function": "tile"
 
                 },
-                {
-                    "title": "Tile01",
-                    "module": "bpm",
-                    "controller": "bpmui",
-                    "function": "tile_tasks_done"
-                }
-                ,
                 {
                     "title": "Tile01",
                     "module": "bpm",

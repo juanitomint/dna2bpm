@@ -84,7 +84,9 @@ class Inbox extends MX_Controller {
     $msgid=$this->input->post('id');
     $mymgs = $this->msg->get_msg($msgid);
     $this->msg->set_read("read",$msgid); // Marco leido
-	echo json_encode($mymgs);
+     // $mymgs=nl2br($mymgs['body']);
+//  print_r($mymgs['body']);
+    echo json_encode($mymgs);
     }
     
     // save star value

@@ -52,7 +52,6 @@ class Bpm extends CI_Model {
             "Called @ " . xdebug_call_file() . "<br/>Line:" . xdebug_call_line() . "<br/>from: <b>" . xdebug_call_function() . '</b><hr/>';
 
 ////////////////////////////////////////////////////////////////////////
-
 //---load mongo_connector by default
         $this->load->model('bpm/connectors/mongo_connector');
         if (isset($case['data'])) {
@@ -1485,10 +1484,12 @@ class Bpm extends CI_Model {
         if ($parent) {
             $token = $this->get_token($wf->idwf, $wf->case, $parent->resourceId);
             $status = $token['status'];
-            $data_parent['assign'] = (isset($token['assign'])) ? array_merge($token['assign'], $data['assign']) : $data['assign'];
-            $data_parent['assign'] = array_unique($data_parent['assign']);
-            $data_parent = array_filter($data_parent);
-            $this->set_token($wf->idwf, $wf->case, $parent->resourceId, $parent->stencil->id, $status, $data_parent);
+            if (isset($token['assign'])) {
+                $data_parent['assign'] = (isset($token['assign'])) ? array_merge($token['assign'], $data['assign']) : $data['assign'];
+                $data_parent['assign'] = array_unique($data_parent['assign']);
+                $data_parent = array_filter($data_parent);
+                $this->set_token($wf->idwf, $wf->case, $parent->resourceId, $parent->stencil->id, $status, $data_parent);
+            }
         }
         return $data;
     }
