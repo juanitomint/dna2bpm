@@ -19,7 +19,7 @@ class Kpi extends MX_Controller {
         $this->load->library('parser');
         $this->load->model('user');
         $this->load->model('user/group');
-        $this->user->authorize('ADM,WFADM');
+        $this->user->authorize();
         //----LOAD LANGUAGE
         $this->types_path = 'application/modules/bpm/assets/types/';
         $this->module_path = 'application/modules/bpm/';
@@ -123,6 +123,7 @@ class Kpi extends MX_Controller {
     }
 
     function Editor($model, $idwf) {
+        $this->user->authorize();
         $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
         if ($debug)
             echo '<h2>' . __FUNCTION__ . '</h2>';
@@ -441,7 +442,6 @@ class Kpi extends MX_Controller {
      */
 
     function Tile($model = null, $idkpi = null, $tile_file = 'tile-blue') {
-
         $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
         if ($debug)
             echo '<h2>' . __FUNCTION__ . '</h2>';
