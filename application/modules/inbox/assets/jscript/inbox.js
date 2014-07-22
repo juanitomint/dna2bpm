@@ -6,33 +6,41 @@ $(document).ready(function(){
 
 
 // add star
-$(document).on('click','.fa-star',function(){
+$(document).on('click','.fa-star',function(e){
+
     $(this).removeClass('fa-star');
     $(this).addClass('fa-star-o');
     var msgid=$(this).parents('tr').attr('data-msgid');
     $.post(globals.base_url+'inbox/inbox/set_star',{'state':'off','msgid':msgid},function(data){});
+    e.stopPropagation();// avoid msg open
 });
 
 //remove star
-$(document).on("click",".fa-star-o",function(){
+$(document).on("click",".fa-star-o",function(){	
+
     $(this).removeClass('fa-star-o');
     $(this).addClass('fa-star');
     var msgid=$(this).parents('tr').attr('data-msgid');
     $.post(globals.base_url+'inbox/inbox/set_star',{'state':'on','msgid':msgid},function(data){});
+    e.stopPropagation();// avoid msg open
 });
 
 // MSG Open
-$(document).on("click",".msg",function(){
+$(document).on("click",".msg",function(e){
 	var msgid=$(this).attr('data-msgid');
 	var this_msg=$(this);
     event.preventDefault();
+
 //    var checked=$('.icheckbox_minimal',this).hasClass('checked'));
     var url = globals.base_url+'inbox/inbox/get_msg';    
     $.post(url,{id:msgid},function(data){
+    	
     	var msg=JSON.parse(data);
+
         $('#myModal').find('.modal-title').html('<i class="fa fa-envelope"></i> '+msg.subject);
-        $('#myModal').find('.modal-body').html(msg.body);
+        $('#myModal').find('.modal-body').html(msg.body.replace(/(?:\r\n|\r|\n)/g, '<br />'));
         $('#myModal').modal('show');
+
         this_msg.removeClass('unread');
         this_msg.addClass('read');   
     });
@@ -152,6 +160,9 @@ $("a[name='recover']").on('click',function(){
         $('#'+msgid).hide('500');
     });
 });
+
+
+
       
 
       
