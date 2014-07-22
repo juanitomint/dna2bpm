@@ -146,7 +146,8 @@ class Admin extends MX_Controller {
         $models = $this->bpm->get_models();
         foreach ($models as $bpm) {
             $folder = (property_exists($bpm, 'folder')) ? $bpm->folder . '/' : '';
-            $m_arr[$folder . $bpm->idwf] = $bpm->data['properties']['name'] . ' [' . $bpm->idwf . ']';
+            $name=(isset($bpm->data['properties']['name'])) ? $bpm->data['properties']['name'] : "no name";
+            $m_arr[$folder . $bpm->idwf] = $name . ' [' . $bpm->idwf . ']';
         }
         $tree = $this->explodeTree($m_arr, $delimiter = '/');
 

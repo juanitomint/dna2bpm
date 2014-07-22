@@ -4,7 +4,8 @@
         <title>{title}</title>
 
         <link rel="stylesheet" type="text/css" href="{base_url}jscript/bootstrap/css/bootstrap.min.css" />
-        <link rel="stylesheet" type="text/css" href="{base_url}jscript/fontawesome/css/font-awesome.min.css" />
+        <link rel="stylesheet" type="text/css" href="{base_url}jscript/bootstrap-wysihtml5/css/font-awesome.min.css" />
+        <link rel="stylesheet" type="text/css" href="{base_url}jscript/bootstrap-wysihtml5/css/ionicons.min.css" />
         <link rel="stylesheet" type="text/css" href="{base_url}jscript/ext/resources/css/ext-all-neptune-debug.css" />
         <link rel="stylesheet" type="text/css" href="{base_url}css/load_mask.css" />
         <link rel="stylesheet" type="text/css" href="{base_url}jscript/ext/src/ux/statusbar/css/statusbar.css" />
@@ -14,10 +15,10 @@
             .x-tree-checkbox{
                 width: none !important;   
             }
-            </style>
-        </head>
-        <body>
-            <div id="content"></div>
+        </style>
+    </head>
+    <body>
+        <div id="content"></div>
         <div id="loading-mask" style=""></div>
         <div id="loading">
             <div class="loading-indicator">
@@ -34,7 +35,7 @@
         <!-- Boot -->
         <script type="text/javascript">
             //-----declare global vars
-            var globals={inline_js};
+            var globals = {inline_js};
         </script>
         <script type="text/javascript">document.getElementById('loading-msg').innerHTML += '<br/>Loading Core API...';</script>
         <script type="text/javascript" src="{base_url}jscript/ext/bootstrap.js"></script>

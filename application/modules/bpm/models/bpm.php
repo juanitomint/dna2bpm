@@ -43,6 +43,39 @@ class Bpm extends CI_Model {
         return $wf;
     }
 
+    function load_case_data($case) {
+        $data = array();
+        $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
+//$debug = true;
+        if ($debug)
+            echo '<h2>' . __FUNCTION__ . '</h2>' .
+            "Called @ " . xdebug_call_file() . "<br/>Line:" . xdebug_call_line() . "<br/>from: <b>" . xdebug_call_function() . '</b><hr/>';
+
+////////////////////////////////////////////////////////////////////////
+
+//---load mongo_connector by default
+        $this->load->model('bpm/connectors/mongo_connector');
+        if (isset($case['data'])) {
+            foreach ($case['data'] as $key => $value) {
+                if (is_array($value)) {
+                    if (isset($value['connector'])) {
+                        $conn = $value['connector'] . '_connector';
+                        if ($debug)
+                            echo "Calling Connector: $conn<br/>";
+                        $data[$key] = $this->$conn->get_data($value);
+                    } else {
+                        $data[$key] = $value;
+                    }
+                } else { //add regular data
+                    $data->$key = $value;
+                }
+            }
+        }
+        if ($debug)
+            var_dump('$data', $data);
+        return $data;
+    }
+
     function replace_subproc($item) {
 
         //var_dump2($item);
@@ -170,7 +203,7 @@ class Bpm extends CI_Model {
             $tokens = (isset($case['token_status'])) ? $case['token_status'] : null;
             //var_dump($case,$tokens);exit;
             if ($tokens) {
-                foreach ($tokens as $resourceId=>$state) {
+                foreach ($tokens as $resourceId => $state) {
                     if (isset($all_tokens[$resourceId])) {
                         $all_tokens[$resourceId]['run'] ++;
                     } else {
@@ -216,6 +249,7 @@ class Bpm extends CI_Model {
         $data['totalCases'] = count($tarr);
         if (count($tarr)) {
             foreach ($tarr as $idcase => $qtty) {
+                //@todo set idwf
                 $case = $this->bpm->get_case($idcase);
                 if ($case) {
                     $mybpm = $this->bpm->load($case['idwf'], true);
@@ -516,7 +550,9 @@ class Bpm extends CI_Model {
         $result = $this->mongo->db->tokens->find($query);
         $rs = array();
         foreach ($result as $record) {
-            $rs[] = $record;
+            //----don't add missing tokens
+            if ($this->get_case($record['case'], $record['idwf']))
+                $rs[] = $record;
         }
 
         return $rs;
@@ -604,14 +640,20 @@ class Bpm extends CI_Model {
                 ->get('workflow')
                 ->result();
 
-        return $rs[0];
+        if (count($rs)) {
+            return $rs[0];
+        }
+        return false;
     }
 
-    function get_case($idcase) {
+    function get_case($idcase, $idwf = null) {
         //---TODO get token from cache
         $query = array(
             'id' => $idcase,
         );
+        //----if isset add to filter (faster)
+        if ($idwf)
+            $query['idwf'] = $idwf;
         //var_dump2(json_encode($query));
         $result = $this->db->get_where('case', $query)->result_array();
         if ($result) {
@@ -1184,7 +1226,7 @@ class Bpm extends CI_Model {
         $token['run'] = (isset($token['run'])) ? $token['run'] + 1 : 1;
         $token = $this->token_checkin($token, $wf, $shape_src);
         //---calculate interval since case started
-        $case = $this->bpm->get_case($wf->case);
+        $case = $this->bpm->get_case($wf->case, $wf->idwf);
         $dateIn = new DateTime($case['checkdate']);
         //---now
         $dateOut = new DateTime();

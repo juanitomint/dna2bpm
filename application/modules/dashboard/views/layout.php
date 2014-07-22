@@ -286,9 +286,7 @@
                 <section class="sidebar">
                     <!-- /.search form -->
                     <!-- sidebar menu: : style can be found in sidebar.less -->
-                    <ul class="sidebar-menu">
                         {menu}
-                    </ul>
                 </section>
                 <!-- /.sidebar -->
             </aside>

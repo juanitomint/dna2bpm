@@ -33,7 +33,10 @@ $lang["add_app"] = '[+]Application';
 $lang["user_logout"] = 'Log out';
 $lang["Inbox"] = 'InBox';
 $lang["Tasks"] = 'Tasks';
+$lang["TasksDone"] = 'Tasks done';
+$lang["TasksPending"] = 'Tareas pendientes';
 $lang["Cases"] = 'Cases';
+$lang["CasesClosed"] = 'Closed Cases';
 $lang["Reports"] = 'Reports';
 
 /* ---Control Panel ----- */

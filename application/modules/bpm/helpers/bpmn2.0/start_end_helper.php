@@ -132,7 +132,7 @@ function run_EndNoneEvent($shape, $wf, $CI, $moveForward = true) {
                             )
                     );
                 //----update parent case if any
-                $mycase = $CI->bpm->get_case($wf->case);
+                $mycase = $CI->bpm->get_case($wf->case,$wf->idwf);
                 if (isset($mycase['parent'])) {
                     $parent = $mycase['parent'];
                     // run_post($model, $idwf, $case, $resourceId)

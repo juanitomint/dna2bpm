@@ -4,8 +4,19 @@ try {
                 text: 'Save',
                 iconCls: 'icon icon-save',
                 handler: function() {
-                    var url = globals.module_url + 'kpi/save_properties/' + Ext.getCmp('propsGrid').store.data.get('idkpi').data.value;
+                    //var url = globals.module_url + 'kpi/save_properties/' + Ext.getCmp('propsGrid').store.data.get('idkpi').data.value;
+                    var url = globals.module_url + 'kpi/save_properties/';
                     save_props(url);
+                }
+            });
+
+    var PropertiesDownload = Ext.create('Ext.Action',
+            {
+                text: 'Download',
+                iconCls: 'icon icon-save',
+                handler: function() {
+                    var url = globals.module_url + 'kpi/download/' + Ext.getCmp('propsGrid').store.data.get('idkpi').data.value;
+                    window.location = url;
                 }
             });
 
@@ -54,7 +65,7 @@ try {
                             show: function() {
                                 var options = {
                                     mode: 'tree',
-                                    //modes: ['code', 'form', 'text', 'tree', 'view'], // allowed modes
+                                    modes: ['code', 'form', 'text', 'tree', 'view'], // allowed modes
                                     error: function(err) {
                                         alert(err.toString());
                                     }
@@ -79,7 +90,7 @@ try {
             startedit: {
                 element: 'el', //bind to the underlying el property on the panel
                 fn: function() {
-                    console.log('start el Focus de mariano');
+
                 }
             }
         }
@@ -307,10 +318,11 @@ try {
                     text: 'Preview',
                     iconCls: 'icon icon-desktop',
                     handler: function(me) {
-                        load_props(propsGrid.url, propsGrid.idkpi, true);
+                        //load_props(propsGrid.url, propsGrid.idkpi, true);
 
                     }
                 }
+                , PropertiesDownload
             ]
         }
 

@@ -101,7 +101,11 @@ Ext.create('Ext.data.TreeStore', {
     }
 
 });
+Ext.define('Icons', {
+    extend: 'Ext.data.Model',
+    fields: ['icon']
 
+});
 ////--4 Data Grid
 //function renderGroups(){
 //    store=Ext.data.StoreManager.lookup('GroupStore');
