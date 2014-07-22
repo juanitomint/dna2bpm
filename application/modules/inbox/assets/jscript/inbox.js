@@ -6,11 +6,13 @@ $(document).ready(function(){
 
 
 // add star
-$(document).on('click','.fa-star',function(){
+$(document).on('click','.fa-star',function(e){
+alert(e.currentTarget);
     $(this).removeClass('fa-star');
     $(this).addClass('fa-star-o');
     var msgid=$(this).parents('tr').attr('data-msgid');
     $.post(globals.base_url+'inbox/inbox/set_star',{'state':'off','msgid':msgid},function(data){});
+
 });
 
 //remove star
@@ -152,6 +154,9 @@ $("a[name='recover']").on('click',function(){
         $('#'+msgid).hide('500');
     });
 });
+
+
+
       
 
       
