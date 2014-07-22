@@ -43,7 +43,7 @@ class Git extends MX_Controller {
         $request_body = json_decode($this->input->post('payload'));
         $who = 'nobody';
         $result = 'Unauthorized access';
-        if ($this->input->post('payload')) {
+        if ($this->input->post('payload')|| true) {
             $who = $request_body->pushed_by;
             if ($who) {
                 $result = shell_exec('git pull 2>&1');
@@ -69,10 +69,11 @@ class Git extends MX_Controller {
 
     function tile() {
         $this->load->library('git/git');
-        $data['title']=$this->getBranchName();
-        $data['number']='Branch';
+        $data['title']='Branch:<br/>'.$this->getBranchName().'<br>E:'.ENVIRONMENT;
+        //$data['number']='Branch';
         $data['icon']='ion-usb';
         $data['more_info_link']=$this->base_url.'git/viewlog';
+        $data['more_info_text']='view log';
         return $this->parser->parse('dashboard/tiles/tile-orange', $data, true, true);
         
     }
