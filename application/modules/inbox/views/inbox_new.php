@@ -9,22 +9,20 @@
         {/if}
 
 
-<form class="form-horizontal">
+<form class="form-horizontal" id="new_msg">
 <!--  To -->
-
+      
   <div class="form-group">
     <label class="col-sm-2 control-label">To:</label>
     <div class="col-sm-10">
-          <select name="to" class="select2" multiple="multiple" style="width:400px;">
-
-          </select>
-    </div>
+		    <input type="hidden" name="to" class="select2 form-control"   multiple="multiple" />
+  </div>
   </div>
 <!--  Title -->
   <div class="form-group">
     <label class="col-sm-2 control-label">Subject:</label>
     <div class="col-sm-10">
-    <input type="text" class="form-control"  placeholder="Subject">
+    <input type="text" name="subject" class="form-control"  placeholder="Subject">
      </div>
   </div>
 <!--  MSG -->
@@ -47,5 +45,42 @@
   
 </form>
 
+<script>
+ $(document).ready(function(){
 
+	  // ===== AJAX SELECT BOX
+	  //$('.select2').select2();
+	  $('.select2').select2({
+	        placeholder: "To..",
+ 	        dataType: 'json',
+	       	multiple:true,
+	        ajax: {
+	        type:"POST",     
+	        url:	globals.base_url+"inbox/inbox/get_users",
+	        data: function (term) {
+	            return {
+	                term: term          
+	             };
+	        },
+	        results: function (result) {
+		        console.log(result);
+	            return result;
+	        }
+	        }
+
+	    });
+
+	  $(document).on('submit','#new_msg',function(e){
+		e.preventDefault();
+		var data=$(this).serializeArray();
+		$.post(globals.base_url+"inbox/inbox/send",{data:data},function(resp){
+	        $('#myModal').find('.modal-body').html('Mensaje enviado');
+		});
+		
+	  });
+
+		
+ });
+
+</script>
 
