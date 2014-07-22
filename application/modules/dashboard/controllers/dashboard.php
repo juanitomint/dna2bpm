@@ -188,10 +188,18 @@ class Dashboard extends MX_Controller {
         $data['module_url'] = $this->module_url;
         return $this->parser->parse('tiles/admin_bpm', $data, true, true);
     }
+    
+    function tile_admin_menu() {
+        $data['lang'] = $this->lang->language;
+        $data['base_url'] = $this->base_url;
+        $data['module_url'] = $this->module_url;
+        return $this->parser->parse('tiles/admin_menu', $data, true, true);
+    }
 
     function tile($template, $data) {
         $data['lang'] = $this->lang->language;
-        $this->parser->parse($template, $data);
+        $data['more_info_text']=(isset($data['more_info_text'])) ? $data['more_info_text']: $this->lang->line('more_info');
+        return $this->parser->parse($template, $data,true);
     }
 
     // ==== Tasks
