@@ -41,6 +41,7 @@
                     </a>
                     <a href='{base_url}bpm/case_manager/archive/model/{idwf}/{id}' title="Archive" class="load_modal">
                         <i class="fa fa-2x fa-archive archive_case"></i>
+                    </a>
                     {/if}
                 </div>
                 <p>
