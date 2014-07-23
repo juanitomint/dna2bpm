@@ -815,7 +815,8 @@ class Engine extends MX_Controller {
                                                 $q = '';
                                                 foreach ($querystr as $key => $value)
                                                     $q.='&' . $key . '=' . $value;
-                                                $redir = $rendering . $q;
+                                                //----go to the url via gateway controller
+                                                $redir =$this->bpm->gateway($rendering . $q);
                                             } else {
                                                 $redir = $this->base_url . "dna2/render/edit/" . $shape->properties->rendering . "/$id/id/token/" . $token_id;
                                             }
