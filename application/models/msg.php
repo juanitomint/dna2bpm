@@ -36,12 +36,20 @@ class Msg extends CI_Model {
             if (isset($folder))
                 $query['folder'] = $folder;
         }
-        
 
         $result = $this->mongo->db->msg->find($query)->sort(array('checkdate'=>-1));   
 
         return $result;
        
+    }
+    
+    function count_msgs($iduser, $folder=null) {
+    	$query = array(
+    			'to' =>(double) $iduser,
+    			'folder'=>$folder
+    	);
+    	return $this->mongo->db->msg->find($query)->count();
+
     }
 
     //---send msg multiple users

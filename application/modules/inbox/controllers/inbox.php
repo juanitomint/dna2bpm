@@ -42,7 +42,9 @@ class Inbox extends MX_Controller {
      	);
      	
      	$customData['base_url'] = $this->base_url;
-     	$customData['module_url'] = $this->module_url;
+     	$customData['module_url'] = $this->module_url;   	
+     	
+
     	// Determino el folder
     	$folders=array('inbox','trash','outbox','star');
     	$source='to';
@@ -54,7 +56,7 @@ class Inbox extends MX_Controller {
     	$customData['folder']=$folder;
     	// Messages Loop
     	$mymgs = $this->msg->get_msgs($this->idu,$folder);
-    
+
     	foreach ($mymgs as $msg) {
     		$msg['msgid'] = $msg['_id'];
     		$msg['subject']=(strlen($msg['subject'])!=0)?($msg['subject']):("No Subject");
@@ -71,13 +73,32 @@ class Inbox extends MX_Controller {
     		$customData['mymsgs'][] = $msg;
     	}
     	$customData['reply']=false;
-    //var_dump($customData);
-    $customData['content']=$this->parser->parse('inbox/inbox2', $customData, true, true);
-
-    return $customData;
-//     	Modules::run('dna2/dna2/render','inbox',$customData);
+     	$customData['inbox_count']=$this->msg->count_msgs($this->idu,'inbox'); 
+    	$customData['content']=$this->parser->parse('inbox/inbox2', $customData, true, true);
+	    return $customData;
     }
     
+    // Mini version for toolbar
+    function toolbar(){
+    	$customData['base_url'] = $this->base_url;
+    	$customData['module_url'] = $this->module_url;
+    	$customData['inbox_count']=$this->msg->count_msgs($this->idu,'inbox');
+    	$mymgs = $this->msg->get_msgs($this->idu,'inbox');
+    	foreach ($mymgs as $msg) {
+    		$msg['msgid'] = $msg['_id'];
+    		$msg['subject']=(strlen($msg['subject'])!=0)?($msg['subject']):("No Subject");
+    		$msg['msg_date'] = substr($msg['checkdate'], 0, 10);
+    		$msg['msg_time'] = date('l jS \of F Y h:i:s A',strtotime($msg['checkdate']));
+    		$msg['icon_star'] = (isset($msg['star']) && $msg['star']==true) ? ('fa fa-star') : ('fa fa-star-o');
+    		$msg['read'] = (isset($msg['read'])&&$msg['read']==true) ? ('read') : ('unread');
+    		$msg['excerpt']=substr($msg['body'],0,10);
+
+    	
+    		$customData['mymsgs'][] = $msg;
+     	}
+    	return $this->parser->parse('inbox/toolbar', $customData, true, true);
+
+    }
   
 
     // get msg by id
@@ -85,10 +106,10 @@ class Inbox extends MX_Controller {
     $msgid=$this->input->post('id');
     $mymgs = $this->msg->get_msg($msgid);
     $this->msg->set_read("read",$msgid); // Marco leido
-     // $mymgs=nl2br($mymgs['body']);
-//  print_r($mymgs['body']);
     echo json_encode($mymgs);
     }
+    
+
     
     // save star value
     function set_star(){

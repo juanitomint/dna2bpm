@@ -162,6 +162,7 @@ class Dashboard extends MX_Controller {
         $customData['avatar'] = Modules::run('user/profile/get_avatar'); //Avatar URL
         $customData['base_url'] = $this->base_url;
         $customData['module_url'] = $this->module_url;
+        $customData['inbox_count']=$this->msg->count_msgs($this->idu,'inbox');
 
         $customData['name'] = $user->name . ' ' . $user->lastname;
 
@@ -171,7 +172,11 @@ class Dashboard extends MX_Controller {
             'module_url' => $this->module_url,
             'myidu' => $this->idu
         );
+        
+		// Toolbar
+        $customData['toolbar_inbox']=Modules::run('inbox/inbox/toolbar');
 
+        
         /*
           Custom JS Example
           $customData['js']=array('knob','jquery'); // Just handles must be registered in UI
@@ -182,7 +187,8 @@ class Dashboard extends MX_Controller {
 
         // Flush!
         //var_dump(array_keys($customData));exit; 
-        // var_dump($customData);    
+//          var_dump($customData);  
+//          exit();  
         $this->ui->compose($layout, $customData);
     }
 
