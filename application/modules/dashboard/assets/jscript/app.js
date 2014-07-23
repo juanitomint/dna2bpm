@@ -5,7 +5,11 @@
 
 $(document).ready(function() {
 
-// ==== Reload Widget
+$('.form-extra').ajaxForm({
+    target:'#tiles_after',
+    replaceTarget:false
+});
+    // ==== Reload Widget
     $(document).on('click', '.reload_widget', function(event) {
         event.preventDefault();
         var box = $(this).parents('.box');

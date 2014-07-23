@@ -296,9 +296,9 @@ class Dashboard extends MX_Controller {
                     $markup = $myWidget['module'] . '/' . $myWidget['controller'] . '/' . $myWidget['function'] . $markup;
                 // Si es un array uso el zonekey para identificar el markup
                 if (is_array($markup)) {
-                    $content.="<div class='col-lg-$span connectedSortable'>{$markup['content']}</div>";
+                    $content.="<div class='col-lg-$span'>{$markup['content']}</div>";
                 } else {
-                    $content.="<div class='col-lg-$span connectedSortable'>$markup</div>";
+                    $content.="<div class='col-lg-$span'>$markup</div>";
                 }
             }
             $content.='</div>';
