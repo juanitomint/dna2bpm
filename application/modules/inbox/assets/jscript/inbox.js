@@ -3,7 +3,7 @@
  * 
 **/
 $(document).ready(function(){
-
+var whereiam=$('#whereiam').val();
 
 // add star
 $(document).on('click','.fa-star',function(e){
@@ -85,6 +85,16 @@ $(document).on("click","#msg_action a,#msg_tag a",function(){
 		    	msgid.forEach(function(id){
 		    		$("[data-msgid='"+id+"']").hide('500');
 	    		});
+		    });
+			break;	
+		case "inbox":
+		    var url = globals.base_url+'inbox/inbox/move';    
+		    $.post(url,{'msgid':msgid,'folder':'inbox'},function(data){
+		    	if(whereiam!='inbox'){
+			    	msgid.forEach(function(id){
+			    		$("[data-msgid='"+id+"']").hide('500');
+		    		});
+		    	}
 		    });
 			break;	
 		case "delete":
