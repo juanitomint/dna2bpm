@@ -22,9 +22,9 @@
         <link href="{module_url}assets/bootstrap-wysihtml5/css/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css" rel="stylesheet" type="text/css" />
         <!-- Theme style -->
         <link href="{module_url}assets/bootstrap-wysihtml5/css/AdminLTE.css" rel="stylesheet" type="text/css" />
-	<!--  Juery UI css -->
- 		 <link href="{base_url}jscript/jquery/ui/jquery-ui-1.10.2.custom/css/smoothness/jquery-ui-1.10.2.custom.min.css" rel="stylesheet" type="text/css" />
- 	
+        <!--  Juery UI css -->
+        <link href="{base_url}jscript/jquery/ui/jquery-ui-1.10.2.custom/css/smoothness/jquery-ui-1.10.2.custom.min.css" rel="stylesheet" type="text/css" />
+
         <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
         <!--[if lt IE 9]>
@@ -283,7 +283,7 @@
                 <section class="sidebar">
                     <!-- /.search form -->
                     <!-- sidebar menu: : style can be found in sidebar.less -->
-                        {menu}
+                    {menu}
                 </section>
                 <!-- /.sidebar -->
             </aside>
@@ -304,11 +304,11 @@
 
                 <section class="content">
                     {tiles}
-                    <div class="row" id="tiles_after">
-                        <section class="col-lg-12 connectedSortable ui-sortable">
+                    <section class="col-lg-12 connectedSortable ui-sortable">
+                        <div class="row" id="tiles_after">
                             {tiles_after}
-                        </section>
-                    </div>
+                        </div>
+                    </section>
                     <div class="row">
                         <section class="col-lg-6 connectedSortable ui-sortable" id="col1"> 
                             {col1} 
@@ -327,17 +327,17 @@
 <!-- ======== MODAL ======== --> 
 
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
-      </div>
-      <div class="modal-body">
-        ...
-      </div>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+            </div>
+            <div class="modal-body">
+                ...
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 <!-- ======== FOOTER ======== --> 
 

@@ -39,10 +39,11 @@ class ui {
                 $this->register_script('adminLTE',$data['module_url'].'assets/bootstrap-wysihtml5/js/AdminLTE/app.js',array('bootstrap'));
                 $this->register_script('dashboardJS',$data['module_url'].'assets/jscript/app.js',array('jquery'));
                 $this->register_script('PLUpload',$data['base_url'].'jscript/plupload-2.1.2/plupload.full.min.js',array('jquery'));
+                $this->register_script('jquery.form',$data['base_url'].'jscript/jquery/plugins/Form/jquery.form.min.js',array('jquery'));
                  
                 
                 // Load default JS 
-                $default=array('jquery','jqueryUI','bootstrap','WYSIHTML5','adminLTE','dashboardJS');
+                $default=array('jquery','jqueryUI','bootstrap','WYSIHTML5','adminLTE','dashboardJS','jquery.form');
                 //Custom JS Check
 
                 if (isset($data['js'])){
