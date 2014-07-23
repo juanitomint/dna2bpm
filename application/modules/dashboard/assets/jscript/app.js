@@ -82,6 +82,24 @@ $('.form-extra').ajaxForm({
     }).disableSelection();
     ;
 
+  //=========== ICHECK 
+
+  //iCheck for checkbox and radio inputs
+  $('input[type="checkbox"]').iCheck({
+      checkboxClass: 'icheckbox_minimal',
+      radioClass: 'iradio_minimal'
+  });
+
+  //When unchecking the checkbox
+  $(document).on('ifUnchecked', "#check-all", function(event) {
+      //Uncheck all checkboxes
+      $("input[type='checkbox']", ".table-mailbox").iCheck("uncheck");
+  });
+
+  //When checking the checkbox
+  $("#check-all").on('ifChecked', function(event) {
+  	 $("input[type='checkbox']", ".table-mailbox").iCheck("check");
+  });
 
 
 

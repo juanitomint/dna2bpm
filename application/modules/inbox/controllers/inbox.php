@@ -105,6 +105,16 @@ class Inbox extends MX_Controller {
 	    }
     }
     
+    // save star value
+    function set_tag(){
+     	$tag=$this->input->post('tag');
+     	$id=$this->input->post('msgid');
+
+     	foreach($id as $myid){
+     		$this->msg->set_tag($tag,$myid);
+     	}
+    }
+    
     function send(){
 
         $data=$this->input->post('data');

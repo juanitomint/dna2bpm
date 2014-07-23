@@ -74,7 +74,7 @@
 		e.preventDefault();
 		var data=$(this).serializeArray();
 		$.post(globals.base_url+"inbox/inbox/send",{data:data},function(resp){
-	        $('#myModal').find('.modal-body').html('Mensaje enviado');
+	        $('#myModal').find('.modal-body').html('Message sent!');
 		});
 		
 	  });

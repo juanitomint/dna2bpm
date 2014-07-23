@@ -26,7 +26,7 @@
  		 <link href="{base_url}jscript/jquery/ui/jquery-ui-1.10.2.custom/css/smoothness/jquery-ui-1.10.2.custom.min.css" rel="stylesheet" type="text/css" />
  	
         
-        
+                <link href="{module_url}assets/bootstrap-wysihtml5/css/iCheck/minimal/blue.css" rel="stylesheet" type="text/css" />
         
         <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -334,7 +334,6 @@
 
 <!-- ======== FOOTER ======== --> 
 
-
 		
         <!-- JS Global -->
         <script>
@@ -345,8 +344,11 @@
         {footer}
 
 		<!-- JS custom -->     
-		{js}
+ 		{js} 
+
 		
+       
+
 
     </body>
 </html>

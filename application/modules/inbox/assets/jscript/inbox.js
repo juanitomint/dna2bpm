@@ -47,7 +47,7 @@ $(document).on("click",".msg",function(e){
 });
 
 // Action dropdown handle
-$(document).on("click","#msg_action a",function(){
+$(document).on("click","#msg_action a,#msg_tag a",function(){
 	var action=$(this).attr('data-action');
 	var msgid=[];
 	$('.msg').each(function(i,data){
@@ -95,33 +95,26 @@ $(document).on("click","#msg_action a",function(){
 	    		});
 		    });
 			break;
+		case "tag":
+			var tag=$(this).attr('data-priority');
+			var url = globals.base_url+'inbox/inbox/set_tag';  
+
+		    $.post(url,{'tag':tag,'msgid':msgid},function(data){
+
+		    	msgid.forEach(function(id){
+		    		$("[data-msgid='"+id+"']").removeClass('tag_extreme tag_high tag_normal tag_low tag_notag');
+		    		$("[data-msgid='"+id+"']").addClass('tag_'+tag);
+	    		});
+		    });
+		break;
 	}
 		
 	}
-	console.log(msgid.length);
+	//console.log(msgid.length);
 
     
 });
-//
-//"use strict";
-////iCheck for checkbox and radio inputs
-//$('input[type="checkbox"]').iCheck({
-//    checkboxClass: 'icheckbox_minimal',
-//    radioClass: 'iradio_minimal'
-//});
-//
-////When unchecking the checkbox
-//$("#check-all").on('ifUnchecked', function(event) {
-//    //Uncheck all checkboxes
-//    $("input[type='checkbox']", ".table-mailbox").iCheck("uncheck");
-//});
-//
-////When checking the checkbox
-//$("#check-all").on('ifChecked', function(event) {
-//	alert(1);
-//    //Check all checkboxes
-//    $("input[type='checkbox']", ".table-mailbox").iCheck("check");
-//}
+
 
 //=============== OLD
 
@@ -160,6 +153,10 @@ $("a[name='recover']").on('click',function(){
         $('#'+msgid).hide('500');
     });
 });
+
+//
+
+
 
 
 
