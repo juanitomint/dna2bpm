@@ -60,8 +60,18 @@ class Inbox extends MX_Controller {
     	foreach ($mymgs as $msg) {
     		$msg['msgid'] = $msg['_id'];
     		$msg['subject']=(strlen($msg['subject'])!=0)?($msg['subject']):("No Subject");
-    		$msg['msg_date'] = substr($msg['checkdate'], 0, 10);
-    		$msg['msg_time'] = date('l jS \of F Y h:i:s A',strtotime($msg['checkdate']));
+
+    		//Time lapse
+    		$datetime1 = date_create($msg['checkdate']);
+    		$datetime2 = date_create('now');
+    		$interval = date_diff($datetime1, $datetime2);
+    		$dif_dias= $interval->format('%d%');
+    		$dif_min= $interval->format('%i%');
+    		if($dif_dias>1)
+    			$msg['msg_time']=date('F j, Y ');	
+    		else 
+    			$msg['msg_time']=($dif_dias==0)?("$dif_min min"):("$dif_dias días $dif_min min");
+    		
     		$msg['icon_star'] = (isset($msg['star']) && $msg['star']==true) ? ('fa fa-star') : ('fa fa-star-o');
     		$msg['read'] = (isset($msg['read'])&&$msg['read']==true) ? ('read') : ('unread');
     		$msg['body']=nl2br($msg['body']);
@@ -83,17 +93,22 @@ class Inbox extends MX_Controller {
     	$customData['base_url'] = $this->base_url;
     	$customData['module_url'] = $this->module_url;
     	$customData['inbox_count']=$this->msg->count_msgs($this->idu,'inbox');
-    	$mymgs = $this->msg->get_msgs($this->idu,'inbox');
+    	$mymgs = $this->msg->get_msgs($this->idu,'inbox',null,4);
     	foreach ($mymgs as $msg) {
     		$msg['msgid'] = $msg['_id'];
     		$msg['subject']=(strlen($msg['subject'])!=0)?($msg['subject']):("No Subject");
-    		$msg['msg_date'] = substr($msg['checkdate'], 0, 10);
-    		$msg['msg_time'] = date('l jS \of F Y h:i:s A',strtotime($msg['checkdate']));
-    		$msg['icon_star'] = (isset($msg['star']) && $msg['star']==true) ? ('fa fa-star') : ('fa fa-star-o');
-    		$msg['read'] = (isset($msg['read'])&&$msg['read']==true) ? ('read') : ('unread');
+    		//Time lapse
+    		$datetime1 = date_create($msg['checkdate']);
+    		$datetime2 = date_create('now');
+    		$interval = date_diff($datetime1, $datetime2);
+    		$dif_dias= $interval->format('%d%');
+    		$dif_min= $interval->format('%i%');
+    		if($dif_dias>1)
+    			$msg['msg_time']=date('F j, Y ');	
+    		else 
+    			$msg['msg_time']=($dif_dias==0)?("$dif_min min"):("$dif_dias días $dif_min min");
+			// 
     		$msg['excerpt']=substr($msg['body'],0,10);
-
-    	
     		$customData['mymsgs'][] = $msg;
      	}
     	return $this->parser->parse('inbox/toolbar', $customData, true, true);
