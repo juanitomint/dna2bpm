@@ -1,0 +1,18 @@
+{
+    "createdBy": "Gabriel Fojo <trialvd@gmail.com>",
+    "title": "Inbox",
+    "view": "",
+    "icon": "fa-envelope",
+    "zones": [
+        {
+            "widgets": [
+                {
+				"title": "Inbox",
+				"module": "inbox",
+				"controller": "inbox",
+				"function": "index"
+                }
+            ]
+        }
+    ]
+}
