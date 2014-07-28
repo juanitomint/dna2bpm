@@ -29,12 +29,9 @@ $(document).on("click",".fa-star-o",function(){
 $(document).on("click",".msg",function(e){
 	var msgid=$(this).attr('data-msgid');
 	var this_msg=$(this);
-    event.preventDefault();
 
-//    var checked=$('.icheckbox_minimal',this).hasClass('checked'));
     var url = globals.base_url+'inbox/inbox/get_msg';    
     $.post(url,{id:msgid},function(data){
-    	
     	var msg=JSON.parse(data);
 
         $('#myModal').find('.modal-title').html('<i class="fa fa-envelope"></i> '+msg.subject);
@@ -44,6 +41,7 @@ $(document).on("click",".msg",function(e){
         this_msg.removeClass('unread');
         this_msg.addClass('read');   
     });
+    event.preventDefault();
 });
 
 // Action dropdown handle

@@ -18,14 +18,15 @@ class Inbox extends MX_Controller {
         $this->lang->load('library', $this->config->item('language'));
         $this->idu = (int) $this->session->userdata('iduser');
         
-
+        // CONFIG
+        define("MSGXPAGE",10); // Mails x page
 
         
     }
     
 
     function Index() {
-
+    	
      	$customData['user'] = (array) $this->user->get_user($this->idu);
      	$customData['inbox_icon'] = 'icon-envelope';
      	$customData['js'] = array(
@@ -48,12 +49,21 @@ class Inbox extends MX_Controller {
     	// Determino el folder
     	$folders=array('inbox','trash','outbox','star');
     	$source='to';
+    	// get folder from URI
     	if($this->uri->segment(3) && in_array($this->uri->segment(3),$folders)){
     		$folder=$this->uri->segment(3);
     	}else{
     		$folder='inbox';
     	}
     	$customData['folder']=$folder;
+    	
+    	// is paged?
+//     	if($this->uri->segment(4)=='paged'){
+//     		$page=($this->uri->segment(5))?($this->uri->segment(5)):(1);
+//     		//echo MSGXPAGE;
+//     		echo $page;
+//     		exit();
+//     	}
     	// Messages Loop
     	$mymgs = $this->msg->get_msgs($this->idu,$folder);
 
