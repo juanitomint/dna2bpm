@@ -7,7 +7,7 @@
         {
             "widgets": [
                 {
-				"title": "Inbox",
+				"title": "Inbox ",
 				"module": "inbox",
 				"controller": "inbox",
 				"function": "index"

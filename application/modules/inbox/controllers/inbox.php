@@ -19,7 +19,7 @@ class Inbox extends MX_Controller {
         $this->idu = (int) $this->session->userdata('iduser');
         
         // CONFIG
-        define("MSGXPAGE",10); // Mails x page
+        define("MSGS_X_PAGE",2); // Mails x page
 
         
     }
@@ -57,15 +57,20 @@ class Inbox extends MX_Controller {
     	}
     	$customData['folder']=$folder;
     	
-    	// is paged?
-//     	if($this->uri->segment(4)=='paged'){
-//     		$page=($this->uri->segment(5))?($this->uri->segment(5)):(1);
-//     		//echo MSGXPAGE;
-//     		echo $page;
-//     		exit();
-//     	}
+		// Pagination 
+    	$i=1;
+    	$skip=null;
+    	while($this->uri->segment($i)){
+    		if($this->uri->segment($i)=='page'){
+    			$page=$this->uri->segment($i+1)?($this->uri->segment($i+1)):(1);
+    			//$skip=($page-1)*MSGS_X_PAGE;
+    			break;
+    		}
+    		$i++;
+    	}
+    	$
     	// Messages Loop
-    	$mymgs = $this->msg->get_msgs($this->idu,$folder);
+    	$mymgs = $this->msg->get_msgs($this->idu,$folder,$skip,MSGS_X_PAGE);
 
     	foreach ($mymgs as $msg) {
     		$msg['msgid'] = $msg['_id'];
