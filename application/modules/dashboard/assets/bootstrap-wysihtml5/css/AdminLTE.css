@@ -815,7 +815,7 @@ body > .header .logo .icon {
   float: right;
 }
 .navbar-nav > .messages-menu > .dropdown-menu > li .menu > li > a > p {
-  margin: 0 0 0 45px;
+  margin: 0 0 0 5px;
   font-size: 12px;
   color: #888888;
 }

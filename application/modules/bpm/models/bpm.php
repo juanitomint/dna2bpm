@@ -14,7 +14,7 @@ class Bpm extends CI_Model {
 
     function __construct() {
         parent::__construct();
-        $this->idu = (int) $this->session->userdata('iduser');
+        $this->idu =  $this->session->userdata('iduser');
         $this->load->library('cimongo/cimongo');
         $this->db = $this->cimongo;
         $this->load->config('bpm/config');
@@ -363,7 +363,7 @@ class Bpm extends CI_Model {
         if (!isset($data['iduser']))
             $data['iduser'] = (int) $this->session->userdata('iduser');
 
-        if (!isset($idwf) or ! isset($case) or ! isset($resourceId)) {
+        if (!isset($idwf) or !isset($case) or !isset($resourceId)) {
             show_error("Can't update whith: idwf:$idwf case:$case  resourceId:$resourceId<br/>Incomplete Data.");
         }
         //$title=(isset($shape->properties->title))?$shape->properties->title;$shape->stencil->id;
@@ -1471,7 +1471,7 @@ class Bpm extends CI_Model {
         $data = array_filter($data);
 
         //---if assignment not set then assign task to "Initiator"
-        if (!isset($data['assign']) and ! isset($data['idgroup'])) {
+        if (!isset($data['assign']) and !isset($data['idgroup'])) {
             $data['assign'] = $this->user->Initiator;
         }
 
@@ -1567,6 +1567,12 @@ class Bpm extends CI_Model {
             }//---end foreach $rule
         }//---end if has assignments
         return $rtn;
+    }
+
+    function gateway($url) {
+        
+        $redir = base_url().'bpm/gateway/?url='.urlencode(base64_encode($url));
+        return $redir;
     }
 
 }

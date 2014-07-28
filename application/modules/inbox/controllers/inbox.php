@@ -33,7 +33,8 @@ class Inbox extends MX_Controller {
      			$this->base_url . "jscript/select2-3.4.5/select2.min.js"=>'Select JS',
      			$this->module_url . "assets/jscript/inbox.js"=>'Inbox JS'    			
      	);
-     			
+
+     	
      	$customData['css'] = array(
      			$this->module_url . "assets/css/inbox.css" => 'Dashboard CSS',
      			$this->base_url . "jscript/select2-3.4.5/select2.css" => 'Select CSS',
@@ -41,7 +42,9 @@ class Inbox extends MX_Controller {
      	);
      	
      	$customData['base_url'] = $this->base_url;
-     	$customData['module_url'] = $this->module_url;
+     	$customData['module_url'] = $this->module_url;   	
+     	
+
     	// Determino el folder
     	$folders=array('inbox','trash','outbox','star');
     	$source='to';
@@ -53,12 +56,22 @@ class Inbox extends MX_Controller {
     	$customData['folder']=$folder;
     	// Messages Loop
     	$mymgs = $this->msg->get_msgs($this->idu,$folder);
-    
+
     	foreach ($mymgs as $msg) {
     		$msg['msgid'] = $msg['_id'];
     		$msg['subject']=(strlen($msg['subject'])!=0)?($msg['subject']):("No Subject");
-    		$msg['msg_date'] = substr($msg['checkdate'], 0, 10);
-    		$msg['msg_time'] = date('l jS \of F Y h:i:s A',strtotime($msg['checkdate']));
+
+    		//Time lapse
+    		$datetime1 = date_create($msg['checkdate']);
+    		$datetime2 = date_create('now');
+    		$interval = date_diff($datetime1, $datetime2);
+    		$dif_dias= $interval->format('%d%');
+    		$dif_min= $interval->format('%i%');
+    		if($dif_dias>1)
+    			$msg['msg_time']=date('F j, Y ');	
+    		else 
+    			$msg['msg_time']=($dif_dias==0)?("$dif_min min"):("$dif_dias días $dif_min min");
+    		
     		$msg['icon_star'] = (isset($msg['star']) && $msg['star']==true) ? ('fa fa-star') : ('fa fa-star-o');
     		$msg['read'] = (isset($msg['read'])&&$msg['read']==true) ? ('read') : ('unread');
     		$msg['body']=nl2br($msg['body']);
@@ -70,13 +83,37 @@ class Inbox extends MX_Controller {
     		$customData['mymsgs'][] = $msg;
     	}
     	$customData['reply']=false;
-    //var_dump($customData);
-    $customData['content']=$this->parser->parse('inbox/inbox2', $customData, true, true);
-
-    return $customData;
-//     	Modules::run('dna2/dna2/render','inbox',$customData);
+     	$customData['inbox_count']=$this->msg->count_msgs($this->idu,'inbox'); 
+    	$customData['content']=$this->parser->parse('inbox/inbox2', $customData, true, true);
+	    return $customData;
     }
     
+    // Mini version for toolbar
+    function toolbar(){
+    	$customData['base_url'] = $this->base_url;
+    	$customData['module_url'] = $this->module_url;
+    	$customData['inbox_count']=$this->msg->count_msgs($this->idu,'inbox');
+    	$mymgs = $this->msg->get_msgs($this->idu,'inbox',null,4);
+    	foreach ($mymgs as $msg) {
+    		$msg['msgid'] = $msg['_id'];
+    		$msg['subject']=(strlen($msg['subject'])!=0)?($msg['subject']):("No Subject");
+    		//Time lapse
+    		$datetime1 = date_create($msg['checkdate']);
+    		$datetime2 = date_create('now');
+    		$interval = date_diff($datetime1, $datetime2);
+    		$dif_dias= $interval->format('%d%');
+    		$dif_min= $interval->format('%i%');
+    		if($dif_dias>1)
+    			$msg['msg_time']=date('F j, Y ');	
+    		else 
+    			$msg['msg_time']=($dif_dias==0)?("$dif_min min"):("$dif_dias días $dif_min min");
+			// 
+    		$msg['excerpt']=substr($msg['body'],0,10);
+    		$customData['mymsgs'][] = $msg;
+     	}
+    	return $this->parser->parse('inbox/toolbar', $customData, true, true);
+
+    }
   
 
     // get msg by id
@@ -84,10 +121,10 @@ class Inbox extends MX_Controller {
     $msgid=$this->input->post('id');
     $mymgs = $this->msg->get_msg($msgid);
     $this->msg->set_read("read",$msgid); // Marco leido
-     // $mymgs=nl2br($mymgs['body']);
-//  print_r($mymgs['body']);
     echo json_encode($mymgs);
     }
+    
+
     
     // save star value
     function set_star(){
@@ -103,6 +140,16 @@ class Inbox extends MX_Controller {
 	    foreach($id as $myid){
 	    	$this->msg->set_read($state,$myid);
 	    }
+    }
+    
+    // save star value
+    function set_tag(){
+     	$tag=$this->input->post('tag');
+     	$id=$this->input->post('msgid');
+
+     	foreach($id as $myid){
+     		$this->msg->set_tag($tag,$myid);
+     	}
     }
     
     function send(){

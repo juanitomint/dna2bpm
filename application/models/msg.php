@@ -19,7 +19,7 @@ class Msg extends CI_Model {
     
 
     //---get that msg
-    function get_msgs($iduser, $folder=null) {
+    function get_msgs($iduser, $folder=null, $skip=null, $limit=null) {
 
         if($folder=='outbox'){
             $query = array('from' =>(double) $iduser);
@@ -36,12 +36,25 @@ class Msg extends CI_Model {
             if (isset($folder))
                 $query['folder'] = $folder;
         }
-        
+	// Query build
+    $pipe=$this->mongo->db->msg->find($query);
+	if(!is_null($skip))
+		$pipe = $pipe->skip($skip);
+	if(!is_null($limit))
+		$pipe = $pipe->limit($limit);	
+	$pipe=$pipe->sort(array('checkdate'=>-1));
 
-        $result = $this->mongo->db->msg->find($query)->sort(array('checkdate'=>-1));   
-
-        return $result;
+    return $pipe;
        
+    }
+    
+    function count_msgs($iduser, $folder=null) {
+    	$query = array(
+    			'to' =>(double) $iduser,
+    			'folder'=>$folder
+    	);
+    	return $this->mongo->db->msg->find($query)->count();
+
     }
 
     //---send msg multiple users
@@ -114,6 +127,16 @@ class Msg extends CI_Model {
     $query=array('$set' =>array('read'=>$status));
     $criteria = array('_id' => $mongoid);
     $rs=$this->mongo->db->msg->update($criteria, $query);
+    }
+    
+    // Set Tag?
+    function set_tag($tag,$id) {
+    $mongoid=new MongoId($id);
+    $query=array('$set' =>array('tag'=>$tag));
+    $criteria = array('_id' => $mongoid);
+
+    $rs=$this->mongo->db->msg->update($criteria, $query);
+
     }
 
 
