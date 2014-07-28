@@ -14,7 +14,8 @@ function gridClick (view,record,item,index,e,options ){
 
 function confirm(result){
     if(result=='yes'){
-        dgstore.remove(this);
+        gridSel = mygrid.selModel.selected.items[0];
+        dgstore.remove(gridSel);
         dgstore.sync();
     }
 }
