@@ -68,7 +68,7 @@ class Repository extends MX_Controller {
             $this->bpm->save($idwf, $data, $svg);
         }
     }
-
+    
     function add($new_idwf=null) {
 //---check if has post
         if (!($this->input->post('idwf')or $new_idwf)) {

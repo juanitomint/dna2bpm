@@ -12,7 +12,9 @@ if (!defined('BASEPATH'))
  * @date   Mar 30, 2013
  */
 class Case_manager extends MX_Controller {
-
+    public $debug=array(
+        'revert'=>false
+    );
     function __construct() {
         parent::__construct();
         $this->load->library('parser');
@@ -42,6 +44,31 @@ class Case_manager extends MX_Controller {
         echo "Done";
         
         
+    }
+    /*
+     * This function will revert a case to a certain state
+     */
+    function revert($model,$idwf,$idcase,$resourceId){
+        $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
+        if ($debug)
+            echo '<h2>' . __FUNCTION__ . '</h2>';
+        $token=$this->bpm->get_token($idwf, $idcase, $resourceId);
+        $filter=array(
+            'idwf'=>$idwf,
+            'case'=>$idcase,
+            '_id'=>array('$gt'=>$token['_id'])
+                );
+        //---remove tokens newer than this
+        $this->bpm->clear_tokens($idwf, $idcase, $filter);
+        $token['status']='pending';
+        $this->bpm->save_token($token);
+        $out = array('status' => 'ok');
+        if (!$debug) {
+            header('Content-type: application/json;charset=UTF-8');
+            echo json_encode($out);
+        } else {
+            var_dump($out);
+        }
     }
     function Browse($model, $idwf, $case = null, $action = '') {
         $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;

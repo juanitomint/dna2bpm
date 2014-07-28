@@ -391,8 +391,8 @@ class Bpm extends CI_Model {
         //---TODO set token on cache
     }
 
-    function clear_tokens($idwf, $case) {
-        $criteria = array(
+    function clear_tokens($idwf, $case,$criteria=null) {
+        $criteria =($criteria) ? $criteria: array(
             'idwf' => $idwf,
             'case' => $case
         );
