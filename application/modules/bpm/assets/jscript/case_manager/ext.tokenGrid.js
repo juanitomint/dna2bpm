@@ -8,7 +8,21 @@ function revertTo(result) {
         gridSel = mygrid.selModel.selected.items[0];
         idcase = gridSel.get('id');
         url = globals.base_url + 'bpm/case_manager/revert/model/' + globals.idwf + '/' + idcase + '/' + resourceId;
-        window.open(url);
+        Ext.Ajax.request({
+                // the url to the remote source
+                url: url,
+                method: 'POST',
+                // define a handler for request success
+                success: function(response, options){
+                    gridClick(null,mygrid.selModel.selected.items[0])
+                    Ext.Msg.alert('Status', 'Changes saved successfully.');
+                },
+                // NO errors ! ;)
+                failure: function(response,options){
+                    Ext.Msg.alert('Error', 'Error Loading:'+response.err);
+                }
+            });
+        //window.open(url);
     }
 }
 function playShape(result) {
@@ -249,8 +263,8 @@ var tokenGrid = Ext.create('Ext.grid.Panel',
                     menuDisabled: true,
                     sortable: false,
                     xtype: 'actioncolumn',
-                    width: 80,
-                    text: 'Actions',
+                    width: 40,
+                    text: 'Play',
                     items: [
                         {
                             text: 'play',
@@ -260,7 +274,16 @@ var tokenGrid = Ext.create('Ext.grid.Panel',
                                 Ext.Msg.confirm('Confirm', 'Are you sure you want to Play: ' + rec.get('type') + '?', playShape, rec);
 
                             }
-                        },
+                        }
+                    ]
+                },
+                {
+                    menuDisabled: true,
+                    sortable: false,
+                    xtype: 'actioncolumn',
+                    width: 40,
+                    text: 'Revert',
+                    items: [
                         {
                             text: 'Revert',
                             icon:globals.module_url+'assets/images/118.png',
