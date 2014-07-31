@@ -594,7 +594,7 @@ class Kpi extends MX_Controller {
         echo json_encode($kpi->toSave());
     }
 
-    function Save_properties($data = null) {
+    function Save_properties($data = null, $return = null) {
         $this->load->helper('dbframe');
         $this->load->model('user/rbac');
         $this->load->model('app');
@@ -644,8 +644,12 @@ class Kpi extends MX_Controller {
         //$kpi->groups = implode(',', $kpi->groups);
         //----dump results
         if (!$debug) {
-            header('Content-type: application/json;charset=UTF-8');
-            echo json_encode($kpi->toSave());
+            if ($return) {
+                return $kpi->toSave();
+            } else {
+                header('Content-type: application/json;charset=UTF-8');
+                echo json_encode($kpi->toSave());
+            }
         } else {
             var_dump($obj);
         }
@@ -669,7 +673,8 @@ class Kpi extends MX_Controller {
                 echo "Importing: $file<br/>";
                 $content = file_get_contents($path . $file);
                 $data = json_decode($content, true);
-                Modules::run('bpm/kpi/save_properties', $data);
+                $out = $this->Save_properties($data, true);
+                //Modules::run('bpm/kpi/save_properties', $data);
                 echo "ok!<br/>";
             }
         }
