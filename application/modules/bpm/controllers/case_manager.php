@@ -102,6 +102,11 @@ class Case_manager extends MX_Controller {
             $this->module_url . 'assets/jscript/case_manager/ext.add_events.js' => 'Events for overlays',
             $this->module_url . 'assets/jscript/case_manager/ext.viewport.js' => 'viewport',
             $this->base_url . "jscript/jquery/jquery.min.js" => 'JQuery',
+            //----Pan & ZooM---------------------------------------------
+            $this->module_url . 'assets/jscript/panzoom/jquery.panzoom.min.js' => 'Panzoom Minified',
+            $this->module_url . 'assets/jscript/panzoom/jquery.mousewheel.js' => 'wheel-suppport',
+            $this->module_url . 'assets/jscript/panzoom/pnazoom_wheel.js' => 'wheel script',
+            //-----------------------------------------------------------------
             $this->base_url . "jscript/bootstrap/js/bootstrap.min.js" => 'Bootstrap JS',
         );
 
