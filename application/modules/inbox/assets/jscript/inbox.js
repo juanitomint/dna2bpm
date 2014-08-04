@@ -31,7 +31,7 @@ $(document).on("click",".msg",function(e){
 	var this_msg=$(this);
 
     var url = globals.base_url+'inbox/inbox/get_msg';    
-    $.post(url,{id:msgid},function(data){
+    $.post(url,{id:msgid,whereiam:whereiam},function(data){
     	var msg=JSON.parse(data);
 
         $('#myModal').find('.modal-title').html('<i class="fa fa-envelope"></i> '+msg.subject);
@@ -123,6 +123,14 @@ $(document).on("click","#msg_action a,#msg_tag a",function(){
     
 });
 
+$(document).on("submit","[name='form_search']",function(e){
+	/* Search */
+	e.preventDefault();
+	var find=$('#search').val();
+    window.location=window.location+'/filter/'+find; ;
+
+	
+});
 
 //=============== OLD
 

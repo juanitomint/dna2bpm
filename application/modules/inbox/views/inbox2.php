@@ -62,11 +62,11 @@
 												{/if}
                                                 </div>
                                                 <div class="col-sm-6 search-form">
-                                                    <form action="#" class="text-right">
+                                                    <form action="#" class="text-right" name="form_search">
                                                         <div class="input-group">                                                            
-                                                            <input type="text" class="form-control input-sm" placeholder="Search">
+                                                            <input type="text" class="form-control input-sm" placeholder="Search" id="search">
                                                             <div class="input-group-btn">
-                                                                <button type="submit" name="q" class="btn btn-sm btn-primary"><i class="fa fa-search"></i></button>
+                                                                <button  name="q" type="submit" class="btn btn-sm btn-primary"><i class="fa fa-search"></i></button>
                                                             </div>
                                                         </div>                                                     
                                                     </form>

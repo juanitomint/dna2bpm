@@ -37,15 +37,15 @@ class Pagination extends MX_Controller {
     			'class_ul'=>""
     			,'class_a'=>""
     	);
-    	
+
     	$params=array_merge($default,$config);
 		extract($params);
 
     	$link=$url."/page/";
-    	$paged['total_pages']=floor($items_total/$items_total);
+    	$paged['total_pages']=floor($items_total/$items_x_page);
+
     	if($items_total%$items_x_page)$paged['total_pages']++;
 		$current_page=$this->get_current_page();	
-
 
     	// MIN MAX RANGE
     	$actual=(int)$current_page;
