@@ -49,6 +49,12 @@ class Admin extends MX_Controller {
         );
 
         $cpData['js'] = array(
+            $this->base_url . "jscript/jquery/jquery.min.js" => 'JQuery',
+            //----Pan & ZooM---------------------------------------------
+            $this->module_url . 'assets/jscript/panzoom/jquery.panzoom.min.js' => 'Panzoom Minified',
+            $this->module_url . 'assets/jscript/panzoom/jquery.mousewheel.js' => 'wheel-suppport',
+            $this->module_url . 'assets/jscript/panzoom/pnazoom_wheel.js' => 'wheel script',
+            //-----------------------------------------------------------------
             $this->module_url . "assets/jscript/ext.settings.js" => 'Settings',
             $this->module_url . 'assets/jscript/ext.model-utils.js' => 'Model utils',
             $this->module_url . "assets/jscript/browser/data.js" => 'Data Objects',
@@ -146,7 +152,7 @@ class Admin extends MX_Controller {
         $models = $this->bpm->get_models();
         foreach ($models as $bpm) {
             $folder = (property_exists($bpm, 'folder')) ? $bpm->folder . '/' : '';
-            $name=(isset($bpm->data['properties']['name'])) ? $bpm->data['properties']['name'] : "no name";
+            $name = (isset($bpm->data['properties']['name'])) ? $bpm->data['properties']['name'] : "no name";
             $m_arr[$folder . $bpm->idwf] = $name . ' [' . $bpm->idwf . ']';
         }
         $tree = $this->explodeTree($m_arr, $delimiter = '/');

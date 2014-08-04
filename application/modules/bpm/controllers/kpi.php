@@ -157,6 +157,11 @@ class Kpi extends MX_Controller {
             $this->module_url . 'assets/jscript/kpi/ext.add_events.js' => 'Events for overlays',
             $this->module_url . 'assets/jscript/kpi/ext.viewport.js' => 'viewport',
             $this->base_url . "jscript/jquery/jquery.min.js" => 'JQuery',
+            //----Pan & ZooM---------------------------------------------
+            $this->module_url . 'assets/jscript/panzoom/jquery.panzoom.min.js' => 'Panzoom Minified',
+            $this->module_url . 'assets/jscript/panzoom/jquery.mousewheel.js' => 'wheel-suppport',
+            $this->module_url . 'assets/jscript/panzoom/pnazoom_wheel.js' => 'wheel script',
+            //-----------------------------------------------------------------
             $this->base_url . "jscript/bootstrap/js/bootstrap.min.js" => 'Bootstrap JS',
         );
 
@@ -594,7 +599,7 @@ class Kpi extends MX_Controller {
         echo json_encode($kpi->toSave());
     }
 
-    function Save_properties($data = null) {
+    function Save_properties($data = null, $return = null) {
         $this->load->helper('dbframe');
         $this->load->model('user/rbac');
         $this->load->model('app');
@@ -644,8 +649,12 @@ class Kpi extends MX_Controller {
         //$kpi->groups = implode(',', $kpi->groups);
         //----dump results
         if (!$debug) {
-            header('Content-type: application/json;charset=UTF-8');
-            echo json_encode($kpi->toSave());
+            if ($return) {
+                return $kpi->toSave();
+            } else {
+                header('Content-type: application/json;charset=UTF-8');
+                echo json_encode($kpi->toSave());
+            }
         } else {
             var_dump($obj);
         }
@@ -669,7 +678,8 @@ class Kpi extends MX_Controller {
                 echo "Importing: $file<br/>";
                 $content = file_get_contents($path . $file);
                 $data = json_decode($content, true);
-                Modules::run('bpm/kpi/save_properties', $data);
+                $out = $this->Save_properties($data, true);
+                //Modules::run('bpm/kpi/save_properties', $data);
                 echo "ok!<br/>";
             }
         }
