@@ -57,21 +57,22 @@ class Inbox extends MX_Controller {
     	$customData['folder']=$folder;
     	
 		// Pagination 
-		define("ITEMS_X_PAGE",2);
-    	$items=$this->msg->count_msgs($this->idu,$folder);
-    	$current_page=$this->pagination->get_current_page();
-    	$customData['pagination']=$this->pagination->index(
-    			$this->base_url."dashboard/inbox",// url base for links | default: empty
-    			null,// current page | default: null
-    			$items,// total items | default: 0
-    			ITEMS_X_PAGE, // items x page | default: 10
-    			3 // nav size | default: 5
-    			// UL class | default: ""
-    			// A class | default: ""
+		define("ITEMS_X_PAGE",3);
+		$items=$this->msg->count_msgs($this->idu,$folder);
+
+    	$config=array('url'=>$this->base_url."dashboard/inbox",
+    			//'current_page'=>1,
+    			'items_total'=>$items, // Total items in array
+    			'items_x_page'=>ITEMS_X_PAGE,
+    			'pagination_width'=>3,
+//     			'class_ul'=>""
+//     			,'class_a'=>""
     	);
-    		  	
-/* echo $this->pagination->get_skip();
-exit(); */
+    	$customData['pagination']=$this->pagination->index($config);
+    	
+    	$current_page=$this->pagination->get_current_page();
+     	$skip=($current_page-1)*ITEMS_X_PAGE;
+	
     	$mymgs = $this->msg->get_msgs($this->idu,$folder,$skip,ITEMS_X_PAGE);
 
     	foreach ($mymgs as $msg) {
