@@ -19,8 +19,9 @@ class Msg extends CI_Model {
     
 
     //---get that msg
-    function get_msgs($iduser, $folder=null, $skip=null, $limit=null) {
+    function get_msgs($iduser, $folder=null, $skip=null, $limit=null, $filter=null) {
 
+    	// Folder check
         if($folder=='outbox'){
             $query = array('from' =>(double) $iduser);
         }elseif($folder=='star'){
@@ -30,12 +31,17 @@ class Msg extends CI_Model {
         			'folder'=>array('$ne'=>'trash')
         	);
         }else{
-        
-            // Para outbox
             $query = array('to' =>(double) $iduser);
             if (isset($folder))
                 $query['folder'] = $folder;
         }
+        
+    // Filter
+	if(!is_null($filter)){
+		$myregex=new MongoRegex("/$filter/i");
+		$query['subject'] = $myregex;
+	}
+        
 	// Query build
     $pipe=$this->mongo->db->msg->find($query);
 	if(!is_null($skip))

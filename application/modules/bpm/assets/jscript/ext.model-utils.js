@@ -6,6 +6,7 @@ var exclude_shape = new Array('SequenceFlow', 'Pool', 'MessageFlow');
 var exclude_paint = new Array('Pool', 'Lane');
 var TOKEN_SCROLL = true;
 var load_data_callback = null;
+var tooltips = new Array();
 /*
  var offset_x=0;
  var offset_y=0;
@@ -51,10 +52,19 @@ function load_data(idwf) {
                  
                  });
                  */
+                //----first remove previous events
+                Ext.each(tooltips, function(tooltip) {
+                    tooltip.destroy()
+                })
                 add_events(model_data.childShapes);
                 if (load_data_callback) {
                     load_data_callback();
                 }
+                //----init panzoom
+                if (typeof (panzoom_init) == 'function') {
+                    panzoom_init();
+                }
+
             }
         });
         first = true;
