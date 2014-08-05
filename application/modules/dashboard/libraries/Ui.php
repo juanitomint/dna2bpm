@@ -40,10 +40,13 @@ class ui {
                 $this->register_script('PLUpload',$data['base_url'].'jscript/plupload-2.1.2/plupload.full.min.js',array('jquery'));
                 $this->register_script('jquery.form',$data['base_url'].'jscript/jquery/plugins/Form/jquery.form.min.js',array('jquery'));
                 $this->register_script('icheck',$data['module_url'].'assets/bootstrap-wysihtml5/js/plugins/iCheck/icheck.min.js',array('WYSIHTML5'));
+                $this->register_script('inboxJS',$data['base_url'].'inbox/assets/jscript/inbox.js',array());
+                $this->register_script('selectJS',$data['base_url'].'jscript/select2-3.4.5/select2.min.js',array());
+                
                 
                 
                 // Load default JS 
-                $default=array('jquery','jqueryUI','bootstrap','WYSIHTML5','adminLTE','dashboardJS','jquery.form');
+                $default=array('jquery','jqueryUI','bootstrap','WYSIHTML5','adminLTE','dashboardJS','jquery.form','inboxJS');
                 //Custom JS Check
 
                 if (isset($data['js'])){

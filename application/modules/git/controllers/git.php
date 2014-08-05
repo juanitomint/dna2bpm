@@ -30,7 +30,7 @@ class Git extends MX_Controller {
         //$this->output->enable_profiler(TRUE);
     }
 
-    function update {
+    function update() {
         echo "<h1>Update from GIT server V1.15.log</h1>";
 
 //----log to file

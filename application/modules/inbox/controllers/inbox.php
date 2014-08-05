@@ -30,11 +30,9 @@ class Inbox extends MX_Controller {
      	$customData['user'] = (array) $this->user->get_user($this->idu);
      	$customData['inbox_icon'] = 'icon-envelope';
      	$customData['usercan_create'] = $this->user->has('/root/modules/inbox/controllers/inbox/new_msg');
-
+     	$customData['usercan_create']=true;
      	$customData['js'] = array(
-     			'icheck',
-     			$this->base_url . "jscript/select2-3.4.5/select2.min.js"=>'Select JS',
-     			$this->module_url . "assets/jscript/inbox.js"=>'Inbox JS'    			
+     			'icheck','inboxJS','selectJS'		
      	);
 
      	
