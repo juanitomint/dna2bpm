@@ -23,11 +23,14 @@ class Inbox extends MX_Controller {
         
     }
     
+    //==== MAIN LISTING
 
     function Index() {
     	
      	$customData['user'] = (array) $this->user->get_user($this->idu);
      	$customData['inbox_icon'] = 'icon-envelope';
+     	$customData['usercan_create'] = $this->user->has('/root/modules/inbox/controllers/inbox/new_msg');
+
      	$customData['js'] = array(
      			'icheck',
      			$this->base_url . "jscript/select2-3.4.5/select2.min.js"=>'Select JS',
@@ -118,7 +121,7 @@ class Inbox extends MX_Controller {
 	    return $customData;
     }
     
-    // Mini version for toolbar
+    //====  Mini INBOX version for toolbar
     function toolbar(){
     	$customData['base_url'] = $this->base_url;
     	$customData['module_url'] = $this->module_url;
@@ -146,7 +149,7 @@ class Inbox extends MX_Controller {
     }
   
 
-    // get msg by id
+    //==== GET MSG BY ID
     function get_msg(){
     $msgid=$this->input->post('id');
 
@@ -160,14 +163,14 @@ class Inbox extends MX_Controller {
     
 
     
-    // save star value
+    //====  STAR MARK
     function set_star(){
     $state=$this->input->post('state');
     $id=$this->input->post('msgid');
     $this->msg->set_star($state,$id);
     }
 
-    // save star value
+    //====  READ MARK
     function set_read(){
     $state=$this->input->post('state');
     $id=$this->input->post('msgid');
@@ -176,7 +179,7 @@ class Inbox extends MX_Controller {
 	    }
     }
     
-    // save star value
+    //====  TAG MARK
     function set_tag(){
      	$tag=$this->input->post('tag');
      	$id=$this->input->post('msgid');
@@ -186,10 +189,10 @@ class Inbox extends MX_Controller {
      	}
     }
     
+    //====  SEND MSG
     function send(){
 
-        $data=$this->input->post('data');
-        
+        $data=$this->input->post('data');    
         $to=explode(",",$data[0]['value']);
         $subject=$data[1]['value'];
         $body=$data[2]['value'];
@@ -208,6 +211,7 @@ class Inbox extends MX_Controller {
         
     }
     
+    //====  NEW MSG
     function new_msg(){
 
          $customData['user'] = (array) $this->user->get_user($this->idu);

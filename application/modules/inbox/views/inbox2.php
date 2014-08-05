@@ -8,7 +8,9 @@
                                         <div class="col-md-3 col-sm-4">
 
                                             <!-- compose message btn -->
+                                            {if {usercan_create}}
                                             <a class="btn btn-block btn-primary load_modal" href="{base_url}inbox/new_msg" title="New Message"><i class="fa fa-pencil" ></i> Compose Message</a>
+                                            {/if}
                                             <!-- Navigation - folders-->
                                             <div style="margin-top: 15px;">
                                                 <ul class="nav nav-pills nav-stacked">
