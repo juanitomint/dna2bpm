@@ -188,8 +188,10 @@ class Dashboard extends MX_Controller {
         // Flush!
         //var_dump(array_keys($customData));exit; 
 //          var_dump($customData);  
-//          exit();  
+//          exit(); 
+        
         $this->ui->compose($layout, $customData);
+
     }
 
     // ==== Tiles fixed
