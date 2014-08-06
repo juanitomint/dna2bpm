@@ -16,7 +16,7 @@ class Dashboard extends MX_Controller {
     function __construct() {
         parent::__construct();
         $this->load->model('user/user');
-        $this->load->config('config');
+        $this->load->config('dashboard/config');
         $this->load->library('parser');
         $this->load->library('ui');
         $this->load->model('app');
@@ -152,12 +152,14 @@ class Dashboard extends MX_Controller {
 
     function Dashboard($json = 'dashboard/json/dashboard.json', $debug = false) {
         /* eval Group hooks first */
+        
         $user = $this->user->get_user((int) $this->idu);
         $this->hooks_group($user);
         $myconfig = $this->parse_config($json, $debug);
 
         $layout = ($myconfig['view'] <> '') ? $myconfig['view'] : 'layout';
         $customData = $myconfig;
+        $customData['brand'] = $this->config->item('brand');
         $customData['menu'] = $this->menu();
         $customData['avatar'] = Modules::run('user/profile/get_avatar'); //Avatar URL
         $customData['base_url'] = $this->base_url;
