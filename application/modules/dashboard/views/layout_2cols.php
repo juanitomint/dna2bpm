@@ -22,6 +22,11 @@
  	    <!--  iCheck -->
  	    <link href="{module_url}assets/bootstrap-wysihtml5/css/iCheck/minimal/blue.css" rel="stylesheet" type="text/css" />
  	    
+ 	    <!--====== Font Kits ===== -->
+ 	    <link href="{module_url}assets/fonts/webfontkit-20140806-113318/stylesheet.css" rel="stylesheet" type="text/css" />
+ 	 	<link href="{module_url}assets/fonts/Droid-Sans-fontfacekit/web_fonts/droidsans_regular_macroman/stylesheet.css" rel="stylesheet" type="text/css" />   
+ 
+ 
  	    <!--====== CSS for widgets ===== -->
 		{widgets_css}
 		

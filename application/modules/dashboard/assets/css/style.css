@@ -10,5 +10,13 @@ body{
 	background-color:#f60 !important;
 }
 body > .header .logo {
-  font-family: 'Palatino, serif', cursive;
+  font-family: droid_sansregular;
+
 }
+
+body > .header .logo span{
+  font-family: chunkfiveroman;
+
+}
+
+
