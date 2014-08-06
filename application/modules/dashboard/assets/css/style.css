@@ -9,3 +9,6 @@
 body{
 	background-color:#f60 !important;
 }
+body > .header .logo {
+  font-family: 'Palatino, serif', cursive;
+}
