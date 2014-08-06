@@ -22,9 +22,12 @@
  	    <!--  iCheck -->
  	    <link href="{module_url}assets/bootstrap-wysihtml5/css/iCheck/minimal/blue.css" rel="stylesheet" type="text/css" />
  	    
+ 
  	    <!--====== CSS for widgets ===== -->
 		{widgets_css}
 
+ 	    <!-- overload css skins -->
+        <link href="{module_url}assets/css/style.css" rel="stylesheet" type="text/css" />
         
 
         
