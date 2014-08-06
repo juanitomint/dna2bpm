@@ -44,9 +44,9 @@
 <!-- ======== HEADER ======== -->   
     
         <header class="header">
-            <a href="index.html" class="logo">
+            <a href="{base_url}" class="logo">
                 <!-- Add the class icon to your logo image or logo icon to add the margining -->
-               DNA2
+               {brand}
             </a>
             <!-- Header Navbar: style can be found in header.less -->
             <nav class="navbar navbar-static-top" role="navigation">
