@@ -34,7 +34,7 @@ function run_Task($shape, $wf, $CI) {
 
     $data = array();
 //---get case data
-    $case = $CI->bpm->get_case($wf->case,$wf->idwf);
+    $case = $CI->bpm->get_case($wf->case, $wf->idwf);
 //---set initiator same as case creator.
     $CI->user->Initiator = (int) $case['iduser'];
 //----Get token data
@@ -152,7 +152,7 @@ function run_Task($shape, $wf, $CI) {
 
 //---check if user belong to the group the task is assigned to
 //---but only if the task havent been assigned to an specific user
-            if (isset($token['idgroup']) and !isset($token['assign'])) {
+            if (isset($token['idgroup']) and ! isset($token['assign'])) {
                 foreach ($user_groups as $thisgroup) {
                     if (in_array((int) $thisgroup, $token['idgroup']))
                         $is_allowed = true;
@@ -219,16 +219,17 @@ function run_Task($shape, $wf, $CI) {
         case 'Send':
             //----ASSIGN TASK to USER / GROUP
             $token = $CI->bpm->assign($shape, $wf);
-
+            $CI->data=$CI->bindObjectToArray($CI->data);
+            $CI->data['date'] = date($CI->lang->line('dateFmt'));
             $msg['from'] = $CI->idu;
             $msg['subject'] = $CI->parser->parse_string($shape->properties->name, $CI->data, true, true);
             $msg['body'] = $CI->parser->parse_string($shape->properties->documentation, $CI->data, true, true);
-            $msg['idwf']=$wf->idwf;
-            $msg['case']=$wf->case;
-            if($shape->properties->properties<>''){
-             foreach($shape->properties->properties->items as $property){
-                 $msg[$property->name]=$property->datastate;
-             }   
+            $msg['idwf'] = $wf->idwf;
+            $msg['case'] = $wf->case;
+            if ($shape->properties->properties <> '') {
+                foreach ($shape->properties->properties->items as $property) {
+                    $msg[$property->name] = $property->datastate;
+                }
             }
             $resources = $CI->bpm->get_resources($shape, $wf);
             //---if has no messageref and noone is assigned then
@@ -275,45 +276,3 @@ function run_Task($shape, $wf, $CI) {
             break;
     }
 }
-
-function send_message($subject, $body, $users) {
-
-    $CI = & get_instance();
-    $DS = $CI->bindObjectToArray($CI->data);
-    $debug = (isset($CI->debug[__FUNCTION__])) ? $CI->debug[__FUNCTION__] : false;
-    $debug = true;
-
-    //---set prefix 4 email subjects
-    $email_prefix = '[DNA2] ';
-    $CI->load->library('email');
-
-    if ($debug) {
-        echo '<H1>SEND:' . $subject . '</H1>';
-        echo "sending msg to:" . count($users) . ' users';
-        echo "<hr/>$body<hr/>";
-    }
-    foreach ($users as $user) {
-        $sendTo[] = $user['email'];
-    }
-
-    var_dump2($sendTo);
-    $CI->email->initialize();
-    $CI->email->from('dna2@dna2.org', 'DNA2BOT');
-
-    foreach ($users as $user) {
-        $mail_data = array_merge($DS, $user);
-        if ($debug)
-            var_dump2('$mail_data', $mail_data);
-        $CI->email->to($user['email']);
-        $CI->email->subject($CI->parser->parse_string($email_prefix . $subject, $mail_data, true));
-        //-------prepare message body
-        $body = $CI->parser->parse_string($body, $mail_data, true);
-        $CI->email->message($body);
-        $result = $CI->email->send();
-        if ($debug)
-            echo '<hr/>' . $CI->email->print_debugger() . '<hr/>';
-    }
-    return true;
-}
-
-?>
