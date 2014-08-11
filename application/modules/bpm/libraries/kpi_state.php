@@ -40,7 +40,6 @@ class kpi_state {
 
     function core($kpi) {
         $filter = Modules::run('kpi/get_filter', $kpi);
-        var_dump(json_encode($filter));
         $tokens = $this->CI->bpm->get_tokens_byResourceId($kpi['resourceId'], $filter);
         $cpData = $kpi;
         //var_dump($tokens);
