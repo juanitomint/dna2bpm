@@ -37,9 +37,9 @@ class ui {
                 $this->register_script('fullcalendar',$data['module_url'].'assets/bootstrap-wysihtml5/js/plugins/fullcalendar/fullcalendar.min.js');
                 $this->register_script('knob',$data['module_url'].'assets/bootstrap-wysihtml5/js/plugins/jqueryKnob/jquery.knob.js',array('jquery'));
                 $this->register_script('daterangerpicker',$data['module_url'].'assets/bootstrap-wysihtml5/js/plugins/daterangepicker/daterangepicker.js');
-                $this->register_script('WYSIHTML5',$data['module_url'].'assets/bootstrap-wysihtml5/js/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js',array('adminLTE'));               
-                $this->register_script('adminLTE',$data['module_url'].'assets/bootstrap-wysihtml5/js/AdminLTE/app.js',array('bootstrap'));
-                $this->register_script('dashboardJS',$data['module_url'].'assets/jscript/app.js',array('jquery'));
+                $this->register_script('WYSIHTML5',$data['module_url'].'assets/bootstrap-wysihtml5/js/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js');               
+                $this->register_script('adminLTE',$data['module_url'].'assets/bootstrap-wysihtml5/js/AdminLTE/app.js',array('bootstrap','WYSIHTML5'));
+                $this->register_script('dashboardJS',$data['module_url'].'assets/jscript/app.js',array('jquery','WYSIHTML5'));
                 $this->register_script('PLUpload',$data['base_url'].'jscript/plupload-2.1.2/plupload.full.min.js',array('jquery'));
                 $this->register_script('jquery.form',$data['base_url'].'jscript/jquery/plugins/Form/jquery.form.min.js',array('jquery'));
                 $this->register_script('icheck',$data['module_url'].'assets/bootstrap-wysihtml5/js/plugins/iCheck/icheck.min.js',array('WYSIHTML5'));
