@@ -71,7 +71,7 @@ class Inbox extends MX_Controller {
 
 
     	//==== Pagination
-    	define("ITEMS_X_PAGE",3);
+    	define("ITEMS_X_PAGE",10);
     	$current_page=$this->pagination->get_current_page();
     	$skip=($current_page-1)*ITEMS_X_PAGE;
     	//==== Bring me my MSGs!!!
@@ -82,7 +82,7 @@ class Inbox extends MX_Controller {
     			//'current_page'=>1,
     			'items_total'=>$items, // Total items in array
     			'items_x_page'=>ITEMS_X_PAGE,
-    			'pagination_width'=>3,
+    			'pagination_width'=>5,
     			//     			'class_ul'=>""
     			//     			,'class_a'=>""
     	);

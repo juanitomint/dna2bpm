@@ -41,7 +41,7 @@ $(document).on("click",".msg",function(e){
         this_msg.removeClass('unread');
         this_msg.addClass('read');   
     });
-    event.preventDefault();
+    e.preventDefault();
 });
 
 // Action dropdown handle

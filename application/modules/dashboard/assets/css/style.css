@@ -6,9 +6,7 @@
         
 */
 
-body{
-	background-color:#f60 !important;
-}
+
 body > .header .logo {
   font-family: droid_sansregular;
   background-color:#132D60 ;
@@ -20,8 +18,3 @@ body > .header .logo span{
 
 }
 
-/* Industria Colors */
-
-.skin-blue .navbar{background-color:#01ABA8 ;}
-a.logo:hover{background-color:#132D60 !important;}
-.bg-light-blue{	background-color:#132D60 !important;}
