@@ -296,7 +296,7 @@ class Manager extends MX_Controller {
              */
             case 'text':
                 foreach ($tokens as $id => $tasks) {
-                    $user = $this->user->get_user($id);
+                    //$user = $this->user->get_user($id);
                     //---load cards here
                     echo $user->name . '<br>';
                     foreach ($tasks as $task) {
@@ -312,9 +312,9 @@ class Manager extends MX_Controller {
              */
             case 'html':
                 foreach ($tokens as $id => $tasks) {
-                    $user = $this->user->get_user($id);
+                    //$user = $this->user->get_user($id);
                     //---load cards here
-                    echo $user->name . '<br>';
+                    //echo $user->name . '<br>';
                     foreach ($tasks as $task) {
                         echo $task['title'] . '<br/>';
                         echo $task['status'] . '<br/>';
