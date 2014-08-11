@@ -497,25 +497,12 @@ class Kpi extends MX_Controller {
         $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
         if ($debug)
             echo '<h2>' . __FUNCTION__ . '</h2>';
-        $exists = false;
-        //---load type extension
-        if (!method_exists($this, $kpi['type'])) {
-            $file_custom = $this->types_path . $kpi['type'] . '/kpi_controller.php';
-            if (is_file($file_custom)) {
-                //$exists = true;
-                if ($debug)
-                    echo "Loaded Custom Render:$file_custom<br/>";
-                require_once($file_custom);
-            } else {
-                $rtn = $this->ShowMsg('<strong>Warning!</strong>Function:' . $kpi['type'] . '<br/>' . $kpi['title'] . '<br/>Does not exists. ', 'alert');
-            }
-            $rtn = $kpi['type']($kpi, $this, true);
-        } else {
-            $exists = true;
+        if ($kpi) {
+            $kpi_type = 'kpi_' . $kpi['type'];
+            $this->load->library($kpi_type);
+            $rtn = $this->$kpi_type->list_cases($kpi);
+            return $rtn;
         }
-        if ($exists)
-            $rtn = $this->$kpi['type']($kpi, $this, true);
-        return $rtn;
     }
 
     /*
