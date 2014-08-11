@@ -36,13 +36,13 @@ class kpi_state {
         $cases = array_map(function ($token) {
             return $token['case'];
         }, $tokens);
-        var_dump($cases);
+        //var_dump($cases);
         return $cases;
     }
 
     function core($kpi) {
         $filter = Modules::run('kpi/get_filter', $kpi);
-        var_dump(json_encode($filter));
+        //var_dump(json_encode($filter));
         $tokens = $this->CI->bpm->get_tokens_byResourceId($kpi['resourceId'], $filter);
         $cpData = $kpi;
         //var_dump($tokens);
