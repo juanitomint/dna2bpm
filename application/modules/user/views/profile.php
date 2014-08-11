@@ -146,6 +146,14 @@
     </div>
   </div>
   
+     <!--  ==== SIGNATURE ==== -->
+  <div class="form-group">
+    <label class="col-sm-2 control-label">Signature</label>
+    <div class="col-sm-10">
+    <textarea name="signature" class="form-control" {disabled}>{signature}</textarea>
+    </div>
+  </div>
+  
      <!--  ==== SUBMIT ==== -->
      {if "{disabled}"==""}
   <div class="form-group">

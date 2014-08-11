@@ -90,7 +90,7 @@ class Profile extends MX_Controller {
         $customData['module_url'] = base_url() . 'user/';
         $iduser = (int) $this->session->userdata('iduser');
 
-        $allowed=array('name','gender','lastname','idnumber','birthdate','email','phone','celular','address','cp','city');
+        $allowed=array('name','gender','lastname','idnumber','birthdate','email','phone','celular','address','cp','city','signature');
 		foreach($this->input->post('data') as $item){
  			if(in_array($item['name'],$allowed))
  			$post_obj[$item['name']]=$item['value'];
