@@ -233,7 +233,7 @@ class Dashboard extends MX_Controller {
     // ============ Parse JSON config
  function parse_config($file, $debug = false) {
         $myconfig = json_decode($this->load->view($file, '', true), true);
-        
+        define('MINWIDTH',2);
 //             $return['js'] = array();
         //Root config
         foreach ($myconfig as $key => $value) {
@@ -245,35 +245,48 @@ class Dashboard extends MX_Controller {
         foreach ($myconfig['zones'] as $zones) {
             $content = "";
             $widgets = array();
+            $spans = array();
             $myzone = current($zones);
             $myzone_key = key($zones);
 
 
             foreach ($myzone as $item) {
                 $widgets[] = $item;
+                $spans[]=(empty($item["span"]))?(MINWIDTH):($item["span"]);
             }
-
-
+		
             $content.="<div class='row zone_$myzone_key  '>";
             $Qspan=0;
+
             foreach ($widgets as $k => $myWidget) {
            	
             	// Span handle
-				if($Qspan==12)$Qspan=0;
-            	if(!empty($myWidget["span"])&&$myWidget["span"]>0&&$myWidget["span"]<13){
-            		// span is ok
-            		if($Qspan+$myWidget["span"]<13){
-            			$span=$myWidget["span"];
-            			$Qspan+=$span;
-            		}else{
-            			$span=$myWidget["span"];
-            			$Qspan=$myWidget["span"];
-            		}        			
-            	}else{
-            		//span is not set or out of range
-            		$span=12-$Qspan;
-            		//$Qspan=0;
-            	}
+				$myspan=$spans[$k];
+				$next=(isset($spans[$k+1]))?($spans[$k+1]):(null);
+				$fit_in=($myspan+$Qspan<13)?(true):(null);
+				
+				if($fit_in){
+					// There is space for this col
+					if($next){
+						// we have more cols
+						if($Qspan+$myspan+$next<13){
+							$span=$myspan;
+							$Qspan=($Qspan+$span==12)?(0):($Qspan+$span);
+						}else{
+							$span=12-$Qspan;
+							$Qspan=0;
+						}
+					}else{
+						$span=12-$Qspan;
+						$Qspan=0;
+					}
+					
+					
+				}else{
+					// col too big
+					$span=$myspan;
+				}
+				//
             	           	
                 if (isset($myWidget['params'])) {
                     $args = $myWidget['params'];
