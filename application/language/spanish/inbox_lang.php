@@ -12,4 +12,11 @@ $lang["folder"]='Carpeta';
 $lang["folders"]='Carpetas';
 $lang["read"]='leido';
 $lang["mark_read"]='Marcar como leído';
-?>
+$lang["compose"]='Redactar';
+$lang["sent"]='Enviados';
+$lang["starred"]='Destacado';
+$lang["action"]='Acciones';
+$lang["mark_as_read"]='Marcar como leído';
+$lang["mark_as_unread"]='Marcar como no leído';
+$lang["move_to"]='Mover a';
+$lang["delete"]='Eliminar';
