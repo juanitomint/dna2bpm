@@ -9,16 +9,16 @@
 
                                             <!-- compose message btn -->
                                             {if {usercan_create}}
-                                            <a class="btn btn-block btn-primary load_modal" href="{base_url}inbox/new_msg" title="New Message"><i class="fa fa-pencil" ></i> Compose Message</a>
+                                            <a class="btn btn-block btn-primary load_modal" href="{base_url}inbox/new_msg" title="New Message"><i class="fa fa-pencil" ></i> {lang compose}</a>
                                             {/if}
                                             <!-- Navigation - folders-->
                                             <div style="margin-top: 15px;">
                                                 <ul class="nav nav-pills nav-stacked">
-                                                    <li class="header">Folders</li>
-                                                    <li class="{if {folder}=='inbox'}active{/if}"><a href="{base_url}dashboard/inbox"><i class="fa fa-inbox"></i> Inbox ({inbox_count})</a></li>
-                                                    <li class="{if {folder}=='outbox'}active{/if}"><a href="{base_url}dashboard/inbox/outbox"><i class="fa fa-mail-forward"></i> Sent</a></li>
-                                                    <li class="{if {folder}=='star'}active{/if}" ><a  href="{base_url}dashboard/inbox/star"><i class="fa fa-star"></i> Starred</a></li>
-                                                    <li class="{if {folder}=='trash'}active{/if}"><a href="{base_url}dashboard/inbox/trash"><i class="fa fa-folder"></i> Trash</a></li>
+                                                    <li class="header">{lang folders}</li>
+                                                    <li class="{if {folder}=='inbox'}active{/if}"><a href="{base_url}dashboard/inbox"><i class="fa fa-inbox"></i> {lang inbox} ({inbox_count})</a></li>
+                                                    <li class="{if {folder}=='outbox'}active{/if}"><a href="{base_url}dashboard/inbox/outbox"><i class="fa fa-mail-forward"></i> {lang sent}</a></li>
+                                                    <li class="{if {folder}=='star'}active{/if}" ><a  href="{base_url}dashboard/inbox/star"><i class="fa fa-star"></i> {lang starred}</a></li>
+                                                    <li class="{if {folder}=='trash'}active{/if}"><a href="{base_url}dashboard/inbox/trash"><i class="fa fa-folder"></i> {lang trash}</a></li>
                                                 </ul>
                                             </div>
                                         </div><!-- /.col (LEFT) -->
@@ -33,23 +33,23 @@
 
                                                     <div class="btn-group">
                                                         <button type="button" class="btn btn-default btn-sm btn-flat dropdown-toggle" data-toggle="dropdown">
-                                                            <i class="fa fa-check" style="margin-right:5px"></i> Action <span class="caret"></span>
+                                                            <i class="fa fa-check" style="margin-right:5px"></i> {lang action} <span class="caret"></span>
                                                         </button>
                                                         <ul class="dropdown-menu" role="menu" id="msg_action">
-                                                            <li><a href="#" data-action="read"><i class="fa fa-eye"></i>  Mark as read</a></li>
-                                                            <li><a href="#" data-action="unread"><i class="fa fa-eye-slash"></i>  Mark as unread</a></li>
+                                                            <li><a href="#" data-action="read"><i class="fa fa-eye"></i>  {lang mark_as_read}</a></li>
+                                                            <li><a href="#" data-action="unread"><i class="fa fa-eye-slash"></i>  {lang mark_as_unread}</a></li>
                                                             <li class="divider"></li>
-                                                            <li><a href="#" data-action="inbox"><i class="fa fa-inbox"></i>  Move to inbox</a></li>
-                                                            <li><a href="#" data-action="junk"><i class="fa fa-folder"></i>  Move to trash</a></li>
+                                                            <li><a href="#" data-action="inbox"><i class="fa fa-inbox"></i>  {lang move_to} {lang inbox}</a></li>
+                                                            <li><a href="#" data-action="junk"><i class="fa fa-folder"></i>  {lang move_to} {lang trash}</a></li>
                                                             <li class="divider"></li>
-                                                            <li><a href="#" data-action="delete"><i class="fa fa-trash-o" style="color:#f00"></i> Delete</a></li>
+                                                            <li><a href="#" data-action="delete"><i class="fa fa-trash-o" style="color:#f00"></i> {lang delete}</a></li>
                                                         </ul>
                                                     </div>
                                                   <!-- TagS button -->
 
                                                     <div class="btn-group">
                                                         <button type="button" class="btn btn-default btn-sm btn-flat dropdown-toggle" data-toggle="dropdown">
-                                                            <i class="fa fa-tag" style="margin-right:5px"></i> Tags <span class="caret"></span>
+                                                            <i class="fa fa-tag" style="margin-right:5px"></i> {lang h_tags} <span class="caret"></span>
                                                         </button>
                                                         <ul class="dropdown-menu" role="menu" id="msg_tag">
                                                             <li><a href="#" data-action="tag" data-priority="extreme"><i class="fa fa-fire" style="color:#f00"></i> Extreme priority</a></li>
@@ -66,7 +66,7 @@
                                                 <div class="col-sm-6 search-form">
                                                     <form action="#" class="text-right" name="form_search">
                                                         <div class="input-group">                                                            
-                                                            <input type="text" class="form-control input-sm" placeholder="Search" id="search">
+                                                            <input type="text" class="form-control input-sm" placeholder="{lang search}" id="search">
                                                             <div class="input-group-btn">
                                                                 <button  name="q" type="submit" class="btn btn-sm btn-primary"><i class="fa fa-search"></i></button>
                                                             </div>

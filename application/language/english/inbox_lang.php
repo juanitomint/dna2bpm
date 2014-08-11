@@ -12,4 +12,11 @@ $lang["folder"]='Folder';
 $lang["folders"]='Folders';
 $lang["read"]='Read';
 $lang["mark_read"]='Mark as read';
-?>
+$lang["compose"]='Compose';
+$lang["sent"]='Sent';
+$lang["starred"]='Starred';
+$lang["action"]='Action';
+$lang["mark_as_read"]='Mark as read';
+$lang["mark_as_unread"]='Mark as unread';
+$lang["move_to"]='Move to';
+$lang["delete"]='Delete';
