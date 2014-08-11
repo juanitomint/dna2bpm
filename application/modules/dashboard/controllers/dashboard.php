@@ -231,9 +231,9 @@ class Dashboard extends MX_Controller {
     }
 
     // ============ Parse JSON config
-    function parse_config($file, $debug = false) {
+ function parse_config($file, $debug = false) {
         $myconfig = json_decode($this->load->view($file, '', true), true);
-
+        
 //             $return['js'] = array();
         //Root config
         foreach ($myconfig as $key => $value) {
@@ -246,7 +246,6 @@ class Dashboard extends MX_Controller {
             $content = "";
             $widgets = array();
             $myzone = current($zones);
-
             $myzone_key = key($zones);
 
 
@@ -255,46 +254,27 @@ class Dashboard extends MX_Controller {
             }
 
 
-            // ==== Reparto de columnas
-            $cant = count($myzone);
-            if ($cant > 6 || $cant < 1)
-                continue;;
-            $suma = 0;
-            $row = array();
-            $auto = 0;
-            $resto = 0;
-            // Reparto inicial
+            $content.="<div class='row zone_$myzone_key  '>";
+            $Qspan=0;
             foreach ($widgets as $k => $myWidget) {
-
-                if (!empty($myWidget['span'])) {
-                    $row[$k] = $myWidget['span'];
-                    $suma+=$myWidget['span'];
-                } else {
-                    $row[$k] = 0;
-                    $auto++;
-                }
-            }
-            $resto = 12 - $suma;
-            if ($auto != 0) {
-                // Hay sobrantes
-                $span = ($resto / $auto);
-            }
-            //Segunda pasada
-            foreach ($row as $k => $v) {
-                if ($v == 0)
-                    $row[$k] = $span;
-            }
-            // ____ Reparto de columnas
-
-
-            $content.='<div class="row">';
-
-            foreach ($widgets as $k => $myWidget) {
-//                     if (isset($myWidget['js']))
-//                         $return["js"] += $myWidget['js'];
-                $span = $row[$k];
-                if ($span == 0)
-                    continue;
+           	
+            	// Span handle
+				if($Qspan==12)$Qspan=0;
+            	if(!empty($myWidget["span"])&&$myWidget["span"]>0&&$myWidget["span"]<13){
+            		// span is ok
+            		if($Qspan+$myWidget["span"]<13){
+            			$span=$myWidget["span"];
+            			$Qspan+=$span;
+            		}else{
+            			$span=$myWidget["span"];
+            			$Qspan=$myWidget["span"];
+            		}        			
+            	}else{
+            		//span is not set or out of range
+            		$span=12-$Qspan;
+            		//$Qspan=0;
+            	}
+            	           	
                 if (isset($myWidget['params'])) {
                     $args = $myWidget['params'];
                     array_unshift($args, $myWidget['module'] . '/' . $myWidget['controller'] . '/' . $myWidget['function']);
@@ -306,9 +286,9 @@ class Dashboard extends MX_Controller {
                     $markup = $myWidget['module'] . '/' . $myWidget['controller'] . '/' . $myWidget['function'] . $markup;
                 // Si es un array uso el zonekey para identificar el markup
                 if (is_array($markup)) {
-                    $content.="<div class='col-lg-$span'>{$markup['content']}</div>";
+                    $content.="<div class='col-lg-$span '>{$markup['content']}</div>";
                 } else {
-                    $content.="<div class='col-lg-$span'>$markup</div>";
+                    $content.="<div class='col-lg-$span '>$markup</div>";
                 }
             }
             $content.='</div>';
