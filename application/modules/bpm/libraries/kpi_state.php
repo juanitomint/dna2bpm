@@ -6,7 +6,7 @@
  *
  * @author Juan Ignacio Borda <juanignacioborda@gmail.com>
  */
-class kpi_count_cases {
+class kpi_state {
 
     //put your code here
     var $CI;
@@ -36,12 +36,13 @@ class kpi_count_cases {
         $cases = array_map(function ($token) {
             return $token['case'];
         }, $tokens);
+        var_dump($cases);
         return $cases;
     }
 
     function core($kpi) {
         $filter = Modules::run('kpi/get_filter', $kpi);
-        var_dump($filter);
+        var_dump(json_encode($filter));
         $tokens = $this->CI->bpm->get_tokens_byResourceId($kpi['resourceId'], $filter);
         $cpData = $kpi;
         //var_dump($tokens);
