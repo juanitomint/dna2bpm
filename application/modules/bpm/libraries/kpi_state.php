@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Description of kpi_count_cases
  *
@@ -31,18 +30,17 @@ class kpi_state {
 
     function list_cases($kpi) {
         $filter = Modules::run('kpi/get_filter', $kpi);
-        $tokens = $this->CI->bpm->get_tokens_byResourceId($kpi['resourceId'], $filter);
-        $cpData = $kpi;
-        $cases = array_map(function ($token) {
-            return $token['case'];
-        }, $tokens);
-        //var_dump($cases);
+        $filter['token_status.' . $kpi['resourceId']] = array('$exists' => true);
+        $cases_filtered = $this->CI->bpm->get_cases_byFilter($filter);
+        $cases = array_map(function ($case) {
+            return $case['id'];
+        }, $cases_filtered);
         return $cases;
     }
 
     function core($kpi) {
         $filter = Modules::run('kpi/get_filter', $kpi);
-        //var_dump(json_encode($filter));
+        var_dump(json_encode($filter));
         $tokens = $this->CI->bpm->get_tokens_byResourceId($kpi['resourceId'], $filter);
         $cpData = $kpi;
         //var_dump($tokens);
