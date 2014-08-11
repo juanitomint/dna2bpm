@@ -14,7 +14,7 @@ class Bpm extends CI_Model {
 
     function __construct() {
         parent::__construct();
-        $this->idu =  $this->session->userdata('iduser');
+        $this->idu = $this->session->userdata('iduser');
         $this->load->library('cimongo/cimongo');
         $this->db = $this->cimongo;
         $this->load->config('bpm/config');
@@ -205,6 +205,7 @@ class Bpm extends CI_Model {
                 foreach ($tokens as $resourceId => $state) {
                     if (isset($all_tokens[$resourceId])) {
                         $all_tokens[$resourceId]['run'] ++;
+                        $all_tokens[$resourceId]['status'][$state] ++;
                     } else {
 
                         $token = $this->bpm->get_token($case['idwf'], $case['id'], $resourceId);
@@ -217,6 +218,7 @@ class Bpm extends CI_Model {
                             'title' => (isset($token['title'])) ? $token['title'] : '',
                             'type' => $token['type'],
                             'run' => 1,
+                            'status' => array($state => 1),
                             'icon' => $this->get_icon($token['type'])
                         );
                     }
@@ -391,8 +393,8 @@ class Bpm extends CI_Model {
         //---TODO set token on cache
     }
 
-    function clear_tokens($idwf, $case,$criteria=null) {
-        $criteria =($criteria) ? $criteria: array(
+    function clear_tokens($idwf, $case, $criteria = null) {
+        $criteria = ($criteria) ? $criteria : array(
             'idwf' => $idwf,
             'case' => $case
         );
@@ -1570,8 +1572,8 @@ class Bpm extends CI_Model {
     }
 
     function gateway($url) {
-        
-        $redir = base_url().'bpm/gateway/?url='.urlencode(base64_encode($url));
+
+        $redir = base_url() . 'bpm/gateway/?url=' . urlencode(base64_encode($url));
         return $redir;
     }
 
