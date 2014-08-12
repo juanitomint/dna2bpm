@@ -255,16 +255,17 @@ class Dashboard extends MX_Controller {
                 $spans[]=(empty($item["span"]))?(MINWIDTH):($item["span"]);
             }
 		
-            $content.="<div class='row zone_$myzone_key  '>";
+            //$content.="<div class='row zone_$myzone_key  '>";
             $Qspan=0;
 
             foreach ($widgets as $k => $myWidget) {
-           	
+
             	// Span handle
 				$myspan=$spans[$k];
 				$next=(isset($spans[$k+1]))?($spans[$k+1]):(null);
 				$fit_in=($myspan+$Qspan<13)?(true):(null);
-				
+				// Open div		
+				if($Qspan==0)$content.="<div class='mywidget '>";
 				if($fit_in){
 					// There is space for this col
 					if($next){
@@ -281,7 +282,7 @@ class Dashboard extends MX_Controller {
 						$Qspan=0;
 					}
 					
-					
+			
 				}else{
 					// col too big
 					$span=$myspan;
@@ -303,8 +304,11 @@ class Dashboard extends MX_Controller {
                 } else {
                     $content.="<div class='col-lg-$span '>$markup</div>";
                 }
+                
+                // closing div
+                if($Qspan==0)$content.="</div>";
             }
-            $content.='</div>';
+           // $content.='</div>';
 
             // Por si el widget devuelve un array en lugar del contenido solamente
             if (is_array($markup)) {
