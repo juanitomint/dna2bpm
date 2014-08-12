@@ -231,19 +231,21 @@ class Bpmui extends MX_Controller {
         if ($pages) {
             $tasks = $parts[$chunk - 1];
             foreach ($tasks as $task) {
-                $model = $this->bpm->get_model($task['idwf'], array('data.properties'));
-                if ($model) {
-                    $task['title'] = $model->data['properties']['name'];
-                } else {
-                    $task['title'] = $task['idwf']. ':: Missing model';
+                if (isset($task['idwf'])) {
+                    $model = $this->bpm->get_model($task['idwf'], array('data.properties'));
+                    if ($model) {
+                        $task['title'] = $model->data['properties']['name'];
+                    } else {
+                        $task['title'] = $task['idwf'] . ':: Missing model';
+                    }
+                    $task['label'] = (isset($task['checkdate'])) ? $this->time_elapsed_string($task['checkdate']) : '';
+                    $task['label-class'] = 'label-warning';
+                    $task['body'] = date($this->lang->line('dateTimeFmt'), strtotime($task['checkdate']));
+                    $task['body'].='<br/>' . strtoupper($task['status']);
+                    $task['showBody'] = true;
+                    $data['mytasks'][] = $task;
+                    //var_dump($task);exit;
                 }
-                $task['label'] = (isset($task['checkdate'])) ? $this->time_elapsed_string($task['checkdate']) : '';
-                $task['label-class'] = 'label-warning';
-                $task['body'] = date($this->lang->line('dateTimeFmt'), strtotime($task['checkdate']));
-                $task['body'].='<br/>' . strtoupper($task['status']);
-                $task['showBody'] = true;
-                $data['mytasks'][] = $task;
-                //var_dump($task);exit;
             }
             //---prepare pages
             $data['showPager'] = ($pages > 1) ? true : false;
