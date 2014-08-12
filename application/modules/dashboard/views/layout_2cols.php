@@ -17,20 +17,20 @@
         <link href="{module_url}assets/bootstrap-wysihtml5/css/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css" rel="stylesheet" type="text/css" />
         <!-- Theme style -->
         <link href="{module_url}assets/bootstrap-wysihtml5/css/AdminLTE.css" rel="stylesheet" type="text/css" />
- 		<!--  Juery UI css -->
- 		 <link href="{base_url}jscript/jquery/ui/jquery-ui-1.10.2.custom/css/smoothness/jquery-ui-1.10.2.custom.min.css" rel="stylesheet" type="text/css" />
- 	    <!--  iCheck -->
- 	    <link href="{module_url}assets/bootstrap-wysihtml5/css/iCheck/minimal/blue.css" rel="stylesheet" type="text/css" />
- 	    
- 	    <!--====== Font Kits ===== -->
- 	    <link href="{module_url}assets/fonts/webfontkit-20140806-113318/stylesheet.css" rel="stylesheet" type="text/css" />
- 	 	<link href="{module_url}assets/fonts/Droid-Sans-fontfacekit/web_fonts/droidsans_regular_macroman/stylesheet.css" rel="stylesheet" type="text/css" />   
- 
- 
- 	    <!--====== CSS for widgets ===== -->
-		{widgets_css}
-		
- 	    <!-- overload css skins -->
+        <!--  Juery UI css -->
+        <link href="{base_url}jscript/jquery/ui/jquery-ui-1.10.2.custom/css/smoothness/jquery-ui-1.10.2.custom.min.css" rel="stylesheet" type="text/css" />
+        <!--  iCheck -->
+        <link href="{module_url}assets/bootstrap-wysihtml5/css/iCheck/minimal/blue.css" rel="stylesheet" type="text/css" />
+
+        <!--====== Font Kits ===== -->
+        <link href="{module_url}assets/fonts/webfontkit-20140806-113318/stylesheet.css" rel="stylesheet" type="text/css" />
+        <link href="{module_url}assets/fonts/Droid-Sans-fontfacekit/web_fonts/droidsans_regular_macroman/stylesheet.css" rel="stylesheet" type="text/css" />   
+
+
+        <!--====== CSS for widgets ===== -->
+        {widgets_css}
+
+        <!-- overload css skins -->
         <link href="{module_url}assets/css/style.css" rel="stylesheet" type="text/css" />
 
         <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -82,10 +82,10 @@
                                 <!-- Menu Footer-->
                                 <li class="user-footer">
                                     <div class="pull-left">
-                                        <a href="{module_url}profile" class="btn btn-default btn-flat">Profile</a>
+                                        <a href="{module_url}profile" class="btn btn-default btn-flat">{lang user_profile}</a>
                                     </div>
                                     <div class="pull-right">
-                                        <a href="{base_url}user/logout" class="btn btn-default btn-flat">Sign out</a>
+                                        <a href="{base_url}user/logout" class="btn btn-default btn-flat">{lang user_logout}</a>
                                     </div>
                                 </li>
                             </ul>
