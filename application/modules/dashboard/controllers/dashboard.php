@@ -159,6 +159,7 @@ class Dashboard extends MX_Controller {
 
         $layout = ($myconfig['view'] <> '') ? $myconfig['view'] : 'layout';
         $customData = $myconfig;
+        $customData['lang'] = $this->lang->language;
         $customData['brand'] = $this->config->item('brand');
         $customData['menu'] = $this->menu();
         $customData['avatar'] = Modules::run('user/profile/get_avatar'); //Avatar URL

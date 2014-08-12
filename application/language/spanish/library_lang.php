@@ -31,6 +31,7 @@ $lang["application"] = '[+]Aplicación';
 $lang["applications"] = '[+]Aplicaciones';
 $lang["add_app"] = '[+]Aplicación';
 $lang["user_logout"] = 'Salir';
+$lang["user_profile"] = 'Perfil';
 $lang["Inbox"] = 'Bandeja Entrada';
 $lang["Tasks"] = 'Tareas';
 $lang["TasksDone"] = 'Tareas finalizadas';
