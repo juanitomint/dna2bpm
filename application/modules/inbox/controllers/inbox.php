@@ -27,10 +27,12 @@ class Inbox extends MX_Controller {
     //==== MAIN LISTING
 
     function Index() {
+
     	$customData['lang']= $this->lang->language;
      	$customData['user'] = (array) $this->user->get_user($this->idu);
      	$customData['inbox_icon'] = 'icon-envelope';
-     	$customData['usercan_create'] = $this->user->has('/root/modules/inbox/controllers/inbox/new_msg');
+     	$customData['usercan_create'] = $this->user->has('root/modules/inbox/controllers/inbox/new_msg') || $this->user->isAdmin();
+
      	//$customData['usercan_create']=true;
      	$customData['js'] = array(
      			'icheck',
@@ -44,7 +46,6 @@ class Inbox extends MX_Controller {
      	
      	$customData['base_url'] = $this->base_url;
      	$customData['module_url'] = $this->module_url;   	
-     	
 
     	// Determino el folder
     	$folders=array('inbox','trash','outbox','star');

@@ -170,6 +170,7 @@ class User extends CI_Model {
                 ->get('perm.groups')
                 ->result();
         //$level=$this->db->result();
+
         if (count($level)) {
             return true;
         } else {
