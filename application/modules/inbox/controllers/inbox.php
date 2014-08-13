@@ -16,8 +16,8 @@ class Inbox extends MX_Controller {
         $this->module_url = base_url() . $this->router->fetch_module().'/';
         $this->user->authorize();
         //----LOAD LANGUAGE
-        //$this->lang->load('inbox', $this->config->item('language'));
-        $this->lang->load('inbox', 'spanish');
+        $this->lang->load('inbox', $this->config->item('language'));
+
         $this->idu = (int) $this->session->userdata('iduser');
         
 
