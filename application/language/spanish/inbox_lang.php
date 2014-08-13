@@ -20,3 +20,15 @@ $lang["mark_as_read"]='Marcar como leído';
 $lang["mark_as_unread"]='Marcar como no leído';
 $lang["move_to"]='Mover a';
 $lang["delete"]='Eliminar';
+$lang["search"]='Buscar';
+// New MSG window
+$lang["to"]='Para';
+$lang["subject"]='Destinatario';
+$lang["body"]='Cuerpo';
+$lang["send"]='Enviar bla bla bla bala a';
+//Tags
+$lang["extreme_priority"]='Prioridad extrema';
+$lang["high_priority"]='Prioridad alta';
+$lang["normal_priority"]='Prioridad normal';
+$lang["low_priority"]='Prioridad baja';
+$lang["remove_tag"]='Eliminar etiqueta';

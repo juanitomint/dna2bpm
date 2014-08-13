@@ -13,30 +13,29 @@
 <!--  To -->
       
   <div class="form-group">
-    <label class="col-sm-2 control-label">To:</label>
+    <label class="col-sm-2 control-label">{lang to}:</label>
     <div class="col-sm-10">
 		    <input type="hidden" name="to" class="select2 form-control"   multiple="multiple" />
   </div>
   </div>
 <!--  Title -->
   <div class="form-group">
-    <label class="col-sm-2 control-label">Subject:</label>
+    <label class="col-sm-2 control-label">{lang subject}:</label>
     <div class="col-sm-10">
     <input type="text" name="subject" class="form-control"  placeholder="Subject">
      </div>
   </div>
 <!--  MSG -->
   <div class="form-group">
-    <label class="col-sm-2 control-label">Body:</label>
+    <label class="col-sm-2 control-label">{lang body}:</label>
     <div class="col-sm-10">
      <textarea rows="5" name="body" placeholder="Body" class="form-control"></textarea>
      </div>
   </div>
  <!--  SEND -->
   <div class="form-group">
-    <label class="col-sm-10 control-label"></label>
-    <div class="col-sm-2">
-      <button type="submit" class="btn btn-primary ">Send</button>
+    <div class="col-sm-12">
+      <button type="submit" class="btn btn-primary pull-right">Send</button>
      </div>
   </div> 
 

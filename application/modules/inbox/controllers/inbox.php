@@ -16,7 +16,8 @@ class Inbox extends MX_Controller {
         $this->module_url = base_url() . $this->router->fetch_module().'/';
         $this->user->authorize();
         //----LOAD LANGUAGE
-        $this->lang->load('inbox', $this->config->item('language'));
+        //$this->lang->load('inbox', $this->config->item('language'));
+        $this->lang->load('inbox', 'spanish');
         $this->idu = (int) $this->session->userdata('iduser');
         
 
@@ -115,7 +116,7 @@ class Inbox extends MX_Controller {
     	}
     	$customData['reply']=false;
      	$customData['inbox_count']=$this->msg->count_msgs($this->idu,'inbox'); 
-    	$customData['content']=$this->parser->parse('inbox/inbox2', $customData, true, true);
+    	$customData['content']=$this->parser->parse('inbox/inbox', $customData, true, true);
 	    return $customData;
     }
     
@@ -214,7 +215,7 @@ class Inbox extends MX_Controller {
     function new_msg(){
 
          $customData['user'] = (array) $this->user->get_user($this->idu);
-
+         $customData['lang']= $this->lang->language;
 		// REPLY: segment 4 is msgid 
 		$customData['reply']=0;
 
