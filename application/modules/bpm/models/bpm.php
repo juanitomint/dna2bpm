@@ -504,6 +504,7 @@ class Bpm extends CI_Model {
         );
 //        $this->db->debug=true;
         $tokens = $this->db
+                ->select(array('resourceId','status'))
                 ->where($query)
                 ->get('tokens')
                 ->result_array();
