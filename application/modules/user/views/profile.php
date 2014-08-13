@@ -3,7 +3,7 @@
 
 <!--  ==== NICK ==== -->
   <div class="form-group">
-    <label class="col-sm-2 control-label"> Nick </label>
+    <label class="col-sm-2 control-label"> {lang Nick} </label>
     <div class="col-sm-10">
 	    <input type="text" name="nick" class="form-control" placeholder="Nick" value="{nick}" disabled="disabled">
     </div>
@@ -11,7 +11,7 @@
         
 <!--  ==== FILE ==== -->
 <div class="form-group">
-    <label class="col-sm-2 control-label">My picture</label>
+    <label class="col-sm-2 control-label">{lang picture}</label>
     <div class="col-sm-2">
     <img src="{avatar}" id="avatar" >
     </div>
@@ -21,8 +21,8 @@
 					<div id="filelist">Your browser doesn't have Flash, Silverlight or HTML5 support.</div>
 					<br />
 					<div id="container">
-					    <a id="pickfiles" class="btn btn-primary btn-xs" href="javascript:;"><i class="fa fa-files-o"></i> Select files</a> 
-					    <a id="uploadfiles" class="btn btn-primary btn-xs" href="javascript:;"><i class="fa fa-cloud-upload"></i> Upload files</a>
+					    <a id="pickfiles" class="btn btn-primary btn-xs" href="javascript:;"><i class="fa fa-files-o"></i> {lang SelectFile}</a> 
+					    <a id="uploadfiles" class="btn btn-primary btn-xs" href="javascript:;"><i class="fa fa-cloud-upload"></i> {lang UploadFile}</a>
 					</div>
 			
 			</div>
@@ -32,7 +32,7 @@
  
   <!--  ==== PASSW ==== -->
   <div class="form-group">
-    <label class="col-sm-2 control-label">Password</label>
+    <label class="col-sm-2 control-label">{lang Password}</label>
     <div class="col-sm-10">
 	    <input type="password"  name="passw" value="" class="form-control" {disabled}>
     </div>
@@ -42,7 +42,7 @@
     <!--  ==== NAME==== -->
 
 	  <div class="form-group">
-	    <label class="col-sm-2 control-label">Name</label>
+	    <label class="col-sm-2 control-label">{lang Name}</label>
 	    <div class="col-sm-10">
 		     <input type="text"  name="name" value="{name}" class="form-control" {disabled}>
 	    </div>
@@ -51,7 +51,7 @@
    <!--  ==== LASTNAME ==== -->
     
 		  <div class="form-group">
-		    <label class="col-sm-2 control-label">Lastname</label>
+		    <label class="col-sm-2 control-label">{lang Lastname}</label>
 		    <div class="col-sm-10">
 			     <input type="text"  name="lastname" value="{lastname}" class="form-control" {disabled}>
 		    </div>
@@ -61,7 +61,7 @@
   
     <!--  ==== GENDER ==== -->
   <div class="form-group">
-    <label class="col-sm-2 control-label">Gender</label>
+    <label class="col-sm-2 control-label">{lang Gender}</label>
     <div class="col-sm-10 form-inline">
 			<div class="radio">
 			  <label>
@@ -80,7 +80,7 @@
   
 <!--  ==== DNI ==== -->
   <div class="form-group">
-    <label class="col-sm-2 control-label">DNI</label>
+    <label class="col-sm-2 control-label">{lang idnumber}</label>
     <div class="col-sm-10">
 	      <input type="number" name="dni" value="{idnumber}" class="form-control" disabled="disabled">
     </div>
@@ -88,7 +88,7 @@
  
  <!--  ==== BIRTHDAY ==== -->
   <div class="form-group">
-    <label class="col-sm-2 control-label">Birthday</label>
+    <label class="col-sm-2 control-label">{lang Birthday}</label>
     <div class="col-sm-10">
 		<div class="input-group">
 		  <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
@@ -99,7 +99,7 @@
   
 <!--  ==== EMAIL ==== -->
   <div class="form-group">
-    <label class="col-sm-2 control-label">Email</label>
+    <label class="col-sm-2 control-label">{lang Email}</label>
     <div class="col-sm-10">
 		<input type="text" name="email" value="{email}" class="form-control" {disabled}>
     </div>
@@ -107,7 +107,7 @@
    
 <!--  ==== TELEFONO ==== -->
   <div class="form-group">
-    <label class="col-sm-2 control-label">Phone</label>
+    <label class="col-sm-2 control-label">{lang Phone}</label>
     <div class="col-sm-10">
        <input type="text" name="phone" value="{phone}" class="form-control" {disabled}>
     </div>
@@ -115,7 +115,7 @@
   
 <!--  ==== CELLPHONE ==== -->
   <div class="form-group">
-    <label class="col-sm-2 control-label">CellPhone</label>
+    <label class="col-sm-2 control-label">{lang CellPhone}</label>
     <div class="col-sm-10">
        <input type="text" name="celular" value="{celular}" class="form-control" {disabled}>
     </div>
@@ -123,7 +123,7 @@
   
 <!--  ==== ADDRESS ==== -->
   <div class="form-group">
-    <label class="col-sm-2 control-label">Address</label>
+    <label class="col-sm-2 control-label">{lang Address}</label>
     <div class="col-sm-10">
       <input type="text" name="address" value="{address}" class="form-control" {disabled}>
     </div>
@@ -132,7 +132,7 @@
   
  <!--  ==== CPA ==== -->
   <div class="form-group">
-    <label class="col-sm-2 control-label">CPA</label>
+    <label class="col-sm-2 control-label">{lang CPA}</label>
     <div class="col-sm-10">
       <input type="text" name="cp" value="{cp}" class="form-control" {disabled}>
     </div>
@@ -140,7 +140,7 @@
   
    <!--  ==== CITY ==== -->
   <div class="form-group">
-    <label class="col-sm-2 control-label">City</label>
+    <label class="col-sm-2 control-label">{lang City}</label>
     <div class="col-sm-10">
       <input type="text" name="city" value="{city}" class="form-control" {disabled}>
     </div>
@@ -148,7 +148,7 @@
   
      <!--  ==== SIGNATURE ==== -->
   <div class="form-group">
-    <label class="col-sm-2 control-label">Signature</label>
+    <label class="col-sm-2 control-label">{lang Signature}</label>
     <div class="col-sm-10">
     <textarea name="signature" class="form-control" {disabled}>{signature}</textarea>
     </div>
@@ -159,7 +159,7 @@
   <div class="form-group">
       <label class="col-sm-2 control-label"></label>
     <div class="col-sm-10">
-      <button type="submit" class="btn btn-primary form-control">Submit</button>
+      <button type="submit" class="btn btn-primary form-control">{lang save}</button>
     </div>
        
   </div>

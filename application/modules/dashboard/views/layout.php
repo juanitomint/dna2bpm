@@ -84,10 +84,10 @@
                                 <!-- Menu Footer-->
                                 <li class="user-footer">
                                     <div class="pull-left">
-                                        <a href="{module_url}profile" class="btn btn-default btn-flat">Profile</a>
+                                        <a href="{module_url}profile" class="btn btn-default btn-flat">{lang user_profile}</a>
                                     </div>
                                     <div class="pull-right">
-                                        <a href="{base_url}user/logout" class="btn btn-default btn-flat">Sign out</a>
+                                        <a href="{base_url}user/logout" class="btn btn-default btn-flat">{lang user_logout}</a>
                                     </div>
                                 </li>
                             </ul>

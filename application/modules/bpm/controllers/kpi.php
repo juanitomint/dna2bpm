@@ -318,8 +318,8 @@ class Kpi extends MX_Controller {
             $detail = $kpi['list_detail'];
             $detail_icon = 'fa-folder';
         } else {
-            $detail = $this->base_url . 'bpm/tokens/view/{idcase}';
-            $detail_icon = 'fa-rotate-270 fa-sitemap';
+            $detail = $this->base_url . 'bpm/engine/run/model/{idwf}/{idcase}';
+            $detail_icon = 'fa-play';
         }
         $cpData['kpi'] = $kpi;
         $cases = $this->Get_cases($kpi);

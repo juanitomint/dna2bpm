@@ -44,11 +44,12 @@ class Profile extends MX_Controller {
 
     
     function Edit($disabled=false) {
-
+        $this->lang->load('user', $this->config->item('language'));
+        $data['lang']= $this->lang->language;
     	$data['base_url'] = base_url();
         $data['module_url'] = base_url() . 'user/';
         $data['disabled']=($disabled)?('disabled'):('');
-
+        
          $customData['js'] = array(
          		'jqueryUI', 'PLUpload',
          		$this->module_url . "assets/jscript/profile.js" => 'profile JS',
