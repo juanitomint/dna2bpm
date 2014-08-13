@@ -10,27 +10,31 @@
                     "title": "Tile01",
                     "module": "bpm",
                     "controller": "bpmui",
-                    "function": "tile_tasks"
+                    "function": "tile_tasks",
+                    "span":3
                 },
                 {
                     "title": "Tile01",
                     "module": "bpm",
                     "controller": "bpmui",
-                    "function": "tile_tasks_done"
+                    "function": "tile_tasks_done",
+                    "span":3
                 }
                 ,
                 {
                     "title": "Tile01",
                     "module": "bpm",
                     "controller": "bpmui",
-                    "function": "tile_cases"
+                    "function": "tile_cases",
+                    "span":3
                 },
                 {
                     "title": "Tile01",
                     "module": "bpm",
                     "controller": "bpmui",
                     "function": "tile",
-                    "params": ["cases_closed"]
+                    "params": ["cases_closed"],
+                    "span":3
                 }
             ]
         },
@@ -41,14 +45,12 @@
                     "module": "bpm",
                     "controller": "bpmui",
                     "function": "widget_2do"
-                    ,"span":12
                 },
                 {
                     "title": "2do",
                     "module": "bpm",
                     "controller": "bpmui",
                     "function": "widget_tasks_done"
-                    ,"span":12
                 }
             ]
         },
@@ -59,14 +61,12 @@
                     "module": "bpm",
                     "controller": "bpmui",
                     "function": "widget_cases"
-                    ,"span":12
                 },
                 {
                     "title": "Cases Closed",
                     "module": "bpm",
                     "controller": "bpmui",
                     "function": "widget_cases_closed"
-                    ,"span":12
                 }
             ]
         }
