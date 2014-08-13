@@ -351,13 +351,13 @@ class Kpi extends MX_Controller {
             $case['data'] = $this->bpm->load_case_data($case);
             //---Ensures $case['data'] exists
             $case['data'] = (isset($case['data'])) ? $case['data'] : array();
-            $token=$this->bpm->get_token($kpi['idwf'], $idcase, $kpi['resourceId']);
+            $token = $this->bpm->get_token($kpi['idwf'], $idcase, $kpi['resourceId']);
             //---Flatten data a bit so it can be parsed
             $parseArr[] = array_merge(array(
                 'i' => $i + 1,
                 'idwf' => $kpi['idwf'],
                 'idcase' => $idcase,
-                'token'=>$token['_id'],
+                'token' => $token['_id'],
                 'resrourceId' => $kpi['resourceId'],
                 'base_url' => $this->base_url,
                 'module_url' => $this->module_url,
@@ -563,10 +563,12 @@ class Kpi extends MX_Controller {
     }
 
     function Download($idkpi) {
-        $this->load->helper('dbframe');
-        $kpi = new dbframe();
+        $debug = false;
         $types_path = $this->types_path;
         $postkpi = $this->kpi_model->get($idkpi);
+        unset($postkpi['_id']);
+        /*
+        $type=$postkpi['type'];
         //---load base properties from helpers/types/base
         //---defines $common
         include($types_path . 'base/kpi.base.php');
@@ -581,13 +583,18 @@ class Kpi extends MX_Controller {
             }
         }
         $properties_template = $common + $type_props;
+        var_dump($common , $type_props,$postkpi);
         //----load the data from post
-        $kpi->load($postkpi, $properties_template);
-        header('Content-Description: File Transfer');
-        header('Content-Type: application/octet-stream');
-        header("Content-Disposition: attachment; filename=" . $idkpi . '.json');
-        header("Content-Transfer-Encoding: binary");
-        echo json_encode($kpi->toSave());
+        $kpi = new dbframe();
+            $kpi->load($postkpi, $properties_template);
+         */
+        if (!$debug) {
+            header('Content-Description: File Transfer');
+            header('Content-Type: application/octet-stream');
+            header("Content-Disposition: attachment; filename=" . $idkpi . '.json');
+            header("Content-Transfer-Encoding: binary");
+        }
+        echo json_encode($postkpi);
     }
 
     function Save_properties($data = null, $return = null) {
