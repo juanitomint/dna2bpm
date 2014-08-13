@@ -34,11 +34,10 @@ class Inbox extends MX_Controller {
      	//$customData['usercan_create']=true;
      	$customData['js'] = array(
      			'icheck',
-     			$this->module_url.'inbox/assets/jscript/inbox.js'=>'inboxJS',
+     			$this->module_url.'assets/jscript/inbox.js'=>'inboxJS',
      			'selectJS'		
      	);
-
-     	
+  	
      	$customData['css'] = array(
      			$this->base_url . "inbox/assets/css/inbox.css" => 'Dashboard CSS'
      	);

@@ -85,7 +85,7 @@ class ui {
 
                 //Custom CSS from user
                 if (isset($data['css']))
-                	$data['customs_css']=$this->custom_styles($data['css']);       
+                	$data['custom_css']=$this->custom_styles($data['css']);     
                          
                 // Globals JS
                 if (isset($data['global_js']))
@@ -93,7 +93,7 @@ class ui {
 
                 $data['footer']=$this->enqueue_scripts($default);
                 // Flush!!
-        
+
                $this->CI->parser->parse($file,$data,false,true);
                
 
