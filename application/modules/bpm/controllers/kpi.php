@@ -351,16 +351,20 @@ class Kpi extends MX_Controller {
             $case['data'] = $this->bpm->load_case_data($case);
             //---Ensures $case['data'] exists
             $case['data'] = (isset($case['data'])) ? $case['data'] : array();
+            $token=$this->bpm->get_token($kpi['idwf'], $idcase, $kpi['resourceId']);
             //---Flatten data a bit so it can be parsed
             $parseArr[] = array_merge(array(
                 'i' => $i + 1,
                 'idwf' => $kpi['idwf'],
                 'idcase' => $idcase,
+                'token'=>$token['_id'],
+                'resrourceId' => $kpi['resourceId'],
+                'base_url' => $this->base_url,
+                'module_url' => $this->module_url,
                 'checkdate' => date($this->lang->line('dateTimeFmt'), strtotime($case['checkdate'])),
                 'user' => (array) $this->user->get_user_safe($case['iduser']),
                     ), $case['data']);
         }
-        //var_dump($parseArr);
         if ($kpi['list_template'] <> '') {
             $template = $kpi['list_template'];
         } else {
