@@ -56,6 +56,7 @@ try {
                         height: 350,
                         width: 600,
                         layout: 'fit',
+                        editorId: Ext.getCmp(this.parent().id).editorId,
                         items: {// Let's put an empty grid in just to illustrate fit layout
                             xtype: 'panel',
                             border: false,
@@ -70,7 +71,7 @@ try {
                                         alert(err.toString());
                                     }
                                 };
-                                var fval = propsGrid.store.getRec('filter_extra').data.value;
+                                var fval = propsGrid.store.getRec(this.editorId).data.value;
                                 if (fval) {
                                     json = Ext.JSON.decode(fval);
                                 } else {
@@ -81,7 +82,7 @@ try {
                             }
                         },
                         close: function() {
-                            propsGrid.store.setValue('filter_extra', Ext.JSON.encode(globals.jsonEd.get()));
+                            propsGrid.store.setValue(this.editorId, Ext.JSON.encode(globals.jsonEd.get()));
                             this.destroy();
                         }
                     }).show();
@@ -194,7 +195,7 @@ try {
             },
             'filter_extra': {
                 displayName: '<i class="icon icon-filter"></i> Filter Complex',
-                value: '{"pico":"01"}',
+                value: '',
                 editor: jsonEditor
             },
             'filter': {
