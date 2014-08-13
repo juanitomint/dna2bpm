@@ -31,16 +31,16 @@ class Inbox extends MX_Controller {
      	$customData['user'] = (array) $this->user->get_user($this->idu);
      	$customData['inbox_icon'] = 'icon-envelope';
      	$customData['usercan_create'] = $this->user->has('/root/modules/inbox/controllers/inbox/new_msg');
-     	$customData['usercan_create']=true;
+     	//$customData['usercan_create']=true;
      	$customData['js'] = array(
-     			'icheck','inboxJS','selectJS'		
+     			'icheck',
+     			$this->module_url.'inbox/assets/jscript/inbox.js'=>'inboxJS',
+     			'selectJS'		
      	);
 
      	
      	$customData['css'] = array(
-     			$this->module_url . "assets/css/inbox.css" => 'Dashboard CSS',
-     			$this->base_url . "jscript/select2-3.4.5/select2.css" => 'Select CSS',
-     			$this->base_url . "jscript/select2-3.4.5/select2-bootstrap.css" => 'Select BT CSS'	
+     			$this->base_url . "inbox/assets/css/inbox.css" => 'Dashboard CSS'
      	);
      	
      	$customData['base_url'] = $this->base_url;
