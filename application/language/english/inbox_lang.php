@@ -20,3 +20,15 @@ $lang["mark_as_read"]='Mark as read';
 $lang["mark_as_unread"]='Mark as unread';
 $lang["move_to"]='Move to';
 $lang["delete"]='Delete';
+$lang["search"]='Search';
+// New MSG window
+$lang["to"]='To';
+$lang["subject"]='Subject';
+$lang["body"]='Body';
+$lang["send"]='Send';
+//Tags
+$lang["extreme_priority"]='Extreme priority';
+$lang["high_priority"]='High priority';
+$lang["normal_priority"]='Normal priority';
+$lang["low_priority"]='Low priority';
+$lang["remove_tag"]='Remove tag';

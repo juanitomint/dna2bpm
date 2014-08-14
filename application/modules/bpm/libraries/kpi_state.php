@@ -30,7 +30,11 @@ class kpi_state {
 
     function list_cases($kpi) {
         $filter = Modules::run('kpi/get_filter', $kpi);
-        $filter['token_status.' . $kpi['resourceId']] = array('$exists' => true);
+        $status = (isset($kpi['status'])) ? $kpi['status'] : 'user';
+        $filter['$and'] = array(
+            array('token_status.' . $kpi['resourceId'] => array('$exists' => true)),
+            array('token_status.' . $kpi['resourceId'] => $status),
+        );
         $cases_filtered = $this->CI->bpm->get_cases_byFilter($filter);
         $cases = array_map(function ($case) {
             return $case['id'];
@@ -40,10 +44,15 @@ class kpi_state {
 
     function core($kpi) {
         $filter = Modules::run('kpi/get_filter', $kpi);
-        $tokens = $this->CI->bpm->get_tokens_byResourceId($kpi['resourceId'], $filter);
+        $status = (isset($kpi['status'])) ? $kpi['status'] : 'user';
+        $filter['$and'] = array(
+            array('token_status.' . $kpi['resourceId'] => array('$exists' => true)),
+            array('token_status.' . $kpi['resourceId'] => $status),
+        );
+        $cases_filtered = $this->CI->bpm->get_cases_byFilter($filter);
         $cpData = $kpi;
         //var_dump($tokens);
-        $cpData['number'] = count($tokens);
+        $cpData['number'] = count($cases_filtered);
         return $cpData;
     }
 

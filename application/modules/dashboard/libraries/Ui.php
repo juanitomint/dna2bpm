@@ -43,17 +43,17 @@ class ui {
                 $this->register_script('PLUpload',$data['base_url'].'jscript/plupload-2.1.2/plupload.full.min.js',array('jquery'));
                 $this->register_script('jquery.form',$data['base_url'].'jscript/jquery/plugins/Form/jquery.form.min.js',array('jquery'));
                 $this->register_script('icheck',$data['module_url'].'assets/bootstrap-wysihtml5/js/plugins/iCheck/icheck.min.js',array('WYSIHTML5'));
-                $this->register_script('inboxJS',$data['base_url'].'inbox/assets/jscript/inbox.js',array());
                 $this->register_script('selectJS',$data['base_url'].'jscript/select2-3.4.5/select2.min.js',array());
                 
                 //===== CSS loaded only when same JS  handle is loaded
                 $this->styles['morris'][]=$data['base_url']."dashboard/assets/bootstrap-wysihtml5/css/morris/morris.css";
                 $this->styles['jvectormap'][]=$data['base_url']."dashboard/assets/bootstrap-wysihtml5/css/jvectormap/jquery-jvectormap-1.2.2.css";
                 $this->styles['fullcalendar'][]=$data['base_url']."dashboard/assets/bootstrap-wysihtml5/css/fullcalendar/fullcalendar.css";
-                
+                $this->styles['selectJS'][]=$data['base_url']."jscript/select2-3.4.5/select2.css";
+                $this->styles['selectJS'][]=$data['base_url']."jscript/select2-3.4.5/select2-bootstrap.css";
 
                 // Load default JS 
-                $default=array('jquery','jqueryUI','bootstrap','WYSIHTML5','adminLTE','dashboardJS','jquery.form','inboxJS','morris');
+                $default=array('jquery','jqueryUI','bootstrap','WYSIHTML5','adminLTE','dashboardJS','jquery.form','morris');
                 
                 //Custom JS Check
                 if (isset($data['js'])){
@@ -85,7 +85,7 @@ class ui {
 
                 //Custom CSS from user
                 if (isset($data['css']))
-                	$data['customs_css']=$this->custom_styles($data['css']);       
+                	$data['custom_css']=$this->custom_styles($data['css']);     
                          
                 // Globals JS
                 if (isset($data['global_js']))
@@ -93,7 +93,7 @@ class ui {
 
                 $data['footer']=$this->enqueue_scripts($default);
                 // Flush!!
-        
+
                $this->CI->parser->parse($file,$data,false,true);
                
 
@@ -128,7 +128,6 @@ class ui {
 						// some dependency is missing
 						$stack[]=$current;
 					}				
-
 
 				}
 

@@ -17,6 +17,7 @@ class Inbox extends MX_Controller {
         $this->user->authorize();
         //----LOAD LANGUAGE
         $this->lang->load('inbox', $this->config->item('language'));
+
         $this->idu = (int) $this->session->userdata('iduser');
         
 
@@ -26,25 +27,25 @@ class Inbox extends MX_Controller {
     //==== MAIN LISTING
 
     function Index() {
+
     	$customData['lang']= $this->lang->language;
      	$customData['user'] = (array) $this->user->get_user($this->idu);
      	$customData['inbox_icon'] = 'icon-envelope';
-     	$customData['usercan_create'] = $this->user->has('/root/modules/inbox/controllers/inbox/new_msg');
-     	$customData['usercan_create']=true;
-     	$customData['js'] = array(
-     			'icheck','inboxJS','selectJS'		
-     	);
+     	$customData['usercan_create'] = $this->user->has('root/modules/inbox/controllers/inbox/new_msg') || $this->user->isAdmin();
 
-     	
+     	//$customData['usercan_create']=true;
+     	$customData['js'] = array(
+     			'icheck',
+     			$this->module_url.'assets/jscript/inbox.js'=>'inboxJS',
+     			'selectJS'		
+     	);
+  	
      	$customData['css'] = array(
-     			$this->module_url . "assets/css/inbox.css" => 'Dashboard CSS',
-     			$this->base_url . "jscript/select2-3.4.5/select2.css" => 'Select CSS',
-     			$this->base_url . "jscript/select2-3.4.5/select2-bootstrap.css" => 'Select BT CSS'	
+     			$this->base_url . "inbox/assets/css/inbox.css" => 'Dashboard CSS'
      	);
      	
      	$customData['base_url'] = $this->base_url;
      	$customData['module_url'] = $this->module_url;   	
-     	
 
     	// Determino el folder
     	$folders=array('inbox','trash','outbox','star');
@@ -115,7 +116,7 @@ class Inbox extends MX_Controller {
     	}
     	$customData['reply']=false;
      	$customData['inbox_count']=$this->msg->count_msgs($this->idu,'inbox'); 
-    	$customData['content']=$this->parser->parse('inbox/inbox2', $customData, true, true);
+    	$customData['content']=$this->parser->parse('inbox/inbox', $customData, true, true);
 	    return $customData;
     }
     
@@ -214,7 +215,7 @@ class Inbox extends MX_Controller {
     function new_msg(){
 
          $customData['user'] = (array) $this->user->get_user($this->idu);
-
+         $customData['lang']= $this->lang->language;
 		// REPLY: segment 4 is msgid 
 		$customData['reply']=0;
 

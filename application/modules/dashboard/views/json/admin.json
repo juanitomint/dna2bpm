@@ -52,15 +52,13 @@
                     "title": "2do",
                     "module": "bpm",
                     "controller": "bpmui",
-                    "function": "widget_2do",
-                    "span": 12
+                    "function": "widget_2do"
                 },
                 {
                     "title": "Cases",
                     "module": "bpm",
                     "controller": "bpmui",
-                    "function": "widget_cases",
-                    "span": 12
+                    "function": "widget_cases"
                 }
 
             ]

@@ -130,7 +130,7 @@
                     {tiles}
 
 
-                    <div class="row " id="tiles_after">
+                    <div id="tiles_after">
                         <section class="col-lg-12 connectedSortable ui-sortable">
                             {tiles_after}
                         </section>

@@ -249,13 +249,14 @@ class Dashboard extends MX_Controller {
             $spans = array();
             $myzone = current($zones);
             $myzone_key = key($zones);
-
-
+			$empty_spans=0;
+			$no_span=false;
             foreach ($myzone as $item) {
                 $widgets[] = $item;
                 $spans[]=(empty($item["span"]))?(MINWIDTH):($item["span"]);
+                if(isset($item["span"]))$empty_spans++;
             }
-		
+
             //$content.="<div class='row zone_$myzone_key  '>";
             $Qspan=0;
 
@@ -266,7 +267,7 @@ class Dashboard extends MX_Controller {
 				$next=(isset($spans[$k+1]))?($spans[$k+1]):(null);
 				$fit_in=($myspan+$Qspan<13)?(true):(null);
 				// Open div		
-				if($Qspan==0)$content.="<div class='mywidget '>";
+				//if($Qspan==0)$content.="<div class='mywidget '>";
 				if($fit_in){
 					// There is space for this col
 					if($next){
@@ -282,8 +283,7 @@ class Dashboard extends MX_Controller {
 						$span=12-$Qspan;
 						$Qspan=0;
 					}
-					
-			
+								
 				}else{
 					// col too big
 					$span=$myspan;
@@ -299,15 +299,17 @@ class Dashboard extends MX_Controller {
                 }
                 if ($debug)
                     $markup = $myWidget['module'] . '/' . $myWidget['controller'] . '/' . $myWidget['function'] . $markup;
+                
                 // Si es un array uso el zonekey para identificar el markup
-                if (is_array($markup)) {
-                    $content.="<div class='col-lg-$span '>{$markup['content']}</div>";
-                } else {
-                    $content.="<div class='col-lg-$span '>$markup</div>";
-                }
+                $mycontent=(is_array($markup))?($markup['content']):($markup);
+                if(!$empty_spans)
+               	 	$content.=$mycontent;
+                else 
+                	$content.="<div class='col-lg-$span '>$mycontent</div>";
+
                 
                 // closing div
-                if($Qspan==0)$content.="</div>";
+                //if($Qspan==0)$content.="</div>";
             }
            // $content.='</div>';
 
