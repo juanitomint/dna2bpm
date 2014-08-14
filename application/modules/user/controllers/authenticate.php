@@ -44,13 +44,13 @@ class Authenticate extends MX_Controller {
             $rtnArr['success'] = true;
             $rtnArr['msg'] = 'User authentication: OK!';
             $rtnArr['redir'] = $redir;
-            header('Location: ' . $redir);
+            redirect($redir);
             exit;
         } else {
 
             $rtnArr['success'] = false;
             $this->session->set_userdata('msg', 'nouser');
-            header('Location: ' . base_url() . 'user/login');
+            redirect( base_url() . 'user/login');
             exit;
         }
     }
@@ -79,7 +79,7 @@ class Authenticate extends MX_Controller {
             //echo "si";
         } else {
             show_error('Error user don\'t exist');
-            header('Location: ' . base_url() . 'user/login/nouser');
+            redirect( base_url() . 'user/login/nouser');
         }
     }
 

@@ -323,7 +323,7 @@ class admin extends MX_Controller {
             //---register level string
             $redir = base_url() . $this->config->item('default_controller');
             //---redirect
-            header('Location: ' . $redir);
+            redirect($redir);
             exit;
         }
     }
