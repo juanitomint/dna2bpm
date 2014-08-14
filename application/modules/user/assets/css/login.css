@@ -12,6 +12,7 @@ background-color:#222C3E ;
 
 .body .alert{
 	margin:0px;
-	overflow:hidden;
+word-break: break-all;
+	
 }
 
