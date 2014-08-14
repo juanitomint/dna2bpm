@@ -2,7 +2,8 @@
     <div class="well span4 offset4">
         <form id="formAuth" action="{authUrl}" method="post">
             <h1>{lang loginMsg}</h1>
-            {if {show_warn}}                
+            
+            {if {show_warn}}          
             <div class="alert" id="alert">
                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                 <strong>Warning!</strong> {msgcode}
