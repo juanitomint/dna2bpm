@@ -125,6 +125,7 @@ class Menu extends MX_Controller {
             case 'update'://----Path added
                 $post = json_decode(file_get_contents('php://input'));
                 //----remove root from path
+                $this->menu_model->remove_path($repoId, '/');
                 foreach ($post as $menuItem) {
 //                    $path_arr = explode('/', $menuItem->path);
 //                    array_shift($path_arr);

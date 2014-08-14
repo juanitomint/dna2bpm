@@ -93,8 +93,8 @@ class User extends CI_Model {
         $canaccess = false;
         //--first check if user still exists
         $thisUser = $this->get_user($this->idu);
-            $class=$this->router->class;
-            $method=$this->router->method;
+        $class = $this->router->class;
+        $method = $this->router->method;
         if (!$thisUser) {
             //----user doesn't exists in db
             $canaccess = false;
@@ -102,7 +102,7 @@ class User extends CI_Model {
             //----user exists
             //---define the path for module auth
             //var_dump($this->router);
-            $path = str_replace('../', '', $this->router->fetch_directory() . implode('/', array_filter(array($class,$method))));
+            $path = str_replace('../', '', $this->router->fetch_directory() . implode('/', array_filter(array($class, $method))));
             /*
              * Auto-discover from existent will add all the paths it's hits
              * turn off for production
@@ -130,7 +130,7 @@ class User extends CI_Model {
         if (!$canaccess) {
             $this->session->set_userdata('redir', base_url() . uri_string());
             $this->session->set_userdata('msg', 'nolevel');
-            header('Location: ' . base_url() . 'user/login');
+            redirect(base_url() . 'user/login');
         }
     }
 
@@ -154,7 +154,7 @@ class User extends CI_Model {
         if (!$this->session->userdata('loggedin')) {
             $this->session->set_userdata('redir', base_url() . uri_string());
             $this->session->set_userdata('msg', 'hastolog');
-            header('Location: ' . base_url() . 'user/login');
+            redirect(base_url() . 'user/login');
         } else {
             return true;
         }

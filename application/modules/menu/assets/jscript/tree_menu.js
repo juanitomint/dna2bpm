@@ -112,6 +112,7 @@ var saveTree = Ext.create('Ext.Action', {
         tree.getRootNode().cascade(function(rec) {
             //---fix node paths
             rec.set('path', rec.getPath());
+            rec.setDirty();
         });
         tree.store.sync();
         /*
