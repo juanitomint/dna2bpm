@@ -12,11 +12,11 @@
 					{/if}
 				 <!--  NAME -->
                     <div class="form-group">
-                        <input type="text" name="username" class="form-control" placeholder="User ID"/>
+                        <input type="text" name="username" class="form-control" placeholder="{lang username}"/>
                     </div>
                  <!--  PASS -->    
                     <div class="form-group">
-                        <input type="password" name="password" class="form-control" placeholder="Password"/>
+                        <input type="password" name="password" class="form-control" placeholder="{lang password}"/>
                     </div>      
                  <!--  REMEMBERME -->      
                     <div class="form-group">

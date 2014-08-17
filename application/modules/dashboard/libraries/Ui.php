@@ -137,7 +137,8 @@ class ui {
     private function custom_scripts($js = array()) {
         //---Make js string
         $strjs = '';
-        foreach ($js as $desc => $jsfile) {
+        foreach ($js as $jsfile=>$desc) {
+            $jsfile=str_replace('{base_url}',  base_url(),$jsfile);
             $strjs.="<!-- JS:$desc -->\n";
             //$strjs.="<script type='text/javascript'>try{document.getElementById('loading-msg').innerHTML +=\"<span class='ok'>OK.</span><br/>Loading $desc...\";}catch(e){}</script>\n";
             $strjs.="<script  src='$jsfile'></script>\n\n";
@@ -149,6 +150,7 @@ class ui {
     private function custom_styles($css = array()) {
         $strcss = '';
         foreach ($css as $cssfile => $desc) {
+            $cssfile=str_replace('{base_url}',  base_url(),$cssfile);
             $strcss.="<!-- CSS:$desc -->\n";
             $strcss.="<link rel='stylesheet' type='text/css' href='$cssfile' />\n";
         }
