@@ -4,36 +4,36 @@
         <meta charset="UTF-8">
         <title>{title}</title>
         <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
-         <!--====== CSS BASE ===== -->
+        <!--====== CSS BASE ===== -->
         <!-- bootstrap 3.0.2 -->
         <link href="{module_url}assets/bootstrap-wysihtml5/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
         <!-- font Awesome -->
         <link href="{module_url}assets/bootstrap-wysihtml5/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
        	<!-- Ionicons -->
-         <link href="{module_url}assets/bootstrap-wysihtml5/css/ionicons.min.css" rel="stylesheet" type="text/css" />
+        <link href="{module_url}assets/bootstrap-wysihtml5/css/ionicons.min.css" rel="stylesheet" type="text/css" />
         <!-- Daterange picker -->
         <link href="{module_url}assets/bootstrap-wysihtml5/css/daterangepicker/daterangepicker-bs3.css" rel="stylesheet" type="text/css" />
         <!-- bootstrap wysihtml5 - text editor -->
         <link href="{module_url}assets/bootstrap-wysihtml5/css/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css" rel="stylesheet" type="text/css" />
         <!-- Theme style -->
         <link href="{module_url}assets/bootstrap-wysihtml5/css/AdminLTE.css" rel="stylesheet" type="text/css" />
- 		<!--  Juery UI css -->
- 		 <link href="{base_url}jscript/jquery/ui/jquery-ui-1.10.2.custom/css/smoothness/jquery-ui-1.10.2.custom.min.css" rel="stylesheet" type="text/css" />
- 	    <!--  iCheck -->
- 	    <link href="{module_url}assets/bootstrap-wysihtml5/css/iCheck/minimal/blue.css" rel="stylesheet" type="text/css" />
- 	    
- 	     <!--====== Font Kits ===== -->
- 	    <link href="{module_url}assets/fonts/webfontkit-20140806-113318/stylesheet.css" rel="stylesheet" type="text/css" />
- 	 	<link href="{module_url}assets/fonts/Droid-Sans-fontfacekit/web_fonts/droidsans_regular_macroman/stylesheet.css" rel="stylesheet" type="text/css" />   
- 
- 	    <!--====== CSS for widgets ===== -->
-		{widgets_css}
+        <!--  Juery UI css -->
+        <link href="{base_url}jscript/jquery/ui/jquery-ui-1.10.2.custom/css/smoothness/jquery-ui-1.10.2.custom.min.css" rel="stylesheet" type="text/css" />
+        <!--  iCheck -->
+        <link href="{module_url}assets/bootstrap-wysihtml5/css/iCheck/minimal/blue.css" rel="stylesheet" type="text/css" />
 
- 	    <!-- overload css skins -->
+        <!--====== Font Kits ===== -->
+        <link href="{module_url}assets/fonts/webfontkit-20140806-113318/stylesheet.css" rel="stylesheet" type="text/css" />
+        <link href="{module_url}assets/fonts/Droid-Sans-fontfacekit/web_fonts/droidsans_regular_macroman/stylesheet.css" rel="stylesheet" type="text/css" />   
+
+        <!--====== CSS for widgets ===== -->
+        {widgets_css}
+
+        <!-- overload css skins -->
         <link href="{module_url}assets/css/style.css" rel="stylesheet" type="text/css" />
-        
 
-        
+
+
         <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
         <!--[if lt IE 9]>
@@ -43,13 +43,13 @@
         {custom_css}
     </head>
     <body class="skin-blue">
-    
-<!-- ======== HEADER ======== -->   
-    
+
+        <!-- ======== HEADER ======== -->   
+
         <header class="header">
             <a href="{base_url}" class="logo">
                 <!-- Add the class icon to your logo image or logo icon to add the margining -->
-               {brand}
+                {brand}
             </a>
             <!-- Header Navbar: style can be found in header.less -->
             <nav class="navbar navbar-static-top" role="navigation">
@@ -62,11 +62,11 @@
                 </a>
                 <div class="navbar-right">
                     <ul class="nav navbar-nav">
-                       <!-- Messages: style can be found in dropdown.less-->
-                          {toolbar_inbox}
-                      
+                        <!-- Messages: style can be found in dropdown.less-->
+                        {toolbar_inbox}
 
-                      
+
+
                         <!-- ========== USER PROFILE  ==========-->
                         <li class="dropdown user user-menu">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -97,25 +97,25 @@
                 </div>
             </nav>
         </header>
-  
-<!-- ++++++++ HEADER  -->      
-        
-           
-<div class="wrapper row-offcanvas row-offcanvas-left"><!-- Wrapper -->
-           
-<!-- ======== MENU LEFT ======== --> 
+
+        <!-- ++++++++ HEADER  -->      
+
+
+        <div class="wrapper row-offcanvas row-offcanvas-left"><!-- Wrapper -->
+
+            <!-- ======== MENU LEFT ======== --> 
             <aside class="left-side sidebar-offcanvas">
                 <!-- sidebar: style can be found in sidebar.less -->
                 <section class="sidebar">
                     <!-- /.search form -->
                     <!-- sidebar menu: : style can be found in sidebar.less -->
-                        {menu}
+                    {menu}
                 </section>
                 <!-- /.sidebar -->
             </aside>
-<!-- ++++++++ MENU LEFT  -->
-			
-<!-- ======== CENTRO ======== --> 
+            <!-- ++++++++ MENU LEFT  -->
+
+            <!-- ======== CENTRO ======== --> 
             <aside class="right-side">
                 <!-- Content Header (Page header) -->
                 <section class="content-header">
@@ -127,50 +127,52 @@
                         <li class="active">{title}</li>
                     </ol>
                 </section>
-              
-				<section class="content">
-                        {tiles} 
+
+                <section class="content">
+                    {tiles} 
+                    <section class="col-lg-12 connectedSortable ui-sortable" id="col1"> 
                         {widgets}                    
-         		 </section>         
-                    
-                    
+                    </section>
+                </section>         
+
+
             </aside>
-<!-- ++++++++ CENTRO  -->
-</div><!-- /Wrapper -->
+            <!-- ++++++++ CENTRO  -->
+        </div><!-- /Wrapper -->
 
-<!-- ======== MODAL ======== --> 
+        <!-- ======== MODAL ======== --> 
 
-<div  class="modal fade" id="myModal"  role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog" >
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
-      </div>
-      <div class="modal-body">
-        ...
-      </div>
+        <div  class="modal fade" id="myModal"  role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog" >
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+                    </div>
+                    <div class="modal-body">
+                        ...
+                    </div>
 
-    </div>
-  </div>
-</div>
+                </div>
+            </div>
+        </div>
 
-<!-- ======== FOOTER ======== --> 
+        <!-- ======== FOOTER ======== --> 
 
-		
+
         <!-- JS Global -->
         <script>
             //-----declare global vars
-            var globals={global_js};
+            var globals = {global_js};
         </script>
-        
+
         {footer}
 
-		<!-- JS custom -->     
- 		{js} 
+        <!-- JS custom -->     
+        {js} 
 
-		
-       
+
+
 
 
     </body>

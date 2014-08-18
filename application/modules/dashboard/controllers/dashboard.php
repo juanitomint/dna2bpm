@@ -107,7 +107,7 @@ class Dashboard extends MX_Controller {
         if($dashboard<>''){
         $this->Dashboard($dashboard);
         } else {
-        $this->Dashboard();
+        $this->Dashboard($this->config->item('default_dashboard'));
         }
     }
 
