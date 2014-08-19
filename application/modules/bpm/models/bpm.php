@@ -14,7 +14,7 @@ class Bpm extends CI_Model {
 
     function __construct() {
         parent::__construct();
-        $this->idu =(int)$this->session->userdata('iduser');
+        $this->idu = (int) $this->session->userdata('iduser');
         $this->load->library('cimongo/cimongo');
         $this->db = $this->cimongo;
         $this->load->config('bpm/config');
@@ -365,7 +365,7 @@ class Bpm extends CI_Model {
         if (!isset($data['iduser']))
             $data['iduser'] = (int) $this->session->userdata('iduser');
 
-        if (!isset($idwf) or !isset($case) or !isset($resourceId)) {
+        if (!isset($idwf) or ! isset($case) or ! isset($resourceId)) {
             show_error("Can't update whith: idwf:$idwf case:$case  resourceId:$resourceId<br/>Incomplete Data.");
         }
         //$title=(isset($shape->properties->title))?$shape->properties->title;$shape->stencil->id;
@@ -504,7 +504,7 @@ class Bpm extends CI_Model {
         );
 //        $this->db->debug=true;
         $tokens = $this->db
-                ->select(array('resourceId','status'))
+                ->select(array('resourceId', 'status'))
                 ->where($query)
                 ->get('tokens')
                 ->result_array();
@@ -1075,15 +1075,15 @@ class Bpm extends CI_Model {
     }
 
     function bindArrayToObject($array) {
-        $return = new stdClass();
+        $return = json_decode(json_encode($array));
 
-        foreach ($array as $k => $v) {
-            if (is_array($v)) {
-                $return->$k = $this->bindArrayToObject($v);
-            } else {
-                $return->$k = $v;
-            }
-        }
+//        foreach ($array as $k => $v) {
+//            if (is_array($v)) {
+//                $return->$k = $this->bindArrayToObject($v);
+//            } else {
+//                $return->$k = $v;
+//            }
+//        }
         return $return;
     }
 
@@ -1474,7 +1474,7 @@ class Bpm extends CI_Model {
         $data = array_filter($data);
 
         //---if assignment not set then assign task to "Initiator"
-        if (!isset($data['assign']) and !isset($data['idgroup'])) {
+        if (!isset($data['assign']) and ! isset($data['idgroup'])) {
             $data['assign'] = $this->user->Initiator;
         }
 
@@ -1521,13 +1521,21 @@ class Bpm extends CI_Model {
         return $parent;
     }
 
-    function get_resources($shape, $wf) {
+    function get_resources($shape, $wf, $case = null) {
         $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
         $debug = false;
         $rtn = array();
         if (isset($shape->properties->resources->items)) {
             if ($debug)
+                echo 'Resources of:' . $shape->properties->name . '<br/>';
+            if ($debug)
                 echo 'Resources:' . count($shape->properties->resources->items) . '<br/>';
+            /*
+             * load case to $this
+             */
+            if ($case) {
+                $this->case = $this->bindArrayToObject($case);
+            }
             //---Evaluates each rule for assignements
             foreach ($shape->properties->resources->items as $rule) {
                 if ($rule->resourceassignmentexpr) {
@@ -1538,17 +1546,16 @@ class Bpm extends CI_Model {
                     if (json_decode($resourceassignmentexpr)) {
                         if ($debug)
                             echo '  JSON:' . $resourceassignmentexpr . '<br/>';
-
-                        $matches = json_decode($resourceassignmentexpr);
+//                        $matches = json_decode($resourceassignmentexpr);
                     } else {
                         if ($debug)
-                            echo '  Rule:' . $rule->resourceassignmentexpr . '->' . $ruleEval . '<br/>';
-                        $matches = eval($ruleEval);
+                            echo '  Rule:' . $rule->resourceassignmentexpr . '<br/>' . $ruleEval . '<br/>';
                     }
 
                     switch ($resource) {
                         //---Add matched users to $data array
                         case 'user':
+                            $matches = (json_decode($resourceassignmentexpr)) ? json_decode($resourceassignmentexpr) : eval($ruleEval);
                             foreach ($matches as $iduser) {
 
                                 $rtn['assign'][] = (int) $iduser;
@@ -1558,7 +1565,21 @@ class Bpm extends CI_Model {
                                 }
                             }
                             break;
+                        case 'case':
+                            //---only eval if case passed
+                            if ($case) {
+                                $matches = (json_decode($resourceassignmentexpr)) ? json_decode($resourceassignmentexpr) : eval($ruleEval);
+                                foreach ((array)$matches as $iduser) {
+                                    $rtn['assign'][] = (int) $iduser;
+                                    if ($debug) {
+                                        $user = $this->user->get_user($iduser);
+                                        echo "adding user:" . $user->nick . ':' . $user->idu . ':' . $user->name . ' ' . $user->lastname . '<br/>';
+                                    }
+                                }
+                            }
+                            break;
                         case 'group':
+                            $matches = (json_decode($resourceassignmentexpr)) ? json_decode($resourceassignmentexpr) : eval($ruleEval);
                             foreach ($matches as $group) {
                                 $rtn['idgroup'][] = (int) $group['idgroup'];
                                 if ($debug)

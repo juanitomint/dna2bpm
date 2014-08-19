@@ -219,11 +219,11 @@ function run_Task($shape, $wf, $CI) {
         case 'Send':
             //----ASSIGN TASK to USER / GROUP
             $token = $CI->bpm->assign($shape, $wf);
-            $CI->data=$CI->bindObjectToArray($CI->data);
-            $CI->data['date'] = date($CI->lang->line('dateFmt'));
+            $data=$CI->bindObjectToArray($CI->data);
+            $data['date'] = date($CI->lang->line('dateFmt'));
             $msg['from'] = $CI->idu;
-            $msg['subject'] = $CI->parser->parse_string($shape->properties->name, $CI->data, true, true);
-            $msg['body'] = $CI->parser->parse_string($shape->properties->documentation, $CI->data, true, true);
+            $msg['subject'] = $CI->parser->parse_string($shape->properties->name, $data, true, true);
+            $msg['body'] = $CI->parser->parse_string($shape->properties->documentation, $data, true, true);
             $msg['idwf'] = $wf->idwf;
             $msg['case'] = $wf->case;
             if ($shape->properties->properties <> '') {
@@ -231,7 +231,7 @@ function run_Task($shape, $wf, $CI) {
                     $msg[$property->name] = $property->datastate;
                 }
             }
-            $resources = $CI->bpm->get_resources($shape, $wf);
+            $resources = $CI->bpm->get_resources($shape, $wf,$case);
             //---if has no messageref and noone is assigned then
             //---fire a message to lane or self         
 //            if (!count($resources['assign']) and !$shape->properties->messageref) {
@@ -245,6 +245,7 @@ function run_Task($shape, $wf, $CI) {
 //                    $resources['assign'][] = $CI->user->Initiator;
 //            }
             //---process inbox--------------
+            $to=(isset($resources['assign']))? array_merge($token['assign'],$resources['assign']):$token['assign'];
             foreach ($token['assign'] as $to_user) {
                 if ($debug)
                     echo "Sending msg to user:$to_user<br/>";
