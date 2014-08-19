@@ -104,6 +104,25 @@
 		<input type="text" name="email" value="{email}" class="form-control" {disabled}>
     </div>
   </div>
+  <!--  ==== NOTIFICACIONS BY MAIL ==== -->
+  <div class="form-group">
+    <label class="col-sm-2 control-label">{lang notification_by_mail}</label>
+    <div class="col-sm-10 form-inline">
+			<div class="radio">
+			  <label>
+			 	 <input type="radio" name="notification_by_email" id="noti_yes" value="yes" {check_notiY} {disabled}>
+			    {lang yes}
+			  </label>
+			</div>
+			<div class="radio">
+			  <label>
+			    <input type="radio" name="notification_by_email" id="noti_no" value="no" {check_notiN} {disabled}>
+			    {lang no}
+			  </label>
+			</div>
+    </div>
+  </div>
+  
    
 <!--  ==== TELEFONO ==== -->
   <div class="form-group">

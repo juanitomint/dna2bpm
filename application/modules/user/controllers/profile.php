@@ -28,7 +28,7 @@ class Profile extends MX_Controller {
         $this->base_url = base_url();
         $this->module_url = base_url() . $this->router->fetch_module() . '/';
         //----LOAD LANGUAGE
-        $this->lang->load('library', $this->config->item('language'));
+        $this->lang->load('profile', $this->config->item('language'));
         $this->idu = (int) $this->session->userdata('iduser');
     }
 
@@ -65,11 +65,20 @@ class Profile extends MX_Controller {
         //tomamos los datos del usuario
         $data+=(array) $this->user->get_user((int) $this->idu);
 
+        //genero
         $genero = isset($data['gender']) ? ($data['gender']) : ("male");
         if ($genero == "female")
             $data['checkedF'] = 'checked';
         else
             $data['checkedM'] = 'checked';
+        
+        //Notifications
+        $noti = isset($data['notification_by_email']) ? ($data['notification_by_email']) : ("no");
+
+        if ($noti == "yes")
+        	$data['check_notiY'] = 'checked';
+        else
+        	$data['check_notiN'] = 'checked';
 
         // Chequeo avatar
 
@@ -91,7 +100,8 @@ class Profile extends MX_Controller {
         $customData['module_url'] = base_url() . 'user/';
         $iduser = (int) $this->session->userdata('iduser');
 
-        $allowed=array('name','gender','lastname','idnumber','birthdate','email','phone','celular','address','cp','city','signature');
+        $allowed=array('name','gender','lastname','idnumber','birthdate','email','phone','celular','address','cp','city','signature','notification_by_email');
+
 		foreach($this->input->post('data') as $item){
  			if(in_array($item['name'],$allowed))
  			$post_obj[$item['name']]=$item['value'];
