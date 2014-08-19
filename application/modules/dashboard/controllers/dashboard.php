@@ -100,12 +100,14 @@ class Dashboard extends MX_Controller {
     }
 
     function Index() {
+        $dashboard = ($this->session->userdata('json')) ? $this->session->userdata('json'):null;
         if ($this->user->isAdmin()) {
-
-            $this->Dashboard('dashboard/json/admin.json');
+            $dashboard = 'dashboard/json/admin.json';
+        }
+        if($dashboard<>''){
+        $this->Dashboard($dashboard);
         } else {
-
-            $this->Dashboard();
+        $this->Dashboard($this->config->item('default_dashboard'));
         }
     }
 
@@ -134,25 +136,31 @@ class Dashboard extends MX_Controller {
         //---load custom menu
         $menu_custom = Modules::run('menu/get_menu', '0', 'sidebar-menu', !$this->user->isAdmin());
         $customData['menu_custom'] = $this->parser->parse_string($menu_custom, $customData, TRUE, TRUE);
+        //----check if extra library exists and load it 
+        if (is_file(FCPATH . APPPATH . "modules/dashboard/libraries/menu_extra.php")) {
+            $this->load->library('dashboard/menu_extra');
+            
+            $customData['menu_custom'].=$this->menu_extra->get();
+        }
         return $this->parser->parse('dashboard/menu', $customData, true, true);
     }
 
-    function hooks_group($user=null){
-        $user =($user)?$user: $this->user->get_user((int) $this->idu);
-        if(is_file(FCPATH . APPPATH . "modules/dashboard/views/hooks/groups.json")){
-        $config=json_decode($this->load->view('hooks/groups.json','',true));
-            foreach($config->hooks as $hook){
-                if(array_intersect($user->group,$hook->group))
-                    redirect ($this->base_url.$hook->redir);
+    function hooks_group($user = null) {
+        $user = ($user) ? $user : $this->user->get_user((int) $this->idu);
+        if (is_file(FCPATH . APPPATH . "modules/dashboard/views/hooks/groups.json")) {
+            $config = json_decode($this->load->view('hooks/groups.json', '', true));
+            foreach ($config->hooks as $hook) {
+                if (array_intersect($user->group, $hook->group))
+                    redirect($this->base_url . $hook->redir);
             }
         }
-        
     }
+
     // ==== Dashboard
 
-    function Dashboard($json = 'dashboard/json/dashboard.json', $debug = false) {
+    function Dashboard($json = 'dashboard/json/dashboard.json',$extraData=null, $debug = false) {
         /* eval Group hooks first */
-        
+        $this->session->set_userdata('json', $json);
         $user = $this->user->get_user((int) $this->idu);
         $this->hooks_group($user);
         $myconfig = $this->parse_config($json, $debug);
@@ -165,7 +173,7 @@ class Dashboard extends MX_Controller {
         $customData['avatar'] = Modules::run('user/profile/get_avatar'); //Avatar URL
         $customData['base_url'] = $this->base_url;
         $customData['module_url'] = $this->module_url;
-        $customData['inbox_count']=$this->msg->count_msgs($this->idu,'inbox');
+        $customData['inbox_count'] = $this->msg->count_msgs($this->idu, 'inbox');
 
         $customData['name'] = $user->name . ' ' . $user->lastname;
 
@@ -175,11 +183,11 @@ class Dashboard extends MX_Controller {
             'module_url' => $this->module_url,
             'myidu' => $this->idu
         );
-        
-		// Toolbar
-        $customData['toolbar_inbox']=Modules::run('inbox/inbox/toolbar');
 
-        
+        // Toolbar
+        $customData['toolbar_inbox'] = Modules::run('inbox/inbox/toolbar');
+
+
         /*
           Custom JS Example
           $customData['js']=array('knob','jquery'); // Just handles must be registered in UI
@@ -192,9 +200,13 @@ class Dashboard extends MX_Controller {
         //var_dump(array_keys($customData));exit; 
 //          var_dump($customData);  
 //          exit(); 
-        
+        /*
+         * Adds extra data if passed
+         */
+        if($extraData){
+         $customData+=$extraData;   
+        }
         $this->ui->compose($layout, $customData);
-
     }
 
     // ==== Tiles fixed
@@ -211,7 +223,7 @@ class Dashboard extends MX_Controller {
         $data['module_url'] = $this->module_url;
         return $this->parser->parse('tiles/admin_bpm', $data, true, true);
     }
-    
+
     function tile_admin_menu() {
         $data['lang'] = $this->lang->language;
         $data['base_url'] = $this->base_url;
@@ -221,8 +233,8 @@ class Dashboard extends MX_Controller {
 
     function tile($template, $data) {
         $data['lang'] = $this->lang->language;
-        $data['more_info_text']=(isset($data['more_info_text'])) ? $data['more_info_text']: $this->lang->line('more_info');
-        return $this->parser->parse($template, $data,true);
+        $data['more_info_text'] = (isset($data['more_info_text'])) ? $data['more_info_text'] : $this->lang->line('more_info');
+        return $this->parser->parse($template, $data, true);
     }
 
     // ==== Tasks
@@ -232,9 +244,9 @@ class Dashboard extends MX_Controller {
     }
 
     // ============ Parse JSON config
- function parse_config($file, $debug = false) {
+    function parse_config($file, $debug = false) {
         $myconfig = json_decode($this->load->view($file, '', true), true);
-        define('MINWIDTH',2);
+        define('MINWIDTH', 2);
 //             $return['js'] = array();
         //Root config
         foreach ($myconfig as $key => $value) {
@@ -249,47 +261,47 @@ class Dashboard extends MX_Controller {
             $spans = array();
             $myzone = current($zones);
             $myzone_key = key($zones);
-			$empty_spans=0;
-			$no_span=false;
+            $empty_spans = 0;
+            $no_span = false;
             foreach ($myzone as $item) {
                 $widgets[] = $item;
-                $spans[]=(empty($item["span"]))?(MINWIDTH):($item["span"]);
-                if(isset($item["span"]))$empty_spans++;
+                $spans[] = (empty($item["span"])) ? (MINWIDTH) : ($item["span"]);
+                if (isset($item["span"]))
+                    $empty_spans++;
             }
 
             //$content.="<div class='row zone_$myzone_key  '>";
-            $Qspan=0;
+            $Qspan = 0;
 
             foreach ($widgets as $k => $myWidget) {
 
-            	// Span handle
-				$myspan=$spans[$k];
-				$next=(isset($spans[$k+1]))?($spans[$k+1]):(null);
-				$fit_in=($myspan+$Qspan<13)?(true):(null);
-				// Open div		
-				//if($Qspan==0)$content.="<div class='mywidget '>";
-				if($fit_in){
-					// There is space for this col
-					if($next){
-						// we have more cols
-						if($Qspan+$myspan+$next<13){
-							$span=$myspan;
-							$Qspan=($Qspan+$span==12)?(0):($Qspan+$span);
-						}else{
-							$span=12-$Qspan;
-							$Qspan=0;
-						}
-					}else{
-						$span=12-$Qspan;
-						$Qspan=0;
-					}
-								
-				}else{
-					// col too big
-					$span=$myspan;
-				}
-				//
-            	           	
+                // Span handle
+                $myspan = $spans[$k];
+                $next = (isset($spans[$k + 1])) ? ($spans[$k + 1]) : (null);
+                $fit_in = ($myspan + $Qspan < 13) ? (true) : (null);
+                // Open div		
+                //if($Qspan==0)$content.="<div class='mywidget '>";
+                if ($fit_in) {
+                    // There is space for this col
+                    if ($next) {
+                        // we have more cols
+                        if ($Qspan + $myspan + $next < 13) {
+                            $span = $myspan;
+                            $Qspan = ($Qspan + $span == 12) ? (0) : ($Qspan + $span);
+                        } else {
+                            $span = 12 - $Qspan;
+                            $Qspan = 0;
+                        }
+                    } else {
+                        $span = 12 - $Qspan;
+                        $Qspan = 0;
+                    }
+                } else {
+                    // col too big
+                    $span = $myspan;
+                }
+                //
+
                 if (isset($myWidget['params'])) {
                     $args = $myWidget['params'];
                     array_unshift($args, $myWidget['module'] . '/' . $myWidget['controller'] . '/' . $myWidget['function']);
@@ -299,20 +311,19 @@ class Dashboard extends MX_Controller {
                 }
                 if ($debug)
                     $markup = $myWidget['module'] . '/' . $myWidget['controller'] . '/' . $myWidget['function'] . $markup;
-                
-                // Si es un array uso el zonekey para identificar el markup
-                $mycontent=(is_array($markup))?($markup['content']):($markup);
-                if(!$empty_spans)
-               	 	$content.=$mycontent;
-                else 
-                	$content.="<div class='col-lg-$span '>$mycontent</div>";
 
-                
+                // Si es un array uso el zonekey para identificar el markup
+                $mycontent = (is_array($markup)) ? ($markup['content']) : ($markup);
+                if (!$empty_spans)
+                    $content.=$mycontent;
+                else
+                    $content.="<div class='col-lg-$span '>$mycontent</div>";
+
+
                 // closing div
                 //if($Qspan==0)$content.="</div>";
             }
-           // $content.='</div>';
-
+            // $content.='</div>';
             // Por si el widget devuelve un array en lugar del contenido solamente
             if (is_array($markup)) {
                 if (isset($markup['content']))
