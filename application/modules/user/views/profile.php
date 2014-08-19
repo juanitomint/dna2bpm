@@ -110,13 +110,13 @@
     <div class="col-sm-10 form-inline">
 			<div class="radio">
 			  <label>
-			 	 <input type="radio" name="notification_by_email" id="noti_yes" value="{lang yes}" {check_notiY} {disabled}>
+			 	 <input type="radio" name="notification_by_email" id="noti_yes" value="yes" {check_notiY} {disabled}>
 			    {lang yes}
 			  </label>
 			</div>
 			<div class="radio">
 			  <label>
-			    <input type="radio" name="notification_by_email" id="noti_no" value="{lang no}" {check_notiN} {disabled}>
+			    <input type="radio" name="notification_by_email" id="noti_no" value="no" {check_notiN} {disabled}>
 			    {lang no}
 			  </label>
 			</div>
