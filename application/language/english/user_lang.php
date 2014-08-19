@@ -21,4 +21,6 @@ $lang['Signature'] = 'Signature';
 $lang['picture'] = 'My picture';
 $lang['SelectFile'] = 'Select File';
 $lang['UploadFile'] = 'Upload File';
-
+$lang['yes'] = 'yes';
+$lang['no'] = 'no';
+$lang['notification_by_mail'] = 'Notification by email';
