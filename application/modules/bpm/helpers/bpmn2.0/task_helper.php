@@ -172,7 +172,7 @@ function run_Task($shape, $wf, $CI) {
             if (!$is_allowed) {
                 if ($debug)
                     echo "is_allowed=false<br/>";
-                return;
+                return false;
             }
 ////////////////////////////////////////////////////////////////////////////
 

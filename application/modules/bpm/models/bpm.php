@@ -1345,6 +1345,7 @@ class Bpm extends CI_Model {
 
     function assign($shape, $wf) {
         $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
+        //$debug = true;
         if ($debug)
             echo '<H1>Assign:' . $shape->properties->name . '</H1>';
         $token = $this->get_token($wf->idwf, $wf->case, $shape->resourceId);
@@ -1424,7 +1425,8 @@ class Bpm extends CI_Model {
                 $data['idgroup'] = (isset($resources['idgroup'])) ? array_merge($resources['idgroup'], $data['idgroup']) : array();
             } else {
                 //---check if owner/initiator is in the group
-
+                if ($debug)
+                    echo "Check if owner/initiator is in the group<br/>";
                 $initiator = $this->user->get_user($this->user->Initiator);
                 if (in_array($idgroup, $initiator->group)) {
                     $data['assign'][] = $this->user->Initiator;
@@ -1434,11 +1436,11 @@ class Bpm extends CI_Model {
 
                 // If lane has no resources then try some other approach
                 //----Assign the the shape to the runner if belongs to group and assignment hasn't been set
-                if ($debug)
-                    echo '<H3>Auto-Assign Runner have parent "LANE" but no resources found</H3>';
                 if (!count($data['assign'])) {
                     if (in_array($idgroup, $user->group)) {
                         $data['assign'][] = $this->idu;
+                        if ($debug)
+                            echo '<H3>Auto-Assign Runner have parent "LANE" but no resources found</H3>';
                     }
                 }
             }
@@ -1495,7 +1497,7 @@ class Bpm extends CI_Model {
         $data = array_filter($data);
 
         //---if assignment not set either by group or explicit assignment then assign task to "Initiator"
-        if (!count($data['assign'])) {
+        if (isset($data['assign']) && !count($data['assign'])) {
             if (count($data['idgroup'])) {
                 $initiator = $this->user->get_user($this->user->Initiator);
                 if (array_intersect($data['idgroup'], $initiator->group)) {
