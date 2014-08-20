@@ -174,7 +174,7 @@ class Dashboard extends MX_Controller {
         $customData['base_url'] = $this->base_url;
         $customData['module_url'] = $this->module_url;
         $customData['inbox_count'] = $this->msg->count_msgs($this->idu, 'inbox');
-
+        $customData['config_panel'] =$this->parser->parse('_config_panel', array(), true, true);
         $customData['name'] = $user->name . ' ' . $user->lastname;
 
         // Global JS
@@ -353,6 +353,7 @@ class Dashboard extends MX_Controller {
         $this->dashboard('dashboard/json/tasks.json');
     }
 
+    
     // ============ Widgets
 
     function box_primary($data = array()) {
