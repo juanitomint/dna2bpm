@@ -28,7 +28,7 @@ class Profile extends MX_Controller {
         $this->base_url = base_url();
         $this->module_url = base_url() . $this->router->fetch_module() . '/';
         //----LOAD LANGUAGE
-        $this->lang->load('user', $this->config->item('language'));
+        $this->lang->load('profile', $this->config->item('language'));
         $this->idu = (int) $this->session->userdata('iduser');
     }
 
@@ -44,7 +44,7 @@ class Profile extends MX_Controller {
 
     
     function Edit($disabled=false) {
-        $this->lang->load('user', $this->config->item('language'));
+        //$this->lang->load('profile', $this->config->item('language'));
         $data['lang']= $this->lang->language;
     	$data['base_url'] = base_url();
         $data['module_url'] = base_url() . 'user/';
@@ -144,7 +144,6 @@ class Profile extends MX_Controller {
         $iduser = (int) $this->session->userdata('iduser');
         $post_obj['nick'] = $this->input->post('nick');
         //la foto 
-        $post_obj['name'] = $this->input->post('nombre');
         $post_obj['name'] = $this->input->post('nombre');
         $post_obj['lastname'] = $this->input->post('apellido');
         $post_obj['idnumber'] = $this->input->post('dni');

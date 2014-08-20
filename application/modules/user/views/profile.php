@@ -18,7 +18,7 @@
     <div class="col-sm-8">
      {if "{disabled}"==""}
 		  <div class="form-group">
-					<div id="filelist">Your browser doesn't have Flash, Silverlight or HTML5 support.</div>
+					<div id="filelist">{lang uploader_error}</div>
 					<br />
 					<div id="container">
 					    <a id="pickfiles" class="btn btn-primary btn-xs" href="javascript:;"><i class="fa fa-files-o"></i> {lang SelectFile}</a> 

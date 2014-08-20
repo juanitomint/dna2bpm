@@ -157,9 +157,12 @@
             </div>
         </div>
 
+
+		
         <!-- ======== FOOTER ======== --> 
 
 
+	
         <!-- JS Global -->
         <script>
             //-----declare global vars

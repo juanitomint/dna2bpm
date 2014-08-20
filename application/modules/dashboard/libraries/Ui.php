@@ -60,7 +60,7 @@ class ui {
                     if (!in_array($js, $default))
                         $default[] = $js;
                 }else {
-                    $data['custom_js'][$js] = $k;
+                    $data['custom_js'][$k] = $js;
                 }
             }
         }
