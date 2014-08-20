@@ -262,7 +262,8 @@ function run_Task($shape, $wf, $CI) {
 //            }
             //---process inbox--------------
             $to = (isset($resources['assign'])) ? array_merge($token['assign'], $resources['assign']) : $token['assign'];
-            foreach ($token['assign'] as $to_user) {
+            $to = array_unique(array_filter($to));
+            foreach ($to as $to_user) {
                 if ($debug)
                     echo "Sending msg to user:$to_user<br/>";
                 $CI->msg->send($msg, $to_user);
