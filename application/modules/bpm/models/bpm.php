@@ -1423,6 +1423,8 @@ class Bpm extends CI_Model {
                     echo '<H3>Auto-Assign Runner have parent "LANE" but no resources found</H3>';
                 if (in_array($idgroup, $user->group)) {
                     $data['assign'][] = $this->idu;
+                } else {
+                //---assign to initiator?    
                 }
             }
         }
@@ -1556,6 +1558,7 @@ class Bpm extends CI_Model {
                         //---Add matched users to $data array
                         case 'user':
                             $matches = (json_decode($resourceassignmentexpr)) ? json_decode($resourceassignmentexpr) : eval($ruleEval);
+                            $matches = (is_array($matches)) ? $matches : (array) $matches;
                             foreach ($matches as $iduser) {
 
                                 $rtn['assign'][] = (int) $iduser;
@@ -1569,7 +1572,8 @@ class Bpm extends CI_Model {
                             //---only eval if case passed
                             if ($case) {
                                 $matches = (json_decode($resourceassignmentexpr)) ? json_decode($resourceassignmentexpr) : eval($ruleEval);
-                                foreach ((array)$matches as $iduser) {
+                                $matches = (is_array($matches)) ? $matches : (array) $matches;
+                                foreach ((array) $matches as $iduser) {
                                     $rtn['assign'][] = (int) $iduser;
                                     if ($debug) {
                                         $user = $this->user->get_user($iduser);
@@ -1580,6 +1584,7 @@ class Bpm extends CI_Model {
                             break;
                         case 'group':
                             $matches = (json_decode($resourceassignmentexpr)) ? json_decode($resourceassignmentexpr) : eval($ruleEval);
+                            $matches = (is_array($matches)) ? $matches : (array) $matches;
                             foreach ($matches as $group) {
                                 $rtn['idgroup'][] = (int) $group['idgroup'];
                                 if ($debug)
