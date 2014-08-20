@@ -345,6 +345,26 @@ class User extends CI_Model {
         return $rs;
     }
 
+    function get_users_count($query_txt = null, $idgroup = null) {
+        if ($idgroup) {
+            $this->db->where_in('group', (array) $idgroup);
+        }
+
+        if ($query_txt) {
+            $this->db->or_like('nick', $query_txt, $match);
+            $this->db->or_like('name', $query_txt, $match);
+            $this->db->or_like('lastname', $query_txt, $match);
+            $this->db->or_like('email', $query_txt, $match);
+
+            if (is_numeric($query_txt)) {
+                $this->db->or_where('idu', (int) $query_txt);
+            }
+
+            //$query+=array('$where'=>"this.name.match(/$query_txt/i)");
+        }
+        return $this->db->count_all_results('users');
+    }
+
     function get_users($offset = 0, $limit = 50, $order = null, $query_txt = null, $idgroup = null, $match = 'both') {
         $this->db->get('users');
         //var_dump($start,$limit,$idgroup, $order, $idgroup);
