@@ -1,7 +1,7 @@
 {
     "createdBy": "Gabriel Fojo <trialvd@gmail.com>",
     "title": "{lang user_profile}",
-    "view": "",
+    "view": "layout_clean",
     "icon": "fa-users",
     "zones": [
         {
