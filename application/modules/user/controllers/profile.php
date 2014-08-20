@@ -28,7 +28,7 @@ class Profile extends MX_Controller {
         $this->base_url = base_url();
         $this->module_url = base_url() . $this->router->fetch_module() . '/';
         //----LOAD LANGUAGE
-        $this->lang->load('profile', $this->config->item('language'));
+        $this->lang->load('user', $this->config->item('language'));
         $this->idu = (int) $this->session->userdata('iduser');
     }
 
