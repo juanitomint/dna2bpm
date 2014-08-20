@@ -52,6 +52,7 @@ class Case_manager extends MX_Controller {
         $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
         if ($debug)
             echo '<h2>' . __FUNCTION__ . '</h2>';
+        $case=$this->bpm->get_case($idcase);
         $token=$this->bpm->get_token($idwf, $idcase, $resourceId);
         $filter=array(
             'idwf'=>$idwf,
@@ -62,6 +63,8 @@ class Case_manager extends MX_Controller {
         $this->bpm->clear_tokens($idwf, $idcase, $filter);
         $token['status']='pending';
         $this->bpm->save_token($token);
+        $case['status']='open';
+        $this->bpm->save_case($case);
         $out = array('status' => 'ok');
         if (!$debug) {
             header('Content-type: application/json;charset=UTF-8');
