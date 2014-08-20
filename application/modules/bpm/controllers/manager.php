@@ -12,7 +12,7 @@ class Manager extends MX_Controller {
         $this->load->model('bpm');
         $this->load->model('msg');
         $this->load->model('user/group');
-        $this->user->authorize('ADM,WFADM');
+        $this->user->authorize();
         //----LOAD LANGUAGE
         $this->types_path = 'application/modules/bpm/assets/types/';
         $this->lang->load('library', $this->config->item('language'));
