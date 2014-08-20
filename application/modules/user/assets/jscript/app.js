@@ -56,7 +56,7 @@ Ext.onReady(function(){
                 items:[ left,center,right,
                 {
                     region:'north',
-                    title:'<h3><i class="icon icon-group"></i> RBAC Group & User Manager</h3>',
+                    title:'<i class="icon icon-group"></i> RBAC Group & User Manager',
                     cls:'page_header'
                 },
                 ],
@@ -65,7 +65,7 @@ Ext.onReady(function(){
                     afterrender: function(){
                         //---Load Data
                                    
-                        Ext.data.StoreManager.lookup('GroupStore').load(); 
+                        Ext.data.StoreManager.lookup('GroupStore').clearFilter(); 
                         //Ext.data.StoreManager.lookup('UserStore').load(); 
                         Ext.data.StoreManager.lookup('TreeStore').load(); 
                                    

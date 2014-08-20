@@ -345,7 +345,7 @@ class User extends CI_Model {
         return $rs;
     }
 
-    function get_users_count($query_txt = null, $idgroup = null) {
+    function get_users_count($query_txt = null, $idgroup = null,$match='both') {
         if ($idgroup) {
             $this->db->where_in('group', (array) $idgroup);
         }
