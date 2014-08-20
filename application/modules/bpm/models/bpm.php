@@ -781,7 +781,7 @@ class Bpm extends CI_Model {
         $dateOut = new DateTime();
         $data['interval'] = date_diff($dateOut, $dateIn, true);
         //---assign user
-        if (!isset($data['iduser']))
+        if (!isset($case['iduser']))
             $data['iduser'] = (int) $this->session->userdata('iduser');
         //----update case with latest token status
 //      $data['token_status'] = (isset($data['token_status'])) ? $data['token_status'] : $this->get_token_status($case['idwf'], $case['id']);
