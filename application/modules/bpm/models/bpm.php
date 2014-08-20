@@ -365,7 +365,7 @@ class Bpm extends CI_Model {
         if (!isset($data['iduser']))
             $data['iduser'] = (int) $this->session->userdata('iduser');
 
-        if (!isset($idwf) or ! isset($case) or ! isset($resourceId)) {
+        if (!isset($idwf) or !isset($case) or !isset($resourceId)) {
             show_error("Can't update whith: idwf:$idwf case:$case  resourceId:$resourceId<br/>Incomplete Data.");
         }
         //$title=(isset($shape->properties->title))?$shape->properties->title;$shape->stencil->id;
@@ -1352,7 +1352,7 @@ class Bpm extends CI_Model {
         //---Get Case
         $case = $this->get_case($wf->case);
         //---Set Initiator same as case creator
-        $this->user->Initiator = (array) $case['iduser'];
+        $this->user->Initiator = (int) $case['iduser'];
         //---set data as token data
         $data = $token;
         //--remove unnecesary data
@@ -1382,16 +1382,19 @@ class Bpm extends CI_Model {
         //---get parent user group 4 Lanes override assignment? no!
         //----set assign to group if is in a Pool/Lane
         $user = $this->user->get_user($this->idu);
+        /*
+         * PARENT RESOURCES
+         */
         $parent = $this->bpm->find_parent($shape, 'Lane', $wf);
-
         if ($parent) {
             $data['parent'] = $parent->resourceId;
             //----try to get group by name
 //            $group_name = $wf->idwf . '/' . $parent->properties->name;
             $group_name = $wf->folder . '/' . $parent->properties->name;
             $group = $this->group->get_byname($group_name);
+            //---ASSIGN to the group the lane represents
             if ($group) {
-                $idgroup = $group['idgroup'];
+                $idgroup = (int) $group['idgroup'];
                 $data['idgroup'][] = $group['idgroup'];
                 //---if group exists add it to the array
             } else {
@@ -1408,7 +1411,9 @@ class Bpm extends CI_Model {
                 }
                 $data['idgroup'][] = $idgroup;
             }
-
+            /*
+             * TRY GET Lane Resources
+             */
             $resources = $this->get_resources($parent, $wf);
             if ($debug) {
                 echo "Get Resources result:<br/>";
@@ -1418,24 +1423,38 @@ class Bpm extends CI_Model {
                 $data['assign'] = (isset($resources['assign'])) ? array_merge($resources['assign'], $data['assign']) : array();
                 $data['idgroup'] = (isset($resources['idgroup'])) ? array_merge($resources['idgroup'], $data['idgroup']) : array();
             } else {
-                //----Assign the the shape to the runner if belongs to group
+                //---check if owner/initiator is in the group
+
+                $initiator = $this->user->get_user($this->user->Initiator);
+                if (in_array($idgroup, $initiator->group)) {
+                    $data['assign'][] = $this->user->Initiator;
+                    if ($debug)
+                        echo '<H3>Assign Initiator as him belongs to lane group</H3>';
+                }
+
+                // If lane has no resources then try some other approach
+                //----Assign the the shape to the runner if belongs to group and assignment hasn't been set
                 if ($debug)
                     echo '<H3>Auto-Assign Runner have parent "LANE" but no resources found</H3>';
-                if (in_array($idgroup, $user->group)) {
-                    $data['assign'][] = $this->idu;
-                } else {
-                //---assign to initiator?    
+                if (!count($data['assign'])) {
+                    if (in_array($idgroup, $user->group)) {
+                        $data['assign'][] = $this->idu;
+                    }
                 }
             }
         }
+        /*
+          //----SHAPE HAS NO PARENT LANE
+          else {
+          if ($debug)
+          echo '<H3>Auto-Assign Runner have no parent "LANE"</H3>';
+          //----Assign the the shape to the runner
+          $data['assign'][] = $this->idu;
+          } */
 
-        //----SHAPE HAS NO PARENT LANE
-        else {
-            if ($debug)
-                echo '<H3>Auto-Assign Runner have no parent "LANE"</H3>';
-            //----Assign the the shape to the runner
-            $data['assign'][] = $this->idu;
-        }
+        /*
+         * EVAL SHAPE RESOURCES
+         */
         //---now get spacific task assignements and added (if no parent lanes runner will be in assign group
         if (isset($shape->properties->resources->items)) {
             //---merge assignment with specific data.
@@ -1475,9 +1494,18 @@ class Bpm extends CI_Model {
         ///-clear data
         $data = array_filter($data);
 
-        //---if assignment not set then assign task to "Initiator"
-        if (!isset($data['assign']) and ! isset($data['idgroup'])) {
-            $data['assign'] = $this->user->Initiator;
+        //---if assignment not set either by group or explicit assignment then assign task to "Initiator"
+        if (!count($data['assign'])) {
+            if (count($data['idgroup'])) {
+                $initiator = $this->user->get_user($this->user->Initiator);
+                if (array_intersect($data['idgroup'], $initiator->group)) {
+                    $data['assign'][] = $this->user->Initiator;
+                    if ($debug)
+                        echo '<H3>Assign Initiator as him belongs to lane group</H3>';
+                }
+            } else {
+                $data['assign'][] = $this->user->Initiator;
+            }
         }
 
 
