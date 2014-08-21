@@ -898,13 +898,12 @@ class Bpm extends CI_Model {
         return $status_map[$status];
     }
 
-    function get_tasks_byFilter($filter, $fields = array(), $sort = array()) {
+    function get_tasks_byFilter($filter=array(), $fields = array(), $sort = array()) {
         //$this->db->debug=true;
         $this->db->where($filter);
         $this->db->select($fields);
         $this->db->order_by($sort);
         $rs = $this->db->get('tokens');
-
         return $rs->result_array();
     }
 
