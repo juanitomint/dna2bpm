@@ -365,7 +365,7 @@ class Bpm extends CI_Model {
         if (!isset($data['iduser']))
             $data['iduser'] = (int) $this->session->userdata('iduser');
 
-        if (!isset($idwf) or !isset($case) or !isset($resourceId)) {
+        if (!isset($idwf) or ! isset($case) or ! isset($resourceId)) {
             show_error("Can't update whith: idwf:$idwf case:$case  resourceId:$resourceId<br/>Incomplete Data.");
         }
         //$title=(isset($shape->properties->title))?$shape->properties->title;$shape->stencil->id;
@@ -1474,10 +1474,10 @@ class Bpm extends CI_Model {
 
         //---if the user who is running the process is an admin assign him
         if ($this->config->item('auto_add_admin')) {
-            if ($debug)
-                echo '<H3>Auto Add Admin</H3>';
             if ($this->user->isAdmin($user)) {
                 $data['assign'][] = $this->idu;
+                if ($debug)
+                    echo '<H3>Auto Add Admin</H3>';
             }
         }
 
@@ -1632,6 +1632,41 @@ class Bpm extends CI_Model {
 
         $redir = base_url() . 'bpm/gateway/?url=' . urlencode(base64_encode($url));
         return $redir;
+    }
+
+    function is_allowed($token, $user) {
+        $is_allowed = false;
+        $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
+        if ($debug)
+            echo "Eval is_allowed<br/>";
+//---check if the user is assigned to the task
+        if (isset($token['assign'])) {
+            if (in_array($user->idu, $token['assign'])) {
+                $is_allowed = true;
+                if ($debug)
+                    echo "is_allowed=true user is in token assign<br/>";
+            }
+        }
+
+
+//---check if user belong to the group the task is assigned to
+//---but only if the task havent been assigned to an specific user
+        if (isset($token['idgroup']) and ! isset($token['assign'])) {
+            foreach ($user->group as $thisgroup) {
+                if (in_array((int) $thisgroup, $token['idgroup'])) {
+                    $is_allowed = true;
+                    if ($debug)
+                        echo "is_allowed=true user is in token group<br/>";
+                }
+            }
+        }
+
+
+        if (!$is_allowed) {
+            if ($debug)
+                echo "is_allowed=false<br/>";
+        }
+        return $is_allowed;
     }
 
 }

@@ -749,11 +749,18 @@ class Engine extends MX_Controller {
 //----load WF data
             $myTasks = $this->bpm->get_pending($idwf, $idcase, array('user', 'manual'), $filter);
 //var_dump(json_encode($filter),$myTasks);exit;
-            $first = $myTasks->getNext();
+            //---search for a suitable task to execute
+            while ($first = $myTasks->getNext()) {
+                $is_allowed = $this->bpm->is_allowed($first, $user);
+
+                if ($is_allowed)
+                    break;
+            }
             if ($first) {
-//-----get id from token---------
+                //-----get id from token---------
                 $token = $first;
-//var_dump('loaded token', $token);
+
+                //var_dump('loaded token', $token);
                 switch ($token['type']) {
                     case 'Exclusive_Databased_Gateway':
                         $this->manual_gate($model, $idwf, $idcase, $first['resourceId']);
@@ -800,7 +807,7 @@ class Engine extends MX_Controller {
                                         $rendering = trim($shape->properties->rendering);
                                         if ($rendering) {
                                             $token_id = $first['_id'];
-                                            if(strstr($rendering, '$')){
+                                            if (strstr($rendering, '$')) {
                                                 $streval = 'return ' . $rendering . ';';
                                             }
                                             $rendering = eval($streval);

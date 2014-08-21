@@ -30,48 +30,48 @@ function run_Exclusive_Databased_Gateway($shape, $wf, $CI) {
     $user = $CI->user->get_user($iduser);
     $user_groups = (array) $user->group;
     //----ASSIGN to USER / GROUP
-    $CI->bpm->assign($shape, $wf);
-    //----Get token data
-    $token = $CI->bpm->get_token($wf->idwf, $wf->case, $shape->resourceId);
-    $shape_data = array();
-//---assign gate to current user
-    //$shape_data['assign'][] = (int) $CI->session->userdata('iduser');
-    ////////////////////////////////////////////////////////////////////////////
-///////////////////////EVAL EXECUTION POLICY////////////////////////////////
-////////////////////////////////////////////////////////////////////////////
-//--by default user is not allowed to execute this task
-//--except assign or group says otherwise
-    $is_allowed = false;
-    if ($debug)
-        echo "Eval is_allowed<br/>";
-//---check if the user is assigned to the task
-    if (isset($token['assign'])) {
-        if (in_array($iduser, $token['assign'])) {
-            $is_allowed = true;
-            if ($debug)
-                echo "is_allowed=true user is in token assign<br/>";
-        }
-    }
-
-
-//---check if user belong to the group the task is assigned to
-//---but only if the task havent been assigned to an specific user
-    if (isset($token['idgroup']) and !isset($token['assign'])) {
-        foreach ($user_groups as $thisgroup) {
-            if (in_array((int) $thisgroup, $token['idgroup'])) {
-                $is_allowed = true;
-                if ($debug)
-                    echo "is_allowed=true user is in token group<br/>";
-            }
-        }
-    }
-
-
-    if (!$is_allowed) {
-        if ($debug)
-            echo "is_allowed=false<br/>";
-        return false;
-    }
+//    $CI->bpm->assign($shape, $wf);
+//    //----Get token data
+//    $token = $CI->bpm->get_token($wf->idwf, $wf->case, $shape->resourceId);
+//    $shape_data = array();
+////---assign gate to current user
+//    //$shape_data['assign'][] = (int) $CI->session->userdata('iduser');
+//    ////////////////////////////////////////////////////////////////////////////
+/////////////////////////EVAL EXECUTION POLICY////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+////--by default user is not allowed to execute this task
+////--except assign or group says otherwise
+//    $is_allowed = false;
+//    if ($debug)
+//        echo "Eval is_allowed<br/>";
+////---check if the user is assigned to the task
+//    if (isset($token['assign'])) {
+//        if (in_array($iduser, $token['assign'])) {
+//            $is_allowed = true;
+//            if ($debug)
+//                echo "is_allowed=true user is in token assign<br/>";
+//        }
+//    }
+//
+//
+////---check if user belong to the group the task is assigned to
+////---but only if the task havent been assigned to an specific user
+//    if (isset($token['idgroup']) and !isset($token['assign'])) {
+//        foreach ($user_groups as $thisgroup) {
+//            if (in_array((int) $thisgroup, $token['idgroup'])) {
+//                $is_allowed = true;
+//                if ($debug)
+//                    echo "is_allowed=true user is in token group<br/>";
+//            }
+//        }
+//    }
+//
+//
+//    if (!$is_allowed) {
+//        if ($debug)
+//            echo "is_allowed=false<br/>";
+//        return false;
+//    }
 ////////////////////////////////////////////////////////////////////////////
     extract((array) $CI->data);
     if ($debug)
