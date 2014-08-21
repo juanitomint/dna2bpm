@@ -99,7 +99,7 @@ class Inbox extends MX_Controller {
     		$dif_dias= $interval->format('%d%');
     		$dif_min= $interval->format('%i%');
     		if($dif_dias>1)
-    			$msg['msg_time']=date('F j, Y ');	
+    			$msg['msg_time']=date('Y-m-d H:i');	
     		else 
     			$msg['msg_time']=($dif_dias==0)?("$dif_min min"):("$dif_dias días $dif_min min");
     		
@@ -136,7 +136,7 @@ class Inbox extends MX_Controller {
     		$dif_dias= $interval->format('%d%');
     		$dif_min= $interval->format('%i%');
     		if($dif_dias>1)
-    			$msg['msg_time']=date('F j, Y ');	
+    			$msg['msg_time']=date('Y-m-d H:i');	
     		else 
     			$msg['msg_time']=($dif_dias==0)?("$dif_min min"):("$dif_dias días $dif_min min");
 			// 
