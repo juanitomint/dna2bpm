@@ -100,12 +100,14 @@ class Dashboard extends MX_Controller {
     }
 
     function Index() {
+        $dashboard = ($this->session->userdata('json')) ? $this->session->userdata('json'):null;
         if ($this->user->isAdmin()) {
-
-            $this->Dashboard('dashboard/json/admin.json');
+            $dashboard = 'dashboard/json/admin.json';
+        }
+        if($dashboard<>''){
+        $this->Dashboard($dashboard);
         } else {
-
-            $this->Dashboard();
+        $this->Dashboard($this->config->item('default_dashboard'));
         }
     }
 
@@ -156,7 +158,7 @@ class Dashboard extends MX_Controller {
 
     // ==== Dashboard
 
-    function Dashboard($json = 'dashboard/json/dashboard.json', $debug = false) {
+    function Dashboard($json = 'dashboard/json/dashboard.json',$extraData=null, $debug = false) {
         /* eval Group hooks first */
         $this->session->set_userdata('json', $json);
         $user = $this->user->get_user((int) $this->idu);
@@ -172,7 +174,7 @@ class Dashboard extends MX_Controller {
         $customData['base_url'] = $this->base_url;
         $customData['module_url'] = $this->module_url;
         $customData['inbox_count'] = $this->msg->count_msgs($this->idu, 'inbox');
-
+        $customData['config_panel'] =$this->parser->parse('_config_panel', array(), true, true);
         $customData['name'] = $user->name . ' ' . $user->lastname;
 
         // Global JS
@@ -198,7 +200,12 @@ class Dashboard extends MX_Controller {
         //var_dump(array_keys($customData));exit; 
 //          var_dump($customData);  
 //          exit(); 
-
+        /*
+         * Adds extra data if passed
+         */
+        if($extraData){
+         $customData+=$extraData;   
+        }
         $this->ui->compose($layout, $customData);
     }
 
@@ -346,6 +353,7 @@ class Dashboard extends MX_Controller {
         $this->dashboard('dashboard/json/tasks.json');
     }
 
+    
     // ============ Widgets
 
     function box_primary($data = array()) {

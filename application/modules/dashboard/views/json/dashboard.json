@@ -1,7 +1,7 @@
 {
     "createdBy": "Juan Ignacio Borda <juanignacioborda@gmail.com>",
     "title": "Basic DashBoard",
-    "view": "",
+    "view": "layout",
     "icon": "fa-dashboard",
     "zones": [
         {
@@ -33,22 +33,17 @@
                     "title": "2do",
                     "module": "bpm",
                     "controller": "bpmui",
-                    "function": "widget_2do",
-                    "span": 6
+                    "function": "widget_2do"
+                    
                 },
                 {
                     "title": "Cases",
                     "module": "bpm",
                     "controller": "bpmui",
-                    "function": "widget_cases",
-                    "span": 6
-                },
-                {
-                    "title": "2do",
-                    "module": "dashboard",
-                    "controller": "dashboard",
-                    "function": "knob"
+                    "function": "widget_cases"
+                    
                 }
+                
             ]
         }
     ]

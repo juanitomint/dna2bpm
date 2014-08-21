@@ -100,7 +100,42 @@ $('.form-extra').ajaxForm({
   $("#check-all").on('ifChecked', function(event) {
   	 $("input[type='checkbox']", ".table-mailbox").iCheck("check");
   });
+  
+  
+//=========== CONFIG PANEL
+  
+  $(document).on('click','#config_panel_bt',function(e){
+	 // $('#config_panel_bt').toggle();
 
+	  if($(this).hasClass('open')){
+		  // Close it
+		  $('#config_panel_content,#config_panel_bt').animate({
+			  right: "-=170",
+			  }, 500, function() {
+			  // Animation complete.
+			  });
+
+		  $(this).removeClass('open');
+	  }else{
+		  // open it
+		  $('#config_panel_content,#config_panel_bt').animate({
+			  right: "+=170",
+			  }, 500, function() {
+			  // Animation complete.
+			  });
+		  $(this).addClass('open');
+	  }
+
+  });
+  
+  
+  $('#bt_pasteboard').on('ifChecked', function(event){
+	  	$('#pasteboard').show(500);
+  });
+  
+  $('#bt_pasteboard').on('ifUnchecked', function(event){
+	  $('#pasteboard').hide(500);
+});
 
 
 });

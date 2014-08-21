@@ -60,6 +60,9 @@ class User extends CI_Model {
 
     function authenticate($username = '', $password = '') {
         //----MD5 is used for password hashing
+        if($username=='' or $password==''){
+            return false;
+        }
         $this->db->debug = false;
         $query = array('nick' => $username, 'passw' => $this->hash($password));
         $thisUser = $this->db->select(array('idu'))->get_where('users', $query)->result();
@@ -400,7 +403,7 @@ class User extends CI_Model {
                 $user = $user_data;
             } else {
 
-                $options = array('safe' => true, 'upsert' => true);
+                $options = array('w' => true, 'upsert' => true);
                 $query = array('idu' => $user_data['idu']);
                 $result = $this->mongo->db->users->update($query, array('$set' => $user_data), $options);
                 $user = $user_data;
@@ -436,7 +439,7 @@ class User extends CI_Model {
     }
 
     function delete_group($idgroup) {
-        $options_delete = array("justOne" => true, "safe" => true);
+        $options_delete = array("justOne" => true, "w" => true);
         $options_save = array('upsert' => true, 'w' => true);
         $criteria = array('idgroup' => (int) $idgroup);
         //----make backup first

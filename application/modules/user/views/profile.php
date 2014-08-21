@@ -18,7 +18,7 @@
     <div class="col-sm-8">
      {if "{disabled}"==""}
 		  <div class="form-group">
-					<div id="filelist">Your browser doesn't have Flash, Silverlight or HTML5 support.</div>
+					<div id="filelist">{lang uploader_error}</div>
 					<br />
 					<div id="container">
 					    <a id="pickfiles" class="btn btn-primary btn-xs" href="javascript:;"><i class="fa fa-files-o"></i> {lang SelectFile}</a> 
@@ -104,6 +104,25 @@
 		<input type="text" name="email" value="{email}" class="form-control" {disabled}>
     </div>
   </div>
+  <!--  ==== NOTIFICACIONS BY MAIL ==== -->
+  <div class="form-group">
+    <label class="col-sm-2 control-label">{lang notification_by_mail}</label>
+    <div class="col-sm-10 form-inline">
+			<div class="radio">
+			  <label>
+			 	 <input type="radio" name="notification_by_email" id="noti_yes" value="yes" {check_notiY} {disabled}>
+			    {lang yes}
+			  </label>
+			</div>
+			<div class="radio">
+			  <label>
+			    <input type="radio" name="notification_by_email" id="noti_no" value="no" {check_notiN} {disabled}>
+			    {lang no}
+			  </label>
+			</div>
+    </div>
+  </div>
+  
    
 <!--  ==== TELEFONO ==== -->
   <div class="form-group">

@@ -14,7 +14,7 @@ class Bpm extends CI_Model {
 
     function __construct() {
         parent::__construct();
-        $this->idu =(int)$this->session->userdata('iduser');
+        $this->idu = (int) $this->session->userdata('iduser');
         $this->load->library('cimongo/cimongo');
         $this->db = $this->cimongo;
         $this->load->config('bpm/config');
@@ -365,7 +365,7 @@ class Bpm extends CI_Model {
         if (!isset($data['iduser']))
             $data['iduser'] = (int) $this->session->userdata('iduser');
 
-        if (!isset($idwf) or !isset($case) or !isset($resourceId)) {
+        if (!isset($idwf) or ! isset($case) or ! isset($resourceId)) {
             show_error("Can't update whith: idwf:$idwf case:$case  resourceId:$resourceId<br/>Incomplete Data.");
         }
         //$title=(isset($shape->properties->title))?$shape->properties->title;$shape->stencil->id;
@@ -504,7 +504,7 @@ class Bpm extends CI_Model {
         );
 //        $this->db->debug=true;
         $tokens = $this->db
-                ->select(array('resourceId','status'))
+                ->select(array('resourceId', 'status'))
                 ->where($query)
                 ->get('tokens')
                 ->result_array();
@@ -781,7 +781,7 @@ class Bpm extends CI_Model {
         $dateOut = new DateTime();
         $data['interval'] = date_diff($dateOut, $dateIn, true);
         //---assign user
-        if (!isset($data['iduser']))
+        if (!isset($case['iduser']))
             $data['iduser'] = (int) $this->session->userdata('iduser');
         //----update case with latest token status
 //      $data['token_status'] = (isset($data['token_status'])) ? $data['token_status'] : $this->get_token_status($case['idwf'], $case['id']);
@@ -1075,15 +1075,15 @@ class Bpm extends CI_Model {
     }
 
     function bindArrayToObject($array) {
-        $return = new stdClass();
+        $return = json_decode(json_encode($array));
 
-        foreach ($array as $k => $v) {
-            if (is_array($v)) {
-                $return->$k = $this->bindArrayToObject($v);
-            } else {
-                $return->$k = $v;
-            }
-        }
+//        foreach ($array as $k => $v) {
+//            if (is_array($v)) {
+//                $return->$k = $this->bindArrayToObject($v);
+//            } else {
+//                $return->$k = $v;
+//            }
+//        }
         return $return;
     }
 
@@ -1345,6 +1345,7 @@ class Bpm extends CI_Model {
 
     function assign($shape, $wf) {
         $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
+        //$debug = true;
         if ($debug)
             echo '<H1>Assign:' . $shape->properties->name . '</H1>';
         $token = $this->get_token($wf->idwf, $wf->case, $shape->resourceId);
@@ -1352,7 +1353,7 @@ class Bpm extends CI_Model {
         //---Get Case
         $case = $this->get_case($wf->case);
         //---Set Initiator same as case creator
-        $this->user->Initiator = (array) $case['iduser'];
+        $this->user->Initiator = (int) $case['iduser'];
         //---set data as token data
         $data = $token;
         //--remove unnecesary data
@@ -1382,16 +1383,19 @@ class Bpm extends CI_Model {
         //---get parent user group 4 Lanes override assignment? no!
         //----set assign to group if is in a Pool/Lane
         $user = $this->user->get_user($this->idu);
+        /*
+         * PARENT RESOURCES
+         */
         $parent = $this->bpm->find_parent($shape, 'Lane', $wf);
-
         if ($parent) {
             $data['parent'] = $parent->resourceId;
             //----try to get group by name
 //            $group_name = $wf->idwf . '/' . $parent->properties->name;
             $group_name = $wf->folder . '/' . $parent->properties->name;
             $group = $this->group->get_byname($group_name);
+            //---ASSIGN to the group the lane represents
             if ($group) {
-                $idgroup = $group['idgroup'];
+                $idgroup = (int) $group['idgroup'];
                 $data['idgroup'][] = $group['idgroup'];
                 //---if group exists add it to the array
             } else {
@@ -1408,7 +1412,9 @@ class Bpm extends CI_Model {
                 }
                 $data['idgroup'][] = $idgroup;
             }
-
+            /*
+             * TRY GET Lane Resources
+             */
             $resources = $this->get_resources($parent, $wf);
             if ($debug) {
                 echo "Get Resources result:<br/>";
@@ -1418,22 +1424,39 @@ class Bpm extends CI_Model {
                 $data['assign'] = (isset($resources['assign'])) ? array_merge($resources['assign'], $data['assign']) : array();
                 $data['idgroup'] = (isset($resources['idgroup'])) ? array_merge($resources['idgroup'], $data['idgroup']) : array();
             } else {
-                //----Assign the the shape to the runner if belongs to group
+                //---check if owner/initiator is in the group
                 if ($debug)
-                    echo '<H3>Auto-Assign Runner have parent "LANE" but no resources found</H3>';
-                if (in_array($idgroup, $user->group)) {
-                    $data['assign'][] = $this->idu;
+                    echo "Check if owner/initiator is in the group<br/>";
+                $initiator = $this->user->get_user($this->user->Initiator);
+                if (in_array($idgroup, $initiator->group)) {
+                    $data['assign'][] = $this->user->Initiator;
+                    if ($debug)
+                        echo '<H3>Assign Initiator as him belongs to lane group</H3>';
+                }
+
+                // If lane has no resources then try some other approach
+                //----Assign the the shape to the runner if belongs to group and assignment hasn't been set
+                if (!count($data['assign'])) {
+                    if (in_array($idgroup, $user->group)) {
+                        $data['assign'][] = $this->idu;
+                        if ($debug)
+                            echo '<H3>Auto-Assign Runner have parent "LANE" but no resources found</H3>';
+                    }
                 }
             }
         }
+        /*
+          //----SHAPE HAS NO PARENT LANE
+          else {
+          if ($debug)
+          echo '<H3>Auto-Assign Runner have no parent "LANE"</H3>';
+          //----Assign the the shape to the runner
+          $data['assign'][] = $this->idu;
+          } */
 
-        //----SHAPE HAS NO PARENT LANE
-        else {
-            if ($debug)
-                echo '<H3>Auto-Assign Runner have no parent "LANE"</H3>';
-            //----Assign the the shape to the runner
-            $data['assign'][] = $this->idu;
-        }
+        /*
+         * EVAL SHAPE RESOURCES
+         */
         //---now get spacific task assignements and added (if no parent lanes runner will be in assign group
         if (isset($shape->properties->resources->items)) {
             //---merge assignment with specific data.
@@ -1451,10 +1474,10 @@ class Bpm extends CI_Model {
 
         //---if the user who is running the process is an admin assign him
         if ($this->config->item('auto_add_admin')) {
-            if ($debug)
-                echo '<H3>Auto Add Admin</H3>';
             if ($this->user->isAdmin($user)) {
                 $data['assign'][] = $this->idu;
+                if ($debug)
+                    echo '<H3>Auto Add Admin</H3>';
             }
         }
 
@@ -1473,9 +1496,18 @@ class Bpm extends CI_Model {
         ///-clear data
         $data = array_filter($data);
 
-        //---if assignment not set then assign task to "Initiator"
-        if (!isset($data['assign']) and !isset($data['idgroup'])) {
-            $data['assign'] = $this->user->Initiator;
+        //---if assignment not set either by group or explicit assignment then assign task to "Initiator"
+        if (isset($data['assign']) && !count($data['assign'])) {
+            if (count($data['idgroup'])) {
+                $initiator = $this->user->get_user($this->user->Initiator);
+                if (array_intersect($data['idgroup'], $initiator->group)) {
+                    $data['assign'][] = $this->user->Initiator;
+                    if ($debug)
+                        echo '<H3>Assign Initiator as him belongs to lane group</H3>';
+                }
+            } else {
+                $data['assign'][] = $this->user->Initiator;
+            }
         }
 
 
@@ -1521,13 +1553,21 @@ class Bpm extends CI_Model {
         return $parent;
     }
 
-    function get_resources($shape, $wf) {
+    function get_resources($shape, $wf, $case = null) {
         $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
         $debug = false;
         $rtn = array();
         if (isset($shape->properties->resources->items)) {
             if ($debug)
+                echo 'Resources of:' . $shape->properties->name . '<br/>';
+            if ($debug)
                 echo 'Resources:' . count($shape->properties->resources->items) . '<br/>';
+            /*
+             * load case to $this
+             */
+            if ($case) {
+                $this->case = $this->bindArrayToObject($case);
+            }
             //---Evaluates each rule for assignements
             foreach ($shape->properties->resources->items as $rule) {
                 if ($rule->resourceassignmentexpr) {
@@ -1538,17 +1578,17 @@ class Bpm extends CI_Model {
                     if (json_decode($resourceassignmentexpr)) {
                         if ($debug)
                             echo '  JSON:' . $resourceassignmentexpr . '<br/>';
-
-                        $matches = json_decode($resourceassignmentexpr);
+//                        $matches = json_decode($resourceassignmentexpr);
                     } else {
                         if ($debug)
-                            echo '  Rule:' . $rule->resourceassignmentexpr . '->' . $ruleEval . '<br/>';
-                        $matches = eval($ruleEval);
+                            echo '  Rule:' . $rule->resourceassignmentexpr . '<br/>' . $ruleEval . '<br/>';
                     }
 
                     switch ($resource) {
                         //---Add matched users to $data array
                         case 'user':
+                            $matches = (json_decode($resourceassignmentexpr)) ? json_decode($resourceassignmentexpr) : eval($ruleEval);
+                            $matches = (is_array($matches)) ? $matches : (array) $matches;
                             foreach ($matches as $iduser) {
 
                                 $rtn['assign'][] = (int) $iduser;
@@ -1558,7 +1598,23 @@ class Bpm extends CI_Model {
                                 }
                             }
                             break;
+                        case 'case':
+                            //---only eval if case passed
+                            if ($case) {
+                                $matches = (json_decode($resourceassignmentexpr)) ? json_decode($resourceassignmentexpr) : eval($ruleEval);
+                                $matches = (is_array($matches)) ? $matches : (array) $matches;
+                                foreach ((array) $matches as $iduser) {
+                                    $rtn['assign'][] = (int) $iduser;
+                                    if ($debug) {
+                                        $user = $this->user->get_user($iduser);
+                                        echo "adding user:" . $user->nick . ':' . $user->idu . ':' . $user->name . ' ' . $user->lastname . '<br/>';
+                                    }
+                                }
+                            }
+                            break;
                         case 'group':
+                            $matches = (json_decode($resourceassignmentexpr)) ? json_decode($resourceassignmentexpr) : eval($ruleEval);
+                            $matches = (is_array($matches)) ? $matches : (array) $matches;
                             foreach ($matches as $group) {
                                 $rtn['idgroup'][] = (int) $group['idgroup'];
                                 if ($debug)
@@ -1576,6 +1632,41 @@ class Bpm extends CI_Model {
 
         $redir = base_url() . 'bpm/gateway/?url=' . urlencode(base64_encode($url));
         return $redir;
+    }
+
+    function is_allowed($token, $user) {
+        $is_allowed = false;
+        $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
+        if ($debug)
+            echo "Eval is_allowed<br/>";
+//---check if the user is assigned to the task
+        if (isset($token['assign'])) {
+            if (in_array($user->idu, $token['assign'])) {
+                $is_allowed = true;
+                if ($debug)
+                    echo "is_allowed=true user is in token assign<br/>";
+            }
+        }
+
+
+//---check if user belong to the group the task is assigned to
+//---but only if the task havent been assigned to an specific user
+        if (isset($token['idgroup']) and ! isset($token['assign'])) {
+            foreach ($user->group as $thisgroup) {
+                if (in_array((int) $thisgroup, $token['idgroup'])) {
+                    $is_allowed = true;
+                    if ($debug)
+                        echo "is_allowed=true user is in token group<br/>";
+                }
+            }
+        }
+
+
+        if (!$is_allowed) {
+            if ($debug)
+                echo "is_allowed=false<br/>";
+        }
+        return $is_allowed;
     }
 
 }

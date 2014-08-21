@@ -15,15 +15,16 @@ class Bpmui extends MX_Controller {
 
     function __construct() {
         parent::__construct();
+        $this->user->isloggedin();
         $this->load->config('config');
         $this->load->model('bpm/bpm');
         $this->load->library('parser');
         $this->base_url = base_url();
         $this->module_url = base_url() . $this->router->fetch_module() . '/';
         $this->idu = (int) $this->session->userdata('iduser');
+        $this->activeUser = $this->user->get_user($this->idu);
         //----LOAD LANGUAGE
         $this->lang->load('library', $this->config->item('language'));
-        $this->user->isloggedin();
     }
 
     function time_elapsed_string($datetime, $full = false) {
@@ -84,12 +85,19 @@ class Bpmui extends MX_Controller {
     function tile_tasks() {
         $data['lang'] = $this->lang->language;
         $data['title'] = $this->lang->line('MyTasks');
-        $tasks = $this->bpm->get_tasks_byFilter(
-                array(
-                    'assign' => $this->idu,
-                    'status' => 'user',
-                )
+//        $query = array(
+//            'assign' => $this->idu,
+//            'status' => 'user',
+//        );
+        $query = array(
+           '$or' => array(
+            array('assign' => $this->idu),
+            array('idgroup'=>array('$in'=>$this->activeUser->group),'assign'=>array('$exists'=>false))
+            ),
+            'status' => 'user'
         );
+        
+        $tasks = $this->bpm->get_tasks_byFilter($query);
         $data['number'] = count($tasks);
         $data['icon'] = 'ion-android-checkmark';
         $data['more_info_link'] = $this->base_url . 'dashboard/show/tasks';
@@ -170,12 +178,15 @@ class Bpmui extends MX_Controller {
 
     function widget_2do($chunk = 1, $pagesize = 5) {
         //$data['lang']=$this->lang->language;
-        $tasks = $this->bpm->get_tasks_byFilter(
-                array(
-            'assign' => $this->idu,
-            'status' => 'user',
-                ), array(), array('checkdate' => 'desc')
+        $query = array(
+           '$or' => array(
+            array('assign' => $this->idu),
+            array('idgroup'=>array('$in'=>$this->activeUser->group),'assign'=>array('$exists'=>false))
+            ),
+            'status' => 'user'
         );
+        
+        $tasks = $this->bpm->get_tasks_byFilter($query);
         $data = $this->prepare_tasks($tasks, $chunk, $pagesize);
         //$data['lang'] = $this->lang->language;
         $data['title'] = $this->lang->line('Tasks') . ' ' . $this->lang->line('Pending');

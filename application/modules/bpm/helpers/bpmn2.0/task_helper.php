@@ -143,25 +143,13 @@ function run_Task($shape, $wf, $CI) {
 ////////////////////////////////////////////////////////////////////////////
 //--by default user is not allowed to execute this task
 //--except assign or group says otherwise
-            $is_allowed = false;
-//---check if the user is assigned to the task
-            if (isset($token['assign'])) {
-                if (in_array($iduser, $token['assign']))
-                    $is_allowed = true;
-            }
-
-//---check if user belong to the group the task is assigned to
-//---but only if the task havent been assigned to an specific user
-            if (isset($token['idgroup']) and ! isset($token['assign'])) {
-                foreach ($user_groups as $thisgroup) {
-                    if (in_array((int) $thisgroup, $token['idgroup']))
-                        $is_allowed = true;
-                }
-            }
-
-
-            if (!$is_allowed)
+            $is_allowed = $CI->bpm->is_allowed($token, $user);
+            if (!$is_allowed) {
+                if ($debug)
+                    echo "is_allowed=false<br/>";
                 return;
+            }
+
 ////////////////////////////////////////////////////////////////////////////
 
             if ($debug)
@@ -219,11 +207,15 @@ function run_Task($shape, $wf, $CI) {
         case 'Send':
             //----ASSIGN TASK to USER / GROUP
             $token = $CI->bpm->assign($shape, $wf);
-            $CI->data=$CI->bindObjectToArray($CI->data);
-            $CI->data['date'] = date($CI->lang->line('dateFmt'));
+            $data = $CI->bindObjectToArray($CI->data);
+            $data['date'] = date($CI->lang->line('dateFmt'));
             $msg['from'] = $CI->idu;
-            $msg['subject'] = $CI->parser->parse_string($shape->properties->name, $CI->data, true, true);
-            $msg['body'] = $CI->parser->parse_string($shape->properties->documentation, $CI->data, true, true);
+            $msg['subject'] = $CI->parser->parse_string($shape->properties->name, $data, true, true);
+            $msg['body'] = $CI->parser->parse_string($shape->properties->documentation, $data, true, true);
+            // Add signature to msgs
+            if (property_exists($user, 'signature')) {
+                $msg['body']+='<br/>' . $user->signature;
+            }
             $msg['idwf'] = $wf->idwf;
             $msg['case'] = $wf->case;
             if ($shape->properties->properties <> '') {
@@ -231,7 +223,7 @@ function run_Task($shape, $wf, $CI) {
                     $msg[$property->name] = $property->datastate;
                 }
             }
-            $resources = $CI->bpm->get_resources($shape, $wf);
+            $resources = $CI->bpm->get_resources($shape, $wf, $case);
             //---if has no messageref and noone is assigned then
             //---fire a message to lane or self         
 //            if (!count($resources['assign']) and !$shape->properties->messageref) {
@@ -245,7 +237,9 @@ function run_Task($shape, $wf, $CI) {
 //                    $resources['assign'][] = $CI->user->Initiator;
 //            }
             //---process inbox--------------
-            foreach ($token['assign'] as $to_user) {
+            $to = (isset($resources['assign'])) ? array_merge($token['assign'], $resources['assign']) : $token['assign'];
+            $to = array_unique(array_filter($to));
+            foreach ($to as $to_user) {
                 if ($debug)
                     echo "Sending msg to user:$to_user<br/>";
                 $CI->msg->send($msg, $to_user);

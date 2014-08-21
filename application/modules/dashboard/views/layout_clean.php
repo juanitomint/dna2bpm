@@ -35,10 +35,7 @@ include('_header.php')
                 </section>
 
                 <section class="content">
-                    {tiles} 
-                    <section class="col-lg-12 connectedSortable ui-sortable" id="col1"> 
                         {widgets}                    
-                    </section>
                 </section>         
 
 

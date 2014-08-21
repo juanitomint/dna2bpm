@@ -76,7 +76,7 @@ class Engine extends MX_Controller {
 //---Gen new case ID
         $case = $this->bpm->gen_case($idwf);
         if ($manual) {
-            $mycase = $this->bpm->get_case($case,$idwf);
+            $mycase = $this->bpm->get_case($case, $idwf);
             $mycase['run_manual'] = true;
 
             $this->bpm->save_case($mycase);
@@ -84,7 +84,7 @@ class Engine extends MX_Controller {
 
 //----save parent data if any
         if ($parent) {
-            $mycase = $this->bpm->get_case($case,$idwf);
+            $mycase = $this->bpm->get_case($case, $idwf);
             $mycase['parent'] = $parent;
             $this->bpm->save_case($mycase);
             /*
@@ -172,7 +172,7 @@ class Engine extends MX_Controller {
         if ($debug)
             echo "<h2>" . __FUNCTION__ . '</h2>';
 //---check if case is locked
-        $thisCase = $this->bpm->get_case($case,$idwf);
+        $thisCase = $this->bpm->get_case($case, $idwf);
         $locked = (isset($thisCase['locked'])) ? $thisCase['locked'] : false;
         if ($locked) {
             $user_lock = (array) $this->user->get_user($thisCase['lockedBy']);
@@ -388,7 +388,7 @@ class Engine extends MX_Controller {
         $mywf['data']['case'] = $idcase;
         $wf = bindArrayToObject($mywf['data']);
 //---get case
-        $case = $this->bpm->get_case($idcase,$idwf);
+        $case = $this->bpm->get_case($idcase, $idwf);
 //---get token
         $token = $this->bpm->get_token($idwf, $idcase, $resourceId);
 //--get shape
@@ -516,7 +516,7 @@ class Engine extends MX_Controller {
                 echo '<hr/>';
             }
 //$this->$strStor= bindArrayToObject($this->app->getall($item,$container));
-            $this->data->$strStor = (object) $this->$conn->get_data($resource);
+            $this->data->$strStor = json_decode(json_encode($this->$conn->get_data($resource)));
 
 //----4 debug
             if ($debug) {
@@ -552,7 +552,7 @@ class Engine extends MX_Controller {
         }//--end foreach
 ////////////////////////////////////////////////////////////////////////
 //---Read from data from CASE
-        $case = $this->bpm->get_case($idcase,$wf->idwf);
+        $case = $this->bpm->get_case($idcase, $wf->idwf);
 //---load mongo_connector by default
         $this->load->model('bpm/connectors/mongo_connector');
         if (isset($case['data'])) {
@@ -722,6 +722,7 @@ class Engine extends MX_Controller {
         $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
 //if no filter passed then set default to me
 //$debug = true;
+        //$this->load_data($idwf, $idcase);
         $renderData = array();
         $renderData = $this->lang->language;
         $renderData['theme'] = $this->config->item('theme');
@@ -740,7 +741,7 @@ class Engine extends MX_Controller {
             $filter['resourceId'] = $run_resourceId;
         }
 //----Load Case
-        $case = $this->bpm->get_case($idcase,$idwf);
+        $case = $this->bpm->get_case($idcase, $idwf);
 //----set manual flag 4 test
         $run_manual = (isset($case['run_manual'])) ? $case['run_manual'] : false;
 //var_dump('case',$case,'run_manual',$run_manual);
@@ -748,11 +749,18 @@ class Engine extends MX_Controller {
 //----load WF data
             $myTasks = $this->bpm->get_pending($idwf, $idcase, array('user', 'manual'), $filter);
 //var_dump(json_encode($filter),$myTasks);exit;
-            $first = $myTasks->getNext();
+            //---search for a suitable task to execute
+            while ($first = $myTasks->getNext()) {
+                $is_allowed = $this->bpm->is_allowed($first, $user);
+
+                if ($is_allowed)
+                    break;
+            }
             if ($first) {
-//-----get id from token---------
+                //-----get id from token---------
                 $token = $first;
-//var_dump('loaded token', $token);
+
+                //var_dump('loaded token', $token);
                 switch ($token['type']) {
                     case 'Exclusive_Databased_Gateway':
                         $this->manual_gate($model, $idwf, $idcase, $first['resourceId']);
@@ -795,13 +803,13 @@ class Engine extends MX_Controller {
                             switch ($shape->properties->tasktype) {
 
                                 case 'User':
-                                    if (property_exists($shape->properties, 'rendering') and !$run_manual) {
+                                    if (property_exists($shape->properties, 'rendering') and ! $run_manual) {
                                         $rendering = trim($shape->properties->rendering);
                                         if ($rendering) {
                                             $token_id = $first['_id'];
-                                            if(strstr($rendering, '$')){
-                                            $streval = 'return ' . $rendering . ';';
-                                            } 
+                                            if (strstr($rendering, '$')) {
+                                                $streval = 'return ' . $rendering . ';';
+                                            }
                                             $rendering = eval($streval);
                                             if (strstr($rendering, 'http')) {
                                                 $querystr = array_filter(
@@ -816,7 +824,7 @@ class Engine extends MX_Controller {
                                                 foreach ($querystr as $key => $value)
                                                     $q.='&' . $key . '=' . $value;
                                                 //----go to the url via gateway controller
-                                                $redir =$this->bpm->gateway($rendering . $q);
+                                                $redir = $this->bpm->gateway($rendering . $q);
                                             } else {
                                                 $redir = $this->base_url . "dna2/render/edit/" . $shape->properties->rendering . "/$id/id/token/" . $token_id;
                                             }
@@ -903,5 +911,3 @@ class Engine extends MX_Controller {
     }
 
 }
-
-?>

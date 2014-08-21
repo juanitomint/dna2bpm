@@ -54,25 +54,22 @@ class Modules
 	* Output from module is buffered and returned.
 	**/
 	public static function run($module) {
-        $method = 'index';
+		
+		$method = 'index';
 		
 		if(($pos = strrpos($module, '/')) != FALSE) {
 			$method = substr($module, $pos + 1);		
 			$module = substr($module, 0, $pos);
-            //var_dump('$module',$module,'$method',$method);
 		}
-        
+
 		if($class = self::load($module)) {
 			
 			if (method_exists($class, $method))	{
-                /* update method */
-				$args = func_get_args();
-                CI::$APP->router->method=$method;
 				ob_start();
-                $output = call_user_func_array(array($class, $method), array_slice($args, 1));
+				$args = func_get_args();
+				$output = call_user_func_array(array($class, $method), array_slice($args, 1));
 				$buffer = ob_get_clean();
-                return ($output !== NULL) ? $output : $buffer;
-                
+				return ($output !== NULL) ? $output : $buffer;
 			}
 		}
 		

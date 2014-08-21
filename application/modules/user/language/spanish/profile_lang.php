@@ -21,3 +21,7 @@ $lang['Signature'] = 'Firma';
 $lang['picture'] = 'Imagen';
 $lang['SelectFile'] = 'Seleccionar Archivo';
 $lang['UploadFile'] = 'Subir Archivo';
+$lang['yes'] = 'si';
+$lang['no'] = 'no';
+$lang['notification_by_mail'] = 'Notificación por email';
+$lang['uploader_error'] = 'Su  navegador no soporta Flash, Silverlight o HTML5';
