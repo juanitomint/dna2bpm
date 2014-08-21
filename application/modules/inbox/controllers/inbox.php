@@ -36,7 +36,6 @@ class Inbox extends MX_Controller {
      	//$customData['usercan_create']=true;
      	$customData['js'] = array(
      			'icheck',
-     			$this->module_url.'assets/jscript/inbox.js'=>'inboxJS',
      			'selectJS'		
      	);
   	
