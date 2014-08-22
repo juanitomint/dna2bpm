@@ -96,13 +96,21 @@ class Inbox extends MX_Controller {
     		$datetime1 = date_create($msg['checkdate']);
     		$datetime2 = date_create('now');
     		$interval = date_diff($datetime1, $datetime2);
-    		$dif_dias= $interval->format('%d%');
-    		$dif_min= $interval->format('%i%');
-    		if($dif_dias>1)
-    			$msg['msg_time']=date('Y-m-d H:i');	
-    		else 
-    			$msg['msg_time']=($dif_dias==0)?("$dif_min min"):("$dif_dias días $dif_min min");
-    		
+		
+    		if($interval->format('%a%')==0){
+    			// Less then 24hs
+    			$horas=$interval->h;
+    			$min=$interval->i;
+    			if($horas==0){
+    				$msg['msg_time']="$min min";
+    			}else{
+    				$msg['msg_time']=date('H:i');
+    			}
+    		}else{
+    			$msg['msg_time']=date('Y-m-d H:i');
+    		}
+
+
     		$msg['icon_star'] = (isset($msg['star']) && $msg['star']==true) ? ('fa fa-star') : ('fa fa-star-o');
     		$msg['read'] = (isset($msg['read'])&&$msg['read']==true) ? ('read') : ('unread');
     		$msg['body']=nl2br($msg['body']);
@@ -133,12 +141,18 @@ class Inbox extends MX_Controller {
     		$datetime1 = date_create($msg['checkdate']);
     		$datetime2 = date_create('now');
     		$interval = date_diff($datetime1, $datetime2);
-    		$dif_dias= $interval->format('%d%');
-    		$dif_min= $interval->format('%i%');
-    		if($dif_dias>1)
-    			$msg['msg_time']=date('Y-m-d H:i');	
-    		else 
-    			$msg['msg_time']=($dif_dias==0)?("$dif_min min"):("$dif_dias días $dif_min min");
+    	    		if($interval->format('%a%')==0){
+    			// Less then 24hs
+    			$horas=$interval->h;
+    			$min=$interval->i;
+    			if($horas==0){
+    				$msg['msg_time']="$min min";
+    			}else{
+    				$msg['msg_time']=date('H:i');
+    			}
+    		}else{
+    			$msg['msg_time']=date('Y-m-d H:i');
+    		}
 			// 
     		$msg['excerpt']=substr($msg['body'],0,10);
     		$customData['mymsgs'][] = $msg;

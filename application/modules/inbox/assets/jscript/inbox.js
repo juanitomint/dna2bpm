@@ -44,6 +44,17 @@ $(document).on("click",".msg",function(e){
     e.preventDefault();
 });
 
+// New MSG Submit
+$(document).on('submit','#new_msg',function(e){
+	e.preventDefault();
+	console.log('sending');
+	var data=$(this).serializeArray();
+	$.post(globals.base_url+"inbox/inbox/send",{data:data},function(resp){
+        $('#myModal').find('.modal-body').html('Message sent!');
+	});
+	
+  });
+
 // Action dropdown handle
 $(document).on("click","#msg_action a,#msg_tag a",function(){
 	var action=$(this).attr('data-action');
