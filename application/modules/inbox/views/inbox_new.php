@@ -69,14 +69,7 @@
 
 	    });
 
-	  $(document).on('submit','#new_msg',function(e){
-		e.preventDefault();
-		var data=$(this).serializeArray();
-		$.post(globals.base_url+"inbox/inbox/send",{data:data},function(resp){
-	        $('#myModal').find('.modal-body').html('Message sent!');
-		});
-		
-	  });
+
 
 		
  });
