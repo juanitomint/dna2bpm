@@ -196,8 +196,7 @@ class Bpmui extends MX_Controller {
             ),
             'status' => 'user'
         );
-        
-        $tasks = $this->bpm->get_tasks_byFilter($query);
+        $tasks = $this->bpm->get_tasks_byFilter($query,array(),array('checkdate' => 'desc'));
         $data = $this->prepare_tasks($tasks, $chunk, $pagesize);
         //$data['lang'] = $this->lang->language;
         $data['title'] = $this->lang->line('Tasks') . ' ' . $this->lang->line('Pending');
