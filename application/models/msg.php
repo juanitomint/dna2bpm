@@ -107,7 +107,7 @@ class Msg extends CI_Model {
             $mail->Subject = $this->config->item('mail_suffix').' ' . $msg['subject'];
             $mail->AltBody = "To view the message, please use an HTML compatible email viewer!"; // optional, comment out and test
             $mail->IsHTML(true);
-            $mail->MsgHTML($msg['body']);
+            $mail->MsgHTML(nl2br($msg['body']));
 
             $mail->AddAddress($user->email, "");
 
