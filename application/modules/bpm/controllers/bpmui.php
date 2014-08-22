@@ -61,7 +61,18 @@ class Bpmui extends MX_Controller {
         echo $this->widget('cases');
         echo $this->widget('cases_closed');
     }
-
+    function widget_data($model,$idcase){
+        $case=$this->bpm->get_case($idcase);
+        ob_start();
+        var_dump($this->bpm->load_case_data($case));
+        $content=  ob_get_contents();
+        ob_end_clean();
+        $data['content']=  $content;
+        $data['title']=$idcase.' Data';
+        echo $this->parser->parse('dashboard/widgets/box_warning_solid', $data, true, true);
+                
+                
+    }
     function widget($widget, $data = array()) {
         $args = array_slice($this->uri->segments, 4);
         if (method_exists($this, 'widget_' . $widget)) {
@@ -185,8 +196,7 @@ class Bpmui extends MX_Controller {
             ),
             'status' => 'user'
         );
-        
-        $tasks = $this->bpm->get_tasks_byFilter($query);
+        $tasks = $this->bpm->get_tasks_byFilter($query,array(),array('checkdate' => 'desc'));
         $data = $this->prepare_tasks($tasks, $chunk, $pagesize);
         //$data['lang'] = $this->lang->language;
         $data['title'] = $this->lang->line('Tasks') . ' ' . $this->lang->line('Pending');

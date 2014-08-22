@@ -208,14 +208,12 @@ function run_Task($shape, $wf, $CI) {
             //----ASSIGN TASK to USER / GROUP
             $token = $CI->bpm->assign($shape, $wf);
             $data = $CI->bindObjectToArray($CI->data);
+            $data['user']=(array)$user;
             $data['date'] = date($CI->lang->line('dateFmt'));
             $msg['from'] = $CI->idu;
             $msg['subject'] = $CI->parser->parse_string($shape->properties->name, $data, true, true);
             $msg['body'] = $CI->parser->parse_string($shape->properties->documentation, $data, true, true);
-            // Add signature to msgs
-            if (property_exists($user, 'signature')) {
-                $msg['body']+='<br/>' . $user->signature;
-            }
+            
             $msg['idwf'] = $wf->idwf;
             $msg['case'] = $wf->case;
             if ($shape->properties->properties <> '') {

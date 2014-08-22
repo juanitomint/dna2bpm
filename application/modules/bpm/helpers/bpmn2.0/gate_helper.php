@@ -33,7 +33,7 @@ function run_Exclusive_Databased_Gateway($shape, $wf, $CI) {
 //    $CI->bpm->assign($shape, $wf);
 //    //----Get token data
 //    $token = $CI->bpm->get_token($wf->idwf, $wf->case, $shape->resourceId);
-//    $shape_data = array();
+      $shape_data = array();
 ////---assign gate to current user
 //    //$shape_data['assign'][] = (int) $CI->session->userdata('iduser');
 //    ////////////////////////////////////////////////////////////////////////////
@@ -119,7 +119,7 @@ function run_Exclusive_Databased_Gateway($shape, $wf, $CI) {
             $streval = "return (" . $assignment . ")$op(" . (string) $cond . ");";
 
             if ($debug)
-                var_dump($streval);
+                var_dump('$streval',$streval);
             $result[$shape_out->resourceId]['streval'] = $streval;
             $result[$shape_out->resourceId]['shape'] = $shape_out;
 
@@ -131,7 +131,7 @@ function run_Exclusive_Databased_Gateway($shape, $wf, $CI) {
             if ($result[$shape_out->resourceId]['eval'])
                 $i++;
             if ($debug) {
-                var_dump($assignment, $result[$shape_out->resourceId]['eval']);
+                var_dump($assignment,eval("return($assignment);"), $result[$shape_out->resourceId]['eval']);
                 echo '<hr>';
             }
         }
