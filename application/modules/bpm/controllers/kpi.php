@@ -297,6 +297,122 @@ class Kpi extends MX_Controller {
         $this->ui->makeui('test.kpi.ui.php', $cpData);
     }
 
+    function list_status($idwf, $resourceId, $status, $page = 1, $pagesize = 5) {
+        $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
+        if ($debug)
+            echo '<h2>' . __FUNCTION__ . '</h2>';
+        $this->load->model('bpm');
+        $cpData['lang'] = $this->lang->language;
+        //var_dump($level);
+        $cpData['theme'] = $this->config->item('theme');
+        $cpData['base_url'] = $this->base_url;
+        $cpData['module_url'] = $this->module_url;
+        $cpData['showPager'] = false;
+        //---syntethize an status kpi
+        $kpi = array(
+            "type" => "state",
+            "idwf" => $idwf,
+            "resourceId" => $resourceId,
+            "status" => $status,
+            'list_template'=>'',
+            'list_fields'=>'',
+        );
+
+        //var_dump($kpi);exit;
+        //----if specified pagesize comes from KPI
+        $detail = $this->base_url . 'bpm/engine/run/model/{idwf}/{idcase}';
+        $detail_icon = 'fa-play';
+        $cpData['kpi'] = $kpi;
+        $cases = $this->Get_cases($kpi);
+        $parseArr = array();
+        //-----prepare pagination;
+        $total = count($cases);
+        $parts = array_chunk($cases, $pagesize, true);
+        $pages = count($parts);
+        $offset = ($page - 1) * $pagesize;
+        $top = min(array($offset + $pagesize, $total));
+        //---prepare pages
+        $cpData['showPager'] = ($pages > 1) ? true : false;
+        for ($i = 1; $i <= $pages; $i++) {
+            $cpData['pages'][] = array(
+                'title' => $i,
+                'url' => $this->base_url . 'bpm/kpi/list_status/' . $idwf . '/' .$resourceId. '/' .$status. '/' . $i . '/' . $pagesize,
+                'class' => ($i == $page) ? 'bg-blue' : '',
+            );
+        }
+
+        $cpData['start'] = $offset + 1;
+        $cpData['top'] = $top;
+        $cpData['qtty'] = $total;
+        //----make content
+
+        for ($i = $offset; $i < $top; $i++) {
+            $idcase = $cases[$i];
+            $case = $this->bpm->get_case($idcase, $kpi['idwf']);
+            $case['data'] = $this->bpm->load_case_data($case);
+            //---Ensures $case['data'] exists
+            $case['data'] = (isset($case['data'])) ? $case['data'] : array();
+            $token = $this->bpm->get_token($kpi['idwf'], $idcase, $kpi['resourceId']);
+            //---Flatten data a bit so it can be parsed
+            $parseArr[] = array_merge(array(
+                'i' => $i + 1,
+                'idwf' => $kpi['idwf'],
+                'idcase' => $idcase,
+                'token' => $token['_id'],
+                'resrourceId' => $kpi['resourceId'],
+                'base_url' => $this->base_url,
+                'module_url' => $this->module_url,
+                'checkdate' => date($this->lang->line('dateTimeFmt'), strtotime($case['checkdate'])),
+                'user' => (array) $this->user->get_user_safe($case['iduser']),
+                    ), $case['data']);
+        }
+        if ($kpi['list_template'] <> '') {
+            $template = $kpi['list_template'];
+        } else {
+
+            //----create headers values 4 templates
+            $columns = json_decode($kpi['list_fields']);
+            $default_columns = array(
+                '#' => 'i',
+                'ID' => 'idcase',
+                ucfirst($this->lang->line('checkdate')) => 'checkdate',
+                ucfirst($this->lang->line('user')) => 'user lastname} {user name',
+            );
+            $tdata = ($columns) ? $columns : $default_columns;
+
+            if ($tdata) {
+                $header[] = '<th></th>';
+                foreach ($tdata as $key => $value) {
+                    $header[] = '<th>' . $key . '</th>';
+                    $values[] = "<td>{" . $value . "}</td>\n";
+                }
+                $template = '<table class="table table-striped">';
+                $template.='<thead>';
+                $template.='<tr>' . implode($header) . '</tr>';
+                $template.='</thead>';
+                //body
+                $template.='<tbody>';
+                $template.='{cases}'
+                        . '<tr>'
+                        . '<td>'
+                        . '<a target="_blank" href="' . $detail . '">'
+                        . '<i class="fa ' . $detail_icon . '"></i>'
+                        . '</a>'
+                        . '</td>'
+                        . implode($values) . ""
+                        . "</tr>{/cases}\n";
+                $template.='</tbody>';
+                $template.='</table>';
+            } else {
+                show_error('KPI:"' . $kpi['title'] . '" does not have a valid "list_fields" value');
+            }
+        }
+        //var_dump($parseArr);exit;
+        $cpData['content'] = $this->parser->parse_string($template, array('cases' => $parseArr), true, true);
+        //----PROCESS KPIS
+        $this->parser->parse('bpm/widgets/list.kpi.ui.php', $cpData);
+    }
+
     function list_cases($idkpi, $page = 1, $pagesize = 5) {
         $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
         if ($debug)
@@ -568,25 +684,25 @@ class Kpi extends MX_Controller {
         $postkpi = $this->kpi_model->get($idkpi);
         unset($postkpi['_id']);
         /*
-        $type=$postkpi['type'];
-        //---load base properties from helpers/types/base
-        //---defines $common
-        include($types_path . 'base/kpi.base.php');
-        //---load custom properties from specific type
-        $type_props = array();
-        if (isset($type)) {
-            $file_custom = $types_path . $type . '/properties.php';
-            if (is_file($file_custom)) {
-                if ($debug)
-                    echo "Loaded Custom:$file_custom<br/>";
-                include($file_custom);
-            }
-        }
-        $properties_template = $common + $type_props;
-        var_dump($common , $type_props,$postkpi);
-        //----load the data from post
-        $kpi = new dbframe();
-            $kpi->load($postkpi, $properties_template);
+          $type=$postkpi['type'];
+          //---load base properties from helpers/types/base
+          //---defines $common
+          include($types_path . 'base/kpi.base.php');
+          //---load custom properties from specific type
+          $type_props = array();
+          if (isset($type)) {
+          $file_custom = $types_path . $type . '/properties.php';
+          if (is_file($file_custom)) {
+          if ($debug)
+          echo "Loaded Custom:$file_custom<br/>";
+          include($file_custom);
+          }
+          }
+          $properties_template = $common + $type_props;
+          var_dump($common , $type_props,$postkpi);
+          //----load the data from post
+          $kpi = new dbframe();
+          $kpi->load($postkpi, $properties_template);
          */
         if (!$debug) {
             header('Content-Description: File Transfer');

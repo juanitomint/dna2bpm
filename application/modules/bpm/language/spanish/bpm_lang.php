@@ -18,6 +18,8 @@ $lang["refuse"] = 'rechazar';
 
 /* --WF-Messages----- */
 $lang['newTask'] = 'Nueva Tarea';
+$lang['total'] = 'Total';
+$lang['inProgress'] = 'En Progreso';
 $lang['newTaskBody'] = "{from_user name} {from_user lastname} te ha asignado una nueva tarea: {shape name}
     <br/>
     Haz click <a href='{basedir}/bpm/engine/run/model/{idwf}/{idcase}'>>>>aqu�<<<</a> para completarla";

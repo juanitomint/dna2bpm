@@ -18,6 +18,8 @@ $lang["refuse"] = 'refuse';
 
 /* --WF-Messages----- */
 $lang['newTask'] = 'New Task';
+$lang['total'] = 'Total';
+$lang['inProgress'] = 'In Progress';
 $lang['newTaskBody'] = 'You have been assigned to a new Task.<br/>
     click >>>here<<< check-it out';
 $lang['lock'] = 'Lock';

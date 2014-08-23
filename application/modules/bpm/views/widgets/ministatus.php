@@ -1,0 +1,51 @@
+<div class="box box-info">
+    <div class="box-header">
+        <h3 class="box-title">{name}</h3>
+        <div class="box-tools pull-right">
+            <button class="btn btn-default btn-sm" data-widget="collapse"><i class="fa fa-minus"></i></button>
+            <button class="btn btn-default btn-sm" data-widget="remove"><i class="fa fa-times"></i></button>
+        </div>
+    </div>
+    <div class="box-body">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>{lang name}</th>
+                    <th>{lang inProgress}</th>
+                    <th>{lang Finished}</th>
+                    <th>{lang total}</th>
+                </tr>
+            </thead>
+            {mini}
+            <tr>
+                <td>            
+                    <img src="{base_url}{icon}"/>
+                </td>
+                <td >
+                    {title}
+                </td>
+                <td class="center">            
+                    <a href="{base_url}bpm/kpi/list_status/{idwf}/{resourceId}/user">
+                        {user}
+                    </a>
+                </td>
+                <td class="center">
+                    <a href="{base_url}bpm/kpi/list_status/{idwf}/{resourceId}/finished">
+                        {finished}
+                    </a>
+                </td>
+                <td class="center">
+                    {run}
+                </td>
+            </tr>
+            {/mini}
+        </table>
+    </div><!-- /.box-body -->
+    <div class="box-footer">
+        {footer}
+    </div><!-- /.box-footer-->
+</div>
+
+
+
