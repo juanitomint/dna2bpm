@@ -61,7 +61,19 @@ class Bpmui extends MX_Controller {
         echo $this->widget('cases');
         echo $this->widget('cases_closed');
     }
-
+    function widget_ministatus(){
+        $this->lang->load('bpm/bpm');
+        $models=$this->bpm->get_models();
+        $data['base_url']=$this->base_url;
+        $data['qtty']=count($models);
+        $models_flat = array_map(function ($model) {
+            $m['idwf']=$model->idwf;
+            $m['properties']=$model->data['properties'];
+            return $m;
+        }, $models);
+        $data['models']=$models_flat;
+        echo $this->parser->parse('bpm/widgets/ministatus_widget', $data, true, true);
+    }
     function ministatus($idwf, $showArr = array()) {
         $showArr = (count($showArr)) ? $showArr : array(
             'Task',

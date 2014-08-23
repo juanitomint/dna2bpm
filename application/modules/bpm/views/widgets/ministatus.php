@@ -43,7 +43,10 @@
         </table>
     </div><!-- /.box-body -->
     <div class="box-footer">
-        {footer}
+        <a href='{base_url}bpm/bpmui/widget_ministatus' class="reload_widget">
+            <i class="fa fa-arrow-circle-o-left"></i>
+            Go back
+        </a>
     </div><!-- /.box-footer-->
 </div>
 
