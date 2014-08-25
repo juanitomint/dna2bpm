@@ -228,6 +228,7 @@ class Inbox extends MX_Controller {
     function new_msg(){
 
          $customData['user'] = (array) $this->user->get_user($this->idu);
+         $customData['user']['signature']=empty($customData['user']['signature'])?"":"\n\n".$customData['user']['signature'];
          $customData['lang']= $this->lang->language;
 		// REPLY: segment 4 is msgid 
 		$customData['reply']=0;
