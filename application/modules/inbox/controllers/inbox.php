@@ -132,7 +132,7 @@ class Inbox extends MX_Controller {
         $customData['lang']= $this->lang->language;
     	$customData['base_url'] = $this->base_url;
     	$customData['module_url'] = $this->module_url;
-    	$customData['inbox_count']=$this->msg->count_msgs($this->idu,'inbox');
+    	$customData['inbox_count']=$this->msg->count_msgs($this->idu,'inbox',false);
     	$mymgs = $this->msg->get_msgs($this->idu,'inbox',null,4);
     	foreach ($mymgs as $msg) {
     		$msg['msgid'] = $msg['_id'];
