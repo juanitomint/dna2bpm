@@ -15,15 +15,16 @@ class Bpmui extends MX_Controller {
 
     function __construct() {
         parent::__construct();
+        $this->user->isloggedin();
         $this->load->config('config');
         $this->load->model('bpm/bpm');
         $this->load->library('parser');
         $this->base_url = base_url();
         $this->module_url = base_url() . $this->router->fetch_module() . '/';
         $this->idu = (int) $this->session->userdata('iduser');
+        $this->activeUser = $this->user->get_user($this->idu);
         //----LOAD LANGUAGE
         $this->lang->load('library', $this->config->item('language'));
-        $this->user->isloggedin();
     }
 
     function time_elapsed_string($datetime, $full = false) {
@@ -61,6 +62,83 @@ class Bpmui extends MX_Controller {
         echo $this->widget('cases_closed');
     }
 
+    function widget_ministatus() {
+        $this->lang->load('bpm/bpm');
+        $models = $this->bpm->get_models();
+        //----convert to arrays
+        $models=array_map(function($model) {
+                        $model=(array)$model;
+                        
+                        $model['properties'] = $model['data']['properties'];
+                        return (array)$model;
+            
+        },$models);
+        //----get folders
+        $folders = array_unique(array_map(function($model) {
+                     return $model['folder'];
+                }, $models));
+        sort($folders);
+        //-----make 2 level tree
+        foreach ($folders as $folder) {
+            $data['folders'][] = array(
+                'folder' => $folder,
+                'models' => array_filter($models, function($model) use($folder) {
+                    return $model['folder'] == $folder;
+                })
+            );
+        }
+        
+        $data['base_url'] = $this->base_url;
+        $data['qtty'] = count($models);
+//        $models_flat = array_map(function ($model) {
+//            $m['idwf'] = $model->idwf;
+//            $m['properties'] = $model->data['properties'];
+//            return $m;
+//        }, $models);
+//        $data['models'] = $models_flat;
+        echo $this->parser->parse('bpm/widgets/ministatus_widget', $data, true, true);
+    }
+
+    function ministatus($idwf, $showArr = array()) {
+        $showArr = (count($showArr)) ? $showArr : array(
+            'Task',
+            'Exclusive_Databased_Gateway',
+            'StartNoneEvent',
+            'EndMessageEvent',
+            'StartMessageEvent',
+        );
+        $this->user->authorize();
+        $this->lang->load('bpm/bpm');
+        $state = Modules::run('bpm/manager/mini_status', $idwf, 'array');
+        $state = array_filter($state, function($task) use ($showArr) {
+            return (in_array($task['type'], $showArr) and $task['title']);
+        });
+        $wfData['lang'] = $this->lang->language;
+        //---las aplano un poco
+        foreach ($state as $task) {
+            $task['user'] = (isset($task['status']['user'])) ? $task['status']['user'] : 0;
+            $task['finished'] = (isset($task['status']['finished'])) ? $task['status']['finished'] : 0;
+            $task['icon'] = $this->bpm->get_icon($task['type']);
+            $wfData['mini'][] = $task;
+        }
+        $wfData['base_url'] = base_url();
+        $wf = $this->bpm->load('fondyfpp');
+        $wfData+=$wf['data']['properties'];
+        $wfData['name'] = 'Mini Status: ' . $wfData['name'];
+        echo $this->parser->parse('bpm/widgets/ministatus', $wfData, true, true);
+    }
+
+    function widget_data($model, $idcase) {
+        $case = $this->bpm->get_case($idcase);
+        ob_start();
+        var_dump($this->bpm->load_case_data($case));
+        $content = ob_get_contents();
+        ob_end_clean();
+        $data['content'] = $content;
+        $data['title'] = $idcase . ' Data';
+        echo $this->parser->parse('dashboard/widgets/box_warning_solid', $data, true, true);
+    }
+
     function widget($widget, $data = array()) {
         $args = array_slice($this->uri->segments, 4);
         if (method_exists($this, 'widget_' . $widget)) {
@@ -84,12 +162,19 @@ class Bpmui extends MX_Controller {
     function tile_tasks() {
         $data['lang'] = $this->lang->language;
         $data['title'] = $this->lang->line('MyTasks');
-        $tasks = $this->bpm->get_tasks_byFilter(
-                array(
-                    'assign' => $this->idu,
-                    'status' => 'user',
-                )
+//        $query = array(
+//            'assign' => $this->idu,
+//            'status' => 'user',
+//        );
+        $query = array(
+            '$or' => array(
+                array('assign' => $this->idu),
+                array('idgroup' => array('$in' => $this->activeUser->group), 'assign' => array('$exists' => false))
+            ),
+            'status' => 'user'
         );
+
+        $tasks = $this->bpm->get_tasks_byFilter($query);
         $data['number'] = count($tasks);
         $data['icon'] = 'ion-android-checkmark';
         $data['more_info_link'] = $this->base_url . 'dashboard/show/tasks';
@@ -170,12 +255,14 @@ class Bpmui extends MX_Controller {
 
     function widget_2do($chunk = 1, $pagesize = 5) {
         //$data['lang']=$this->lang->language;
-        $tasks = $this->bpm->get_tasks_byFilter(
-                array(
-            'assign' => $this->idu,
-            'status' => 'user',
-                ), array(), array('checkdate' => 'desc')
+        $query = array(
+            '$or' => array(
+                array('assign' => $this->idu),
+                array('idgroup' => array('$in' => $this->activeUser->group), 'assign' => array('$exists' => false))
+            ),
+            'status' => 'user'
         );
+        $tasks = $this->bpm->get_tasks_byFilter($query, array(), array('checkdate' => 'desc'));
         $data = $this->prepare_tasks($tasks, $chunk, $pagesize);
         //$data['lang'] = $this->lang->language;
         $data['title'] = $this->lang->line('Tasks') . ' ' . $this->lang->line('Pending');

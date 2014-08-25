@@ -143,37 +143,13 @@ function run_Task($shape, $wf, $CI) {
 ////////////////////////////////////////////////////////////////////////////
 //--by default user is not allowed to execute this task
 //--except assign or group says otherwise
-            $is_allowed = false;
-            if ($debug)
-                echo "Eval is_allowed<br/>";
-//---check if the user is assigned to the task
-            if (isset($token['assign'])) {
-                if (in_array($iduser, $token['assign'])) {
-                    $is_allowed = true;
-                    if ($debug)
-                        echo "is_allowed=true user is in token assign<br/>";
-                }
-            }
-
-
-//---check if user belong to the group the task is assigned to
-//---but only if the task havent been assigned to an specific user
-            if (isset($token['idgroup']) and !isset($token['assign'])) {
-                foreach ($user_groups as $thisgroup) {
-                    if (in_array((int) $thisgroup, $token['idgroup'])) {
-                        $is_allowed = true;
-                        if ($debug)
-                            echo "is_allowed=true user is in token group<br/>";
-                    }
-                }
-            }
-
-
+            $is_allowed = $CI->bpm->is_allowed($token, $user);
             if (!$is_allowed) {
                 if ($debug)
                     echo "is_allowed=false<br/>";
-                return false;
+                return;
             }
+
 ////////////////////////////////////////////////////////////////////////////
 
             if ($debug)
@@ -232,14 +208,12 @@ function run_Task($shape, $wf, $CI) {
             //----ASSIGN TASK to USER / GROUP
             $token = $CI->bpm->assign($shape, $wf);
             $data = $CI->bindObjectToArray($CI->data);
+            $data['user']=(array)$user;
             $data['date'] = date($CI->lang->line('dateFmt'));
             $msg['from'] = $CI->idu;
             $msg['subject'] = $CI->parser->parse_string($shape->properties->name, $data, true, true);
             $msg['body'] = $CI->parser->parse_string($shape->properties->documentation, $data, true, true);
-            // Add signature to msgs
-            if (property_exists($user, 'signature')) {
-                $msg['body']+='<br/>' . $user->signature;
-            }
+            
             $msg['idwf'] = $wf->idwf;
             $msg['case'] = $wf->case;
             if ($shape->properties->properties <> '') {

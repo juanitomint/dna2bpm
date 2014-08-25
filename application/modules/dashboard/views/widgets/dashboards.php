@@ -3,7 +3,7 @@
         <i class="ion ion-ios7-albums"></i>
         <h3 class="box-title">{title} ({qtty})</h3>
         <div class="box-tools pull-right">
-        
+        <button style="margin-right: 5px;" title="" data-toggle="tooltip" data-widget="collapse" class="btn btn-primary btn-sm pull-right" data-original-title="Collapse"><i class="fa fa-minus"></i></button>
         </div>
     </div><!-- /.box-header -->
     <div class="box-body">

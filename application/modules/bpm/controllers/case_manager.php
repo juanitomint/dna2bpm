@@ -65,6 +65,7 @@ class Case_manager extends MX_Controller {
         $this->bpm->save_token($token);
         $case['status']='open';
         $this->bpm->save_case($case);
+        $this->bpm->update_case_token_status($idwf, $idcase);
         $out = array('status' => 'ok');
         if (!$debug) {
             header('Content-type: application/json;charset=UTF-8');

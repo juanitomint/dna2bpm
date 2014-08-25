@@ -23,9 +23,9 @@ $lang["delete"]='Eliminar';
 $lang["search"]='Buscar';
 // New MSG window
 $lang["to"]='Para';
-$lang["subject"]='Destinatario';
+$lang["subject"]='Titulo';
 $lang["body"]='Cuerpo';
-$lang["send"]='Enviar bla bla bla bala a';
+$lang["send"]='Enviar';
 //Tags
 $lang["extreme_priority"]='Prioridad extrema';
 $lang["high_priority"]='Prioridad alta';
