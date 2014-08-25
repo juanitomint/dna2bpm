@@ -259,11 +259,17 @@ class Inbox extends MX_Controller {
         $term=$this->input->post('term');
 
         $allusers=$this->user->get_users(null,100,null,$term,null,'both');
-        
 
         foreach($allusers as $myuser){
+/*         	var_dump($myuser);
+        	continue; */
+        	$name="";
+        	if(!empty($myuser->name))$name.=$myuser->name;
+        	if(!empty($myuser->lastname))$name.=", ".$myuser->lastname;
 			if(!empty($myuser->nick))
-          	 $row_array[]=array('text'=> $myuser->nick,'id'=>$myuser->idu);
+				$name.=" (".$myuser->nick.")";
+				
+          	 $row_array[]=array('text'=> $name,'id'=>$myuser->idu);
         }
 
         $ret['results']=$row_array;
