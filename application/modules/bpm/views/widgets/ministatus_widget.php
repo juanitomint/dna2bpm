@@ -7,26 +7,29 @@
         </div>
     </div><!-- /.box-header -->
     <div class="box-body">
-        <ul class="todo-list ui-sortable">
-            {models}
-            <li>
-                <!-- drag handle -->
-                <span class="handle">
-                    <i class="fa fa-ellipsis-v"></i>
-                    <i class="fa fa-ellipsis-v"></i>
-                </span>  
-                <!-- todo text -->
-                <span class="text">{idwf}<br/>{properties name}</span>
-                <!--                 General tools such as edit or delete -->
-                <div class="tools">
-                    <a href='{base_url}bpm/bpmui/ministatus/{idwf}' class="reload_widget">
-                        <i class="fa fa-dashboard fa-2x"></i>
+        <section class="sidebar">
+            <ul class="sidebar-menu">
+                {folders}
+                <li class="treeview">
+                    <a href="#">
+                        <i class="fa fa-laptop"></i>
+                        <span>{folder}</span>
+                        <i class="fa fa-angle-left pull-right"></i>
                     </a>
-                </div>
-
-            </li>
-            {/models}
-        </ul>
+                    <ul class="treeview-menu">
+                        {models}
+                        <li>
+                            <!-- text -->
+                            <a href='{base_url}bpm/bpmui/ministatus/{idwf}' class="reload_widget">
+                                <span class="text">{idwf}<br/>{properties name}</span>
+                            </a>
+                        </li>
+                        {/models}
+                    </ul>
+                </li>
+                {/folders}
+            </ul>
+        </section>
     </div><!-- /.box-body -->
     <div class="box-footer clearfix no-border">
 <!--        <button class="btn btn-default pull-right"><i class="fa fa-plus"></i> Add item</button>-->

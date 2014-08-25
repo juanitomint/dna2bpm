@@ -61,19 +61,44 @@ class Bpmui extends MX_Controller {
         echo $this->widget('cases');
         echo $this->widget('cases_closed');
     }
-    function widget_ministatus(){
+
+    function widget_ministatus() {
         $this->lang->load('bpm/bpm');
-        $models=$this->bpm->get_models();
-        $data['base_url']=$this->base_url;
-        $data['qtty']=count($models);
-        $models_flat = array_map(function ($model) {
-            $m['idwf']=$model->idwf;
-            $m['properties']=$model->data['properties'];
-            return $m;
-        }, $models);
-        $data['models']=$models_flat;
+        $models = $this->bpm->get_models();
+        //----convert to arrays
+        $models=array_map(function($model) {
+                        $model=(array)$model;
+                        
+                        $model['properties'] = $model['data']['properties'];
+                        return (array)$model;
+            
+        },$models);
+        //----get folders
+        $folders = array_unique(array_map(function($model) {
+                     return $model['folder'];
+                }, $models));
+        sort($folders);
+        //-----make 2 level tree
+        foreach ($folders as $folder) {
+            $data['folders'][] = array(
+                'folder' => $folder,
+                'models' => array_filter($models, function($model) use($folder) {
+                    return $model['folder'] == $folder;
+                })
+            );
+        }
+        
+        $data['base_url'] = $this->base_url;
+        $data['qtty'] = count($models);
+//        $models_flat = array_map(function ($model) {
+//            $m['idwf'] = $model->idwf;
+//            $m['properties'] = $model->data['properties'];
+//            return $m;
+//        }, $models);
+//        $data['models'] = $models_flat;
         echo $this->parser->parse('bpm/widgets/ministatus_widget', $data, true, true);
     }
+
     function ministatus($idwf, $showArr = array()) {
         $showArr = (count($showArr)) ? $showArr : array(
             'Task',
@@ -102,8 +127,6 @@ class Bpmui extends MX_Controller {
         $wfData['name'] = 'Mini Status: ' . $wfData['name'];
         echo $this->parser->parse('bpm/widgets/ministatus', $wfData, true, true);
     }
-
-    
 
     function widget_data($model, $idcase) {
         $case = $this->bpm->get_case($idcase);
