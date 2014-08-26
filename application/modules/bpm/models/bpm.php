@@ -205,7 +205,7 @@ class Bpm extends CI_Model {
                 foreach ($tokens as $resourceId => $state) {
                     if (isset($all_tokens[$resourceId])) {
                         $all_tokens[$resourceId]['run'] ++;
-                        $all_tokens[$resourceId]['status'][$state] ++;
+                        $all_tokens[$resourceId]['status'][$state]=(isset($all_tokens[$resourceId]['status'][$state]))?$all_tokens[$resourceId]['status'][$state]++:1;
                     } else {
 
                         $token = $this->bpm->get_token($case['idwf'], $case['id'], $resourceId);
