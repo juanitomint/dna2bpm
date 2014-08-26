@@ -132,7 +132,7 @@ class Inbox extends MX_Controller {
         $customData['lang']= $this->lang->language;
     	$customData['base_url'] = $this->base_url;
     	$customData['module_url'] = $this->module_url;
-    	$customData['inbox_count']=$this->msg->count_msgs($this->idu,'inbox');
+    	$customData['inbox_count']=$this->msg->count_msgs($this->idu,'inbox',false);
     	$mymgs = $this->msg->get_msgs($this->idu,'inbox',null,4);
     	foreach ($mymgs as $msg) {
     		$msg['msgid'] = $msg['_id'];
@@ -228,6 +228,7 @@ class Inbox extends MX_Controller {
     function new_msg(){
 
          $customData['user'] = (array) $this->user->get_user($this->idu);
+         $customData['user']['signature']=empty($customData['user']['signature'])?"":"\n\n".$customData['user']['signature'];
          $customData['lang']= $this->lang->language;
 		// REPLY: segment 4 is msgid 
 		$customData['reply']=0;
@@ -258,11 +259,17 @@ class Inbox extends MX_Controller {
         $term=$this->input->post('term');
 
         $allusers=$this->user->get_users(null,100,null,$term,null,'both');
-        
 
         foreach($allusers as $myuser){
+/*         	var_dump($myuser);
+        	continue; */
+        	$name="";
+        	if(!empty($myuser->name))$name.=$myuser->name;
+        	if(!empty($myuser->lastname))$name.=", ".$myuser->lastname;
 			if(!empty($myuser->nick))
-          	 $row_array[]=array('text'=> $myuser->nick,'id'=>$myuser->idu);
+				$name.=" (".$myuser->nick.")";
+				
+          	 $row_array[]=array('text'=> $name,'id'=>$myuser->idu);
         }
 
         $ret['results']=$row_array;

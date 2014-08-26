@@ -29,7 +29,7 @@
   <div class="form-group">
     <label class="col-sm-2 control-label">{lang body}:</label>
     <div class="col-sm-10">
-     <textarea rows="5" name="body" placeholder="Body" class="form-control"></textarea>
+     <textarea rows="5" name="body" placeholder="Body" class="form-control">{user signature}</textarea>
      </div>
   </div>
  <!--  SEND -->
@@ -62,7 +62,7 @@
 	             };
 	        },
 	        results: function (result) {
-		        console.log(result);
+		        //console.log(result);
 	            return result;
 	        }
 	        }

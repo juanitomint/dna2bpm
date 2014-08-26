@@ -409,6 +409,11 @@ class Kpi extends MX_Controller {
         }
         //var_dump($parseArr);exit;
         $cpData['content'] = $this->parser->parse_string($template, array('cases' => $parseArr), true, true);
+        $cpData['footer'] ="
+        <a href='".$this->base_url."bpm/bpmui/widget_ministatus' class='reload_widget'>
+        <i class='fa fa-arrow-circle-o-left'></i>
+        Go back
+        </a>";
         //----PROCESS KPIS
         $this->parser->parse('bpm/widgets/list.kpi.ui.php', $cpData);
     }
