@@ -666,14 +666,26 @@ class Bpm extends CI_Model {
         }
     }
 
-    function get_all_cases($offset = 0, $limit = 50, $order = null, $query_txt = null, $model) {
+    function get_all_cases_count($idwf = null, $model) {
+        if ($model) {
+            $this->db->where(array('idwf' => $model));
+        }
+        if ($idwf) {
+            $this->db->like('id', $idwf);
+        }
+         return $this->db->count_all_results('case');
+    }
+    
+    function get_all_cases($offset = 0, $limit = 50, $order = null, $query_txt = null, $model,$fields=array()) {
+		if($fields){
+			$this->db->select($fields);
+		}
         if ($model) {
             $this->db->where(array('idwf' => $model));
         }
         if ($query_txt) {
             $this->db->like('id', $query_txt);
         }
-
         if ($order) {
             #@todo //--check order like
             $this->db->order_by($order);
