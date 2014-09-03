@@ -21,7 +21,6 @@ class ui {
     function compose($file, $data) {
         $this->CI->parser->options['convert_delimiters'] = array(false, '&#123;', '&#125;');
 
-
         // Register Scripts
         $this->register_script('jquery', $data['base_url'] . 'jscript/jquery/jquery.min.js');
         $this->register_script('jqueryUI', $data['base_url'] . 'jscript/jquery/ui/jquery-ui-1.10.2.custom/jquery-ui-1.10.2.custom.min.js', array('jquery'));
@@ -141,6 +140,7 @@ class ui {
         foreach ($js as $jsfile=>$desc) {
             $jsfile=str_replace('{base_url}',  base_url(),$jsfile);
             $strjs.="<!-- JS:$desc -->\n";
+            if(!stristr($desc,'http://'))$jsfile.=$data['base_url'].$jsfile; // Si viene sin base_url
             //$strjs.="<script type='text/javascript'>try{document.getElementById('loading-msg').innerHTML +=\"<span class='ok'>OK.</span><br/>Loading $desc...\";}catch(e){}</script>\n";
             $strjs.="<script  src='$jsfile'></script>\n\n";
         }
@@ -149,9 +149,11 @@ class ui {
 
     //==== Get custom Styles
     private function custom_styles($css = array()) {
+    	global $data;
         $strcss = '';
         foreach ($css as $cssfile => $desc) {
             $cssfile=str_replace('{base_url}',  base_url(),$cssfile);
+            if(!stristr($desc,'http://'))$cssfile.=$data['base_url'].$cssfile; // Si viene sin base_url
             $strcss.="<!-- CSS:$desc -->\n";
             $strcss.="<link rel='stylesheet' type='text/css' href='$cssfile' />\n";
         }

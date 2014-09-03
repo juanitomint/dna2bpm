@@ -97,17 +97,17 @@ class Inbox extends MX_Controller {
     		$datetime2 = date_create('now');
     		$interval = date_diff($datetime1, $datetime2);
 		
-    		if($interval->format('%a%')==0){
+    	    	    if($interval->format('%a%')==0){
     			// Less then 24hs
     			$horas=$interval->h;
     			$min=$interval->i;
     			if($horas==0){
     				$msg['msg_time']="$min min";
     			}else{
-    				$msg['msg_time']=date('H:i');
+    				$msg['msg_time']=$datetime1->format('H:i');
     			}
     		}else{
-    			$msg['msg_time']=date('Y-m-d H:i');
+    			$msg['msg_time']=$datetime1->format('Y-m-d H:i'); 
     		}
 
 
@@ -141,17 +141,17 @@ class Inbox extends MX_Controller {
     		$datetime1 = date_create($msg['checkdate']);
     		$datetime2 = date_create('now');
     		$interval = date_diff($datetime1, $datetime2);
-    	    		if($interval->format('%a%')==0){
+    	    	    if($interval->format('%a%')==0){
     			// Less then 24hs
     			$horas=$interval->h;
     			$min=$interval->i;
     			if($horas==0){
     				$msg['msg_time']="$min min";
     			}else{
-    				$msg['msg_time']=date('H:i');
+    				$msg['msg_time']=$datetime1->format('H:i');
     			}
     		}else{
-    			$msg['msg_time']=date('Y-m-d H:i');
+    			$msg['msg_time']=$datetime1->format('Y-m-d H:i'); 
     		}
 			// 
     		$msg['excerpt']=substr($msg['body'],0,10);
@@ -159,6 +159,47 @@ class Inbox extends MX_Controller {
      	}
     	return $this->parser->parse('inbox/toolbar', $customData, true, true);
 
+    }
+    
+    //====  Widget - show msgs by case
+    function show_msgs_by_filter($idwf,$case=null){
+
+    	$filter['idwf']=$idwf;
+    	if(!is_null($case))$filter['case']=$case;
+
+    	$customData['lang']= $this->lang->language;
+    	$customData['base_url'] = $this->base_url;
+    	$customData['module_url'] = $this->module_url;
+
+    	$mymgs = $this->msg->get_msgs_by_filter($filter);
+    	$customData['qtty']=$mymgs->count();
+
+    	foreach ($mymgs as $msg) {
+    		$msg['msgid'] = $msg['_id'];
+    		$msg['subject']=(strlen($msg['subject'])!=0)?($msg['subject']):("No Subject");
+    		//Time lapse
+    		$datetime1 = date_create($msg['checkdate']);
+    		$datetime2 = date_create('now');
+    		$interval = date_diff($datetime1, $datetime2);
+    	    if($interval->format('%a%')==0){
+    			// Less then 24hs
+    			$horas=$interval->h;
+    			$min=$interval->i;
+    			if($horas==0){
+    				$msg['msg_time']="$min min";
+    			}else{
+    				$msg['msg_time']=$datetime1->format('H:i');
+    			}
+    		}else{
+    			$msg['msg_time']=$datetime1->format('Y-m-d'); 
+    		}
+    		//
+    		$msg['excerpt']=substr($msg['body'],0,10);
+    		$customData['mymsgs'][] = $msg;
+
+    	}
+
+    	echo $this->parser->parse('inbox/widgets/msgs_by_case', $customData, true, true);
     }
   
 

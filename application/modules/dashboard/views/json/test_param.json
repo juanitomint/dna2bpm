@@ -52,12 +52,11 @@
         {
             "col1": [
                 {
-                    "title": "SLA1",
-                    "module": "bpm",
-                    "controller": "kpi",
-                    "function": "widget",
-                    "params":["multi_parallel","5"],
-                    "span":12
+                    "title": "2do",
+                    "module": "inbox",
+                    "controller": "inbox",
+                    "function": "show_msgs_by_filter",
+                    "params":["fondyfpp"]
                 },
                 {
                     "title": "2do",

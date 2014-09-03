@@ -36,8 +36,13 @@ class Msg extends CI_Model {
 
 // Filter
         if (!is_null($filter)) {
-            $myregex = new MongoRegex("/$filter/i");
-            $query['subject'] = $myregex;
+            if(is_array($filter)){
+            	$query+=$filter;
+            }else{
+            	//Check subject
+            	$myregex = new MongoRegex("/$filter/i");
+            	$query['subject'] = $myregex;
+            }
         }
 
 // Query build
@@ -49,6 +54,11 @@ class Msg extends CI_Model {
         $pipe = $pipe->sort(array('checkdate' => -1));
 
         return $pipe;
+    }
+    
+    // ===== Get MSGs using a filter
+    function get_msgs_by_filter($filter = array()) {
+    	return $this->mongo->db->msg->find($filter);
     }
 
     function count_msgs($iduser, $folder = null,$read=null) {
