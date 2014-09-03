@@ -41,8 +41,8 @@ class admin extends MX_Controller {
         $cpData['js'] = array(
             $this->module_url . "assets/jscript/ext.settings.js" => 'Settings',
             $this->module_url . "assets/jscript/data.js" => 'Group Data Objects',
-            $this->module_url . "assets/jscript/dataview.js" => 'Data View',
             $this->base_url . "jscript/ext/src/ux/form/SearchField.js" => 'Search Field',
+            $this->module_url . "assets/jscript/dataview.js" => 'Data View',
             $this->module_url . "assets/jscript/tree.js" => 'Perm Tree',
             $this->module_url . "assets/jscript/grid.js" => 'Users Grid',
             $this->module_url . "assets/jscript/userform.js" => 'Users Edit Form',
@@ -78,6 +78,7 @@ class admin extends MX_Controller {
                 }
                 break;
             case 'read':
+                $query = $this->input->post('query');
                 $db_groups = $this->group->get_groups();
                 $groups['totalCount'] = count($db_groups);
                 $groups['rows'] = $db_groups;
@@ -124,7 +125,7 @@ class admin extends MX_Controller {
                 $limit = ($this->input->post('limit')) ? $this->input->post('limit') : 50;
                 $query = $this->input->post('query');
                 $idgroup = (int) $this->input->post('idgroup');
-                $sortObj = json_decode($this->input->post('sort'));
+                $sortObj =($this->input->post('sort'))? json_decode($this->input->post('sort')):array();
                 // build sort array
                 $sort = array();
                 foreach ($sortObj as $value) {
@@ -132,7 +133,7 @@ class admin extends MX_Controller {
                     $sort[$value->property] = $value->direction;
                 };
                 $rs = $this->user->get_users($start, $limit, $sort, $query, $idgroup);
-                $rtnArr['totalCount'] = count($rs);
+                $rtnArr['totalCount'] = $this->user->get_users_count($query, $idgroup);
 
                 foreach ($rs as $thisUser) {
 

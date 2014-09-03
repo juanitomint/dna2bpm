@@ -169,7 +169,15 @@ var mygrid = Ext.create('Ext.grid.Panel',
                     }
                 }
 
-            ]
+            ],
+            bbar: Ext.create('Ext.PagingToolbar', {
+                store: Ext.data.StoreManager.lookup('caseStore'),
+                displayInfo: true,
+                displayMsg: '{0} - {1} of {2}',
+                emptyMsg: "No cases to display",
+                renderTo: mygrid
+                    
+            }),
 
         });
 

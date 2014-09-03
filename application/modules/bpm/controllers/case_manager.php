@@ -135,7 +135,7 @@ class Case_manager extends MX_Controller {
             switch ($action) {
                 case 'read':
                     $start = ($this->input->post('start')) ? $this->input->post('start') : 0;
-                    $limit = ($this->input->post('limit')) ? $this->input->post('limit') : 50;
+                    $limit = ($this->input->post('limit')) ? $this->input->post('limit') : 20;
                     $query = $this->input->post('query');
 
 
@@ -151,8 +151,15 @@ class Case_manager extends MX_Controller {
                     } else {
                         $sort['checkdate'] = -1;
                     }
-                    $cases = $this->bpm->get_all_cases($start, $limit, $sort, $query, $model);
-                    $out['totalcount'] = count($cases);
+                    $fields=array(
+                    		"id",
+                    		"iduser",
+                    		"status",
+                    		"checkdate",
+                    );
+                    $cases = $this->bpm->get_all_cases($start, $limit, $sort, $query, $model,$fields);
+                    
+                    $out['totalCount'] =$this->bpm->get_all_cases_count($query,$model);
                     foreach ($cases as $case) {
                         //unset($case['history']);
                         //--set user

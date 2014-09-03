@@ -43,7 +43,7 @@ class Bpm extends CI_Model {
         return $wf;
     }
 
-    function load_case_data($case) {
+    function load_case_data($case,$idwf=null) {
         $data = array();
         $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
 //$debug = true;
@@ -205,7 +205,8 @@ class Bpm extends CI_Model {
                 foreach ($tokens as $resourceId => $state) {
                     if (isset($all_tokens[$resourceId])) {
                         $all_tokens[$resourceId]['run'] ++;
-                        $all_tokens[$resourceId]['status'][$state] ++;
+                        $all_tokens[$resourceId]['status'][$state]=(!isset($all_tokens[$resourceId]['status'][$state]))?0:$all_tokens[$resourceId]['status'][$state];
+                        $all_tokens[$resourceId]['status'][$state]++;
                     } else {
 
                         $token = $this->bpm->get_token($case['idwf'], $case['id'], $resourceId);
@@ -513,7 +514,7 @@ class Bpm extends CI_Model {
         if (count($tokens)) {
             $reduced = array_reduce(
                     $tokens, function (&$result, $token) {
-                $result[$token['resourceId']] = $token['status'];
+                $result[$token['resourceId']] =(isset( $token['status']))?$token['status']:'???';
                 return $result;
             }, array()
             );
@@ -656,7 +657,9 @@ class Bpm extends CI_Model {
         //----if isset add to filter (faster)
         if ($idwf)
             $query['idwf'] = $idwf;
-        //var_dump2(json_encode($query));
+        
+        //var_dump(json_encode($query));
+        //var_dump(xdebug_get_function_stack());
         $result = $this->db->get_where('case', $query)->result_array();
         if ($result) {
             return $result[0];
@@ -666,14 +669,26 @@ class Bpm extends CI_Model {
         }
     }
 
-    function get_all_cases($offset = 0, $limit = 50, $order = null, $query_txt = null, $model) {
+    function get_all_cases_count($idwf = null, $model) {
+        if ($model) {
+            $this->db->where(array('idwf' => $model));
+        }
+        if ($idwf) {
+            $this->db->like('id', $idwf);
+        }
+         return $this->db->count_all_results('case');
+    }
+    
+    function get_all_cases($offset = 0, $limit = 50, $order = null, $query_txt = null, $model,$fields=array()) {
+		if($fields){
+			$this->db->select($fields);
+		}
         if ($model) {
             $this->db->where(array('idwf' => $model));
         }
         if ($query_txt) {
             $this->db->like('id', $query_txt);
         }
-
         if ($order) {
             #@todo //--check order like
             $this->db->order_by($order);
@@ -758,7 +773,7 @@ class Bpm extends CI_Model {
     }
 
     function update_case_token_status($idwf, $idcase) {
-        $case = $this->get_case($idcase);
+        $case = $this->get_case($idcase,$idwf);
         if (isset($case['status'])) {
             if ($case['status'] <> 'closed') {
                 $data['token_status'] = $this->get_token_status($idwf, $idcase);
@@ -905,6 +920,7 @@ class Bpm extends CI_Model {
         $this->db->order_by($sort);
         $rs = $this->db->get('tokens');
         return $rs->result_array();
+        
     }
 
     function get_tasks($iduser, $idcase = null) {
@@ -1344,13 +1360,15 @@ class Bpm extends CI_Model {
 
     function assign($shape, $wf) {
         $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
-        //$debug = true;
+        $debug = false;
         if ($debug)
             echo '<H1>Assign:' . $shape->properties->name . '</H1>';
         $token = $this->get_token($wf->idwf, $wf->case, $shape->resourceId);
         //---set special status "user"
         //---Get Case
         $case = $this->get_case($wf->case);
+        
+        
         //---Set Initiator same as case creator
         $this->user->Initiator = (int) $case['iduser'];
         //---set data as token data
@@ -1360,7 +1378,9 @@ class Bpm extends CI_Model {
         $data['_id'] = null;
         $data['status'] = null;
         $data = array_filter($data);
-
+		if($debug){
+			
+		}
         //---set Title
         if ($shape->stencil->id == 'Task') {
             if ($shape->properties->tasktype == 'User')
@@ -1392,6 +1412,11 @@ class Bpm extends CI_Model {
 //            $group_name = $wf->idwf . '/' . $parent->properties->name;
             $group_name = $wf->folder . '/' . $parent->properties->name;
             $group = $this->group->get_byname($group_name);
+            $parent_token=$this->get_token($wf->idwf, $wf->case, $parent->resourceId);
+            //---check if parent is preassigned
+            $data['idgroup'] = (isset($parent_token['idgroup'])) ? array_merge($parent_token['idgroup'], $data['idgroup']):$data['idgroup'];
+            $data['assign'] = (isset($parent_token['assign'])) ? array_merge($parent_token['assign'], $data['assign']):$data['assign'];
+
             //---ASSIGN to the group the lane represents
             if ($group) {
                 $idgroup = (int) $group['idgroup'];
@@ -1554,7 +1579,7 @@ class Bpm extends CI_Model {
 
     function get_resources($shape, $wf, $case = null) {
         $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
-        $debug = false;
+        $debug = true;
         $rtn = array();
         if (isset($shape->properties->resources->items)) {
             if ($debug)

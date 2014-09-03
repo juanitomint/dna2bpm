@@ -205,10 +205,10 @@ class Manager extends MX_Controller {
      * 
      */
 
-    function mini_report($idcase, $output = 'array') {
+    function mini_report($idwf,$idcase, $output = 'array') {
         //@todo set idwf
-        $case = $this->bpm->get_case($idcase);
-        $tokens = $this->bpm->get_tokens($case['idwf'], $idcase, array());
+        $case = $this->bpm->get_case($idcase,$idwf);
+        $tokens = $this->bpm->get_tokens($idwf, $idcase, array());
         $task2users = array();
         //---create array for each user
         foreach ($tokens as $token) {

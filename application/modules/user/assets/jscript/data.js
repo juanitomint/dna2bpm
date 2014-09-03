@@ -44,9 +44,9 @@ Ext.create('Ext.data.Store', {
             property: 'idgroup',
             direction: 'ASC'
         }]
-            ,
+    ,
     listeners: {
-        load: onGroupStoreLoad
+       // load: onGroupStoreLoad
     }
 
 });
