@@ -187,7 +187,8 @@ function run_EndCancelEvent($shape, $wf, $CI) {
     //---Update case Status
     // $CI->bpm->update_case($wf->idwf, $wf->case, array('status' => 'canceled'));
     $CI->bpm->movenext($shape, $wf);
-    redirect($CI->base_url.$CI->config->item('default_controller'));
+    $CI->break_on_next=true;
+    
 }
 
 function run_EndCompensationEvent($shape, $wf, $CI) {

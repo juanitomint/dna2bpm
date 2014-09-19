@@ -174,6 +174,8 @@ class Engine extends MX_Controller {
 		$debug = (isset ( $this->debug [__FUNCTION__] )) ? $this->debug [__FUNCTION__] : false;
 		if ($debug)
 			echo "<h2>" . __FUNCTION__ . '</h2>';
+		//---Set break_on_next to false
+		$this->break_on_next=false;
 			// ---check if case is locked
 		$thisCase = $this->bpm->get_case ( $case, $idwf );
 		$locked = (isset ( $thisCase ['locked'] )) ? $thisCase ['locked'] : false;
@@ -243,6 +245,10 @@ class Engine extends MX_Controller {
 			}
 			
 			$this->bpm->update_case_token_status ( $idwf, $case );
+			//----if some helper want to break then break
+			if($this->break_on_next){
+				redirect($this->base_url.$this->config->item('default_controller'));
+			}
 			$this->get_pending ( 'model', $idwf, $case, $run_resourceId );
 			$this->run_after ();
 			$run_resourceId = null;
