@@ -262,6 +262,11 @@ class Bpmui extends MX_Controller {
             ),
             'status' => 'user'
         );
+        $query=array(
+        		'assign' => $this->idu,
+            	'status' => 'user'
+        
+        );
         //var_dump(json_encode($query));exit;
         $tasks = $this->bpm->get_tasks_byFilter($query, array(), array('checkdate' => 'desc'));
         $data = $this->prepare_tasks($tasks, $chunk, $pagesize);
