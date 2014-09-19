@@ -168,13 +168,15 @@ class Dashboard extends MX_Controller {
         $layout = ($myconfig['view'] <> '') ? $myconfig['view'] : 'layout';
         $customData = $myconfig;
         $customData['lang'] = $this->lang->language;
+
         $customData['brand'] = $this->config->item('brand');
         $customData['menu'] = $this->menu();
         $customData['avatar'] = Modules::run('user/profile/get_avatar'); //Avatar URL
         $customData['base_url'] = $this->base_url;
         $customData['module_url'] = $this->module_url;
         $customData['inbox_count'] = $this->msg->count_msgs($this->idu, 'inbox');
-        $customData['config_panel'] =$this->parser->parse('_config_panel', array(), true, true);
+        $customData['config_panel'] =$this->parser->parse('_config_panel',  $customData['lang'], true, true);
+        
         $customData['name'] = $user->name . ' ' . $user->lastname;
 
         // Global JS
@@ -359,7 +361,7 @@ class Dashboard extends MX_Controller {
         return $return;
     }
 
-    // ============ Profile
+    // ============ Inbox
     function Inbox($data = array()) {
         $this->dashboard('dashboard/json/inbox.json');
     }
@@ -373,6 +375,13 @@ class Dashboard extends MX_Controller {
     function Tasks($data = array()) {
         $this->dashboard('dashboard/json/tasks.json');
     }
+    
+    // ============ Tasks
+/*     function get_config_panel($args=array()) {
+    	//array('id'=>'bt_pasteboard','name'=>'Pasteboard')
+    	return $this->parser->parse('_config_panel', $args, true, true);
+    } */
+    
 
     
     // ============ Widgets
