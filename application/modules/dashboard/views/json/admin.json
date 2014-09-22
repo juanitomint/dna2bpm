@@ -69,7 +69,8 @@
                     "title": "ministatus",
                     "module": "bpm",
                     "controller": "bpmui",
-                    "function": "widget_ministatus"
+                    "function": "widget_ministatus",
+                    "params":[true]
                 },
                 {
                     "title": "Tile01",

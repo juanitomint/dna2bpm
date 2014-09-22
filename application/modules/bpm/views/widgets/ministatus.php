@@ -1,7 +1,9 @@
-<div class="box box-info">
+<div class="box box-info update5">
+    <span class="hidden widget_url">{widget_url}</span>
     <div class="box-header">
         <h3 class="box-title">{name}</h3>
         <div class="box-tools pull-right">
+            <button class="btn btn-default btn-sm" data-toggle="tooltip" data-widget="refresh" data-original-title="Refresh"><i class="fa fa-refresh"></i></button>
             <button class="btn btn-default btn-sm" data-widget="collapse"><i class="fa fa-minus"></i></button>
             <button class="btn btn-default btn-sm" data-widget="remove"><i class="fa fa-times"></i></button>
         </div>

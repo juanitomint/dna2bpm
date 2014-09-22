@@ -1,4 +1,5 @@
-<div class="small-box bg-blue">
+<div class="small-box bg-blue {update_class}">
+<span class="hidden widget_url">{widget_url}</span>
     <div class="inner">
         <h3>
             {number}

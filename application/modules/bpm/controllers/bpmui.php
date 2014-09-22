@@ -62,20 +62,19 @@ class Bpmui extends MX_Controller {
         echo $this->widget('cases_closed');
     }
 
-    function widget_ministatus() {
+    function widget_ministatus($addIgnore = false) {
         $this->lang->load('bpm/bpm');
         $models = $this->bpm->get_models();
         //----convert to arrays
-        $models=array_map(function($model) {
-                        $model=(array)$model;
-                        
-                        $model['properties'] = $model['data']['properties'];
-                        return (array)$model;
-            
-        },$models);
+        $models = array_map(function($model) {
+            $model = (array) $model;
+
+            $model['properties'] = $model['data']['properties'];
+            return (array) $model;
+        }, $models);
         //----get folders
         $folders = array_unique(array_map(function($model) {
-                     return $model['folder'];
+                    return $model['folder'];
                 }, $models));
         sort($folders);
         //-----make 2 level tree
@@ -87,16 +86,28 @@ class Bpmui extends MX_Controller {
                 })
             );
         }
-        
         $data['base_url'] = $this->base_url;
         $data['qtty'] = count($models);
+        $data['widget_url'] = base_url() . $this->router->fetch_module() . '/' . $this->router->class . '/' . __FUNCTION__;
 //        $models_flat = array_map(function ($model) {
 //            $m['idwf'] = $model->idwf;
 //            $m['properties'] = $model->data['properties'];
 //            return $m;
 //        }, $models);
 //        $data['models'] = $models_flat;
-        echo $this->parser->parse('bpm/widgets/ministatus_widget', $data, true, true);
+        //----prepare script
+        if ($addIgnore) {
+            $add = "";
+        } else {
+            $add = "
+<script>
+    if (window.$) {
+    $('.treeview').tree();
+    }
+</script>
+    ";
+        }
+        echo $this->parser->parse('bpm/widgets/ministatus_widget', $data, true, true) . $add;
     }
 
     function ministatus($idwf, $showArr = array()) {
@@ -109,23 +120,24 @@ class Bpmui extends MX_Controller {
         );
         $this->user->authorize();
         $this->lang->load('bpm/bpm');
+        $data['widget_url'] = base_url() . implode('/', array_filter(array($this->router->fetch_module(), $this->router->class, __FUNCTION__, $idwf)));
         $state = Modules::run('bpm/manager/mini_status', $idwf, 'array');
         $state = array_filter($state, function($task) use ($showArr) {
             return (in_array($task['type'], $showArr) and $task['title']);
         });
-        $wfData['lang'] = $this->lang->language;
+        $data['lang'] = $this->lang->language;
         //---las aplano un poco
         foreach ($state as $task) {
             $task['user'] = (isset($task['status']['user'])) ? $task['status']['user'] : 0;
             $task['finished'] = (isset($task['status']['finished'])) ? $task['status']['finished'] : 0;
             $task['icon'] = $this->bpm->get_icon($task['type']);
-            $wfData['mini'][] = $task;
+            $data['mini'][] = $task;
         }
-        $wfData['base_url'] = base_url();
+        $data['base_url'] = base_url();
         $wf = $this->bpm->load('fondyfpp');
-        $wfData+=$wf['data']['properties'];
-        $wfData['name'] = 'Mini Status: ' . $wfData['name'];
-        echo $this->parser->parse('bpm/widgets/ministatus', $wfData, true, true);
+        $data+=$wf['data']['properties'];
+        $data['name'] = 'Mini Status: ' . $data['name'];
+        echo $this->parser->parse('bpm/widgets/ministatus', $data, true, true);
     }
 
     function widget_data($model, $idcase) {
@@ -136,6 +148,7 @@ class Bpmui extends MX_Controller {
         ob_end_clean();
         $data['content'] = $content;
         $data['title'] = $idcase . ' Data';
+        $data['widget_url'] = base_url() . implode('/', array_filter(array($this->router->fetch_module(), $this->router->class, __FUNCTION__, $idwf)));
         echo $this->parser->parse('dashboard/widgets/box_warning_solid', $data, true, true);
     }
 
@@ -178,6 +191,7 @@ class Bpmui extends MX_Controller {
         $data['number'] = count($tasks);
         $data['icon'] = 'ion-android-checkmark';
         $data['more_info_link'] = $this->base_url . 'dashboard/show/tasks';
+        $data['widget_url'] = base_url() . $this->router->fetch_module() . '/' . $this->router->class . '/' . __FUNCTION__;
         return $this->parser->parse('dashboard/tiles/tile-yellow', $data, true, true);
     }
 
@@ -194,6 +208,7 @@ class Bpmui extends MX_Controller {
         $data['number'] = count($tasks);
         $data['icon'] = 'ion-android-checkmark';
         $data['more_info_link'] = $this->base_url . 'dashboard/show/tasks';
+        $data['widget_url'] = base_url() . $this->router->fetch_module() . '/' . $this->router->class . '/' . __FUNCTION__;
         return $this->parser->parse('dashboard/tiles/tile-green', $data, true, true);
     }
 
@@ -209,6 +224,7 @@ class Bpmui extends MX_Controller {
         $data['number'] = count($cases);
         $data['icon'] = 'ion-play';
         $data['more_info_link'] = $this->base_url . 'dashboard/show/tasks';
+        $data['widget_url'] = base_url() . implode('/', array_filter(array($this->router->fetch_module(), $this->router->class, __FUNCTION__, $idwf)));
         return $this->parser->parse('dashboard/tiles/tile-blue', $data, true, true);
     }
 
@@ -225,6 +241,7 @@ class Bpmui extends MX_Controller {
         $data['number'] = count($cases);
         $data['icon'] = 'ion-play';
         $data['more_info_link'] = $this->base_url . 'dashboard/show/tasks';
+        $data['widget_url'] = base_url() . implode('/', array_filter(array($this->router->fetch_module(), $this->router->class, __FUNCTION__, $idwf)));
         return $this->parser->parse('dashboard/tiles/tile-teal', $data, true, true);
     }
 
@@ -250,6 +267,7 @@ class Bpmui extends MX_Controller {
         $data['title'] = $this->lang->line('Tasks') . ' ' . $this->lang->line('Finished');
 
         $data['more_info_link'] = $this->base_url . 'bpm/';
+        $data['widget_url'] = base_url() . $this->router->fetch_module() . '/' . $this->router->class . '/' . __FUNCTION__;
         echo $this->parser->parse('bpm/widgets/tasks_done', $data, true, true);
     }
 
@@ -274,6 +292,7 @@ class Bpmui extends MX_Controller {
         $data['title'] = $this->lang->line('Tasks') . ' ' . $this->lang->line('Pending');
 
         $data['more_info_link'] = $this->base_url . 'bpm/';
+        $data['widget_url'] = base_url() . $this->router->fetch_module() . '/' . $this->router->class . '/' . __FUNCTION__;
         echo $this->parser->parse('bpm/widgets/2do', $data, true, true);
     }
 
@@ -290,6 +309,7 @@ class Bpmui extends MX_Controller {
         $data['title'] = $this->lang->line('closedCases');
 
         $data['more_info_link'] = $this->base_url . 'bpm/';
+        $data['widget_url'] = base_url() . $this->router->fetch_module() . '/' . $this->router->class . '/' . __FUNCTION__;
         echo $this->parser->parse('bpm/widgets/cases_closed', $data, true, true);
     }
 
@@ -305,6 +325,7 @@ class Bpmui extends MX_Controller {
         $data['title'] = $this->lang->line('openCases');
 
         $data['more_info_link'] = $this->base_url . 'bpm/';
+        $data['widget_url'] = base_url() . $this->router->fetch_module() . '/' . $this->router->class . '/' . __FUNCTION__;
         echo $this->parser->parse('bpm/widgets/cases_open', $data, true, true);
     }
 

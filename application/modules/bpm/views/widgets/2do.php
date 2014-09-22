@@ -1,4 +1,5 @@
 <div class="box box-warning">
+    <span class="hidden widget_url">{widget_url}</span>
     <div class="box-header" style="cursor: move;">
         <i class="ion ion-clipboard"></i>
         <h3 class="box-title">{title} ({qtty})</h3>
@@ -24,7 +25,7 @@
                     <i class="fa fa-ellipsis-v"></i>
                 </span>  
                 <!-- checkbox -->
-                                <!-- todo icon -->
+                <!-- todo icon -->
                 <span class="text"><img src="{base_url}{icon}"/></span>
                 <!-- todo text -->
                 <span class="text">{title}</span>
@@ -42,6 +43,6 @@
         </ul>
     </div><!-- /.box-body -->
     <div class="box-footer clearfix no-border">
-<!--        <button class="btn btn-default pull-right"><i class="fa fa-plus"></i> Add item</button>-->
+<button style="margin-right: 5px;" title="" data-toggle="tooltip" data-widget="refresh" class="btn btn-sm pull-right" data-original-title="Refresh"><i class="fa fa-refresh"></i></button>
     </div>
 </div>
