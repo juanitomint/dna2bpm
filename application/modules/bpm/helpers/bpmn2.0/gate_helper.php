@@ -107,6 +107,7 @@ function run_Exclusive_Databased_Gateway($shape, $wf, $CI) {
                     break;
                 }
             }
+            
             if ($cond == '')
                 $cond = 'false';
 //$streval = "return (" . $assignment . ")==('" . (string) $shape_out->properties->conditionexpression . "');";
@@ -117,7 +118,11 @@ function run_Exclusive_Databased_Gateway($shape, $wf, $CI) {
             $cond = (strtolower($cond) == $false) ? 'false' : $cond;
 
             $streval = "return (" . $assignment . ")$op(" . (string) $cond . ");";
+//--- post process eval
+            if (strstr($cond, ',')) {
+            $streval = "return (in_array(" . $assignment . ",explode(',','$cond')));";
 
+            }			
             if ($debug)
                 var_dump('$streval',$streval);
             $result[$shape_out->resourceId]['streval'] = $streval;
@@ -146,6 +151,7 @@ function run_Exclusive_Databased_Gateway($shape, $wf, $CI) {
                 }
             }
         }
+//exit;        
 //---process all Sequences and only activate one
         if ($i == 1) {
 //----mark shape as finished
