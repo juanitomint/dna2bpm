@@ -77,14 +77,30 @@ var mygrid = Ext.create('Ext.grid.Panel',
                     menuDisabled: true,
                     sortable: false,
                     xtype: 'actioncolumn',
-                    width: 50,
+                    width: 30,
                     items: [{
-                            icon: globals.module_url + 'assets/images/delete.png', // Use a URL in the icon config
-                            tooltip: 'Remove case from DB',
-                            handler: function(grid, rowIndex, colIndex) {
+                            icon: globals.module_url + 'assets/images/contact-list.png', // Use a URL in the icon config
+                            tooltip: 'miniReport',
+                            handler: function(grid, rowIndex, colIndex,Item,e) {
+                                e.stopEvent();
                                 var rec = dgstore.getAt(rowIndex);
-                                Ext.Msg.confirm('Confirm', 'Are you sure you want to remove: ' + rec.get('id') + '?', confirm, rec);
-
+                                Ext.create('Ext.window.Window', {
+                                    title: 'Mini Report',
+                                    height: 400,
+                                    width: 300,
+                                    layout: 'fit',
+                                    autoScroll:true,
+                                    loader: {
+                                        url: globals.base_url + 'bpm/manager/mini_report/' + globals.idwf + '/' + rec.get('id') + '/html',
+                                        autoLoad: true
+                                    }
+//                                    items: {// Let's put an empty grid in just to illustrate fit layout
+//                                        xtype: 'panel',
+//                                        border: false,
+//                                        html: '<H1>MINI-REPORT:' + rec.get('id') + '</H1>',
+//                                    }
+                                }).show();
+                                return false;
                             }
                         }]
                 },
@@ -138,7 +154,22 @@ var mygrid = Ext.create('Ext.grid.Panel',
                         return value;
                     }
                 }
-                , checkLock
+                , checkLock,
+                {
+                    menuDisabled: true,
+                    sortable: false,
+                    xtype: 'actioncolumn',
+                    width: 50,
+                    items: [{
+                            icon: globals.module_url + 'assets/images/delete.png', // Use a URL in the icon config
+                            tooltip: 'Remove case from DB',
+                            handler: function(grid, rowIndex, colIndex) {
+                                var rec = dgstore.getAt(rowIndex);
+                                Ext.Msg.confirm('Confirm', 'Are you sure you want to remove: ' + rec.get('id') + '?', confirm, rec);
+
+                            }
+                        }]
+                }
             ],
             stripeRows: true,
             ////////////////////////////////////////////////////////////////////////////
@@ -176,9 +207,8 @@ var mygrid = Ext.create('Ext.grid.Panel',
                 displayMsg: '{0} - {1} of {2}',
                 emptyMsg: "No cases to display",
                 renderTo: mygrid
-                    
-            }),
 
+            }),
         });
 
 

@@ -402,6 +402,17 @@ class Engine extends MX_Controller {
 		if (isset ( $case ['parent'] )) {
 			$renderData ['task_name'] = $case ['parent'] ['token'] ['title'] . '<br/>' . $shape->properties->name;
 		}
+		//-get Inbound shapes
+		$previous = $this->bpm->get_previous($resourceId, $wf);
+		//-Prepare Documents
+		foreach($previous as $dataShape){
+			if($dataShape->stencil->id=='DataObject'){
+			if ($dataShape->properties->input_output=='Input')				
+				//var_dump($dataShape);
+			$renderData['DataObject_Input'][]=$this->bindObjectToArray($dataShape);
+			}
+		}
+// 		exit;
 		$renderData ['task_documentation'] = $shape->properties->documentation;
 		if ($resourceId) {
 			$renderData += $this->bindObjectToArray ( $this->data );
@@ -533,6 +544,7 @@ class Engine extends MX_Controller {
 		foreach ( $dataStores as $shape ) {
 			// echo $shape->properties->name;
 			// ---LOAD DATA CONNECTORS
+			if($shape->properties->connector){
 			$modelname = 'bpm/connectors/' . $shape->properties->connector . '_connector';
 			$this->load->model ( $modelname );
 			// ---END LOAD DATA CONNECTORS
@@ -550,6 +562,7 @@ class Engine extends MX_Controller {
 			if ($debug) {
 				echo "<h3>Data Store:$strStor</h3>";
 				var_dump ( $this->data->$strStor );
+			}
 			}
 		} // --end foreach
 		  // //////////////////////////////////////////////////////////////////////

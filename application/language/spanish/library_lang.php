@@ -7,6 +7,7 @@ $lang['dateFmt'] = 'd/m/Y';
 $lang['dateFmt_JS'] = 'd MM yy';
 $lang['dateTimeFmt'] = 'd/m/Y H:i';
 $lang["addNew"] = "agregar nuevo";
+$lang["remove"] = "remover";
 $lang["search"] = "buscar";
 $lang["delete"] = "borrar";
 $lang["close"] = 'cerrar';
