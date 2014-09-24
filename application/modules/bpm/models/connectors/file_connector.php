@@ -7,37 +7,27 @@ class file_connector extends CI_Model {
 
     function File_connector() {
         parent::__construct();
+        $this->load->helper('file');
     }
 
-    function get_data($resource) {
-        //---connect to database and retrive data as specified
-        if (isset($resource['datastoreref']) && isset($resource['query'])) {
-            $fields = (isset($resource['fields'])) ? $resource['fields'] : null;
-            $query = $resource['query'];
-            $query = ($query <> '') ? $query : array();
-            $query = (is_array($query)) ? $query : json_decode($query);
-            //---select the database
-            if ($resource['datastoreref']) {
-                $this->mongo->db = $this->mongo->selectDB($resource['datastoreref']);
-            }
-            if (isset($fields)) {
-                $rs = $this->mongo->db->selectCollection($resource['itemsubjectref'])->find($query, $fields);
-            } else {
-                $rs = $this->mongo->db->selectCollection($resource['itemsubjectref'])->find($query);
-            }
-            if (isset($resource['sort']))
-                $rs->sort($sort);
-            $rtn_arr = array();
-            while ($arr = $rs->getNext()) {
-                //---remove _id to avoid save problems
-                $arr['_id'] = null;
-                $rtn_arr+=array_filter($arr);
-            }
-            return $rtn_arr;
-        }
+    function get_data($resource, $shape, $wf) {
+        $path = 'images/user_files/' . $wf->idwf . '/' . $wf->case . '/' . $shape->properties->name;
+        $dirinfo = get_dir_file_info($path);
+        return $dirinfo;
     }
-    function get_ui($resource){
-        
+
+    function get_ui($resource, $shape, $wf) {
+        $this->load->library('parser');
+        $path = 'images/user_files/' . $wf->idwf . '/' . $wf->case . '/' . $shape->properties->name;
+        $dirinfo = array();
+        $info = get_dir_file_info($path);
+        if ($info) {
+            array_map(function($arr) use (&$dirinfo) {
+                $dirinfo['files'][] = $arr;
+            }, $info);
+        }
+        $str = $this->parser->parse('bpm/file_connector', $dirinfo, true);
+        return $str;
     }
 
 }
