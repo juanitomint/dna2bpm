@@ -165,6 +165,7 @@ class Dashboard extends MX_Controller {
         $this->hooks_group($user);
         $myconfig = $this->parse_config($json, $debug);
 
+
         $layout = ($myconfig['view'] <> '') ? $myconfig['view'] : 'layout';
         $customData = $myconfig;
         $customData['lang'] = $this->lang->language;
@@ -342,10 +343,9 @@ class Dashboard extends MX_Controller {
 	 						$return['js'][$k]=$v;
 	 					}
  					}
-					
-
-
+ 				
             }
+            
             // $content.='</div>';
             // Por si el widget devuelve un array en lugar del contenido solamente
             if (is_array($markup)) {

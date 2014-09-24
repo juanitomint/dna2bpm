@@ -10,7 +10,8 @@
 				"title": "Inbox",
 				"module": "inbox",
 				"controller": "inbox",
-				"function": "index"
+				"function": "index",
+				"js":[{"0":"selectJS"}]
                 }
             ]
         }

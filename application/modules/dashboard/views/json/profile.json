@@ -10,7 +10,9 @@
 				"title": "Profile",
 				"module": "user",
 				"controller": "profile",
-				"function": "edit"
+				"function": "edit",
+				"js":[{"0":"jqueryUI"},{"1":"PLUpload"},{"{base_url}user/assets/jscript/profile.js":"Profile JS"}],
+				"css":[{"{base_url}user/assets/css/profile.css":"profile CSS"}]
                 }
             ]
         }

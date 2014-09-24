@@ -51,7 +51,8 @@ class ui {
 
         // Load default JS 
         $default = array('jquery', 'jqueryUI', 'bootstrap', 'WYSIHTML5', 'adminLTE', 'inboxJS','dashboardJS', 'jquery.form', 'morris');
-
+// var_dump($data);
+//       exit(); 
         //Custom JS Check
         if (isset($data['js'])) {
             foreach ($data['js'] as $k => $js) {
@@ -127,6 +128,7 @@ class ui {
 
         // Now $ready has the proper order , make the magic
         $strjs = '';
+
         foreach ($ready as $handle) {
             $strjs.="<script  src='{$this->scripts[$handle]['source']}'></script>\n\n";
         }
@@ -140,7 +142,7 @@ class ui {
         foreach ($js as $jsfile=>$desc) {
             $jsfile=str_replace('{base_url}',  base_url(),$jsfile);
             $strjs.="<!-- JS:$desc -->\n";
-            if(!stristr($desc,'http://'))$jsfile.=$data['base_url'].$jsfile; // Si viene sin base_url
+            //if(!stristr($desc,'http://'))$jsfile.=$data['base_url'].$jsfile; // Si viene sin base_url
             //$strjs.="<script type='text/javascript'>try{document.getElementById('loading-msg').innerHTML +=\"<span class='ok'>OK.</span><br/>Loading $desc...\";}catch(e){}</script>\n";
             $strjs.="<script  src='$jsfile'></script>\n\n";
         }
@@ -152,10 +154,14 @@ class ui {
     	global $data;
         $strcss = '';
         foreach ($css as $cssfile => $desc) {
+
             $cssfile=str_replace('{base_url}',  base_url(),$cssfile);
-            if(!stristr($desc,'http://'))$cssfile.=$data['base_url'].$cssfile; // Si viene sin base_url
+            
+/*             if(!stristr($cssfile,'http://'))$cssfile.=$data['base_url'].$cssfile; // Si viene sin base_url */
+
             $strcss.="<!-- CSS:$desc -->\n";
             $strcss.="<link rel='stylesheet' type='text/css' href='$cssfile' />\n";
+     
         }
         return $strcss;
     }

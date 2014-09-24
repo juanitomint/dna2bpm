@@ -35,7 +35,6 @@ class Inbox extends MX_Controller {
 
      	//$customData['usercan_create']=true;
      	$customData['js'] = array(
-     			'icheck',
      			'selectJS'		
      	);
   	
@@ -124,6 +123,7 @@ class Inbox extends MX_Controller {
     	$customData['reply']=false;
      	$customData['inbox_count']=$this->msg->count_msgs($this->idu,'inbox'); 
     	$customData['content']=$this->parser->parse('inbox/inbox', $customData, true, true);
+
 	    return $customData;
     }
     
