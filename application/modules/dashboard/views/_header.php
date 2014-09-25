@@ -76,7 +76,7 @@
                             <ul class="dropdown-menu">
                                 <!-- User image -->
                                 <li class="user-header bg-light-blue">
-                                    <img src="{avatar}" class="" alt="User Image" />
+                                    <img src="{avatar}" class="avatar" alt="User Image" />
                                     <p>
                                         {name}
                                     </p>

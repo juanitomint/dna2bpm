@@ -60,8 +60,8 @@ $( ".calendar" ).datepicker( "option", "yearRange", "1920:2013" );
     		UploadComplete: function(up, files) {
     			var myfile=files[files.length-1].name;
     			var url=globals['myidu']+"."+myfile.substr(-3);
-    			
-    			$('img#avatar').replaceWith("<img  id='avatar' src='"+globals['base_url']+'images/avatar/'+url+"'>");
+
+    			$('img.avatar').replaceWith("<img  id='avatar' class='avatar' src='"+globals['base_url']+'images/avatar/'+url+"'>");
     		},
     		FilesAdded: function(up, files) {
     			plupload.each(files, function(file) {
