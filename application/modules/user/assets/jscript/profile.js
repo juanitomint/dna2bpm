@@ -45,7 +45,7 @@ $( ".calendar" ).datepicker( "option", "yearRange", "1920:2013" );
     	filters : {
     		max_file_size : '10mb',
     		mime_types: [
-    			{title : "Image files", extensions : "jpg,gif,png"}
+    			{title : "Image files", extensions : "jpg,png"}
     		]
     	},
 
@@ -57,8 +57,11 @@ $( ".calendar" ).datepicker( "option", "yearRange", "1920:2013" );
     				return false;
     			};
     		},
-    		UploadComplete: function(up, files) {;
-    			$('img#avatar').replaceWith("<img  id='avatar' src='"+globals['base_url']+'images/avatar/'+globals['myidu']+"'>");
+    		UploadComplete: function(up, files) {
+    			var myfile=files[files.length-1].name;
+    			var url=globals['myidu']+"."+myfile.substr(-3);
+    			
+    			$('img#avatar').replaceWith("<img  id='avatar' src='"+globals['base_url']+'images/avatar/'+url+"'>");
     		},
     		FilesAdded: function(up, files) {
     			plupload.each(files, function(file) {
@@ -71,6 +74,7 @@ $( ".calendar" ).datepicker( "option", "yearRange", "1920:2013" );
     		},
 
     		Error: function(up, err) {
+
     			document.getElementById('console').innerHTML += "\nError #" + err.code + ": " + err.message;
     		}
     	}
