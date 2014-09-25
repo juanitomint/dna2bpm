@@ -9,24 +9,19 @@
             <div class="modal-body">
                 <p>{task_documentation}</p>
                 {DataObject_Input}
-                <div class="file-input" resourceId="{resourceId}">
-                    <h4>
-                        <i class='icon icon-arrow-right'></i> 
-                        <i class='icon icon-files'></i> 
-                        {properties name}
-                    </h4>
-                    <p>{properties documentation}</p>
+                <div class="file-input row" resourceId="{resourceId}">
+                    
                     {ui}
                 </div>
                 {/DataObject_Input}
             </div>
             <div class="modal-footer">
                 <button id="closeTask" class="btn pull-left btn-danger" data-dismiss="modal" aria-hidden="true">
-                    <i class="icon-play icon-chevron-left icon-white"></i>
+                    <i class="fa fa-chevron-left fa-white"></i>
                     {lang closeTask}
                 </button>
                 <button id="finishTask" class="btn btn-success">
-                    <i class="icon-play icon-white"></i>
+                    <i class="fa fa-play fa-white"></i>
                     {lang finishTask}
                 </button>
             </div>
