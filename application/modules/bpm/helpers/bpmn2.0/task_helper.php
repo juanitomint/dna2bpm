@@ -76,7 +76,7 @@ function run_Task($shape, $wf, $CI) {
 
 //--------------------------------------------------
 //---load data from 'transport' from previous shape
-    $inbound = $CI->bpm->get_inbound_shapes($resourceId, $wf);
+    $inbound = $CI->bpm->get_previous($resourceId, $wf);
     foreach ($inbound as $inshape) {
         $token_in = $CI->bpm->get_token($wf->idwf, $wf->case, $inshape->resourceId);
         if (isset($token_in['data'])) {
