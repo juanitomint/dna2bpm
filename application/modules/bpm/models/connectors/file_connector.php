@@ -20,12 +20,13 @@ class file_connector extends CI_Model {
         $this->load->library('parser');
         $path = 'images/user_files/' . $wf->idwf . '/' . $wf->case . '/' . str_replace("\n",'_', $shape->properties->name);
         $dirinfo = array();
+        var_dump($shape);
         $info = get_dir_file_info($path);
         if ($info) {
         //    var_dump($info);exit;
             array_map(function($arr) use (&$dirinfo) {
                 $arr['relative_path_encoded']= urldecode($arr['relative_path']);
-                $arr['name_encoded']= urlencode($arr['name']);
+                $arr['name_encoded']= $arr['name'];
 //                var_dump($arr['name'],$arr['name_encoded']);
                 $dirinfo['files'][] = $arr;
             }, $info);

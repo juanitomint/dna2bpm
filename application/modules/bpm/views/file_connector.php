@@ -12,7 +12,7 @@
 {files}
 <div>
     <i class="glyphicon glyphicon-file fileinput-exists"></i> <span class="fileinput-filename">
-        <a href="{base_url}{relative_path}/{name}">{name}</a>
+        <a href="{base_url}{relative_path_encoded}/{name_encoded}">{name}</a>
     </span>
 </div>
 {/files}
