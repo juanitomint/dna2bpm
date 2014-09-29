@@ -165,7 +165,6 @@ class Dashboard extends MX_Controller {
         $this->hooks_group($user);
         $myconfig = $this->parse_config($json, $debug);
 
-
         $layout = ($myconfig['view'] <> '') ? $myconfig['view'] : 'layout';
         $customData = $myconfig;
         $customData['lang'] = $this->lang->language;

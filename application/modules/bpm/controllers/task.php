@@ -86,7 +86,7 @@ class Task extends MX_Controller {
         $uploads_dir = $out['path'];
 
         $tmp_name = $_FILES["userfile"]["tmp_name"];
-        $name = $_FILES["userfile"]["name"];
+        $name = urldecode($_FILES["userfile"]["name"]);
         move_uploaded_file($tmp_name, "$uploads_dir/$name");
 
         if (!$debug) {
