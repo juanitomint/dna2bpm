@@ -63,7 +63,6 @@ class User extends CI_Model {
         if($username=='' or $password==''){
             return false;
         }
-        $this->db->debug = false;
         $query = array('nick' => $username, 'passw' => $this->hash($password));
         $thisUser = $this->db->select(array('idu'))->get_where('users', $query)->result();
         if (isset($thisUser[0])) {

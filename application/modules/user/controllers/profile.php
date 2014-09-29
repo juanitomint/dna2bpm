@@ -199,12 +199,13 @@ class Profile extends MX_Controller {
     function upload(){
 
     	// Make sure file is not cached (as it happens for example on iOS devices)
-    	header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
+     	header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
     	header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
     	header("Cache-Control: no-store, no-cache, must-revalidate");
     	header("Cache-Control: post-check=0, pre-check=0", false);
     	header("Pragma: no-cache");
     	
+
     	/*
     	 // Support CORS
     	header("Access-Control-Allow-Origin: *");
@@ -241,7 +242,9 @@ class Profile extends MX_Controller {
 //     		 $this->idu  = uniqid("file_");
 //     	}
 		$fileName=$this->idu.".".$path['extension'];
-    	
+		
+		$ext2=($path['extension']=='jpg')?('png'):('jpg');
+		$file2delete = $targetDir . DIRECTORY_SEPARATOR . $this->idu.".$ext2"; 
     	$filePath = $targetDir . DIRECTORY_SEPARATOR . $fileName;
     	
     	// Chunking might be enabled
@@ -298,16 +301,18 @@ class Profile extends MX_Controller {
     	
     	@fclose($out);
     	@fclose($in);
-    	
+
     	// Check if file has been uploaded
     	if (!$chunks || $chunk == $chunks - 1) {
     		// Strip the temp .part suffix off
+    			 
     		rename("{$filePath}.part", $filePath);
+   			@unlink($file2delete);// file with same idu and other extension exists
     	}
     	
     	// Return Success JSON-RPC response
     	die('{"jsonrpc" : "2.0", "result" : null, "id" : "id"}');
-    	 
+    	
     }
     
 

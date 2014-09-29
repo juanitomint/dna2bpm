@@ -13,7 +13,7 @@
 <div class="form-group">
     <label class="col-sm-2 control-label">{lang picture}</label>
     <div class="col-sm-2">
-    <img src="{avatar}" id="avatar" >
+    <img src="{avatar}" id="avatar" class="avatar" >
     </div>
     <div class="col-sm-8">
      {if "{disabled}"==""}
