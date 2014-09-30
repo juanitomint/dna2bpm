@@ -271,6 +271,23 @@ class Bpmui extends MX_Controller {
         echo $this->parser->parse('bpm/widgets/tasks_done', $data, true, true);
     }
 
+    function widget_2doMe($chunk = 1, $pagesize = 5) {
+        //$data['lang']=$this->lang->language;
+        $query = array(
+            'assign' => $this->idu,
+            'status' => 'user'
+        );
+        //var_dump(json_encode($query));exit;
+        $tasks = $this->bpm->get_tasks_byFilter($query, array(), array('checkdate' => 'desc'));
+        $data = $this->prepare_tasks($tasks, $chunk, $pagesize);
+        //$data['lang'] = $this->lang->language;
+        $data['title'] = $this->lang->line('Tasks') . ' ' . $this->lang->line('Pending');
+
+        $data['more_info_link'] = $this->base_url . 'bpm/';
+        $data['widget_url'] = base_url() . $this->router->fetch_module() . '/' . $this->router->class . '/' . __FUNCTION__;
+        echo $this->parser->parse('bpm/widgets/2do', $data, true, true);
+    }
+
     function widget_2do($chunk = 1, $pagesize = 5) {
         //$data['lang']=$this->lang->language;
         $query = array(
@@ -280,11 +297,11 @@ class Bpmui extends MX_Controller {
             ),
             'status' => 'user'
         );
-        $query=array(
-        		'assign' => $this->idu,
-            	'status' => 'user'
-        
-        );
+//        $query=array(
+//        		'assign' => $this->idu,
+//            	'status' => 'user'
+//        
+//        );
         //var_dump(json_encode($query));exit;
         $tasks = $this->bpm->get_tasks_byFilter($query, array(), array('checkdate' => 'desc'));
         $data = $this->prepare_tasks($tasks, $chunk, $pagesize);
