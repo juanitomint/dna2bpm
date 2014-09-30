@@ -1,6 +1,6 @@
 //---ACTIONS 4 Context
 var FolderAdd = Ext.create('Ext.Action', {
-    iconCls: 'icon-add-folder',
+    iconCls: 'fa fa-add-folder',
     text: 'Add Folder',
     handler: function(widget, event) {
         var n = tree.getSelectionModel().getSelection()[0];
@@ -35,7 +35,7 @@ function get_path(n){
     return parents.join('/');
 }
 var ModelAdd = Ext.create('Ext.Action', {
-    iconCls: ' icon-plus-sign',
+    iconCls: 'fa fa-plus-circle',
     text: 'Add Model',
     handler: function(widget, event) {
         var n = tree.getSelectionModel().getSelection()[0];
@@ -86,7 +86,7 @@ var ModelAdd = Ext.create('Ext.Action', {
     }
 });
 var ModelRemove = Ext.create('Ext.Action', {
-    iconCls: 'icon-minus-sign',
+    iconCls: 'fa fa-times',
     text: 'Remove Model',
     handler: function(widget, event) {
         var n = tree.getSelectionModel().getSelection()[0];
@@ -136,7 +136,7 @@ var ModelRemove = Ext.create('Ext.Action', {
 //---Refresh Tree
 var reloadTree = Ext.create('Ext.Action', {
     text:'Reload',
-    iconCls:'icon-refresh',
+    iconCls:'fa fa-refresh',
     handler:function(){
         Ext.data.StoreManager.lookup('TreeStore').reload();
         //tree.load_checked(dataview.selModel.getLastSelected().data.idgroup);
