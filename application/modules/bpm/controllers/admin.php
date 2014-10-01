@@ -46,6 +46,7 @@ class Admin extends MX_Controller {
             $this->module_url . "assets/css/load_mask.css" => 'loadingmask',
             $this->module_url . "assets/css/browser.css" => 'Browser',
             $this->module_url . "assets/css/extra-icons.css" => 'Extra Icons',
+            $this->module_url . "assets/css/extra-icons.css" => 'Extra Icons',
         );
 
         $cpData['js'] = array(
@@ -69,7 +70,7 @@ class Admin extends MX_Controller {
             'module_url' => $this->module_url,
         );
 
-        $this->ui->makeui('ext.ui.php', $cpData);
+        $this->ui->makeui('ext.ui-no-ion.php', $cpData);
     }
 
     function get_tree() {

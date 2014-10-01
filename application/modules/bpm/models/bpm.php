@@ -43,7 +43,7 @@ class Bpm extends CI_Model {
         return $wf;
     }
 
-    function load_case_data($case,$idwf=null) {
+    function load_case_data($case, $idwf = null) {
         $data = array();
         $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
 //$debug = true;
@@ -205,8 +205,8 @@ class Bpm extends CI_Model {
                 foreach ($tokens as $resourceId => $state) {
                     if (isset($all_tokens[$resourceId])) {
                         $all_tokens[$resourceId]['run'] ++;
-                        $all_tokens[$resourceId]['status'][$state]=(!isset($all_tokens[$resourceId]['status'][$state]))?0:$all_tokens[$resourceId]['status'][$state];
-                        $all_tokens[$resourceId]['status'][$state]++;
+                        $all_tokens[$resourceId]['status'][$state] = (!isset($all_tokens[$resourceId]['status'][$state])) ? 0 : $all_tokens[$resourceId]['status'][$state];
+                        $all_tokens[$resourceId]['status'][$state] ++;
                     } else {
 
                         $token = $this->bpm->get_token($case['idwf'], $case['id'], $resourceId);
@@ -434,14 +434,39 @@ class Bpm extends CI_Model {
         return $return;
     }
 
-    function get_token($idwf, $case, $resourceId) {
+    function get_token($idwf, $idcase, $resourceId) {
         //---TODO get token from cache
         $query = array(
             'idwf' => $idwf,
-            'case' => $case,
+            'case' => $idcase,
             'resourceId' => $resourceId
         );
         return $this->mongo->db->tokens->findOne($query);
+    }
+
+    /*
+     * This function loads data from case and pastes it on a token 
+     * for custom uses use it carrefou since data results can be big
+     */
+
+    function consolidate_data($idwf, $idcase, $resourceId) {
+        $case = $this->get_case($idcase);
+        $data = $this->load_case_data($case, $idwf);
+        $token = $this->get_token($idwf, $idcase, $resourceId);
+        if ($token) {
+            $tdata = (isset($token['data'])) ? $token['data'] : array();
+            foreach ($data as $entity => $values) {
+                unset($values['_id']);
+                unset($values['id']);
+                unset($values['owner']);
+                unset($values['parent']);
+                $token['data'] = $values + $tdata;
+            }
+//            echo json_encode($token);
+//            exit;
+            $this->save_token($token);
+        }
+        return $token;
     }
 
     function get_tokens($idwf, $idcase, $status = 'pending', $type = null) {
@@ -514,7 +539,7 @@ class Bpm extends CI_Model {
         if (count($tokens)) {
             $reduced = array_reduce(
                     $tokens, function (&$result, $token) {
-                $result[$token['resourceId']] =(isset( $token['status']))?$token['status']:'???';
+                $result[$token['resourceId']] = (isset($token['status'])) ? $token['status'] : '???';
                 return $result;
             }, array()
             );
@@ -657,7 +682,7 @@ class Bpm extends CI_Model {
         //----if isset add to filter (faster)
         if ($idwf)
             $query['idwf'] = $idwf;
-        
+
         //var_dump(json_encode($query));
         //var_dump(xdebug_get_function_stack());
         $result = $this->db->get_where('case', $query)->result_array();
@@ -676,13 +701,13 @@ class Bpm extends CI_Model {
         if ($idwf) {
             $this->db->like('id', $idwf);
         }
-         return $this->db->count_all_results('case');
+        return $this->db->count_all_results('case');
     }
-    
-    function get_all_cases($offset = 0, $limit = 50, $order = null, $query_txt = null, $model,$fields=array()) {
-		if($fields){
-			$this->db->select($fields);
-		}
+
+    function get_all_cases($offset = 0, $limit = 50, $order = null, $query_txt = null, $model, $fields = array()) {
+        if ($fields) {
+            $this->db->select($fields);
+        }
         if ($model) {
             $this->db->where(array('idwf' => $model));
         }
@@ -773,7 +798,7 @@ class Bpm extends CI_Model {
     }
 
     function update_case_token_status($idwf, $idcase) {
-        $case = $this->get_case($idcase,$idwf);
+        $case = $this->get_case($idcase, $idwf);
         if (isset($case['status'])) {
             if ($case['status'] <> 'closed') {
                 $data['token_status'] = $this->get_token_status($idwf, $idcase);
@@ -913,14 +938,13 @@ class Bpm extends CI_Model {
         return $status_map[$status];
     }
 
-    function get_tasks_byFilter($filter=array(), $fields = array(), $sort = array()) {
+    function get_tasks_byFilter($filter = array(), $fields = array(), $sort = array()) {
         //$this->db->debug=true;
         $this->db->where($filter);
         $this->db->select($fields);
         $this->db->order_by($sort);
         $rs = $this->db->get('tokens');
         return $rs->result_array();
-        
     }
 
     function get_tasks($iduser, $idcase = null) {
@@ -1367,8 +1391,8 @@ class Bpm extends CI_Model {
         //---set special status "user"
         //---Get Case
         $case = $this->get_case($wf->case);
-        
-        
+
+
         //---Set Initiator same as case creator
         $this->user->Initiator = (int) $case['iduser'];
         //---set data as token data
@@ -1378,9 +1402,9 @@ class Bpm extends CI_Model {
         $data['_id'] = null;
         $data['status'] = null;
         $data = array_filter($data);
-		if($debug){
-			
-		}
+        if ($debug) {
+            
+        }
         //---set Title
         if ($shape->stencil->id == 'Task') {
             if ($shape->properties->tasktype == 'User')
@@ -1412,10 +1436,10 @@ class Bpm extends CI_Model {
 //            $group_name = $wf->idwf . '/' . $parent->properties->name;
             $group_name = $wf->folder . '/' . $parent->properties->name;
             $group = $this->group->get_byname($group_name);
-            $parent_token=$this->get_token($wf->idwf, $wf->case, $parent->resourceId);
+            $parent_token = $this->get_token($wf->idwf, $wf->case, $parent->resourceId);
             //---check if parent is preassigned
-            $data['idgroup'] = (isset($parent_token['idgroup'])) ? array_merge($parent_token['idgroup'], $data['idgroup']):$data['idgroup'];
-            $data['assign'] = (isset($parent_token['assign'])) ? array_merge($parent_token['assign'], $data['assign']):$data['assign'];
+            $data['idgroup'] = (isset($parent_token['idgroup'])) ? array_merge($parent_token['idgroup'], $data['idgroup']) : $data['idgroup'];
+            $data['assign'] = (isset($parent_token['assign'])) ? array_merge($parent_token['assign'], $data['assign']) : $data['assign'];
 
             //---ASSIGN to the group the lane represents
             if ($group) {
