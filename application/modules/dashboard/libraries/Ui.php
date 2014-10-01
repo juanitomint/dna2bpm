@@ -48,11 +48,11 @@ class ui {
         $this->styles['fullcalendar'][] = $data['base_url'] . "dashboard/assets/bootstrap-wysihtml5/css/fullcalendar/fullcalendar.css";
         $this->styles['selectJS'][] = $data['base_url'] . "jscript/select2-3.4.5/select2.css";
         $this->styles['selectJS'][] = $data['base_url'] . "jscript/select2-3.4.5/select2-bootstrap.css";
-
+        $this->styles['inboxJS'][] = $data['base_url'] . "inbox/assets/css/inbox.css";
+        
         // Load default JS 
         $default = array('jquery', 'jqueryUI', 'bootstrap', 'WYSIHTML5', 'adminLTE', 'inboxJS','dashboardJS', 'jquery.form', 'morris');
-// var_dump($data);
-//       exit(); 
+ 
         //Custom JS Check
         if (isset($data['js'])) {
             foreach ($data['js'] as $k => $js) {
@@ -69,14 +69,15 @@ class ui {
         // CSS for scripts enqueued
         $data['widgets_css'] = "";
         foreach ($default as $myjs) {
-            if (isset($this->styles[$myjs])) {
-                $data['widgets_css'] = "";
-                foreach ($this->styles[$myjs] as $k => $mycss) {
+            if (isset($this->styles[$myjs])) {        	
+                //$data['widgets_css'] = "";
+                foreach ($this->styles[$myjs] as $k => $mycss) {              	
                     $data['widgets_css'].=$this->custom_styles(array($mycss => $myjs));
+                   // var_dump( $data['widgets_css'],"-----");
                 }
             }
         }
-
+        
         // Custom JS from user
         if (isset($data['custom_js']))
             $data['js'] = $this->custom_scripts($data['custom_js']);
@@ -154,15 +155,17 @@ class ui {
     	global $data;
         $strcss = '';
         foreach ($css as $cssfile => $desc) {
-
+        	
             $cssfile=str_replace('{base_url}',  base_url(),$cssfile);
+            
             
 /*             if(!stristr($cssfile,'http://'))$cssfile.=$data['base_url'].$cssfile; // Si viene sin base_url */
 
             $strcss.="<!-- CSS:$desc -->\n";
             $strcss.="<link rel='stylesheet' type='text/css' href='$cssfile' />\n";
-     
+            
         }
+
         return $strcss;
     }
 

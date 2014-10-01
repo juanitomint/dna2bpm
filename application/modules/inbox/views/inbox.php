@@ -1,5 +1,5 @@
 <!-- MAILBOX BEGIN -->
-<input type="hidden" id="whereiam" value="{folder}"/>
+
                     <div class="mailbox row">
                         <div class="col-xs-12">
                             <div class="box box-solid">
@@ -15,10 +15,10 @@
                                             <div style="margin-top: 15px;">
                                                 <ul class="nav nav-pills nav-stacked">
                                                     <li class="header">{lang folders}</li>
-                                                    <li class="{if {folder}=='inbox'}active{/if}"><a href="{base_url}dashboard/inbox"><i class="fa fa-inbox"></i> {lang inbox} ({inbox_count})</a></li>
-                                                    <li class="{if {folder}=='outbox'}active{/if}"><a href="{base_url}dashboard/inbox/outbox"><i class="fa fa-mail-forward"></i> {lang sent}</a></li>
-                                                    <li class="{if {folder}=='star'}active{/if}" ><a  href="{base_url}dashboard/inbox/star"><i class="fa fa-star"></i> {lang starred}</a></li>
-                                                    <li class="{if {folder}=='trash'}active{/if}"><a href="{base_url}dashboard/inbox/trash"><i class="fa fa-folder"></i> {lang trash}</a></li>
+                                                    <li id="bt_inbox" class="{if {folder}=='inbox'}active{/if}"><a href="{base_url}inbox/print_folder/inbox" class="ajax" data-target="inbox-list"><i class="fa fa-inbox"></i> {lang inbox} ({inbox_count})</a></li>
+                                                    <li id="bt_outbox" class="{if {folder}=='outbox'}active{/if}"><a href="{base_url}inbox/print_folder/outbox" class="ajax" data-target="inbox-list"><i class="fa fa-mail-forward"></i> {lang sent}</a></li>
+                                                    <li id="bt_star" class="{if {folder}=='star'}active{/if}" ><a  href="{base_url}inbox/print_folder/star" class="ajax" data-target="inbox-list"><i class="fa fa-star"></i> {lang starred}</a></li>
+                                                    <li id="bt_trash" class="{if {folder}=='trash'}active{/if}"><a href="{base_url}inbox/print_folder/trash" class="ajax" data-target="inbox-list"><i class="fa fa-folder"></i> {lang trash}</a></li>
                                                 </ul>
                                             </div>
                                         </div><!-- /.col (LEFT) -->
@@ -75,39 +75,14 @@
                                                 </div>
                                             </div><!-- /.row -->
 
-                                            <div class="table-responsive">
-                                                <!-- THE MESSAGES -->
-                                                
-                                                <table class="table table-mailbox">
-                                                 {if {folder}=='outbox'}
-                                                	{mymsgs}
-                                                    <tr class="{read} msg tag_{tag}" data-msgid="{msgid}">                                     
-                                                        <td class="">{from_name}</td>
-                                                        <td class="subject ">{subject}</td>
-                                                        <td class="time">{msg_time}</td>
-                                                    </tr>
-                                                    {/mymsgs}
-                                                {else}
-                                               		 {mymsgs}
-                                                    <tr class="{read} msg tag_{tag}" data-msgid="{msgid}">
-                                                        <td class="small-col"><input type="checkbox" /></td>
-                                                        <td class="small-col"> <a class="{icon_star}" href="#"></a></td> 
-                                                        <td class="">{from_name}</td>
-                                                        <td class="subject ">{subject}</td>
-                                                        <td class="time">{msg_time}</td>
-                                                    </tr>
-                                                    {/mymsgs}
-                                                {/if}
-                                                </table>
-                                                
+                                            <div class="table-responsive inbox-list">
+                                            {my_msgs}                                               
                                             </div><!-- /.table-responsive -->
                                         </div><!-- /.col (RIGHT) -->
                                     </div><!-- /.row -->
                                 </div><!-- /.box-body -->
                                 <div class="box-footer clearfix">
-                                    <div class="pull-right">
-												{pagination}
-                                    </div>
+
                                 </div><!-- box-footer -->
                             </div><!-- /.box -->
                         </div><!-- /.col (MAIN) -->
