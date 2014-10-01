@@ -240,6 +240,11 @@ class Dashboard extends MX_Controller {
         $data['more_info_text'] = (isset($data['more_info_text'])) ? $data['more_info_text'] : $this->lang->line('more_info');
         return $this->parser->parse($template, $data, true);
     }
+    function widget($template, $data) {
+        $data['lang'] = $this->lang->language;
+        $data['more_info_text'] = (isset($data['more_info_text'])) ? $data['more_info_text'] : $this->lang->line('more_info');
+        return $this->parser->parse($template, $data, true);
+    }
 
     // ==== Tasks
 
