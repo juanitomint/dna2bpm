@@ -34,18 +34,20 @@ class Pagination extends MX_Controller {
     			'items_total'=>0,
     			'items_x_page'=>10,
     			'pagination_width'=>5,
-    			'class_ul'=>""
-    			,'class_a'=>""
+    			'class_ul'=>"",
+    			'class_a'=>"",
+     			'ajax_target'=>''
     	);
 
     	$params=array_merge($default,$config);
 		extract($params);
 
-    	$link=$url."/page/";
+    	//$link=$url."/page/";
+    	$link=$url."/";
     	$paged['total_pages']=floor($items_total/$items_x_page);
 
     	if($items_total%$items_x_page)$paged['total_pages']++;
-		$current_page=$this->get_current_page();	
+		//$current_page=$this->get_current_page();	
 
     	// MIN MAX RANGE
     	$actual=(int)$current_page;
@@ -67,7 +69,7 @@ class Pagination extends MX_Controller {
     		$back=$paged['min']-1;
     		$url=$link.$back;
     	}
-    	$customData['pagination'].=" <li class='$class'><a href='$url' class='prev $class_a'>&laquo;</a></li>";
+    	$customData['pagination'].=" <li class='$class'><a href='$url' class='prev $class_a' data-target='$ajax_target'>&laquo;</a></li>";
     	 
     	// Pages Loop
     	for($i=$paged['min'];$i<=$paged['max'];$i++){
@@ -78,7 +80,7 @@ class Pagination extends MX_Controller {
     		}else{
     			$url=$link.$i;
     		}  	    		
-    	$customData['pagination'].="<li class='$class'><a href='$url' class='$class_a'>$i</a></li>";
+    	$customData['pagination'].="<li class='$class'><a data-target='$ajax_target' href='$url' class='$class_a'>$i</a></li>";
     	}
     	
     	// Arrow Next >

@@ -44,46 +44,51 @@ class Inbox extends MX_Controller {
      	
      	$customData['base_url'] = $this->base_url;
      	$customData['module_url'] = $this->module_url;   	
+    	$customData['folder']='inbox';  // Default	
+    	$customData['reply']=false;
+     	$customData['inbox_count']=$this->msg->count_msgs($this->idu,'inbox'); 
+     	$customData['my_msgs']=$this->get_folder();
+     	
+    	$customData['content']=$this->parser->parse('inbox/inbox', $customData, true, true);
 
-    	// Determino el folder
-    	$folders=array('inbox','trash','outbox','star');
+	    return $customData;
+    }
+    
+    //====== wrapper
+    function print_folder($folder='inbox',$current_page=1){
+    	$filter=$this->input->post('filter');
+    	echo $this->get_folder($folder,$current_page,$filter);
+    }
+    
+    //====== folder inbox
+    function get_folder($folder='inbox',$current_page=1,$filter=array()){
+
+
+	    // Star 
+		if($folder=='star'){
+			$folder=null;
+			$filter=array('star'=>true);
+		}
+
     	$source='to';
-    	// get folder from URI
-    	if($this->uri->segment(3) && in_array($this->uri->segment(3),$folders)){
-    		$folder=$this->uri->segment(3);
-    	}else{
-    		$folder='inbox';
-    	}
     	$customData['folder']=$folder;
-    	
-    	// Filter
-    	$i=1;
-    	$filter=null;
-    	while($this->uri->segment($i)){
-    		if($this->uri->segment($i)=='filter'){
-    			$filter=$this->uri->segment($i+1)?($this->uri->segment($i+1)):(null);
-    			break;
-    		}
-    		$i++;
-    	}
 
-
-
-    	//==== Pagination
-    	define("ITEMS_X_PAGE",10);
-    	$current_page=$this->pagination->get_current_page();
+    //==== Pagination
+    	define("ITEMS_X_PAGE",4);
     	$skip=($current_page-1)*ITEMS_X_PAGE;
     	//==== Bring me my MSGs!!!
     	$mymgs = $this->msg->get_msgs($this->idu,$folder,$skip,ITEMS_X_PAGE,$filter);
+
     	$items=$mymgs->count();
 
-    	$config=array('url'=>$this->base_url."dashboard/inbox",
-    			//'current_page'=>1,
+    	$config=array('url'=>$this->base_url."inbox/print_folder/".$folder,
+    			'current_page'=>$current_page,
     			'items_total'=>$items, // Total items in array
     			'items_x_page'=>ITEMS_X_PAGE,
     			'pagination_width'=>5,
     			//     			'class_ul'=>""
-    			//     			,'class_a'=>""
+    			'class_a'=>"ajax",
+    			'ajax_target'=>'inbox-list'
     	);
     	$customData['pagination']=$this->pagination->index($config);
 
@@ -120,11 +125,8 @@ class Inbox extends MX_Controller {
     
     		$customData['mymsgs'][] = $msg;
     	}
-    	$customData['reply']=false;
-     	$customData['inbox_count']=$this->msg->count_msgs($this->idu,'inbox'); 
-    	$customData['content']=$this->parser->parse('inbox/inbox', $customData, true, true);
-
-	    return $customData;
+    	
+    	return $this->parser->parse('inbox/msgs', $customData, true, true);
     }
     
     //====  Mini INBOX version for toolbar

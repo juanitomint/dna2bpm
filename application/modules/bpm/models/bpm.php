@@ -66,7 +66,7 @@ class Bpm extends CI_Model {
                         $data[$key] = $value;
                     }
                 } else { //add regular data
-                    $data->$key = $value;
+                    $data[$key] = $value;
                 }
             }
         }
@@ -366,7 +366,7 @@ class Bpm extends CI_Model {
         if (!isset($data['iduser']))
             $data['iduser'] = (int) $this->session->userdata('iduser');
 
-        if (!isset($idwf) or ! isset($case) or ! isset($resourceId)) {
+        if (!isset($idwf) or !isset($case) or !isset($resourceId)) {
             show_error("Can't update whith: idwf:$idwf case:$case  resourceId:$resourceId<br/>Incomplete Data.");
         }
         //$title=(isset($shape->properties->title))?$shape->properties->title;$shape->stencil->id;
@@ -460,7 +460,11 @@ class Bpm extends CI_Model {
                 unset($values['id']);
                 unset($values['owner']);
                 unset($values['parent']);
-                $token['data'] = $values + $tdata;
+                try {
+                    $token['data'] = (array)$values + (array)$tdata;
+                } catch (Exception $e) {
+                    
+                }
             }
 //            echo json_encode($token);
 //            exit;
@@ -1603,7 +1607,7 @@ class Bpm extends CI_Model {
 
     function get_resources($shape, $wf, $case = null) {
         $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
-        $debug = true;
+//        $debug = true;
         $rtn = array();
         if (isset($shape->properties->resources->items)) {
             if ($debug)
@@ -1699,7 +1703,7 @@ class Bpm extends CI_Model {
 
 //---check if user belong to the group the task is assigned to
 //---but only if the task havent been assigned to an specific user
-        if (isset($token['idgroup']) and ! isset($token['assign'])) {
+        if (isset($token['idgroup']) and !isset($token['assign'])) {
             foreach ($user->group as $thisgroup) {
                 if (in_array((int) $thisgroup, $token['idgroup'])) {
                     $is_allowed = true;

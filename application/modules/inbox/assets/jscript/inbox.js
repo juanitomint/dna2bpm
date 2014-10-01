@@ -5,9 +5,41 @@
 $(document).ready(function(){
 var whereiam=$('#whereiam').val();
 
+// ajax handle
+$(document).on('click','.ajax',function(e){
+	e.preventDefault();// avoid msg open
+	var url=$(this).attr('href');
+	if((url)=="#")return;
+	var target="."+$(this).attr('data-target');
+
+	$.post( url, function( data ) {
+		$(target).html(data);
+		//==== icheck
+	    $('input[type="checkbox"]').iCheck({
+	        checkboxClass: 'icheckbox_minimal',
+	        radioClass: 'iradio_minimal'
+	    });
+	    //When unchecking the checkbox
+	    $(document).on('ifUnchecked', "#check-all", function(event) {
+	        //Uncheck all checkboxes
+	        $("input[type='checkbox']", ".table-mailbox").iCheck("uncheck");
+	    });
+	    //When checking the checkbox
+	    $("#check-all").on('ifChecked', function(event) {
+	        $("input[type='checkbox']", ".table-mailbox").iCheck("check");
+	    });
+	    //====
+	    //var folder=$('#whereiam').val();
+	    $('.nav-stacked li').removeClass('active');
+	    var folder=url.match(/print_folder\/(.+)/i);
+	    $('#bt_'+folder[1]).addClass('active');
+	});
+    
+});
+
+
 // add star
 $(document).on('click','.fa-star',function(e){
-
     $(this).removeClass('fa-star');
     $(this).addClass('fa-star-o');
     var msgid=$(this).parents('tr').attr('data-msgid');
@@ -16,7 +48,7 @@ $(document).on('click','.fa-star',function(e){
 });
 
 //remove star
-$(document).on("click",".fa-star-o",function(){	
+$(document).on("click",".fa-star-o",function(e){	
 
     $(this).removeClass('fa-star-o');
     $(this).addClass('fa-star');
@@ -117,9 +149,7 @@ $(document).on("click","#msg_action a,#msg_tag a",function(){
 		case "tag":
 			var tag=$(this).attr('data-priority');
 			var url = globals.base_url+'inbox/inbox/set_tag';  
-
 		    $.post(url,{'tag':tag,'msgid':msgid},function(data){
-
 		    	msgid.forEach(function(id){
 		    		$("[data-msgid='"+id+"']").removeClass('tag_extreme tag_high tag_normal tag_low tag_notag');
 		    		$("[data-msgid='"+id+"']").addClass('tag_'+tag);
@@ -137,8 +167,14 @@ $(document).on("click","#msg_action a,#msg_tag a",function(){
 $(document).on("submit","[name='form_search']",function(e){
 	/* Search */
 	e.preventDefault();
-	var find=$('#search').val();
-    window.location=window.location+'/filter/'+find; ;
+
+	var filter=$('#search').val();
+	var folder=$('#whereiam').val();
+
+	var url = globals.base_url+'inbox/inbox/print_folder/'+folder+'/';  
+	$.post( url, {filter:filter},function( data ) {
+		$('.inbox-list').html(data);
+	});
 
 	
 });
