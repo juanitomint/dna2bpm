@@ -1607,7 +1607,7 @@ class Bpm extends CI_Model {
 
     function get_resources($shape, $wf, $case = null) {
         $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
-        $debug = true;
+//        $debug = true;
         $rtn = array();
         if (isset($shape->properties->resources->items)) {
             if ($debug)
