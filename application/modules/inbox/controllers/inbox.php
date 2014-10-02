@@ -10,7 +10,7 @@ class Inbox extends MX_Controller {
         $this->load->library('pagination');
         $this->load->model('msg');
         $this->load->model('user');
-
+        $this->config->load('inbox/config');
         //---base variables
         $this->base_url = base_url();
         $this->module_url = base_url() . $this->router->fetch_module().'/';
@@ -50,7 +50,7 @@ class Inbox extends MX_Controller {
      	$customData['my_msgs']=$this->get_folder();
      	
     	$customData['content']=$this->parser->parse('inbox/inbox', $customData, true, true);
-
+    	
 	    return $customData;
     }
     
@@ -63,35 +63,37 @@ class Inbox extends MX_Controller {
     //====== folder inbox
     function get_folder($folder='inbox',$current_page=1,$filter=array()){
 
-
-	    // Star 
+    	define("PAGINATION_WIDTH",$this->config->item('pagination_width')?:5);
+    	define("PAGINATION_ALWAYS_VISIBLE",$this->config->item('pagination_always_visible'));
+    	define("PAGINATION_ITEMS_X_PAGE",$this->config->item('pagination_items_x_page')?:10);
+    	define("DATE_FORMAT_WITHIN24HS",$this->config->item('date_format_within24hs')?:'H:i');
+    	define("DATE_FORMAT_BEYOND24HS",$this->config->item('date_format_beyond24hs')?:'Y-m-d H:i');
+    	
+	    // Star twitch
 		if($folder=='star'){
 			$folder=null;
 			$filter=array('star'=>true);
 		}
 
-    	$source='to';
     	$customData['folder']=$folder;
 
-    //==== Pagination
-    	define("ITEMS_X_PAGE",4);
-    	$skip=($current_page-1)*ITEMS_X_PAGE;
     	//==== Bring me my MSGs!!!
-    	$mymgs = $this->msg->get_msgs($this->idu,$folder,$skip,ITEMS_X_PAGE,$filter);
-
-    	$items=$mymgs->count();
-
+    	$skip=($current_page-1)*PAGINATION_ITEMS_X_PAGE;
+    	$mymgs = $this->msg->get_msgs($this->idu,$folder,$skip,PAGINATION_ITEMS_X_PAGE,$filter);
+    	
+    	//==== Pagination
     	$config=array('url'=>$this->base_url."inbox/print_folder/".$folder,
     			'current_page'=>$current_page,
-    			'items_total'=>$items, // Total items in array
-    			'items_x_page'=>ITEMS_X_PAGE,
-    			'pagination_width'=>5,
-    			//     			'class_ul'=>""
+    			'items_total'=>$mymgs->count(), // Total items 
+    			'items_x_page'=>PAGINATION_ITEMS_X_PAGE,
+    			'pagination_width'=>PAGINATION_WIDTH,
+    			//'class_ul'=>""
     			'class_a'=>"ajax",
-    			'ajax_target'=>'inbox-list'
+    			'pagination_always_visible'=>PAGINATION_ALWAYS_VISIBLE
     	);
     	$customData['pagination']=$this->pagination->index($config);
-
+		//== 
+		
     	foreach ($mymgs as $msg) {
     		$msg['msgid'] = $msg['_id'];
     		$msg['subject']=(strlen($msg['subject'])!=0)?($msg['subject']):("No Subject");
@@ -99,8 +101,7 @@ class Inbox extends MX_Controller {
     		//Time lapse
     		$datetime1 = date_create($msg['checkdate']);
     		$datetime2 = date_create('now');
-    		$interval = date_diff($datetime1, $datetime2);
-		
+    		$interval = date_diff($datetime1, $datetime2);		
     	    	    if($interval->format('%a%')==0){
     			// Less then 24hs
     			$horas=$interval->h;
@@ -108,10 +109,10 @@ class Inbox extends MX_Controller {
     			if($horas==0){
     				$msg['msg_time']="$min min";
     			}else{
-    				$msg['msg_time']=$datetime1->format('H:i');
+    				$msg['msg_time']=$datetime1->format(DATE_FORMAT_WITHIN24HS);
     			}
     		}else{
-    			$msg['msg_time']=$datetime1->format('Y-m-d H:i'); 
+    			$msg['msg_time']=$datetime1->format(DATE_FORMAT_BEYOND24HS); 
     		}
 
 

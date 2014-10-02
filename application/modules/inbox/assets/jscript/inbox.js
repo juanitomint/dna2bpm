@@ -4,13 +4,13 @@
 **/
 $(document).ready(function(){
 var whereiam=$('#whereiam').val();
+var target=".dummy_msgs";
 
 // ajax handle
 $(document).on('click','.ajax',function(e){
 	e.preventDefault();// avoid msg open
 	var url=$(this).attr('href');
 	if((url)=="#")return;
-	var target="."+$(this).attr('data-target');
 
 	$.post( url, function( data ) {
 		$(target).html(data);
@@ -173,7 +173,7 @@ $(document).on("submit","[name='form_search']",function(e){
 
 	var url = globals.base_url+'inbox/inbox/print_folder/'+folder+'/';  
 	$.post( url, {filter:filter},function( data ) {
-		$('.inbox-list').html(data);
+		$(target).html(data);
 	});
 
 	
