@@ -454,18 +454,19 @@ class Bpm extends CI_Model {
         $data = $this->load_case_data($case, $idwf);
         $token = $this->get_token($idwf, $idcase, $resourceId);
         if ($token) {
-            $tdata = (isset($token['data'])) ? $token['data'] : array();
+            $token['data']= (isset($token['data'])) ? $token['data'] : array();
             foreach ($data as $entity => $values) {
                 unset($values['_id']);
                 unset($values['id']);
                 unset($values['owner']);
                 unset($values['parent']);
                 try {
-                    $token['data'] = (array)$values + (array)$tdata;
+                    $token['data'] = (array)$values + $token['data'];
                 } catch (Exception $e) {
-                    
+                  echo $e->getMessage();  
                 }
             }
+//            var_dump($token);
 //            echo json_encode($token);
 //            exit;
             $this->save_token($token);
