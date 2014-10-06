@@ -18,13 +18,6 @@ class Pagination extends MX_Controller {
         $this->load->library('parser');
         $this->base_url = base_url();
         
-        // Config
-//         $this->items_x_page=0;
-//         $this->url='';
-//         $this->pagination_width=5;
-         $this->current_page=1;
-//         $this->class_ul='';
-//         $this->class_a='';
 
     }
 
@@ -102,7 +95,7 @@ class Pagination extends MX_Controller {
     }
     
     // ==== Getters
-    function get_current_page(){
+/*     function get_current_page(){
     	$i=1;
     	while($this->uri->segment($i)){
     		if($this->uri->segment($i)=='page'){
@@ -112,7 +105,7 @@ class Pagination extends MX_Controller {
     		$i++;
     	}
     	return $this->current_page;
-    }
+    } */
     
 
     

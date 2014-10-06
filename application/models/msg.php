@@ -61,12 +61,12 @@ class Msg extends CI_Model {
     	return $this->mongo->db->msg->find($filter);
     }
 
-    function count_msgs($iduser, $folder = null,$read=null) {
+    function count_msgs($iduser, $filter=array()) {
         $query = array(
             'to' => (double) $iduser,
-            'folder' => $folder
+            'folder' => $filter['folder']
         );
-        if(!is_null($read))$query['read']=$read;
+        //if(!is_null($read))$query['read']=$read;
         return $this->mongo->db->msg->find($query)->count();
     }
 

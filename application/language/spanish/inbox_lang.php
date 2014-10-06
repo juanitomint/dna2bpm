@@ -32,3 +32,5 @@ $lang["high_priority"]='Prioridad alta';
 $lang["normal_priority"]='Prioridad normal';
 $lang["low_priority"]='Prioridad baja';
 $lang["remove_tag"]='Eliminar etiqueta';
+
+$lang["refresh"]='Actualizar';
