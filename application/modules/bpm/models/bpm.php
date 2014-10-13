@@ -140,7 +140,9 @@ class Bpm extends CI_Model {
         //var_dump2($mywf);
         unset($mywf['_id']);
         $wf = $this->db->where($query)->update('workflow', $mywf, array('upsert' => true));
-        $this->save_image_file($idwf, $svg);
+        if ($this->config->item('make_thumbnails')) {
+            $this->save_image_file($idwf, $svg);
+        }
         $this->save_mode_file($idwf, $data);
         $this->zip_model($idwf, $data);
 
@@ -366,7 +368,7 @@ class Bpm extends CI_Model {
         if (!isset($data['iduser']))
             $data['iduser'] = (int) $this->session->userdata('iduser');
 
-        if (!isset($idwf) or !isset($case) or !isset($resourceId)) {
+        if (!isset($idwf) or ! isset($case) or ! isset($resourceId)) {
             show_error("Can't update whith: idwf:$idwf case:$case  resourceId:$resourceId<br/>Incomplete Data.");
         }
         //$title=(isset($shape->properties->title))?$shape->properties->title;$shape->stencil->id;
@@ -457,23 +459,23 @@ class Bpm extends CI_Model {
             $mywf = $this->load($idwf);
             $wf = $this->bindArrayToObject($mywf ['data']);
             //---tomo el template de la tarea
-            $wf->idwf=$idwf;
-            $wf->case=$idcase;
+            $wf->idwf = $idwf;
+            $wf->case = $idcase;
             $shape = $this->bpm->get_shape($resourceId, $wf);
-            $token=$this->token_checkin(array('status'=>'finished'), $wf, $shape);
+            $token = $this->token_checkin(array('status' => 'finished'), $wf, $shape);
         }
         $token['data'] = (isset($token['data'])) ? $token['data'] : array();
-            foreach ($data as $entity => $values) {
-                unset($values['_id']);
-                unset($values['id']);
-                unset($values['owner']);
-                unset($values['parent']);
-                try {
-                    $token['data'] = (array) $values + $token['data'];
-                } catch (Exception $e) {
-                    echo $e->getMessage();
-                }
+        foreach ($data as $entity => $values) {
+            unset($values['_id']);
+            unset($values['id']);
+            unset($values['owner']);
+            unset($values['parent']);
+            try {
+                $token['data'] = (array) $values + $token['data'];
+            } catch (Exception $e) {
+                echo $e->getMessage();
             }
+        }
 //            var_dump($token);
 //            echo json_encode($token);
 //            exit;
@@ -1711,7 +1713,7 @@ class Bpm extends CI_Model {
 
 //---check if user belong to the group the task is assigned to
 //---but only if the task havent been assigned to an specific user
-        if (isset($token['idgroup']) and !isset($token['assign'])) {
+        if (isset($token['idgroup']) and ! isset($token['assign'])) {
             foreach ($user->group as $thisgroup) {
                 if (in_array((int) $thisgroup, $token['idgroup'])) {
                     $is_allowed = true;
