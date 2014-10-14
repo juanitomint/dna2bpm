@@ -48,6 +48,17 @@
         },
         {
             "col1": [        
+                            {
+                    "title": "2do",
+                    "module": "dashboard",
+                    "controller": "dashboard",
+                    "function": "knob",
+                    "js":[{"0":"knob"}],
+ 					"params":[
+ 					"[{'value':50,'data-label':'Knob1 orange','data-fgColor':'#f60'},{'value':90,'data-label':'Knob2'},{'value':20,'data-label':'Knob3'}]",
+ 					"{'title':'Knob TEST','col-md':4,'col-sm':6,'col-xs':6}"
+ 					]
+                },
                 {
                     "title": "2do",
                     "module": "bpm",
@@ -60,7 +71,6 @@
                     "controller": "bpmui",
                     "function": "widget_cases"
                 }
-
             ]
         },
         {
