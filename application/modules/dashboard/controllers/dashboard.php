@@ -394,8 +394,77 @@ class Dashboard extends MX_Controller {
         return $this->parser->parse('widgets/box_primary', $data, true, true);
     }
 
-    function knob($data = array()) {
-        return $this->parser->parse('widgets/knob', $data, true, true);
+    function knob($data = "",$config="") {
+
+// 		JSON data example
+//  	"params":[
+//  	"[{'value':50,'data-label':'Hey','data-fgColor':'#f60'},{'value':90,'data-label':'Hey2'},{'value':20,'data-label':'Hey3'}]",
+//  	"{'title':'mytitle','col-md':4,'col-sm':6,'col-xs':6}"
+//  	]
+// 		First parameter brings data for each knob, second parameter is for general settings
+    			
+    	$data_ST = str_replace("'", "\"", $data);
+    	$config_ST = str_replace("'", "\"", $config);
+    	$data=(json_decode($data_ST,true));
+    	$config=(json_decode($config_ST,true));
+
+        // Global Settings
+        $default=array(
+        	'data-width'=>'90',
+        	'data-height'=>'90',
+        	'data-min'=>0,
+        	'data-max'=>100,
+        	//'data-step'=>1,//step size 
+        	//'data-angleOffset'=>0,  //starting angle in degrees  
+        	//'data-angleArc'=>360,//arc size in degrees
+        	//'data-readOnly'=>true,
+        	//'data-fgColor'=>'#f56954',
+        	//'data-font'=>'arial',
+        	//'data-inputColor'=>'#0f0', // number color
+        	//'data-linecap'=>'butt', // butt|round    	  		
+        	'data-thickness'=>.3,
+        	//'data-displayInput'=>true,
+        	//'data-displayPrevious'=>false, // show/hide shadow when moving the knob
+        	'title'=>'-',
+        	'col-md'=>3,
+        	'col-sm'=>6,
+        	'col-xs'=>6
+        );
+
+        $config=array_merge($default,$config); // Join user params with default 
+
+        // get params for parser
+        $customData['title']=$config['title'];
+        $customData['col-md']=$config['col-md'];
+        $customData['col-sm']=$config['col-sm'];
+        $customData['col-xs']=$config['col-xs'];
+
+
+        //== DEBUG
+//          $data[]=array('value'=>50,'data-label'=>'Fuck');
+//          $data[]=array('value'=>10,'data-fgColor'=>'#f60','data-label'=>'Fuck');
+		//==
+        var_dump($data);
+
+        foreach($data as $item){
+        	$myconfig=array_merge($config,$item);
+        	
+        	$input=" ";
+        	// individual settings
+        	foreach($myconfig as $attr=>$val){
+        		$input.="$attr='$val' ";
+        	}
+			$label=(isset($myconfig['data-label']))?($myconfig['data-label']):('');
+        	$customData['knobs'][]=array(
+        			'input'=>"<input type='text' $input class='knob' >",
+        			'label'=>$label
+        	);
+        	
+
+        }
+
+        return $this->parser->parse('widgets/knob', $customData, true, true);
+        
     }
 
     function widget_dashboards() {

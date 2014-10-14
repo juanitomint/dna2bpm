@@ -49,9 +49,10 @@ class ui {
         $this->styles['selectJS'][] = $data['base_url'] . "jscript/select2-3.4.5/select2.css";
         $this->styles['selectJS'][] = $data['base_url'] . "jscript/select2-3.4.5/select2-bootstrap.css";
         $this->styles['inboxJS'][] = $data['base_url'] . "inbox/assets/css/inbox.css";
+
         
         // Load default JS 
-        $default = array('jquery', 'jqueryUI', 'bootstrap', 'WYSIHTML5', 'adminLTE', 'inboxJS','dashboardJS', 'jquery.form', 'morris');
+        $default = array('jquery', 'jqueryUI', 'bootstrap', 'WYSIHTML5','adminLTE', 'inboxJS','dashboardJS', 'jquery.form', 'morris');
  
         //Custom JS Check
         if (isset($data['js'])) {
