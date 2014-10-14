@@ -300,29 +300,30 @@ class Bpm extends CI_Model {
         $svg = str_replace('<svg >', $header, $svg);
         $svg = str_replace('blank"href', 'blank" href', $svg);
         $this->load->helper('file');
+        $phantom_path=APPPATH.'modules/bpm/assets/jscript/phantomjs-1.9.7-linux-x86_64';
         $resize = '-resize 30%';
         $crop = '-crop 720x720+0+0';
         $path = 'images/svg/';
         $path_thumb = 'images/png/';
         $filename = $path . $idwf . '.svg';
         $filename_thumb = $path_thumb . $idwf . '.png';
-        $filename_crop = $path_thumb . $idwf . '-croped.png';
+        $filename_crop = $path_thumb . $idwf . '-cropped.png';
         $filename_thumb_small = $path_thumb . $idwf . '-small.png';
 
         $result = write_file($filename, $svg);
         $rtn = '';
-        $command = "convert '$filename' '$filename_thumb'";
+        $command =  "$phantom_path/bin/phantomjs $phantom_path/rasterize.js $filename $filename_thumb";
         exec($command, $cmd, $rtn);
         if ($debug) {
             echo "$command\n rt:$rtn\n";
         }
-        $command = "convert  $crop '$filename_thumb' '$filename_crop'";
+        $command = "$phantom_path/bin/phantomjs $phantom_path/crop.js $filename $filename_crop";
         exec($command, $cmd, $rtn);
 
         if ($debug) {
             echo "$command\n rt:$rtn\n";
         }
-        $command = "convert $resize '$filename_crop'  '$filename_thumb_small'";
+        $command = "$phantom_path/bin/phantomjs $phantom_path/zoom.js $filename_crop $filename_thumb_small .5";
         exec($command, $cmd, $rtn);
         if ($debug) {
             echo getcwd() . "\n";
