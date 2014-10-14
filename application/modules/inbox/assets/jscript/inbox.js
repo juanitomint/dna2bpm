@@ -28,7 +28,10 @@ $(document).on('click','.fa-star',function(e){
     $(this).removeClass('fa-star');
     $(this).addClass('fa-star-o');
     var msgid=$(this).parents('tr').attr('data-msgid');
-    $.post(globals.base_url+'inbox/inbox/set_star',{'state':'off','msgid':msgid},function(data){});
+    $.post(globals.base_url+'inbox/inbox/set_star',{'state':'off','msgid':msgid},function(data){
+    	update_counters();
+    });
+
     e.stopPropagation();// avoid msg open
 });
 
@@ -38,7 +41,10 @@ $(document).on("click",".fa-star-o",function(e){
     $(this).removeClass('fa-star-o');
     $(this).addClass('fa-star');
     var msgid=$(this).parents('tr').attr('data-msgid');
-    $.post(globals.base_url+'inbox/inbox/set_star',{'state':'on','msgid':msgid},function(data){});
+    $.post(globals.base_url+'inbox/inbox/set_star',{'state':'on','msgid':msgid},function(data){
+    	update_counters();	
+    });
+    
     e.stopPropagation();// avoid msg open
 });
 
@@ -56,10 +62,11 @@ $(document).on("click",".msg",function(e){
         $('#myModal').modal('show');
 
         this_msg.removeClass('unread');
-        this_msg.addClass('read');   
+        this_msg.addClass('read');  
+        update_counters();	
     });
 
-	update_counters();	
+	
     e.preventDefault();
 });
 
@@ -97,6 +104,7 @@ $(document).on("click","#msg_action a,#msg_tag a",function(){
 		    		$("[data-msgid='"+id+"']").removeClass('unread');
 		    		$("[data-msgid='"+id+"']").addClass('read');
 	    		});
+		    	update_counters();	
 		    });
 			break;
 		case "unread":
@@ -106,6 +114,7 @@ $(document).on("click","#msg_action a,#msg_tag a",function(){
 		    		$("[data-msgid='"+id+"']").removeClass('read');
 		    		$("[data-msgid='"+id+"']").addClass('unread');
 	    		});
+		    	update_counters();	
 		    });
 			break;
 		case "junk":
@@ -114,6 +123,7 @@ $(document).on("click","#msg_action a,#msg_tag a",function(){
 		    	msgid.forEach(function(id){
 		    		$("[data-msgid='"+id+"']").hide('500');
 	    		});
+		    	update_counters();	
 		    });
 			break;	
 		case "inbox":
@@ -124,6 +134,7 @@ $(document).on("click","#msg_action a,#msg_tag a",function(){
 			    		$("[data-msgid='"+id+"']").hide('500');
 		    		});
 		    	}
+		    	update_counters();	
 		    });
 			break;	
 		case "delete":
@@ -132,6 +143,7 @@ $(document).on("click","#msg_action a,#msg_tag a",function(){
 		    	msgid.forEach(function(id){
 		    		$("[data-msgid='"+id+"']").hide('500');
 	    		});
+		    	update_counters();	
 		    });
 			break;
 		case "tag":
@@ -145,7 +157,7 @@ $(document).on("click","#msg_action a,#msg_tag a",function(){
 		    });
 		break;
 	}
-		update_counters();	
+		
 	}
 	//console.log(msgid.length);
 
