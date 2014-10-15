@@ -1,8 +1,8 @@
 {
-    "createdBy": "Juan Ignacio Borda <juanignacioborda@gmail.com>",
-    "title": "Admin DashBoard",
+    "createdBy": "Gabriel Fojo <trialvd@gmail.com>",
+    "title": "Demo DashBoard",
     "view": "layout_2cols",
-    "icon": "fa-dashboard",
+    "icon": "fa-flask",
     "zones": [
         {
             "tiles": [
