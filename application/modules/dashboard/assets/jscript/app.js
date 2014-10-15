@@ -5,7 +5,6 @@
 
 $(document).ready(function() {
 
-    $(".knob").knob();
     $('.form-extra').ajaxForm({
         target: '#tiles_after section',
         replaceTarget: false
