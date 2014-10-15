@@ -41,6 +41,7 @@ class ui {
         $this->register_script('icheck', $data['module_url'] . 'assets/bootstrap-wysihtml5/js/plugins/iCheck/icheck.min.js', array('WYSIHTML5'));
         $this->register_script('selectJS', $data['base_url'] . 'jscript/select2-3.4.5/select2.min.js', array());
         $this->register_script('inboxJS', $data['base_url'] . 'inbox/assets/jscript/inbox.js', array('jquery'));
+        $this->register_script('highCharts', $data['base_url'] . 'jscript/Highcharts-4.0.4/js/highcharts.js', array('jquery'));
         
         //===== CSS loaded only when same JS  handle is loaded
         $this->styles['morris'][] = $data['base_url'] . "dashboard/assets/bootstrap-wysihtml5/css/morris/morris.css";
@@ -52,7 +53,7 @@ class ui {
 
         
         // Load default JS 
-        $default = array('jquery', 'jqueryUI', 'bootstrap', 'WYSIHTML5','adminLTE', 'inboxJS','dashboardJS', 'jquery.form', 'morris');
+        $default = array('jquery', 'jqueryUI', 'highCharts','bootstrap', 'WYSIHTML5','adminLTE', 'inboxJS','dashboardJS', 'jquery.form', 'morris');
  
         //Custom JS Check
         if (isset($data['js'])) {

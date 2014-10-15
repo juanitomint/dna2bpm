@@ -380,13 +380,19 @@ class Dashboard extends MX_Controller {
         $this->dashboard('dashboard/json/tasks.json');
     }
     
-    // ============ Tasks
-/*     function get_config_panel($args=array()) {
-    	//array('id'=>'bt_pasteboard','name'=>'Pasteboard')
-    	return $this->parser->parse('_config_panel', $args, true, true);
-    } */
-    
+    // ============ Demo
+     function demo($args=array()) {
+    	 $this->dashboard('dashboard/json/demo.json');
 
+    } 
+    
+    // ============ highcharts
+    function highcharts($args=array()) {
+    	$data['lang'] = $this->lang->language;
+    	$data['base_url'] = $this->base_url;
+    	$data['module_url'] = $this->module_url;
+    	return $this->parser->parse('widgets/highcharts', $data, true, true);
+    }
     
     // ============ Widgets
 
@@ -394,6 +400,7 @@ class Dashboard extends MX_Controller {
         return $this->parser->parse('widgets/box_primary', $data, true, true);
     }
 
+    // ============ Knob
     function knob($data = "",$config="") {
 
 // 		JSON data example
