@@ -5,6 +5,7 @@
 
 $(document).ready(function() {
 
+    
     $('.form-extra').ajaxForm({
         target: '#tiles_after section',
         replaceTarget: false
