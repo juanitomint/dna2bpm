@@ -8,6 +8,11 @@
                                     </div>
                                 </div><!-- /.box-header -->
                                 <div class="box-body">
-									<div id="highcharts1" style="width:100%; height:400px;"></div>
+									<div id="highcharts1" style="width:100%; height:400px;">aa</div>
                                 </div><!-- /.box-body -->
 </div>
+<script>
+$( document ).ready(function() {
+	alert(1);
+	});
+</script>

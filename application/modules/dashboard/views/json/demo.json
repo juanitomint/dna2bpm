@@ -53,7 +53,7 @@
                     "module": "dashboard",
                     "controller": "dashboard",
                     "function": "knob",
-                    "js":[{"0":"knob"}],
+                    "js":[{"0":"knob"},{"{base_url}dashboard/assets/jscript/knob.js":"knobJS"}],
  					"params":[
  					"[{'value':50,'data-label':'Knob1 orange','data-fgColor':'#f60'},{'value':90,'data-label':'Knob2'},{'value':20,'data-label':'Knob3'}]",
  					"{'title':'Knob TEST','col-md':4,'col-sm':6,'col-xs':6}"
@@ -63,7 +63,8 @@
                     "title": "HighCharts",
                     "module": "dashboard",
                     "controller": "dashboard",
-                    "function": "highcharts"
+                    "function": "highcharts",
+                    "js":[{"0":"highCharts"}]
                 }
             ]
         },

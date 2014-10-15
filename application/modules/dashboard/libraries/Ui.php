@@ -53,7 +53,7 @@ class ui {
 
         
         // Load default JS 
-        $default = array('jquery', 'jqueryUI', 'highCharts','bootstrap', 'WYSIHTML5','adminLTE', 'inboxJS','dashboardJS', 'jquery.form', 'morris');
+        $default = array('jquery', 'jqueryUI','bootstrap','WYSIHTML5','adminLTE', 'inboxJS','dashboardJS', 'jquery.form', 'morris');
  
         //Custom JS Check
         if (isset($data['js'])) {

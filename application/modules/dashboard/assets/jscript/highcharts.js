@@ -4,7 +4,7 @@
 **/
 
 
-$(function () { 
+$(document).ready(function(){
     $('#highcharts1').highcharts({
         chart: {
             type: 'bar'

@@ -336,7 +336,11 @@ class Dashboard extends MX_Controller {
  				if(isset($myWidget['css']))
  					foreach($myWidget['css'] as $item){
 	 					foreach($item as $k=>$v){
-	 						$return['css'][$k]=$v;
+	 						if(is_numeric($k))
+	 							$return['css'][]=$v;
+	 						else{
+	 							$return['css'][$k]=$v;
+	 						}
 	 					}
  					}
  					
@@ -344,7 +348,11 @@ class Dashboard extends MX_Controller {
  				if(isset($myWidget['js']))
  					foreach($myWidget['js'] as $item){
 	 					foreach($item as $k=>$v){
-	 						$return['js'][$k]=$v;
+	 						if(is_numeric($k))
+	 							$return['js'][]=$v;
+	 						else{
+	 							$return['js'][$k]=$v;
+	 						}
 	 					}
  					}
  				
