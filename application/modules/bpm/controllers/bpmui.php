@@ -74,7 +74,8 @@ class Bpmui extends MX_Controller {
         }, $models);
         //----get folders
         $folders = array_unique(array_map(function($model) {
-                    return $model['folder'];
+                    if (isset($model['folder']))
+                        return $model['folder'];
                 }, $models));
         sort($folders);
         //-----make 2 level tree
@@ -82,7 +83,8 @@ class Bpmui extends MX_Controller {
             $data['folders'][] = array(
                 'folder' => $folder,
                 'models' => array_filter($models, function($model) use($folder) {
-                    return $model['folder'] == $folder;
+                    if (isset($model['folder']))
+                        return $model['folder'] == $folder;
                 })
             );
         }

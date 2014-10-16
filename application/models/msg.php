@@ -190,6 +190,3 @@ class Msg extends CI_Model {
     }
 
 }
-
-//
-?>

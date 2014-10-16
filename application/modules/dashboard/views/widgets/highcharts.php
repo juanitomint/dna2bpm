@@ -8,15 +8,6 @@
                                     </div>
                                 </div><!-- /.box-header -->
                                 <div class="box-body">
-                                    <div class="row">
-                                    {knobs}
-                                        <div class="col-md-{col-md} col-sm-{col-sm} col-xs-{col-xs} text-center">
-                                       		 {input}                              		                                                                                  
-                                       		 <div class="knob-label">{label}</div>
-                                        </div><!-- ./col -->
-                                    {/knobs}
-                                    </div><!-- /.row -->
-
-
+									<div id="highcharts1" style="width:100%; height:400px;">aa</div>
                                 </div><!-- /.box-body -->
 </div>

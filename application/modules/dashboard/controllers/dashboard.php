@@ -186,10 +186,11 @@ class Dashboard extends MX_Controller {
             'myidu' => $this->idu
         );
 
+
         // Toolbar
         $customData['toolbar_inbox'] = Modules::run('inbox/inbox/toolbar');
 
-
+        //$customData['js']=array('daterangerpicker'); // Just handles must be registered in UI
         /*
           Custom JS Example
           $customData['js']=array('knob','jquery'); // Just handles must be registered in UI
@@ -265,6 +266,8 @@ class Dashboard extends MX_Controller {
         }
         $return['js']=array();
         $return['css']=array();
+        $return['inlineJS']="";
+        
         //Zones
         foreach ($myconfig['zones'] as $zones) {
             $content = "";
@@ -326,17 +329,32 @@ class Dashboard extends MX_Controller {
                     $markup = $myWidget['module'] . '/' . $myWidget['controller'] . '/' . $myWidget['function'] . $markup;
 
                 // Si es un array uso el zonekey para identificar el markup
-                $mycontent = (is_array($markup)) ? ($markup['content']) : ($markup);
+                
+                if(is_array($markup)){
+                	$mycontent=$markup['content'];
+                	// inlineJS
+                	if(isset($markup['inlineJS']))
+                	$return['inlineJS'].=$markup['inlineJS'];
+                }else{
+                	$mycontent=$markup;
+                }
+                
+                
                 if (!$empty_spans)
-                    $content.=$mycontent;
+                	$content.=$mycontent;
                 else
-                    $content.="<div class='col-lg-$span '>$mycontent</div>";
+                	$content.="<div class='col-lg-$span '>$mycontent</div>";
+                
 
 				// CSS 
  				if(isset($myWidget['css']))
  					foreach($myWidget['css'] as $item){
 	 					foreach($item as $k=>$v){
-	 						$return['css'][$k]=$v;
+	 						if(is_numeric($k))
+	 							$return['css'][]=$v;
+	 						else{
+	 							$return['css'][$k]=$v;
+	 						}
 	 					}
  					}
  					
@@ -344,10 +362,13 @@ class Dashboard extends MX_Controller {
  				if(isset($myWidget['js']))
  					foreach($myWidget['js'] as $item){
 	 					foreach($item as $k=>$v){
-	 						$return['js'][$k]=$v;
+	 						if(is_numeric($k))
+	 							$return['js'][]=$v;
+	 						else{
+	 							$return['js'][$k]=$v;
+	 						}
 	 					}
- 					}
- 				
+ 					}		
             }
             
             // $content.='</div>';
@@ -380,13 +401,47 @@ class Dashboard extends MX_Controller {
         $this->dashboard('dashboard/json/tasks.json');
     }
     
-    // ============ Tasks
-/*     function get_config_panel($args=array()) {
-    	//array('id'=>'bt_pasteboard','name'=>'Pasteboard')
-    	return $this->parser->parse('_config_panel', $args, true, true);
-    } */
-    
+    // ============ Demo
+     function demo($args=array()) {
+    	 $this->dashboard('dashboard/json/demo.json');
 
+    } 
+    
+    // ============ highcharts
+    function highcharts($args=array()) {
+    	$data['lang'] = $this->lang->language;
+    	$data['base_url'] = $this->base_url;
+    	$data['module_url'] = $this->module_url;
+    	$return['content']=$this->parser->parse('widgets/highcharts', $data, true, true);
+    	
+    	$return['inlineJS']=<<<BLOCK
+    	//------- Highcharts
+    	$('#highcharts1').highcharts({
+        chart: {
+            type: 'bar'
+        },
+        title: {
+            text: 'Fruit Consumption'
+        },
+        xAxis: {
+            categories: ['Apples', 'Bananas', 'Oranges']
+        },
+        yAxis: {
+            title: {
+                text: 'Fruit eaten'
+            }
+        },
+        series: [{
+            name: 'Jane',
+            data: [1, 0, 4]
+        }, {
+            name: 'John',
+            data: [5, 7, 3]
+        }]
+    });
+BLOCK;
+    	return $return;
+    }
     
     // ============ Widgets
 
@@ -394,6 +449,7 @@ class Dashboard extends MX_Controller {
         return $this->parser->parse('widgets/box_primary', $data, true, true);
     }
 
+    // ============ Knob
     function knob($data = "",$config="") {
 
 // 		JSON data example
