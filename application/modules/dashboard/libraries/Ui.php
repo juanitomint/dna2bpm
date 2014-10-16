@@ -95,7 +95,7 @@ class ui {
         $data['footer'] = $this->enqueue_scripts($default);
         // Flush!!
 
-        $this->CI->parser->parse($file, $data, false, true);
+        $this->CI->parser->parse($file, $data, false, false);
     }
 
     /*

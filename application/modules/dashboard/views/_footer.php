@@ -25,7 +25,13 @@
 
         <!-- JS custom -->     
         {js} 
-
+        
+        <!-- JS inline -->     
+        <script>
+        $(document).ready(function(){
+        	{inlineJS}
+        });
+        </script>
 
     </body>
 </html>
