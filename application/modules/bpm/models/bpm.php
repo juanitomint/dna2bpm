@@ -300,7 +300,7 @@ class Bpm extends CI_Model {
         $svg = str_replace('<svg >', $header, $svg);
         $svg = str_replace('blank"href', 'blank" href', $svg);
         $this->load->helper('file');
-        $phantom_path=APPPATH.'modules/bpm/assets/jscript/phantomjs-1.9.7-linux-x86_64';
+        $phantom_path = APPPATH . 'modules/bpm/assets/jscript/phantomjs-1.9.7-linux-x86_64';
         $resize = '-resize 30%';
         $crop = '-crop 720x720+0+0';
         $path = 'images/svg/';
@@ -312,7 +312,7 @@ class Bpm extends CI_Model {
 
         $result = write_file($filename, $svg);
         $rtn = '';
-        $command =  "$phantom_path/bin/phantomjs $phantom_path/rasterize.js $filename $filename_thumb";
+        $command = "$phantom_path/bin/phantomjs $phantom_path/rasterize.js $filename $filename_thumb";
         exec($command, $cmd, $rtn);
         if ($debug) {
             echo "$command\n rt:$rtn\n";
@@ -1657,8 +1657,34 @@ class Bpm extends CI_Model {
                                 $rtn['assign'][] = (int) $iduser;
                                 if ($debug) {
                                     $user = $this->user->get_user($iduser);
-                                    echo "adding user:" . $user->nick . ':' . $user->idu . ':' . $user->name . ' ' . $user->lastname . '<br/>';
+                                    echo "adding user:" . $user->nick . ':' . $user->idu . ':' . $user->name . ' ' . $user->lastname . '<hr/>';
                                 }
+                            }
+                            break;
+                        case 'token':
+                            $shape = $this->get_shape_byprop(array('name' => $resourceassignmentexpr), $wf);
+                            if ($shape) {
+                                $token = $this->get_token($case['idwf'], $case['id'], $shape[0]->resourceId);
+                                if ($token) {
+                                    if ($debug) {
+                                        echo "Get Resources from BPM shape: $resourceassignmentexpr <hr/>";
+                                    }
+                                    $rtn['assign']=(isset($rtn['assign']))? $rtn['assign']:array(); 
+                                    $token['assign']=(isset($token['assign']))? $token['assign']:array(); 
+                                    $rtn['assign']=  array_unique(array_merge($token['assign'],$rtn['assign']));
+                                }
+                            }
+                            break;
+                        case 'shape':
+                            $shape = $this->get_shape_byprop(array('name' => $resourceassignmentexpr), $wf);
+                            if ($shape) {
+                                $res_extra = $this->get_resources($shape, $wf, $case);
+                                if ($debug) {
+                                    echo "Get Resources from BPM shape: $resourceassignmentexpr <hr/>";
+                                    var_dump($res_extra, $rtn);
+                                }
+                                $rtn = array_merge($rtn, $res_extra);
+                                
                             }
                             break;
                         case 'case':
