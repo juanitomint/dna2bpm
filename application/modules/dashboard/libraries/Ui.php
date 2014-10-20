@@ -95,7 +95,7 @@ class ui {
         $data['footer'] = $this->enqueue_scripts($default);
         // Flush!!
 
-        $this->CI->parser->parse($file, $data, false, false);
+        $this->CI->parser->parse($file, $data, false, true);
     }
 
     /*
@@ -199,4 +199,3 @@ class ui {
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-?>
