@@ -8,6 +8,6 @@
                                     </div>
                                 </div><!-- /.box-header -->
                                 <div class="box-body">
-									<div id="highcharts1" style="width:100%; height:400px;">aa</div>
+									<div id="highcharts1" style="width:100%; height:400px;"><a href="#" class="scrollme" data-target="tiles_after section">aa</a></div>
                                 </div><!-- /.box-body -->
 </div>

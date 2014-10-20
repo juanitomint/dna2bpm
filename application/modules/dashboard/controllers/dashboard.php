@@ -409,6 +409,7 @@ class Dashboard extends MX_Controller {
     
     // ============ highcharts
     function highcharts($args=array()) {
+    	
     	$data['lang'] = $this->lang->language;
     	$data['base_url'] = $this->base_url;
     	$data['module_url'] = $this->module_url;
