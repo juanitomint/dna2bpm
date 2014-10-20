@@ -41,7 +41,7 @@ class Msg extends CI_Model {
             }else{
             	//Check subject
             	$myregex = new MongoRegex("/$filter/i");
-            	$query['subject'] = $myregex;
+            	$query['$or']=array(array("subject" => $myregex),array("body" => $myregex));
             }
         }
 
