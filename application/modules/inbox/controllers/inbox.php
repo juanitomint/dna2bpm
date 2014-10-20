@@ -88,7 +88,7 @@ class Inbox extends MX_Controller {
     	//==== Bring me my MSGs!!!
     	$skip=($current_page-1)*PAGINATION_ITEMS_X_PAGE;
     	$mymgs = $this->msg->get_msgs($this->idu,$folder,$skip,PAGINATION_ITEMS_X_PAGE,$filter);
-    	
+
     	//==== Pagination
     	$config=array('url'=>$this->base_url."inbox/print_folder/".$folder,
     			'current_page'=>$current_page,

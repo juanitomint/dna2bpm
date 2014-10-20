@@ -28,9 +28,11 @@
         
         <!-- JS inline -->     
         <script>
+        {ignore}
         $(document).ready(function(){
         	{inlineJS}
         });
+        {/ignore}
         </script>
 
     </body>
