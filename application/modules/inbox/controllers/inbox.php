@@ -193,7 +193,7 @@ class Inbox extends MX_Controller {
     }
     
     //====  Widget - show msgs by case
-    function show_msgs_by_filter($filter=array()){
+    function show_msgs_by_filter($filter=array(),$customData=array()){
 
     	$customData['lang']= $this->lang->language;
     	$customData['base_url'] = $this->base_url;
