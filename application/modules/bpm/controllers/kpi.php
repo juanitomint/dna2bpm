@@ -409,7 +409,7 @@ class Kpi extends MX_Controller {
         Go back
         </a>";
 		// ----PROCESS KPIS
-		$this->parser->parse ( 'bpm/widgets/list.kpi.ui.php', $cpData );
+		$this->parser->parse ( 'bpm/widgets/list.kpi.ui.php', $cpData,false,true );
 	}
 	function list_cases($idkpi, $page = 1, $pagesize = 5) {
 		$debug = (isset ( $this->debug [__FUNCTION__] )) ? $this->debug [__FUNCTION__] : false;
@@ -618,6 +618,7 @@ class Kpi extends MX_Controller {
 	/*
 	 * Most common render goes inline
 	 */
+    /*
 	function get_filter($kpi) {
 		$filter = array ();
 		switch ($kpi ['filter']) {
@@ -664,8 +665,9 @@ class Kpi extends MX_Controller {
 			}
 		}
 		$filter = array_merge ( ( array ) $filter_extra, $filter );
-		return $filter;
+        var_dump($filter);
 	}
+    */
 	function Download($idkpi) {
 		$debug = false;
 		$types_path = $this->types_path;

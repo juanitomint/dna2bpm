@@ -29,7 +29,7 @@ class kpi_state {
     }
 
     function list_cases($kpi) {
-        $filter = Modules::run('kpi/get_filter', $kpi);
+        $filter = $this->CI->kpi_model->get_filter($kpi); 
         $status = (isset($kpi['status'])) ? $kpi['status'] : 'user';
         $filter['$and'] = array(
             array('token_status.' . $kpi['resourceId'] => array('$exists' => true)),
@@ -43,7 +43,7 @@ class kpi_state {
     }
 
     function core($kpi) {
-        $filter = Modules::run('kpi/get_filter', $kpi);
+        $filter = $this->CI->kpi_model->get_filter($kpi); 
         $status = (isset($kpi['status'])) ? $kpi['status'] : 'user';
         $filter['$and'] = array(
             array('token_status.' . $kpi['resourceId'] => array('$exists' => true)),
