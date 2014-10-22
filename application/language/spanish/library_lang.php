@@ -40,6 +40,7 @@ $lang["TasksPending"] = 'Tareas pendientes';
 $lang["Cases"] = 'Casos';
 $lang["CasesClosed"] = 'Casos Cerrados';
 $lang["Reports"] = 'Reportes';
+$lang["Alerts"] = 'Alertas';
 
 /* ---Control Panel ----- */
 $lang['htmltitle'] = 'DNA² | WorkFlow';

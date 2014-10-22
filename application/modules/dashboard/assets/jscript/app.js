@@ -191,6 +191,15 @@ $(document).ready(function() {
     		
     });
     
+    // ==== Alerts dismiss
+    $(document).on('click', '[data-dismiss="alert"]', function(event) {
+    	var url = globals['base_url']+"dashboard/alerts/dismiss";
+    	var id=$(this).parent().attr('data-id');
+    	$.post(url,{id:id},function(resp){
+    		//alert(resp);
+    	});
+    });
+    
     
 
 });

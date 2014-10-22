@@ -36,6 +36,8 @@ include('_header.php')
 
 			<section class="content">
 				{tiles}
+				
+				{alerts}
 
 
 				<div id="tiles_after">

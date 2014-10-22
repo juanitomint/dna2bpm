@@ -22,7 +22,6 @@ class Dashboard extends MX_Controller {
         $this->load->model('app');
         $this->load->model('bpm/bpm');
         $this->load->model('msg');
-        $this->load->model('alerts');
 
         //---base variables
         $this->base_url = base_url();
@@ -169,7 +168,7 @@ class Dashboard extends MX_Controller {
         $layout = ($myconfig['view'] <> '') ? $myconfig['view'] : 'layout';
         $customData = $myconfig;
         $customData['lang'] = $this->lang->language;
-       // $customData['notifications']=$this->get_alerts_by_filter();
+        $customData['alerts']=Modules::run('dashboard/alerts/get_my_alerts');
         $customData['brand'] = $this->config->item('brand');
         $customData['menu'] = $this->menu();
         $customData['avatar'] = Modules::run('user/profile/get_avatar'); //Avatar URL
@@ -215,20 +214,6 @@ class Dashboard extends MX_Controller {
         $this->ui->compose($layout, $customData);
     }
 
-    // ==== Notifications
-    
-    function get_my_alerts() { 	
-    	$dashboard=$this->session->userdata('json');
-    	$user = $this->user->get_user($this->idu);
-    	$target=$user->group;
-    	$target[]=$dashboard;
-
-     	$query=array('target'=>array('$in'=>$target));
-      	$alerts=$this->alerts->get_alerts_by_filter($query);
-// var_dump($alerts);
-// exit();
-    }
-    
     
     // ==== Tiles fixed
     function tile_admin_users() {
