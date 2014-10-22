@@ -35,6 +35,8 @@ include('_header.php')
                 </section>
 
                 <section class="content">
+                		{alerts}
+                
                         {widgets}                    
                 </section>         
 
