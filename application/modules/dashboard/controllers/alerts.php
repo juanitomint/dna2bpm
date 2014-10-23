@@ -50,6 +50,10 @@ class Alerts extends MX_Controller {
     	$id=$this->input->post('id');
     	$this->alerts_model->dismiss($id);
     }
+    
+    function Index(){
+    	
+    }
 
 }
 
