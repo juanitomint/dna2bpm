@@ -1635,6 +1635,7 @@ class Bpm extends CI_Model {
             foreach ($shape->properties->resources->items as $rule) {
                 if ($rule->resourceassignmentexpr) {
                     $resource = $rule->resource;
+                    $type=$rule->resource_type;
                     $resourceassignmentexpr = $rule->resourceassignmentexpr;
                     $ruleEval = 'return $this->' . $resource . '->' . $resourceassignmentexpr . ';';
                     //---allow resources to be passed by JSON
@@ -1654,7 +1655,7 @@ class Bpm extends CI_Model {
                             $matches = (is_array($matches)) ? $matches : (array) $matches;
                             foreach ($matches as $iduser) {
 
-                                $rtn['assign'][] = (int) $iduser;
+                                $rtn[$type][] = (int) $iduser;
                                 if ($debug) {
                                     $user = $this->user->get_user($iduser);
                                     echo "adding user:" . $user->nick . ':' . $user->idu . ':' . $user->name . ' ' . $user->lastname . '<hr/>';
@@ -1669,9 +1670,9 @@ class Bpm extends CI_Model {
                                     if ($debug) {
                                         echo "Get Resources from BPM shape: $resourceassignmentexpr <hr/>";
                                     }
-                                    $rtn['assign']=(isset($rtn['assign']))? $rtn['assign']:array(); 
+                                    $rtn[$type]=(isset($rtn[$type]))? $rtn[$type]:array(); 
                                     $token['assign']=(isset($token['assign']))? $token['assign']:array(); 
-                                    $rtn['assign']=  array_unique(array_merge($token['assign'],$rtn['assign']));
+                                    $rtn[$type]=  array_unique(array_merge($token['assign'],$rtn[$type]));
                                 }
                             }
                             break;
@@ -1693,7 +1694,7 @@ class Bpm extends CI_Model {
                                 $matches = (json_decode($resourceassignmentexpr)) ? json_decode($resourceassignmentexpr) : eval($ruleEval);
                                 $matches = (is_array($matches)) ? $matches : (array) $matches;
                                 foreach ((array) $matches as $iduser) {
-                                    $rtn['assign'][] = (int) $iduser;
+                                    $rtn[$type][] = (int) $iduser;
                                     if ($debug) {
                                         $user = $this->user->get_user($iduser);
                                         echo "adding user:" . $user->nick . ':' . $user->idu . ':' . $user->name . ' ' . $user->lastname . '<br/>';
@@ -1714,6 +1715,8 @@ class Bpm extends CI_Model {
                 }//--end if rule
             }//---end foreach $rule
         }//---end if has assignments
+        //----make assign equals PotentialOwner
+        $rtn['assign']=$rtn['PotentialOwner'];
         return $rtn;
     }
 
