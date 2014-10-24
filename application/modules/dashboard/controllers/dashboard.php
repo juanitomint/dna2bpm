@@ -168,7 +168,7 @@ class Dashboard extends MX_Controller {
         $layout = ($myconfig['view'] <> '') ? $myconfig['view'] : 'layout';
         $customData = $myconfig;
         $customData['lang'] = $this->lang->language;
-
+        $customData['alerts']=Modules::run('dashboard/alerts/get_my_alerts');
         $customData['brand'] = $this->config->item('brand');
         $customData['menu'] = $this->menu();
         $customData['avatar'] = Modules::run('user/profile/get_avatar'); //Avatar URL
@@ -186,10 +186,11 @@ class Dashboard extends MX_Controller {
             'myidu' => $this->idu
         );
 
+
         // Toolbar
         $customData['toolbar_inbox'] = Modules::run('inbox/inbox/toolbar');
 
-
+        //$customData['js']=array('daterangerpicker'); // Just handles must be registered in UI
         /*
           Custom JS Example
           $customData['js']=array('knob','jquery'); // Just handles must be registered in UI
@@ -213,6 +214,7 @@ class Dashboard extends MX_Controller {
         $this->ui->compose($layout, $customData);
     }
 
+    
     // ==== Tiles fixed
     function tile_admin_users() {
         $data['lang'] = $this->lang->language;
@@ -265,6 +267,8 @@ class Dashboard extends MX_Controller {
         }
         $return['js']=array();
         $return['css']=array();
+        $return['inlineJS']="";
+        
         //Zones
         foreach ($myconfig['zones'] as $zones) {
             $content = "";
@@ -326,17 +330,32 @@ class Dashboard extends MX_Controller {
                     $markup = $myWidget['module'] . '/' . $myWidget['controller'] . '/' . $myWidget['function'] . $markup;
 
                 // Si es un array uso el zonekey para identificar el markup
-                $mycontent = (is_array($markup)) ? ($markup['content']) : ($markup);
+                
+                if(is_array($markup)){
+                	$mycontent=$markup['content'];
+                	// inlineJS
+                	if(isset($markup['inlineJS']))
+                	$return['inlineJS'].=$markup['inlineJS'];
+                }else{
+                	$mycontent=$markup;
+                }
+                
+                
                 if (!$empty_spans)
-                    $content.=$mycontent;
+                	$content.=$mycontent;
                 else
-                    $content.="<div class='col-lg-$span '>$mycontent</div>";
+                	$content.="<div class='col-lg-$span '>$mycontent</div>";
+                
 
 				// CSS 
  				if(isset($myWidget['css']))
  					foreach($myWidget['css'] as $item){
 	 					foreach($item as $k=>$v){
-	 						$return['css'][$k]=$v;
+	 						if(is_numeric($k))
+	 							$return['css'][]=$v;
+	 						else{
+	 							$return['css'][$k]=$v;
+	 						}
 	 					}
  					}
  					
@@ -344,10 +363,13 @@ class Dashboard extends MX_Controller {
  				if(isset($myWidget['js']))
  					foreach($myWidget['js'] as $item){
 	 					foreach($item as $k=>$v){
-	 						$return['js'][$k]=$v;
+	 						if(is_numeric($k))
+	 							$return['js'][]=$v;
+	 						else{
+	 							$return['js'][$k]=$v;
+	 						}
 	 					}
- 					}
- 				
+ 					}		
             }
             
             // $content.='</div>';
@@ -380,13 +402,48 @@ class Dashboard extends MX_Controller {
         $this->dashboard('dashboard/json/tasks.json');
     }
     
-    // ============ Tasks
-/*     function get_config_panel($args=array()) {
-    	//array('id'=>'bt_pasteboard','name'=>'Pasteboard')
-    	return $this->parser->parse('_config_panel', $args, true, true);
-    } */
-    
+    // ============ Demo
+     function demo($args=array()) {
+    	 $this->dashboard('dashboard/json/demo.json');
 
+    } 
+    
+    // ============ highcharts
+    function highcharts($args=array()) {
+    	
+    	$data['lang'] = $this->lang->language;
+    	$data['base_url'] = $this->base_url;
+    	$data['module_url'] = $this->module_url;
+    	$return['content']=$this->parser->parse('widgets/highcharts', $data, true, true);
+    	
+    	$return['inlineJS']=<<<BLOCK
+    	//------- Highcharts
+    	$('#highcharts1').highcharts({
+        chart: {
+            type: 'bar'
+        },
+        title: {
+            text: 'Fruit Consumption'
+        },
+        xAxis: {
+            categories: ['Apples', 'Bananas', 'Oranges']
+        },
+        yAxis: {
+            title: {
+                text: 'Fruit eaten'
+            }
+        },
+        series: [{
+            name: 'Jane',
+            data: [1, 0, 4]
+        }, {
+            name: 'John',
+            data: [5, 7, 3]
+        }]
+    });
+BLOCK;
+    	return $return;
+    }
     
     // ============ Widgets
 
@@ -394,8 +451,78 @@ class Dashboard extends MX_Controller {
         return $this->parser->parse('widgets/box_primary', $data, true, true);
     }
 
-    function knob($data = array()) {
-        return $this->parser->parse('widgets/knob', $data, true, true);
+    // ============ Knob
+    function knob($data = "",$config="") {
+
+// 		JSON data example
+//  	"params":[
+//  	"[{'value':50,'data-label':'Hey','data-fgColor':'#f60'},{'value':90,'data-label':'Hey2'},{'value':20,'data-label':'Hey3'}]",
+//  	"{'title':'mytitle','col-md':4,'col-sm':6,'col-xs':6}"
+//  	]
+// 		First parameter brings data for each knob, second parameter is for general settings
+    			
+    	$data_ST = str_replace("'", "\"", $data);
+    	$config_ST = str_replace("'", "\"", $config);
+    	$data=(json_decode($data_ST,true));
+    	$config=(json_decode($config_ST,true));
+
+        // Global Settings
+        $default=array(
+        	'data-width'=>'90',
+        	'data-height'=>'90',
+        	'data-min'=>0,
+        	'data-max'=>100,
+        	//'data-step'=>1,//step size 
+        	//'data-angleOffset'=>0,  //starting angle in degrees  
+        	//'data-angleArc'=>360,//arc size in degrees
+        	//'data-readOnly'=>true,
+        	//'data-fgColor'=>'#f56954',
+        	//'data-font'=>'arial',
+        	//'data-inputColor'=>'#0f0', // number color
+        	//'data-linecap'=>'butt', // butt|round    	  		
+        	'data-thickness'=>.3,
+        	//'data-displayInput'=>true,
+        	//'data-displayPrevious'=>false, // show/hide shadow when moving the knob
+        	'title'=>'-',
+        	'col-md'=>3,
+        	'col-sm'=>6,
+        	'col-xs'=>6
+        );
+
+        $config=array_merge($default,$config); // Join user params with default 
+
+        // get params for parser
+        $customData['title']=$config['title'];
+        $customData['col-md']=$config['col-md'];
+        $customData['col-sm']=$config['col-sm'];
+        $customData['col-xs']=$config['col-xs'];
+
+
+        //== DEBUG
+//          $data[]=array('value'=>50,'data-label'=>'Fuck');
+//          $data[]=array('value'=>10,'data-fgColor'=>'#f60','data-label'=>'Fuck');
+		//==
+        var_dump($data);
+
+        foreach($data as $item){
+        	$myconfig=array_merge($config,$item);
+        	
+        	$input=" ";
+        	// individual settings
+        	foreach($myconfig as $attr=>$val){
+        		$input.="$attr='$val' ";
+        	}
+			$label=(isset($myconfig['data-label']))?($myconfig['data-label']):('');
+        	$customData['knobs'][]=array(
+        			'input'=>"<input type='text' $input class='knob' >",
+        			'label'=>$label
+        	);
+        	
+
+        }
+
+        return $this->parser->parse('widgets/knob', $customData, true, true);
+        
     }
 
     function widget_dashboards() {

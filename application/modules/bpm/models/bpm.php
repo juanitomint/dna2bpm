@@ -140,7 +140,9 @@ class Bpm extends CI_Model {
         //var_dump2($mywf);
         unset($mywf['_id']);
         $wf = $this->db->where($query)->update('workflow', $mywf, array('upsert' => true));
-        $this->save_image_file($idwf, $svg);
+        if ($this->config->item('make_thumbnails')) {
+            $this->save_image_file($idwf, $svg);
+        }
         $this->save_mode_file($idwf, $data);
         $this->zip_model($idwf, $data);
 
@@ -196,6 +198,7 @@ class Bpm extends CI_Model {
     }
 
     function get_cases_stats($filter) {
+
         $all_tokens = array();
         $allcases = $this->get_cases_byFilter($filter, array('id', 'idwf', 'token_status'));
         foreach ($allcases as $case) {
@@ -227,6 +230,81 @@ class Bpm extends CI_Model {
             }
         }//---end foreach cases
         return $all_tokens;
+    }
+
+    /* MONTOS POR ESTADO */
+
+    function get_amount_stats_by_id($query) {
+        $rtn = array();
+        $container = 'container.proyectos_fondyf';
+        $fields = array('8334', '8326', '8573');
+        $rs = $this->mongo->db->$container->find($query, $fields);
+        foreach ($rs as $list) {
+            unset($list['_id']);
+            $rtn[] = $list;
+        }
+        return $rtn;
+    }
+
+    function get_amount_stats($filter) {
+
+        /* get ids */
+        $all_ids = array();
+        $arr_status = array();
+
+
+        $allcases = $this->get_cases_byFilter($filter, array('id', 'idwf', 'data'));
+
+
+
+        foreach ($allcases as $case) {
+            if (isset($case['data']['Proyectos_fondyf']['query']))
+                $all_ids[] = $case['data']['Proyectos_fondyf']['query'];
+        }
+
+
+        $get_value = array_map(function ($all_ids) {
+            return $this->get_amount_stats_by_id($all_ids);
+        }, $all_ids);
+
+
+
+        return $get_value;
+    }
+
+    function get_evaluator_by_project_by_id($query) {
+        $rtn = array();
+        $container = 'container.proyectos_fondyf';
+        $fields = array('8668', 'id', '8339');
+        $query = array(8668 => array('$exists' => true));
+        $rs = $this->mongo->db->$container->find($query, $fields);
+        foreach ($rs as $list) {
+            unset($list['_id']);
+            $rtn[] = $list;
+        }        
+        return $rtn;
+    }
+
+    function get_evaluator_by_project($filter) {
+
+
+        /* get ids */
+        $all_ids = array();
+        $arr_status = array();
+
+        $allcases = $this->get_cases_byFilter($filter, array('id', 'idwf', 'data'));
+
+        foreach ($allcases as $case) {
+            if (isset($case['data']['Proyectos_fondyf']['query']))
+                $all_ids[] = $case['data']['Proyectos_fondyf']['query'];
+        }
+
+
+        $get_value = array_map(function ($all_ids) {
+            return $this->get_evaluator_by_project_by_id($all_ids);
+        }, $all_ids);
+
+        return $get_value;
     }
 
     function get_cases($user = null, $offset = 0, $limit = null, $filter_status = array()) {
@@ -298,29 +376,30 @@ class Bpm extends CI_Model {
         $svg = str_replace('<svg >', $header, $svg);
         $svg = str_replace('blank"href', 'blank" href', $svg);
         $this->load->helper('file');
+        $phantom_path = APPPATH . 'modules/bpm/assets/jscript/phantomjs-1.9.7-linux-x86_64';
         $resize = '-resize 30%';
         $crop = '-crop 720x720+0+0';
         $path = 'images/svg/';
         $path_thumb = 'images/png/';
         $filename = $path . $idwf . '.svg';
         $filename_thumb = $path_thumb . $idwf . '.png';
-        $filename_crop = $path_thumb . $idwf . '-croped.png';
+        $filename_crop = $path_thumb . $idwf . '-cropped.png';
         $filename_thumb_small = $path_thumb . $idwf . '-small.png';
 
         $result = write_file($filename, $svg);
         $rtn = '';
-        $command = "convert '$filename' '$filename_thumb'";
+        $command = "$phantom_path/bin/phantomjs $phantom_path/rasterize.js $filename $filename_thumb";
         exec($command, $cmd, $rtn);
         if ($debug) {
             echo "$command\n rt:$rtn\n";
         }
-        $command = "convert  $crop '$filename_thumb' '$filename_crop'";
+        $command = "$phantom_path/bin/phantomjs $phantom_path/crop.js $filename $filename_crop";
         exec($command, $cmd, $rtn);
 
         if ($debug) {
             echo "$command\n rt:$rtn\n";
         }
-        $command = "convert $resize '$filename_crop'  '$filename_thumb_small'";
+        $command = "$phantom_path/bin/phantomjs $phantom_path/zoom.js $filename_crop $filename_thumb_small .5";
         exec($command, $cmd, $rtn);
         if ($debug) {
             echo getcwd() . "\n";
@@ -453,23 +532,31 @@ class Bpm extends CI_Model {
         $case = $this->get_case($idcase);
         $data = $this->load_case_data($case, $idwf);
         $token = $this->get_token($idwf, $idcase, $resourceId);
-        if ($token) {
-            $tdata = (isset($token['data'])) ? $token['data'] : array();
-            foreach ($data as $entity => $values) {
-                unset($values['_id']);
-                unset($values['id']);
-                unset($values['owner']);
-                unset($values['parent']);
-                try {
-                    $token['data'] = (array)$values + (array)$tdata;
-                } catch (Exception $e) {
-                    
-                }
+        if (!$token) {
+            $mywf = $this->load($idwf);
+            $wf = $this->bindArrayToObject($mywf ['data']);
+            //---tomo el template de la tarea
+            $wf->idwf = $idwf;
+            $wf->case = $idcase;
+            $shape = $this->bpm->get_shape($resourceId, $wf);
+            $token = $this->token_checkin(array('status' => 'finished'), $wf, $shape);
+        }
+        $token['data'] = (isset($token['data'])) ? $token['data'] : array();
+        foreach ($data as $entity => $values) {
+            unset($values['_id']);
+            unset($values['id']);
+            unset($values['owner']);
+            unset($values['parent']);
+            try {
+                $token['data'] = (array) $values + $token['data'];
+            } catch (Exception $e) {
+                echo $e->getMessage();
             }
+        }
+//            var_dump($token);
 //            echo json_encode($token);
 //            exit;
-            $this->save_token($token);
-        }
+        $this->save_token($token);
         return $token;
     }
 
@@ -1646,8 +1733,33 @@ class Bpm extends CI_Model {
                                 $rtn['assign'][] = (int) $iduser;
                                 if ($debug) {
                                     $user = $this->user->get_user($iduser);
-                                    echo "adding user:" . $user->nick . ':' . $user->idu . ':' . $user->name . ' ' . $user->lastname . '<br/>';
+                                    echo "adding user:" . $user->nick . ':' . $user->idu . ':' . $user->name . ' ' . $user->lastname . '<hr/>';
                                 }
+                            }
+                            break;
+                        case 'token':
+                            $shape = $this->get_shape_byprop(array('name' => $resourceassignmentexpr), $wf);
+                            if ($shape) {
+                                $token = $this->get_token($case['idwf'], $case['id'], $shape[0]->resourceId);
+                                if ($token) {
+                                    if ($debug) {
+                                        echo "Get Resources from BPM shape: $resourceassignmentexpr <hr/>";
+                                    }
+                                    $rtn['assign'] = (isset($rtn['assign'])) ? $rtn['assign'] : array();
+                                    $token['assign'] = (isset($token['assign'])) ? $token['assign'] : array();
+                                    $rtn['assign'] = array_unique(array_merge($token['assign'], $rtn['assign']));
+                                }
+                            }
+                            break;
+                        case 'shape':
+                            $shape = $this->get_shape_byprop(array('name' => $resourceassignmentexpr), $wf);
+                            if ($shape) {
+                                $res_extra = $this->get_resources($shape, $wf, $case);
+                                if ($debug) {
+                                    echo "Get Resources from BPM shape: $resourceassignmentexpr <hr/>";
+                                    var_dump($res_extra, $rtn);
+                                }
+                                $rtn = array_merge($rtn, $res_extra);
                             }
                             break;
                         case 'case':

@@ -46,7 +46,14 @@ class Inbox extends MX_Controller {
      	$customData['module_url'] = $this->module_url;   	
     	$customData['folder']='inbox';  // Default	
     	$customData['reply']=false;
-     	$customData['inbox_count']=$this->msg->count_msgs($this->idu,'inbox'); 
+    	
+    	// count the msgs inevery folder
+   		$msg_count=json_decode($this->count_msgs());
+   		foreach($msg_count as $class=>$i){
+   			$customData[$class]=$i;
+   		}  	
+
+     	
      	$customData['my_msgs']=$this->get_folder();
      	
     	$customData['content']=$this->parser->parse('inbox/inbox', $customData, true, true);
@@ -73,14 +80,15 @@ class Inbox extends MX_Controller {
 		if($folder=='star'){
 			$folder=null;
 			$filter=array('star'=>true);
+			$customData['folder']='star';
+		}else{
+			$customData['folder']=$folder;
 		}
-
-    	$customData['folder']=$folder;
-
+   	
     	//==== Bring me my MSGs!!!
     	$skip=($current_page-1)*PAGINATION_ITEMS_X_PAGE;
     	$mymgs = $this->msg->get_msgs($this->idu,$folder,$skip,PAGINATION_ITEMS_X_PAGE,$filter);
-    	
+
     	//==== Pagination
     	$config=array('url'=>$this->base_url."inbox/print_folder/".$folder,
     			'current_page'=>$current_page,
@@ -92,6 +100,9 @@ class Inbox extends MX_Controller {
     			'pagination_always_visible'=>PAGINATION_ALWAYS_VISIBLE
     	);
     	$customData['pagination']=$this->pagination->index($config);
+    	$customData['items_total']=$mymgs->count();
+
+
 		//== 
 		
     	foreach ($mymgs as $msg) {
@@ -126,16 +137,33 @@ class Inbox extends MX_Controller {
     
     		$customData['mymsgs'][] = $msg;
     	}
-    	
+
     	return $this->parser->parse('inbox/msgs', $customData, true, true);
     }
+    
+    //====  get the count of msgs in folders
+    function count_msgs(){
+		$customData['inbox_count']=$this->msg->get_msgs_by_filter(array('to'=>$this->idu,'folder'=>'inbox'))->count(); 
+     	$customData['sent_count']=$this->msg->get_msgs_by_filter(array('from'=>$this->idu))->count();
+     	$customData['star_count']=$this->msg->get_msgs_by_filter(array('to'=>$this->idu,'star'=>true))->count();
+     	$customData['trash_count']=$this->msg->get_msgs_by_filter(array('to'=>$this->idu,'folder'=>'trash'))->count();
+     	$customData['unread_count']=$this->msg->get_msgs_by_filter(array('to'=>$this->idu,'folder'=>'inbox','read'=>false))->count();
+
+     	return json_encode($customData);
+    }
+    
+    function print_count_msgs(){
+    	echo $this->count_msgs();
+    }
+    
     
     //====  Mini INBOX version for toolbar
     function toolbar(){
         $customData['lang']= $this->lang->language;
     	$customData['base_url'] = $this->base_url;
     	$customData['module_url'] = $this->module_url;
-    	$customData['inbox_count']=$this->msg->count_msgs($this->idu,'inbox',false);
+    	$customData['unread_count']=$this->msg->get_msgs_by_filter(array('to'=>$this->idu,'folder'=>'inbox','read'=>false))->count();
+    	 
     	$mymgs = $this->msg->get_msgs($this->idu,'inbox',null,4);
     	foreach ($mymgs as $msg) {
     		$msg['msgid'] = $msg['_id'];
@@ -165,7 +193,7 @@ class Inbox extends MX_Controller {
     }
     
     //====  Widget - show msgs by case
-    function show_msgs_by_filter($filter=array()){
+    function show_msgs_by_filter($filter=array(),$customData=array()){
 
     	$customData['lang']= $this->lang->language;
     	$customData['base_url'] = $this->base_url;

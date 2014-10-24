@@ -57,6 +57,21 @@ class test extends MX_Controller {
     function user_callable($a, $b) {
         var_dump($a, $b);
     }
+    function resources(){
+        
+        $mywf = $this->bpm->load('fondyfpp', true);
+        $wf = $this->bpm->bindArrayToObject($mywf['data']);
+        $wf->idwf='fondyfpp';
+        /*
+         * Start test
+         */
+        $case=$this->bpm->get_case('YKLL');
+        $wf->case=$case['id'];
+        $this->user->Initiator=$case['iduser'];
+        $shape=$this->bpm->get_shape('oryx_C2EC6376-8EB3-4514-AABA-B4BED6FAB8A1', $wf);
+        $resources=$this->bpm->get_resources($shape, $wf, $case);
+        var_dump($resources);
+    }
 
 }
 

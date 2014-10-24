@@ -36,7 +36,7 @@ class kpi_sla_time {
     }
 
     function list_cases($kpi) {
-        $filter = Modules::run('kpi/get_filter', $kpi);
+        $filter = $this->CI->kpi_model->get_filter($kpi); 
         $tokens = $this->CI->bpm->get_tokens_byResourceId($kpi['resourceId'], $filter);
         $cpData = $kpi;
         $cases = array_map(function ($token) {
@@ -46,7 +46,7 @@ class kpi_sla_time {
     }
 
     function core($kpi) {
-        $filter = Modules::run('kpi/get_filter', $kpi);
+        $filter = $this->CI->kpi_model->get_filter($kpi); 
         $cases = $this->CI->bpm->get_cases_byFilter($filter);
         $cpData = $kpi;
 

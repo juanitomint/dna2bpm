@@ -1,9 +1,9 @@
 <li class="dropdown messages-menu"><a href="#" class="dropdown-toggle"
 	data-toggle="dropdown"> <i class="fa fa-envelope"></i> <span
-		class="label label-success">{inbox_count}</span>
+		class="label label-success"><span class='unread_count'>{unread_count}</span></span>
 </a>
 	<ul class="dropdown-menu">
-		<li class="header">You have {inbox_count} messages</li>   
+		<li class="header">You have <span class='unread_count'>{unread_count}</span> messages unread</li>   
 		<li>
 			
 			<ul class="menu">

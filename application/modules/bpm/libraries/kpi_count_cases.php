@@ -22,7 +22,7 @@ class kpi_count_cases {
             $cpData = $this->core($kpi);
             $cpData['more_info_class'] = "load_tiles_after";
             $cpData['more_info_link'] = base_url() . "bpm/kpi/list_cases/" . $kpi['idkpi'];
-            $rtn = $this->CI->parser->parse('dashboard/tiles/' . $kpi['widget'], $cpData, true);
+            $rtn = $this->CI->parser->parse('dashboard/tiles/' . $kpi['widget'], $cpData, true,true);
         } else {
             $rtn = '<strong>Warning!</strong>Function:' . $kpi['type'] . '<br/>' . $kpi['title'] . '<br/>resourceId not defined. ';
         }
@@ -30,7 +30,7 @@ class kpi_count_cases {
     }
 
     function list_cases($kpi) {
-        $filter = Modules::run('kpi/get_filter', $kpi);
+        $filter = $this->CI->kpi_model->get_filter($kpi); 
         $tokens = $this->CI->bpm->get_tokens_byResourceId($kpi['resourceId'], $filter);
         $cpData = $kpi;
         $cases = array_map(function ($token) {
@@ -40,7 +40,7 @@ class kpi_count_cases {
     }
 
     function core($kpi) {
-        $filter = Modules::run('kpi/get_filter', $kpi);
+        $filter = $this->CI->kpi_model->get_filter($kpi);        
         $tokens = $this->CI->bpm->get_tokens_byResourceId($kpi['resourceId'], $filter);
         $cpData = $kpi;
         //var_dump($tokens);

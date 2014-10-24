@@ -11,30 +11,15 @@ $(document).on('click','.ajax',function(e){
 	e.preventDefault();// avoid msg open
 	var url=$(this).attr('href');
 	if((url)=="#")return;
-
-	$.post( url, function( data ) {
-		$(target).html(data);
-		//==== icheck
-	    $('input[type="checkbox"]').iCheck({
-	        checkboxClass: 'icheckbox_minimal',
-	        radioClass: 'iradio_minimal'
-	    });
-	    //When unchecking the checkbox
-	    $(document).on('ifUnchecked', "#check-all", function(event) {
-	        //Uncheck all checkboxes
-	        $("input[type='checkbox']", ".table-mailbox").iCheck("uncheck");
-	    });
-	    //When checking the checkbox
-	    $("#check-all").on('ifChecked', function(event) {
-	        $("input[type='checkbox']", ".table-mailbox").iCheck("check");
-	    });
-	    //====
-	    //var folder=$('#whereiam').val();
-	    $('.nav-stacked li').removeClass('active');
-	    var folder=url.match(/print_folder\/(.+)/i);
-	    $('#bt_'+folder[1]).addClass('active');
-	});
+	reload(url,target,whereiam);
     
+});
+
+// Refresh
+$(document).on('click','#bt_refresh',function(e){
+	var whereiam=$('#whereiam').val();
+	var url = globals['base_url']+"inbox/print_folder/"+whereiam;
+	reload(url,target,whereiam);
 });
 
 
@@ -43,7 +28,10 @@ $(document).on('click','.fa-star',function(e){
     $(this).removeClass('fa-star');
     $(this).addClass('fa-star-o');
     var msgid=$(this).parents('tr').attr('data-msgid');
-    $.post(globals.base_url+'inbox/inbox/set_star',{'state':'off','msgid':msgid},function(data){});
+    $.post(globals.base_url+'inbox/inbox/set_star',{'state':'off','msgid':msgid},function(data){
+    	update_counters();
+    });
+
     e.stopPropagation();// avoid msg open
 });
 
@@ -53,7 +41,10 @@ $(document).on("click",".fa-star-o",function(e){
     $(this).removeClass('fa-star-o');
     $(this).addClass('fa-star');
     var msgid=$(this).parents('tr').attr('data-msgid');
-    $.post(globals.base_url+'inbox/inbox/set_star',{'state':'on','msgid':msgid},function(data){});
+    $.post(globals.base_url+'inbox/inbox/set_star',{'state':'on','msgid':msgid},function(data){
+    	update_counters();	
+    });
+    
     e.stopPropagation();// avoid msg open
 });
 
@@ -61,18 +52,21 @@ $(document).on("click",".fa-star-o",function(e){
 $(document).on("click",".msg",function(e){
 	var msgid=$(this).attr('data-msgid');
 	var this_msg=$(this);
-
+	var whereiam=$('#whereiam').val();
     var url = globals.base_url+'inbox/inbox/get_msg';    
     $.post(url,{id:msgid,whereiam:whereiam},function(data){
     	var msg=JSON.parse(data);
 
-        $('#myModal').find('.modal-title').html('<i class="fa fa-envelope"></i> '+msg.subject);
-        $('#myModal').find('.modal-body').html(msg.body.replace(/(?:\r\n|\r|\n)/g, '<br />'));
+        $('.modal-title').html('<i class="fa fa-envelope"></i> '+msg.subject);
+        $('.modal-body').html(msg.body.replace(/(?:\r\n|\r|\n)/g, '<br />'));
         $('#myModal').modal('show');
 
         this_msg.removeClass('unread');
-        this_msg.addClass('read');   
+        this_msg.addClass('read');  
+        update_counters();	
     });
+
+	
     e.preventDefault();
 });
 
@@ -91,6 +85,7 @@ $(document).on('submit','#new_msg',function(e){
 $(document).on("click","#msg_action a,#msg_tag a",function(){
 	var action=$(this).attr('data-action');
 	var msgid=[];
+	var whereiam=$('#whereiam').val();
 	$('.msg').each(function(i,data){
 		var checked=$(data).find('.icheckbox_minimal').hasClass('checked')
 		if(checked){
@@ -109,6 +104,7 @@ $(document).on("click","#msg_action a,#msg_tag a",function(){
 		    		$("[data-msgid='"+id+"']").removeClass('unread');
 		    		$("[data-msgid='"+id+"']").addClass('read');
 	    		});
+		    	update_counters();	
 		    });
 			break;
 		case "unread":
@@ -118,6 +114,7 @@ $(document).on("click","#msg_action a,#msg_tag a",function(){
 		    		$("[data-msgid='"+id+"']").removeClass('read');
 		    		$("[data-msgid='"+id+"']").addClass('unread');
 	    		});
+		    	update_counters();	
 		    });
 			break;
 		case "junk":
@@ -126,6 +123,7 @@ $(document).on("click","#msg_action a,#msg_tag a",function(){
 		    	msgid.forEach(function(id){
 		    		$("[data-msgid='"+id+"']").hide('500');
 	    		});
+		    	update_counters();	
 		    });
 			break;	
 		case "inbox":
@@ -136,6 +134,7 @@ $(document).on("click","#msg_action a,#msg_tag a",function(){
 			    		$("[data-msgid='"+id+"']").hide('500');
 		    		});
 		    	}
+		    	update_counters();	
 		    });
 			break;	
 		case "delete":
@@ -144,6 +143,7 @@ $(document).on("click","#msg_action a,#msg_tag a",function(){
 		    	msgid.forEach(function(id){
 		    		$("[data-msgid='"+id+"']").hide('500');
 	    		});
+		    	update_counters();	
 		    });
 			break;
 		case "tag":
@@ -183,47 +183,86 @@ $(document).on("submit","[name='form_search']",function(e){
 
 
 // delete && Move
-$("a[name='delete']").on('click',function(){
-    var msgid=$(this).attr('data-msgid');
-    if($('[name="whereim"]').val()=='Trash'){
-        // estoy en Trash, elimino mensaje
-          $('#'+msgid).append('<span class="pull-right" style="margin-right:5px"><i class="icon-spinner icon-spin icon-large"></i> Wait... </span> ');
-        $.post(globals.module_url+'inbox/remove',{'msgid':msgid},function(data){
-        $('#'+msgid).hide('500');
-        });
-    }else{
-        // Mando a Trash
-          $('#'+msgid).append('<span class="pull-right" style="margin-right:5px"><i class="icon-spinner icon-spin icon-large"></i> Wait... </span> ');
-        $.post(globals.module_url+'inbox/move',{'msgid':msgid,'folder':'trash'},function(data){
-        $('#'+msgid).hide('500');
-    });
-    }
-    // refresh count in lateral menu & top menu only in inbox
-    if($('[name="whereim"]').val()=='Inbox'){
-    var count=$('#inbox span.label').text();
-    $('#inbox span.label').text(count-1);
-    $('#menu-messages a span.label').text(count-1);
-    }
-
-});
+//$("a[name='delete']").on('click',function(){
+//    var msgid=$(this).attr('data-msgid');
+//    if($('[name="whereim"]').val()=='Trash'){
+//        // estoy en Trash, elimino mensaje
+//          $('#'+msgid).append('<span class="pull-right" style="margin-right:5px"><i class="icon-spinner icon-spin icon-large"></i> Wait... </span> ');
+//        $.post(globals.module_url+'inbox/remove',{'msgid':msgid},function(data){
+//        $('#'+msgid).hide('500');
+//        });
+//    }else{
+//        // Mando a Trash
+//          $('#'+msgid).append('<span class="pull-right" style="margin-right:5px"><i class="icon-spinner icon-spin icon-large"></i> Wait... </span> ');
+//        $.post(globals.module_url+'inbox/move',{'msgid':msgid,'folder':'trash'},function(data){
+//        $('#'+msgid).hide('500');
+//    });
+//    }
+//    // refresh count in lateral menu & top menu only in inbox
+//    if($('[name="whereim"]').val()=='Inbox'){
+//    var count=$('#inbox span.label').text();
+//    $('#inbox span.label').text(count-1);
+//    $('#menu-messages a span.label').text(count-1);
+//    }
+//
+//});
 
 // Recover
-$("a[name='recover']").on('click',function(){
-    var msgid=$(this).attr('data-msgid');
-        // Mando a inbox     
-        $('#'+msgid).append('<span class="pull-right" style="margin-right:5px"><i class="icon-spinner icon-spin icon-large"></i> Wait... </span> ');
-        $.post(globals.module_url+'inbox/move',{'msgid':msgid,'folder':'inbox'},function(data){
-        $('#'+msgid).hide('500');
-    });
-});
+//$("a[name='recover']").on('click',function(){
+//    var msgid=$(this).attr('data-msgid');
+//        // Mando a inbox     
+//        $('#'+msgid).append('<span class="pull-right" style="margin-right:5px"><i class="icon-spinner icon-spin icon-large"></i> Wait... </span> ');
+//        $.post(globals.module_url+'inbox/move',{'msgid':msgid,'folder':'inbox'},function(data){
+//        $('#'+msgid).hide('500');
+//    });
+//});
 
 //
 
 
-
-
-
-      
-
-      
 });//
+
+
+//====== Reload : update the count in folders and the content of msgs
+function reload(url,target,whereiam){
+	
+	update_counters();
+	
+	$.post( url, function( data ) {
+
+		$(target).html(data);
+
+		//==== icheck
+	    $('input[type="checkbox"]').iCheck({
+	        checkboxClass: 'icheckbox_minimal',
+	        radioClass: 'iradio_minimal'
+	    });
+	    //When unchecking the checkbox
+	    $(document).on('ifUnchecked', "#check-all", function(event) {
+	        //Uncheck all checkboxes
+	        $("input[type='checkbox']", ".table-mailbox").iCheck("uncheck");
+	    });
+	    //When checking the checkbox
+	    $("#check-all").on('ifChecked', function(event) {
+	        $("input[type='checkbox']", ".table-mailbox").iCheck("check");
+	    });
+	    //====
+	    //var folder=$('#whereiam').val();
+	    $('.nav-stacked li').removeClass('active');
+	    var folder=url.match(/print_folder\/(.+)/i);
+	    $('#bt_'+folder[1]).addClass('active');
+	});
+}
+
+function update_counters(){
+	// Keep counters 
+	var letscount = globals['base_url']+"inbox/print_count_msgs/";
+	$.post( letscount, function( data ) {
+		var json=JSON.parse(data);
+		for (var prop in json) {
+			$('.'+prop).html(json[prop]);
+			}
+	});
+}
+
+

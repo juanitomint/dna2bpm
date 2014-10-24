@@ -41,7 +41,7 @@ class Msg extends CI_Model {
             }else{
             	//Check subject
             	$myregex = new MongoRegex("/$filter/i");
-            	$query['subject'] = $myregex;
+            	$query['$or']=array(array("subject" => $myregex),array("body" => $myregex));
             }
         }
 
@@ -61,12 +61,12 @@ class Msg extends CI_Model {
     	return $this->mongo->db->msg->find($filter);
     }
 
-    function count_msgs($iduser, $folder = null,$read=null) {
+    function count_msgs($iduser, $folder='inbox') {
         $query = array(
             'to' => (double) $iduser,
             'folder' => $folder
         );
-        if(!is_null($read))$query['read']=$read;
+        //if(!is_null($read))$query['read']=$read;
         return $this->mongo->db->msg->find($query)->count();
     }
 
@@ -190,6 +190,3 @@ class Msg extends CI_Model {
     }
 
 }
-
-//
-?>

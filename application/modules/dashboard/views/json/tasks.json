@@ -44,7 +44,7 @@
                     "title": "2do",
                     "module": "bpm",
                     "controller": "bpmui",
-                    "function": "widget_2do"
+                    "function": "widget_2doMe"
                 },
                 {
                     "title": "2do",

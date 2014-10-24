@@ -15,17 +15,17 @@
                                             <div style="margin-top: 15px;">
                                                 <ul class="nav nav-pills nav-stacked">
                                                     <li class="header">{lang folders}</li>
-                                                    <li id="bt_inbox" class="{if {folder}=='inbox'}active{/if}"><a href="{base_url}inbox/print_folder/inbox" class="ajax" ><i class="fa fa-inbox"></i> {lang inbox} ({inbox_count})</a></li>
-                                                    <li id="bt_outbox" class="{if {folder}=='outbox'}active{/if}"><a href="{base_url}inbox/print_folder/outbox" class="ajax" ><i class="fa fa-mail-forward"></i> {lang sent}</a></li>
-                                                    <li id="bt_star" class="{if {folder}=='star'}active{/if}" ><a  href="{base_url}inbox/print_folder/star" class="ajax" ><i class="fa fa-star"></i> {lang starred}</a></li>
-                                                    <li id="bt_trash" class="{if {folder}=='trash'}active{/if}"><a href="{base_url}inbox/print_folder/trash" class="ajax" ><i class="fa fa-folder"></i> {lang trash}</a></li>
+                                                    <li id="bt_inbox" class="{if {folder}=='inbox'}active{/if}"><a href="{base_url}inbox/print_folder/inbox" class="ajax" ><i class="fa fa-inbox"></i> {lang inbox} (<span class='inbox_count'>{inbox_count}</span>)</a></li>
+                                                    <li id="bt_outbox" class="{if {folder}=='outbox'}active{/if}"><a href="{base_url}inbox/print_folder/outbox" class="ajax" ><i class="fa fa-mail-forward"></i> {lang sent} (<span class='sent_count'>{sent_count}</span>)</a></li>
+                                                    <li id="bt_star" class="{if {folder}=='star'}active{/if}" ><a  href="{base_url}inbox/print_folder/star" class="ajax" ><i class="fa fa-star"></i> {lang starred} (<span class='star_count'>{star_count}</span>)</a></li>
+                                                    <li id="bt_trash" class="{if {folder}=='trash'}active{/if}"><a href="{base_url}inbox/print_folder/trash" class="ajax" ><i class="fa fa-folder"></i> {lang trash} (<span class='trash_count'>{trash_count}</span>)</a></li>
                                                 </ul>
                                             </div>
                                         </div><!-- /.col (LEFT) -->
                                         <div class="col-md-9 col-sm-8">
                                             <div class="row pad">
                                                 <div class="col-sm-6">
-                                                {if {folder}!='outbox'}
+                                         
                                                     <label style="margin-right: 10px;">
                                                         <input type="checkbox" id="check-all"/>
                                                     </label>
@@ -61,7 +61,12 @@
                                                         
                                                         </ul>
                                                     </div>
-												{/if}
+                                                    <!-- Refresh button -->
+                            							<button type="button" class="btn btn-default btn-sm btn-flat " id="bt_refresh">
+                                                             <i class="fa fa-refresh" style="margin-right:5px"></i> {lang refresh} 
+                                                        </button>
+                                                        
+										
                                                 </div>
                                                 <div class="col-sm-6 search-form">
                                                     <form action="#" class="text-right" name="form_search">
@@ -76,7 +81,8 @@
                                             </div><!-- /.row -->
 
                                             <div class="table-responsive dummy_msgs">
-                                            {my_msgs}                                               
+                                            {my_msgs}       
+                                                                               
                                             </div><!-- /.table-responsive -->
                                         </div><!-- /.col (RIGHT) -->
                                     </div><!-- /.row -->

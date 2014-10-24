@@ -8,7 +8,7 @@ include('_header.php')
 ?>
 
 
-	<div class="wrapper row-offcanvas row-offcanvas-left">
+	<div class="wrapper row-offcanvas row-offcanvas-left hidden-print">
 		<!-- Wrapper -->
 
 		<!-- ======== MENU LEFT ======== -->
@@ -36,6 +36,8 @@ include('_header.php')
 
 			<section class="content">
 				{tiles}
+				
+				{alerts}
 
 
 				<div id="tiles_after">

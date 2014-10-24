@@ -70,6 +70,7 @@ Ext.define('User', {
         'phone',
         'idnumber',
         'group',
+        'signature',
         {
             name: 'locked',
             type: 'bool'
