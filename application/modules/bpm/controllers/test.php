@@ -29,7 +29,7 @@ class test extends MX_Controller {
 
         $this->load->library('parser');
         $this->load->helper('bpm');
-        //----LOAD LANGUAGE
+//----LOAD LANGUAGE
         $this->lang->load('library', $this->config->item('language'));
     }
 
@@ -42,7 +42,7 @@ class test extends MX_Controller {
         $wf = $this->bpm->bindArrayToObject($mywf['data']);
         $startMessage = $this->bpm->get_shape_byname("/^StartMessageEvent$/", $wf);
         $startMessage['count'] = count($startMessage);
-        //header('Content-type: application/json;charset=UTF-8');
+//header('Content-type: application/json;charset=UTF-8');
         var_dump($startMessage);
     }
 
@@ -80,11 +80,11 @@ class test extends MX_Controller {
         $this->load->library('bpm/ui');
         $renderData = array();
         $renderData ['base_url'] = $this->base_url;
-        // ---prepare UI
+// ---prepare UI
         $renderData ['js'] = array(
             $this->base_url . 'bpm/assets/jscript/modal_window.js' => 'Modal Window Generic JS'
         );
-        // ---prepare globals 4 js
+// ---prepare globals 4 js
         $renderData ['global_js'] = array(
             'base_url' => $this->base_url,
             'module_url' => $this->base_url . 'bpm'
@@ -94,10 +94,10 @@ class test extends MX_Controller {
         $case = $this->bpm->get_case($idcase, $idwf);
         $this->user->Initiator = $case['iduser'];
         $token = $this->bpm->get_token($idwf, $idcase, $resourceId);
-        //---saco título para el resultado
+//---saco título para el resultado
         $mywf = $this->bpm->load($idwf);
         $wf = $this->bpm->bindArrayToObject($mywf ['data']);
-        //---tomo el template de la tarea
+//---tomo el template de la tarea
         $shape = $this->bpm->get_shape($resourceId, $wf);
 
         $data = $this->bpm->load_case_data($case, $idwf);
@@ -115,8 +115,8 @@ class test extends MX_Controller {
             }
         }
         $resources = $this->bpm->get_resources($shape, $wf, $case);
-        //---if has no messageref and noone is assigned then
-        //---fire a message to lane or self         
+//---if has no messageref and noone is assigned then
+//---fire a message to lane or self         
 //            if (!count($resources['assign']) and !$shape->properties->messageref) {
 //                $lane = $this->bpm->find_parent($shape, 'Lane', $wf);
 //                //---try to get resources from lane
@@ -127,8 +127,8 @@ class test extends MX_Controller {
 //                if (!count($resources['assign']))
 //                    $resources['assign'][] = $this->user->Initiator;
 //            }
-        //---process inbox--------------
-        //---Override FROM if Performer is set
+//---process inbox--------------
+//---Override FROM if Performer is set
         if (isset($resources['Performer'])) {
             if (count($resources['Performer'])) {
                 $msg['from'] = array_pop($resources['Performer']);
@@ -143,17 +143,46 @@ class test extends MX_Controller {
 //            var_dump($user);exit;
             $renderData['to'][] = $user->name . ' ' . $user->lastname;
         }
-        //---Get FROM
+//---Get FROM
         $user = $this->user->get_user_safe($msg['from']);
-        //---Prepare Data
+//---Prepare Data
         $renderData['from'][] = $user->name . ' ' . $user->lastname;
         $renderData['name'] = $msg['subject'];
+        $renderData['title'] = $msg['subject'];
 
-        $renderData['text'] = 'From:<br/>' . implode(',', $renderData['from']);
-        $renderData['text'] .= 'To:<br/>' . implode(',', $renderData['to']);
-        $renderData['text'] .= '<hr/>';
+        $renderData['text'] = 'From: ' . implode(',', $renderData['from']).'<hr/>';
+        $renderData['text'] .= 'To: ' . implode(',', $renderData['to']).'<hr/>';
         $renderData['text'] .=nl2br($msg['body']);
         $this->ui->compose('bpm/modal_msg_little', 'bpm/bootstrap.ui.php', $renderData);
+    }
+
+    function send_task($idwf, $idcase) {
+        $this->load->model('bpm/bpm');
+        $this->load->library('parser');
+        $this->load->library('bpm/ui');
+        $renderData = array();
+        $renderData['idwf'] = $idwf;
+        $renderData['idcase'] = $idcase;
+        $renderData ['base_url'] = $this->base_url;
+// ---prepare UI
+        $renderData ['js'] = array(
+            $this->base_url . 'bpm/assets/jscript/modal_window.js' => 'Modal Window Generic JS'
+        );
+// ---prepare globals 4 js
+        $renderData ['global_js'] = array(
+            'base_url' => $this->base_url,
+            'module_url' => $this->base_url . 'bpm'
+        );
+//        $this->bpm->debug['load_case_data'] = true;
+//---saco título para el resultado
+        $mywf = $this->bpm->load($idwf);
+        $wf = $this->bpm->bindArrayToObject($mywf ['data']);
+//---tomo el template de la tarea
+        $renderData['name'] = 'Test TASK->SEND: ' . $wf->properties->name;
+        $renderData['shapes'] = $this->bpm->bindObjectToArray($this->bpm->get_shape_byprop(array('tasktype' => 'Send'), $wf));
+//        var_dump($renderData);
+//        exit;
+        $this->ui->compose('bpm/modal_task_send', 'bpm/bootstrap.ui.php', $renderData);
     }
 
 }

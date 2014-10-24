@@ -137,7 +137,7 @@ function run_Task($shape, $wf, $CI) {
             //----ASSIGN TASK to USER / GROUP
             $CI->bpm->assign($shape, $wf);
             //----Get token data
-            $token = $CI->bpm->get_token($wf->idwf, $wf->case, $shape->resourceId);
+//            $token = $CI->bpm->get_token($wf->idwf, $wf->case, $shape->resourceId);
 ////////////////////////////////////////////////////////////////////////////
 ///////////////////////EVAL EXECUTION POLICY////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
@@ -206,7 +206,7 @@ function run_Task($shape, $wf, $CI) {
             break;
         case 'Send':
             //----ASSIGN TASK to USER / GROUP
-            $token = $CI->bpm->assign($shape, $wf);
+//            $token = $CI->bpm->assign($shape, $wf);
             $data = $CI->bindObjectToArray($CI->data);
             $data['user'] = (array) $user;
             $data['date'] = date($CI->lang->line('dateFmt'));
@@ -222,24 +222,17 @@ function run_Task($shape, $wf, $CI) {
                 }
             }
             $resources = $CI->bpm->get_resources($shape, $wf, $case);
-            //---if has no messageref and noone is assigned then
-            //---fire a message to lane or self         
-//            if (!count($resources['assign']) and !$shape->properties->messageref) {
-//                $lane = $CI->bpm->find_parent($shape, 'Lane', $wf);
-//                //---try to get resources from lane
-//                if ($lane) {
-//                    $resources = $CI->bpm->get_resources($lane, $wf);
-//                }
-//                //---if can't get resources from lane then assign it self as destinatary
-//                if (!count($resources['assign']))
-//                    $resources['assign'][] = $CI->user->Initiator;
-//            }
+
             //---process inbox--------------
             //---Override FROM if Performer is set
             if (isset($resource['Performer'])) {
                 if (count($resource['Performer'])) {
                     $msg['from'] = array_pop($resource['Performer']);
+                    $data['from'] = $CI->user->get_user_safe($resource['Performer']);
                 }
+            } else {
+                //---set from equals to user
+                $data['from'] = $user;
             }
             $to = (isset($resources['assign'])) ? array_merge($token['assign'], $resources['assign']) : $token['assign'];
             $to = array_unique(array_filter($to));
