@@ -206,6 +206,8 @@ function run_Task($shape, $wf, $CI) {
             break;
         case 'Send':
             //----ASSIGN TASK to USER / GROUP
+            $token['assign'] =$iduser;
+            
 //            $token = $CI->bpm->assign($shape, $wf);
             $data = $CI->bindObjectToArray($CI->data);
             $data['user'] = (array) $user;
@@ -222,7 +224,8 @@ function run_Task($shape, $wf, $CI) {
                 }
             }
             $resources = $CI->bpm->get_resources($shape, $wf, $case);
-
+//            var_dump($resources);
+//            exit;
             //---process inbox--------------
             //---Override FROM if Performer is set
             if (isset($resource['Performer'])) {
@@ -234,7 +237,7 @@ function run_Task($shape, $wf, $CI) {
                 //---set from equals to user
                 $data['from'] = $user;
             }
-            $to = (isset($resources['assign'])) ? array_merge($token['assign'], $resources['assign']) : $token['assign'];
+            $to = (isset($resources['assign'])) ? $resources['assign'] : $token['assign'];
             $to = array_unique(array_filter($to));
             foreach ($to as $to_user) {
                 if ($debug)
