@@ -57,8 +57,8 @@ $(document).on("click",".msg",function(e){
     $.post(url,{id:msgid,whereiam:whereiam},function(data){
     	var msg=JSON.parse(data);
 
-        $('#myModal').find('.modal-title').html('<i class="fa fa-envelope"></i> '+msg.subject);
-        $('#myModal').find('.modal-body').html(msg.body.replace(/(?:\r\n|\r|\n)/g, '<br />'));
+        $('.modal-title').html('<i class="fa fa-envelope"></i> '+msg.subject);
+        $('.modal-body').html(msg.body.replace(/(?:\r\n|\r|\n)/g, '<br />'));
         $('#myModal').modal('show');
 
         this_msg.removeClass('unread');

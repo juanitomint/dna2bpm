@@ -7,7 +7,7 @@ include('_header.php')
 
 ?>
        
-        <div class="wrapper row-offcanvas row-offcanvas-left"><!-- Wrapper -->
+        <div class="wrapper row-offcanvas row-offcanvas-left hidden-print"><!-- Wrapper -->
 
             <!-- ======== MENU LEFT ======== --> 
             <aside class="left-side sidebar-offcanvas">
@@ -36,6 +36,10 @@ include('_header.php')
 
                 <section class="content">
                     {tiles} 
+                    
+                    {alerts}
+                    
+                    
                     <section class="col-lg-12 connectedSortable ui-sortable" id="col1"> 
                         {widgets}                    
                     </section>

@@ -198,6 +198,7 @@ class Bpm extends CI_Model {
     }
 
     function get_cases_stats($filter) {
+
         $all_tokens = array();
         $allcases = $this->get_cases_byFilter($filter, array('id', 'idwf', 'token_status'));
         foreach ($allcases as $case) {
@@ -229,6 +230,81 @@ class Bpm extends CI_Model {
             }
         }//---end foreach cases
         return $all_tokens;
+    }
+
+    /* MONTOS POR ESTADO */
+
+    function get_amount_stats_by_id($query) {
+        $rtn = array();
+        $container = 'container.proyectos_fondyf';
+        $fields = array('8334', '8326', '8573');
+        $rs = $this->mongo->db->$container->find($query, $fields);
+        foreach ($rs as $list) {
+            unset($list['_id']);
+            $rtn[] = $list;
+        }
+        return $rtn;
+    }
+
+    function get_amount_stats($filter) {
+
+        /* get ids */
+        $all_ids = array();
+        $arr_status = array();
+
+
+        $allcases = $this->get_cases_byFilter($filter, array('id', 'idwf', 'data'));
+
+
+
+        foreach ($allcases as $case) {
+            if (isset($case['data']['Proyectos_fondyf']['query']))
+                $all_ids[] = $case['data']['Proyectos_fondyf']['query'];
+        }
+
+
+        $get_value = array_map(function ($all_ids) {
+            return $this->get_amount_stats_by_id($all_ids);
+        }, $all_ids);
+
+
+
+        return $get_value;
+    }
+
+    function get_evaluator_by_project_by_id($query) {
+        $rtn = array();
+        $container = 'container.proyectos_fondyf';
+        $fields = array('8668', 'id', '8339');
+        $query = array(8668 => array('$exists' => true));
+        $rs = $this->mongo->db->$container->find($query, $fields);
+        foreach ($rs as $list) {
+            unset($list['_id']);
+            $rtn[] = $list;
+        }        
+        return $rtn;
+    }
+
+    function get_evaluator_by_project($filter) {
+
+
+        /* get ids */
+        $all_ids = array();
+        $arr_status = array();
+
+        $allcases = $this->get_cases_byFilter($filter, array('id', 'idwf', 'data'));
+
+        foreach ($allcases as $case) {
+            if (isset($case['data']['Proyectos_fondyf']['query']))
+                $all_ids[] = $case['data']['Proyectos_fondyf']['query'];
+        }
+
+
+        $get_value = array_map(function ($all_ids) {
+            return $this->get_evaluator_by_project_by_id($all_ids);
+        }, $all_ids);
+
+        return $get_value;
     }
 
     function get_cases($user = null, $offset = 0, $limit = null, $filter_status = array()) {
@@ -369,7 +445,7 @@ class Bpm extends CI_Model {
         if (!isset($data['iduser']))
             $data['iduser'] = (int) $this->session->userdata('iduser');
 
-        if (!isset($idwf) or ! isset($case) or ! isset($resourceId)) {
+        if (!isset($idwf) or !isset($case) or !isset($resourceId)) {
             show_error("Can't update whith: idwf:$idwf case:$case  resourceId:$resourceId<br/>Incomplete Data.");
         }
         //$title=(isset($shape->properties->title))?$shape->properties->title;$shape->stencil->id;
@@ -1685,7 +1761,6 @@ class Bpm extends CI_Model {
                                     var_dump($res_extra, $rtn);
                                 }
                                 $rtn = array_merge($rtn, $res_extra);
-                                
                             }
                             break;
                         case 'case':
@@ -1743,7 +1818,7 @@ class Bpm extends CI_Model {
 
 //---check if user belong to the group the task is assigned to
 //---but only if the task havent been assigned to an specific user
-        if (isset($token['idgroup']) and ! isset($token['assign'])) {
+        if (isset($token['idgroup']) and !isset($token['assign'])) {
             foreach ($user->group as $thisgroup) {
                 if (in_array((int) $thisgroup, $token['idgroup'])) {
                     $is_allowed = true;
