@@ -206,7 +206,7 @@ function run_Task($shape, $wf, $CI) {
             break;
         case 'Send':
             //----ASSIGN TASK to USER / GROUP
-            $token['assign'] =$iduser;
+            $token['assign'] =array($iduser);
             
 //            $token = $CI->bpm->assign($shape, $wf);
             $data = $CI->bindObjectToArray($CI->data);
