@@ -162,13 +162,21 @@ function run_Task($shape, $wf, $CI) {
 
 //---change status to manual (stops execution and wait 4 manual input)
             $CI->bpm->set_token($wf->idwf, $wf->case, $shape->resourceId, $shape->stencil->id, 'user', $data);
+            if ($CI->break_on_next) {
+                redirect($CI->base_url . $CI->config->item('default_controller'));
+            }
             break;
         case 'Manual':
             $CI->bpm->set_token($wf->idwf, $wf->case, $shape->resourceId, $shape->stencil->id, 'user', $data);
+            if ($CI->break_on_next) {
+                redirect($CI->base_url . $CI->config->item('default_controller'));
+            }
             break;
         case 'Script':
 //----run the script
-//
+            if ($CI->break_on_next) {
+                redirect($CI->base_url . $CI->config->item('default_controller'));
+            }
 //--->movenext on success
             $streval = $shape->properties->script;
             $script_language = ($shape->properties->script_language) ? strtolower($shape->properties->script_language) : 'php';
@@ -209,6 +217,9 @@ function run_Task($shape, $wf, $CI) {
             $CI->bpm->movenext($shape, $wf, $data);
             break;
         case 'Send':
+            if ($CI->break_on_next) {
+                redirect($CI->base_url . $CI->config->item('default_controller'));
+            }
             //----ASSIGN TASK to USER / GROUP
             $token['assign'] = array($iduser);
 
@@ -275,6 +286,9 @@ function run_Task($shape, $wf, $CI) {
             //---change status to manual (stops execution and wait 4 manual input)
             //$CI->bpm->set_token($wf->idwf, $wf->case, $shape->resourceId, $shape->stencil->id, 'manual', $data);
             $CI->bpm->movenext($shape, $wf);
+            if ($CI->break_on_next) {
+                redirect($CI->base_url . $CI->config->item('default_controller'));
+            }
             break;
     }
 }
