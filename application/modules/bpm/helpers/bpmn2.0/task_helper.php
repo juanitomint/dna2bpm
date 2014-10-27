@@ -206,15 +206,12 @@ function run_Task($shape, $wf, $CI) {
             break;
         case 'Send':
             //----ASSIGN TASK to USER / GROUP
-            $token['assign'] =array($iduser);
-            
+            $token['assign'] = array($iduser);
+
 //            $token = $CI->bpm->assign($shape, $wf);
             $data = $CI->bindObjectToArray($CI->data);
-            $data['user'] = (array) $user;
             $data['date'] = date($CI->lang->line('dateFmt'));
             $msg['from'] = $CI->idu;
-            $msg['subject'] = $CI->parser->parse_string($shape->properties->name, $data, true, true);
-            $msg['body'] = $CI->parser->parse_string($shape->properties->documentation, $data, true, true);
 
             $msg['idwf'] = $wf->idwf;
             $msg['case'] = $wf->case;
@@ -232,11 +229,18 @@ function run_Task($shape, $wf, $CI) {
                 if (count($resource['Performer'])) {
                     $msg['from'] = array_pop($resource['Performer']);
                     $data['from'] = $CI->user->get_user_safe($resource['Performer']);
+                    $user = $CI->bpm->get_user(array_pop($resource['Performer']));
                 }
             } else {
                 //---set from equals to user
                 $data['from'] = $user;
             }
+            //---Get FROM
+            $user = $this->user->get_user_safe($msg['from']);
+            $data['user'] = (array) $user;
+            $msg['subject'] = $CI->parser->parse_string($shape->properties->name, $data, true, true);
+            $msg['body'] = $CI->parser->parse_string($shape->properties->documentation, $data, true, true);
+
             $to = (isset($resources['assign'])) ? $resources['assign'] : $token['assign'];
             $to = array_unique(array_filter($to));
             foreach ($to as $to_user) {
