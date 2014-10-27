@@ -16,7 +16,7 @@
  */
 
 
-class Toast_all extends Controller
+class Toast_all extends MX_Controller
 {
 	// The folder INSIDE /controllers/ where the test classes are located
 	// TODO: autoset
@@ -34,7 +34,7 @@ class Toast_all extends Controller
 
 	function Toast_all()
 	{
-		parent::Controller();
+		parent::__construct();
 	}
 
 	function index()
@@ -81,7 +81,7 @@ class Toast_all extends Controller
 	{
 		$files = array();
 
-		$handle=opendir(APPPATH . '/controllers' . $this->test_dir);
+		$handle=opendir(FCPATH . APPPATH . "modules/test/controllers" . $this->test_dir);
 		while (false!==($file = readdir($handle)))
 		{
 			// Skip hidden/system files and the files in the skip[] array
