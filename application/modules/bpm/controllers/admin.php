@@ -274,7 +274,18 @@ class Admin extends MX_Controller {
     function model_move($from, $to) {
         
     }
-
+    function get_data($idwf, $idcase) {
+        $debug=false;
+        $this->load->model('bpm','bpm_model');
+        $case = $this->bpm->get_case($idcase,$idwf);
+        $data = $this->bpm->load_case_data($case);
+         if (!$debug) {
+            header('Content-type: application/json;charset=UTF-8');
+            echo json_encode($data);
+        } else {
+            var_dump($data);
+        }
+    }
     function get_model($idwf, $mode = 'html') {
         $idwf = urldecode($idwf);
         $wfData['base_url'] = base_url();
