@@ -15,9 +15,7 @@ class Dashboard extends MX_Controller {
 
     function __construct() {
         parent::__construct();
-        $this->load->model('user/user');
         $this->load->config('dashboard/config');
-        $this->load->library('parser');
         $this->load->library('ui');
         $this->load->model('app');
         $this->load->model('bpm/bpm');
