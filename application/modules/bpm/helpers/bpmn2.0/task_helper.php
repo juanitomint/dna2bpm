@@ -236,7 +236,7 @@ function run_Task($shape, $wf, $CI) {
                 $data['from'] = $user;
             }
             //---Get FROM
-            $user = $this->user->get_user_safe($msg['from']);
+            $user = $CI->user->get_user_safe($msg['from']);
             $data['user'] = (array) $user;
             $msg['subject'] = $CI->parser->parse_string($shape->properties->name, $data, true, true);
             $msg['body'] = $CI->parser->parse_string($shape->properties->documentation, $data, true, true);
