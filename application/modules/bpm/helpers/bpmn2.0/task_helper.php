@@ -139,7 +139,7 @@ function run_Task($shape, $wf, $CI) {
             $CI->bpm->assign($shape, $wf);
             //----Get token data
             if ($CI->break_on_next) {
-                redirect($this->base_url . $CI->config->item('default_controller'));
+                redirect($CI->base_url . $CI->config->item('default_controller'));
             }
 //              $token = $CI->bpm->get_token($wf->idwf, $wf->case, $shape->resourceId);
 ////////////////////////////////////////////////////////////////////////////
