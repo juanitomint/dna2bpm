@@ -23,7 +23,8 @@ abstract class Toast extends MX_Controller
 {
 	// The folder INSIDE /controllers/ where the test classes are located
 	// TODO: autoset
-	var $test_dir = '/test/';
+	
+    var $test_dir = '/test/';
 
 	var $modelname;
 	var $modelname_short;
