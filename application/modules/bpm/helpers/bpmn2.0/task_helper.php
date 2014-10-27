@@ -132,12 +132,17 @@ function run_Task($shape, $wf, $CI) {
 
     switch ($shape->properties->tasktype) {
         case 'User':
+
             if ($debug)
                 echo "USER<br/>";
             //----ASSIGN TASK to USER / GROUP
             $CI->bpm->assign($shape, $wf);
             //----Get token data
-//            $token = $CI->bpm->get_token($wf->idwf, $wf->case, $shape->resourceId);
+            if ($CI->break_on_next) {
+                echo "sale ACA";exit;
+                redirect($this->base_url . $CI->config->item('default_controller'));
+            }
+//              $token = $CI->bpm->get_token($wf->idwf, $wf->case, $shape->resourceId);
 ////////////////////////////////////////////////////////////////////////////
 ///////////////////////EVAL EXECUTION POLICY////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////

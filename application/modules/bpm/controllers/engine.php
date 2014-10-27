@@ -257,9 +257,9 @@ class Engine extends MX_Controller {
 
             $this->bpm->update_case_token_status($idwf, $case);
             //----if some helper want to break then break
-            if ($this->break_on_next) {
-                redirect($this->base_url . $this->config->item('default_controller'));
-            }
+//            if ($this->break_on_next) {
+//                redirect($this->base_url . $this->config->item('default_controller'));
+//            }
             $this->get_pending('model', $idwf, $case, $run_resourceId);
             $this->run_after();
             $run_resourceId = null;
