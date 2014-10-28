@@ -93,9 +93,9 @@ class Engine extends MX_Controller {
 
     function Newcase($model, $idwf, $manual = false, $parent = null, $silent = false) {
         // ---Gen new case ID
-        $case = $this->bpm->gen_case($idwf);
+        $idcase = $this->bpm->gen_case($idwf);
         if ($manual) {
-            $mycase = $this->bpm->get_case($case, $idwf);
+            $mycase = $this->bpm->get_case($idcase, $idwf);
             $mycase ['run_manual'] = true;
 
             $this->bpm->save_case($mycase);
@@ -103,7 +103,7 @@ class Engine extends MX_Controller {
 
         // ----save parent data if any
         if ($parent) {
-            $mycase = $this->bpm->get_case($case, $idwf);
+            $mycase = $this->bpm->get_case($idcase, $idwf);
             $mycase ['parent'] = $parent;
             $this->bpm->save_case($mycase);
             /*
@@ -112,27 +112,27 @@ class Engine extends MX_Controller {
             // ----set child process in parent
             $token = $this->bpm->get_token($parent ['token'] ['idwf'], $parent ['token'] ['case'], $parent ['token'] ['resourceId']);
             $child = array(
-                'case' => $case,
+                'case' => $idcase,
                 'idwf' => $idwf
             );
             $token ['child'] = $child;
             $this->bpm->save_token($token);
         }
         // ---Start the case (will move next on startnone shapes)
-        $this->Startcase($model, $idwf, $case, $silent);
+        $this->Startcase($model, $idwf, $idcase, $silent);
     }
 
-    function Start($model, $idwf, $case, $silent = false) {
-        $this->Startcase($model, $idwf, $case, $silent = false);
+    function Start($model, $idwf, $idcase, $silent = false) {
+        $this->Startcase($model, $idwf, $idcase, $silent = false);
     }
 
-    function Startcase($model, $idwf, $case, $silent = false) {
+    function Startcase($model, $idwf, $idcase, $silent = false) {
         $debug = (isset($this->debug [__FUNCTION__])) ? $this->debug [__FUNCTION__] : false;
         if ($debug)
-            var_dump($model, $idwf, $case, $debug);
+            var_dump($model, $idwf, $idcase, $debug);
         // ---Remove tokens from db if there are any
-        $this->bpm->clear_tokens($idwf, $case);
-        $this->bpm->clear_case($case);
+        $this->bpm->clear_tokens($idwf, $idcase);
+        $this->bpm->clear_case($idcase);
         // ---start a case and insert start tokens in database
         $mywf = $this->bpm->load($idwf, $this->expandSubProcess);
         if (!$mywf) {
@@ -154,21 +154,21 @@ class Engine extends MX_Controller {
             show_error("The Schema doesn't have an start point");
         // ---Start all StartNoneEvents as possible
         foreach ($start_shapes as $start_shape) {
-            $this->bpm->set_token($idwf, $case, $start_shape->resourceId, $start_shape->stencil->id, 'pending');
+            $this->bpm->set_token($idwf, $idcase, $start_shape->resourceId, $start_shape->stencil->id, 'pending');
         }
         if ($this->create_start_msg) {
             // ------Create a message in the inbox.
             $msg = array(
                 'iduser' => $this->session->userdata('iduser'),
-                'subject' => $wf->properties->name . ':' . $case,
+                'subject' => $wf->properties->name . ':' . $idcase,
                 'body' => $wf->properties->documentation,
                 'from' => 'DNA²',
-                'link' => 'bpm/engine/tokens/model' . $idwf . '/' . $case
+                'link' => 'bpm/engine/tokens/model' . $idwf . '/' . $idcase
             );
             $this->user->create_message($this->session->userdata('iduser'), $msg);
         }
         // ---Redir the browser to engine Run
-        $redir = "bpm/engine/run/model/$idwf/$case";
+        $redir = "bpm/engine/run/model/$idwf/$idcase";
         if (!$silent) {
             header("Location:" . $this->base_url . $redir);
         } else {
