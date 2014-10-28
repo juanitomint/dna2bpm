@@ -31,6 +31,7 @@ display:none;
 
 /* Config Panel*/
 
+@media screen {
 #config_panel_bt{
 position: fixed;
 top:150px;
@@ -55,6 +56,6 @@ color: #ddd;
 	background-color:#fff;
 	padding:5px;
 }
-
+}
 
 

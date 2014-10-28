@@ -101,11 +101,8 @@ class test extends MX_Controller {
         $shape = $this->bpm->get_shape($resourceId, $wf);
 
         $data = $this->bpm->load_case_data($case, $idwf);
-        $data['user'] = (array) $user;
         $data['date'] = date($this->lang->line('dateFmt'));
         $msg['from'] = $this->idu;
-        $msg['subject'] = $this->parser->parse_string($shape->properties->name, $data, true, true);
-        $msg['body'] = $this->parser->parse_string($shape->properties->documentation, $data, true, true);
 
         $msg['idwf'] = $idwf;
         $msg['case'] = $idcase;
@@ -145,7 +142,11 @@ class test extends MX_Controller {
         }
 //---Get FROM
         $user = $this->user->get_user_safe($msg['from']);
+        $data['user'] = (array) $user;
 //---Prepare Data
+        $msg['subject'] = $this->parser->parse_string($shape->properties->name, $data, true, true);
+        $msg['body'] = $this->parser->parse_string($shape->properties->documentation, $data, true, true);
+        
         $renderData['from'][] = $user->name . ' ' . $user->lastname;
         $renderData['name'] = $msg['subject'];
         $renderData['title'] = $msg['subject'];
@@ -153,6 +154,7 @@ class test extends MX_Controller {
         $renderData['text'] = 'From: ' . implode(',', $renderData['from']).'<hr/>';
         $renderData['text'] .= 'To: ' . implode(',', $renderData['to']).'<hr/>';
         $renderData['text'] .=nl2br($msg['body']);
+        
         $this->ui->compose('bpm/modal_msg_little', 'bpm/bootstrap.ui.php', $renderData);
     }
 

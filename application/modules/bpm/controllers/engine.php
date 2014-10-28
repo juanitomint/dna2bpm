@@ -257,9 +257,9 @@ class Engine extends MX_Controller {
 
             $this->bpm->update_case_token_status($idwf, $case);
             //----if some helper want to break then break
-            if ($this->break_on_next) {
-                redirect($this->base_url . $this->config->item('default_controller'));
-            }
+//            if ($this->break_on_next) {
+//                redirect($this->base_url . $this->config->item('default_controller'));
+//            }
             $this->get_pending('model', $idwf, $case, $run_resourceId);
             $this->run_after();
             $run_resourceId = null;
@@ -434,7 +434,7 @@ class Engine extends MX_Controller {
                     if (method_exists($this->$conn, 'get_ui')) {
                         $do['ui'] = $this->$conn->get_ui($resource, $dataShape, $wf);
                     }
-                    
+
                     $renderData['DataObject_Input'][] = $do;
                 }
             }
@@ -768,6 +768,9 @@ class Engine extends MX_Controller {
         // if no filter passed then set default to me
         // $debug = true;
         // $this->load_data($idwf, $idcase);
+        if ($this->break_on_next) {
+            redirect($this->base_url . $this->config->item('default_controller'));
+        }
         $renderData = array();
         $renderData = $this->lang->language;
         $renderData ['theme'] = $this->config->item('theme');

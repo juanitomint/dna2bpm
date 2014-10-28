@@ -142,8 +142,8 @@ class Bpmui extends MX_Controller {
         echo $this->parser->parse('bpm/widgets/ministatus', $data, true, true);
     }
 
-    function widget_data($model, $idcase) {
-        $case = $this->bpm->get_case($idcase);
+    function widget_data($idwf, $idcase) {
+        $case = $this->bpm->get_case($idcase,$idwf);
         ob_start();
         var_dump($this->bpm->load_case_data($case));
         $content = ob_get_contents();
