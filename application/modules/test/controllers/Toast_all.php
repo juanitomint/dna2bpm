@@ -49,7 +49,7 @@ class Toast_all extends MX_Controller {
         foreach ($test_files as $file) {
             $test_urls[] = site_url($this->test_dir . $file . '/show_results');
         }
-
+        
         // Load header
         $output .= $this->load->view('test/header', NULL, TRUE);
 

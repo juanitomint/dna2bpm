@@ -232,8 +232,6 @@ class Bpm extends CI_Model {
         return $all_tokens;
     }
 
-
-
     function get_cases($user = null, $offset = 0, $limit = null, $filter_status = array()) {
         $data = array(
             'cases' => array(),
@@ -372,7 +370,7 @@ class Bpm extends CI_Model {
         if (!isset($data['iduser']))
             $data['iduser'] = (int) $this->session->userdata('iduser');
 
-        if (!isset($idwf) or !isset($case) or !isset($resourceId)) {
+        if (!isset($idwf) or ! isset($case) or ! isset($resourceId)) {
             show_error("Can't update whith: idwf:$idwf case:$case  resourceId:$resourceId<br/>Incomplete Data.");
         }
         //$title=(isset($shape->properties->title))?$shape->properties->title;$shape->stencil->id;
@@ -408,7 +406,7 @@ class Bpm extends CI_Model {
         return $this->db->where($criteria)->delete('tokens');
     }
 
-    function clear_case($idcase) {
+    function clear_case($idwf, $idcase) {
         $case = $this->get_case($idcase);
         $_id = $case['_id'];
         return $this->save_case(
@@ -1747,7 +1745,7 @@ class Bpm extends CI_Model {
 
 //---check if user belong to the group the task is assigned to
 //---but only if the task havent been assigned to an specific user
-        if (isset($token['idgroup']) and !isset($token['assign'])) {
+        if (isset($token['idgroup']) and ! isset($token['assign'])) {
             foreach ($user->group as $thisgroup) {
                 if (in_array((int) $thisgroup, $token['idgroup'])) {
                     $is_allowed = true;
@@ -1765,7 +1763,7 @@ class Bpm extends CI_Model {
         return $is_allowed;
     }
 
-    function import($file_import, $overwrite = true,$folder='General') {
+    function import($file_import, $overwrite = true, $folder = 'General') {
         $this->load->helper('file');
         $data = pathinfo($file_import);
         /*

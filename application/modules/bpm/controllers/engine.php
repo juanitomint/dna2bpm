@@ -132,7 +132,7 @@ class Engine extends MX_Controller {
             var_dump($model, $idwf, $idcase, $debug);
         // ---Remove tokens from db if there are any
         $this->bpm->clear_tokens($idwf, $idcase);
-        $this->bpm->clear_case($idcase);
+        $this->bpm->clear_case($idwf,$idcase);
         // ---start a case and insert start tokens in database
         $mywf = $this->bpm->load($idwf, $this->expandSubProcess);
         if (!$mywf) {
