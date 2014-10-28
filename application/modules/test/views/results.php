@@ -1,5 +1,5 @@
 <?php $this->load->helper('language'); ?>
-
+<?php echo $modelname?>
 <?php $i=0; foreach ($results as $result): ?>
 	<li>
 	<?php if ($result[lang('ut_result')] == lang('ut_passed')): ?>

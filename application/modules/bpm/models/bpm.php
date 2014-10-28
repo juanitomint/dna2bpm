@@ -1765,4 +1765,55 @@ class Bpm extends CI_Model {
         return $is_allowed;
     }
 
+    function import($file_import, $overwrite = true,$folder='General') {
+        $this->load->helper('file');
+        $data = pathinfo($file_import);
+        /*
+         * array (size=4)
+          'dirname' => string 'images/zip' (length=10)
+          'basename' => string 'fondyfpp.zip' (length=12)
+          'extension' => string 'zip' (length=3)
+          'filename' => string 'fondyfpp' (length=8)
+         */
+        $err = false;
+        $zip = new ZipArchive;
+        if ($zip->open($file_import) === true) {
+            $zip->extractTo('./');
+            $zip->close();
+        } else {
+            $err = true;
+            $rtnObject['msg'] = "Error can't deflate:$file_import";
+            $rtnObject['success'] = false;
+        }
+        if (!$err) {
+            $idwf = $data['filename'];
+            $filename = "images/model/$idwf.json";
+            $filename_svg = "images/svg/$idwf.svg";
+            $model = $this->bpm->model_exists($idwf);
+
+            $svg = read_file($filename_svg);
+            if ($raw = read_file($filename)) {
+                $data = json_decode($raw, false);
+//---if exists set the internal id of the old one
+                $thisModel['idwf'] = $idwf;
+                $thisModel['data'] = $data;
+                $thisModel['folder'] = $folder;
+                $thisModel['svg'] = $svg;
+                if ($model) {
+                    $this->bpm->save($idwf, $data, $svg);
+                    $rtnObject['msg'] = "Imported OK! Updated existing model: $idwf";
+                    $rtnObject['success'] = true;
+                } else {
+                    $rtnObject['msg'] = "Imported OK! New Model Created: $idwf";
+                    $rtnObject['success'] = true;
+                    $rs = $this->bpm->save_raw($thisModel);
+                }
+            } else {
+                $rtnObject['msg'] = "Error reading $file_import";
+                $rtnObject['success'] = false;
+            }
+        }//---not error
+        return $rtnObject;
+    }
+
 }
