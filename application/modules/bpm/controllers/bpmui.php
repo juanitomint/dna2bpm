@@ -83,9 +83,9 @@ class Bpmui extends MX_Controller {
             $data['folders'][] = array(
                 'folder' => $folder,
                 'models' => array_filter($models, function($model) use($folder) {
-                    if (isset($model['folder']))
-                        return $model['folder'] == $folder;
-                })
+                            if (isset($model['folder']))
+                                return $model['folder'] == $folder;
+                        })
             );
         }
         $data['base_url'] = $this->base_url;
@@ -172,6 +172,26 @@ class Bpmui extends MX_Controller {
                 echo "There is no tile named: $tile";
             }
         }
+    }
+
+    function tile_tasks2me() {
+        $data['lang'] = $this->lang->language;
+        $data['title'] = $this->lang->line('MyTasks');
+//        $query = array(
+//            'assign' => $this->idu,
+//            'status' => 'user',
+//        );
+        $query = array(
+            'assign' => $this->idu,
+            'status' => 'user'
+        );
+
+        $tasks = $this->bpm->get_tasks_byFilter($query);
+        $data['number'] = count($tasks);
+        $data['icon'] = 'ion-android-checkmark';
+        $data['more_info_link'] = $this->base_url . 'dashboard/show/tasks';
+        $data['widget_url'] = base_url() . $this->router->fetch_module() . '/' . $this->router->class . '/' . __FUNCTION__;
+        return $this->parser->parse('dashboard/tiles/tile-yellow', $data, true, true);
     }
 
     function tile_tasks() {

@@ -10,7 +10,7 @@
                     "title": "Tile01",
                     "module": "bpm",
                     "controller": "bpmui",
-                    "function": "tile_tasks",
+                    "function": "tile_tasks2me",
                     "span":3
                 },
                 {
