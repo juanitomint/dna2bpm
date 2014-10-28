@@ -100,11 +100,13 @@ class Case_manager extends MX_Controller {
         $cpData['title'] = 'Case Manager';
 
         $cpData['css'] = array(
+            $this->module_url . 'assets/css/jsoneditor.min.css' => 'JSON-Editor CSS',
             $this->module_url . 'assets/css/case_manager.css' => 'Manager styles',
             $this->module_url . 'assets/css/extra-icons.css' => 'Extra Icons',
             $this->module_url . 'assets/css/fix_bootstrap_checkbox.css' => 'Fix Checkbox',
         );
         $cpData['js'] = array(
+            $this->module_url . 'assets/jscript/jsoneditor.min.js' => 'JSON-Editor',
             $this->module_url . 'assets/jscript/case_manager/ext.settings.js' => 'Settings & overrides',
             $this->module_url . 'assets/jscript/fontawesome_icons.js' => 'FontAwesome icons',
             $this->module_url . 'assets/jscript/case_manager/ext.data.js' => 'data Components',

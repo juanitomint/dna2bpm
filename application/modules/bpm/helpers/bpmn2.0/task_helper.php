@@ -132,12 +132,16 @@ function run_Task($shape, $wf, $CI) {
 
     switch ($shape->properties->tasktype) {
         case 'User':
+
             if ($debug)
                 echo "USER<br/>";
             //----ASSIGN TASK to USER / GROUP
             $CI->bpm->assign($shape, $wf);
             //----Get token data
-            $token = $CI->bpm->get_token($wf->idwf, $wf->case, $shape->resourceId);
+            if ($CI->break_on_next) {
+                redirect($CI->base_url . $CI->config->item('default_controller'));
+            }
+//              $token = $CI->bpm->get_token($wf->idwf, $wf->case, $shape->resourceId);
 ////////////////////////////////////////////////////////////////////////////
 ///////////////////////EVAL EXECUTION POLICY////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
@@ -158,13 +162,21 @@ function run_Task($shape, $wf, $CI) {
 
 //---change status to manual (stops execution and wait 4 manual input)
             $CI->bpm->set_token($wf->idwf, $wf->case, $shape->resourceId, $shape->stencil->id, 'user', $data);
+            if ($CI->break_on_next) {
+                redirect($CI->base_url . $CI->config->item('default_controller'));
+            }
             break;
         case 'Manual':
             $CI->bpm->set_token($wf->idwf, $wf->case, $shape->resourceId, $shape->stencil->id, 'user', $data);
+            if ($CI->break_on_next) {
+                redirect($CI->base_url . $CI->config->item('default_controller'));
+            }
             break;
         case 'Script':
 //----run the script
-//
+            if ($CI->break_on_next) {
+                redirect($CI->base_url . $CI->config->item('default_controller'));
+            }
 //--->movenext on success
             $streval = $shape->properties->script;
             $script_language = ($shape->properties->script_language) ? strtolower($shape->properties->script_language) : 'php';
@@ -205,15 +217,17 @@ function run_Task($shape, $wf, $CI) {
             $CI->bpm->movenext($shape, $wf, $data);
             break;
         case 'Send':
+            if ($CI->break_on_next) {
+                redirect($CI->base_url . $CI->config->item('default_controller'));
+            }
             //----ASSIGN TASK to USER / GROUP
-            $token = $CI->bpm->assign($shape, $wf);
+            $token['assign'] = array($iduser);
+
+//            $token = $CI->bpm->assign($shape, $wf);
             $data = $CI->bindObjectToArray($CI->data);
-            $data['user']=(array)$user;
             $data['date'] = date($CI->lang->line('dateFmt'));
             $msg['from'] = $CI->idu;
-            $msg['subject'] = $CI->parser->parse_string($shape->properties->name, $data, true, true);
-            $msg['body'] = $CI->parser->parse_string($shape->properties->documentation, $data, true, true);
-            
+
             $msg['idwf'] = $wf->idwf;
             $msg['case'] = $wf->case;
             if ($shape->properties->properties <> '') {
@@ -222,20 +236,27 @@ function run_Task($shape, $wf, $CI) {
                 }
             }
             $resources = $CI->bpm->get_resources($shape, $wf, $case);
-            //---if has no messageref and noone is assigned then
-            //---fire a message to lane or self         
-//            if (!count($resources['assign']) and !$shape->properties->messageref) {
-//                $lane = $CI->bpm->find_parent($shape, 'Lane', $wf);
-//                //---try to get resources from lane
-//                if ($lane) {
-//                    $resources = $CI->bpm->get_resources($lane, $wf);
-//                }
-//                //---if can't get resources from lane then assign it self as destinatary
-//                if (!count($resources['assign']))
-//                    $resources['assign'][] = $CI->user->Initiator;
-//            }
+//            var_dump($resources);
+//            exit;
             //---process inbox--------------
-            $to = (isset($resources['assign'])) ? array_merge($token['assign'], $resources['assign']) : $token['assign'];
+            //---Override FROM if Performer is set
+            if (isset($resource['Performer'])) {
+                if (count($resource['Performer'])) {
+                    $msg['from'] = array_pop($resource['Performer']);
+                    $data['from'] = $CI->user->get_user_safe($resource['Performer']);
+                    $user = $CI->bpm->get_user(array_pop($resource['Performer']));
+                }
+            } else {
+                //---set from equals to user
+                $data['from'] = $user;
+            }
+            //---Get FROM
+            $user = $CI->user->get_user_safe($msg['from']);
+            $data['user'] = (array) $user;
+            $msg['subject'] = $CI->parser->parse_string($shape->properties->name, $data, true, true);
+            $msg['body'] = $CI->parser->parse_string($shape->properties->documentation, $data, true, true);
+
+            $to = (isset($resources['assign'])) ? $resources['assign'] : $token['assign'];
             $to = array_unique(array_filter($to));
             foreach ($to as $to_user) {
                 if ($debug)
@@ -265,6 +286,9 @@ function run_Task($shape, $wf, $CI) {
             //---change status to manual (stops execution and wait 4 manual input)
             //$CI->bpm->set_token($wf->idwf, $wf->case, $shape->resourceId, $shape->stencil->id, 'manual', $data);
             $CI->bpm->movenext($shape, $wf);
+            if ($CI->break_on_next) {
+                redirect($CI->base_url . $CI->config->item('default_controller'));
+            }
             break;
     }
 }
