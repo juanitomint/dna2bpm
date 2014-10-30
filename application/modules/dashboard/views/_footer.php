@@ -17,10 +17,7 @@
             </div>
         </div>
          <!-- ======== FOR PRINTING MSGS ======== -->         
-        <div class="visible-print-* ">
-	        <h4 class="modal-title" ></h4>
-	        <div class="modal-body"></div>
-        </div>
+        <div class="visible-print-*" id="printboard"></div>
         <!-- ________ FOR PRINTING MSGS ________ -->
         
         

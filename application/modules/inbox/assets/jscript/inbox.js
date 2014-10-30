@@ -56,10 +56,13 @@ $(document).on("click",".msg",function(e){
     var url = globals.base_url+'inbox/inbox/get_msg';    
     $.post(url,{id:msgid,whereiam:whereiam},function(data){
     	var msg=JSON.parse(data);
+    	var mybody=msg.body.replace(/(?:\r\n|\r|\n)/g, '<br />');
 
         $('.modal-title').html('<i class="fa fa-envelope"></i> '+msg.subject);
-        $('.modal-body').html(msg.body.replace(/(?:\r\n|\r|\n)/g, '<br />'));
-        $('#myModal').modal('show');
+        $('.modal-body').html(mybody);
+        $('#myModal').modal('show');     
+        $('#printboard').html('<h1>'+msg.subject+'</h1>'+mybody);// printzone
+       
 
         this_msg.removeClass('unread');
         this_msg.addClass('read');  
