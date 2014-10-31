@@ -115,7 +115,7 @@ class Msg extends CI_Model {
 // 1 = errors and messages
 // 2 = messages only
             $mail->SetFrom($this->config->item('smtp_user'), $this->config->item('smtp_user_name'));
-            $mail->Subject = $this->config->item('mail_suffix').' ' . $msg['subject'];
+            $mail->Subject = utf8_decode($this->config->item('mail_suffix').' ' . $msg['subject']);
             $mail->AltBody = "To view the message, please use an HTML compatible email viewer!"; // optional, comment out and test
             $mail->IsHTML(true);
             $mail->MsgHTML(nl2br($msg['body']));
