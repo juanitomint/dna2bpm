@@ -611,7 +611,7 @@ class Bpm extends CI_Model {
         $query+=$filter;
         toRegex($query);
         //var_dump2(json_encode($query));
-        return $this->mongo->db->tokens->find($query);
+        return $this->mongo->db->tokens->find($query)->sort(array('_id'=>true));
     }
 
     function get_triggers() {
