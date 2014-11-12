@@ -742,7 +742,8 @@ class Bpm extends CI_Model {
     function save_case($case) {
         unset($case['_id']);
         $query = array(
-            'id' => $case['id']
+            'id' => $case['id'],
+            'idwf'=>$case['idwf']
         );
         //----get the status tokens
         //$case['token_status'] = $this->get_token_status($case['idwf'], $case['id']);
