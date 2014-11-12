@@ -774,7 +774,7 @@ class Bpm extends CI_Model {
         $hasone = false;
 
         while (!$hasone and $i <= $trys) {//---search until found or $trys iterations
-            $query = array('id' => $id);
+            $query = array('id' => $id,'idwf'=>$idwf);
             $result = $this->db->get_where('case', $query)->result();
             $i++;
             if ($result) {
