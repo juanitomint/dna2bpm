@@ -402,6 +402,8 @@ class Engine extends MX_Controller {
         $renderData ['idwf'] = $idwf;
         $renderData ['idcase'] = $idcase;
         $renderData ['resourceId'] = $resourceId;
+        $renderData['date'] = date($CI->lang->line('dateFmt'));
+        
         // -----load bpm
         $mywf = $this->bpm->load($idwf, $this->expandSubProcess);
         $mywf ['data'] ['idwf'] = $idwf;
