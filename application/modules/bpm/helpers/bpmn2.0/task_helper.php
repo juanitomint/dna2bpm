@@ -172,6 +172,7 @@ function run_Task($shape, $wf, $CI) {
                 redirect($CI->base_url . $CI->config->item('default_controller'));
             }
             break;
+        
         case 'Script':
 //----run the script
             if ($CI->break_on_next) {

@@ -186,7 +186,8 @@ class test extends MX_Controller {
 //        exit;
         $this->ui->compose('bpm/modal_task_send', 'bpm/bootstrap.ui.php', $renderData);
     }
-    function run_task($idwf, $idcase) {
+
+function test_task($idwf, $idcase,$resourceId=null) {
         $this->load->model('bpm/bpm');
         $this->load->library('parser');
         $this->load->library('bpm/ui');
@@ -194,19 +195,30 @@ class test extends MX_Controller {
         $renderData['idwf'] = $idwf;
         $renderData['idcase'] = $idcase;
         $renderData ['base_url'] = $this->base_url;
+        
 // ---prepare UI
         $renderData ['js'] = array(
-            $this->base_url . 'bpm/assets/jscript/modal_window.js' => 'Modal Window Generic JS'
+            $this->base_url . 'bpm/assets/jscript/test_task.js' => 'Modal Window Generic JS',
+            $this->base_url . 'jscript/editarea/edit_area/edit_area_full.js' => 'Edit Area',
         );
 // ---prepare globals 4 js
         $renderData ['global_js'] = array(
             'base_url' => $this->base_url,
-            'module_url' => $this->base_url . 'bpm'
+            'module_url' => $this->base_url . 'bpm',
+            'idwf'=>$idwf,
+            'idcase'=>$idcase,
+            'resourceId'=>$resourceId
         );
 //        $this->bpm->debug['load_case_data'] = true;
 //---saco título para el resultado
         $mywf = $this->bpm->load($idwf);
         $wf = $this->bpm->bindArrayToObject($mywf ['data']);
+        
+        if($resourceId){
+             $shape = $this->bpm->get_shape($resourceId, $wf);
+             $renderData['script']=$shape->properties->script;
+             $renderData['title']=$shape->properties->name;
+        }
 //---tomo el template de la tarea
         $renderData['name'] = 'Test TASK->SEND: ' . $wf->properties->name;
         $renderData['shapes'] = $this->bpm->bindObjectToArray($this->bpm->get_shape_byprop(array('tasktype' => 'Send'), $wf));
@@ -214,8 +226,88 @@ class test extends MX_Controller {
 //        exit;
         $this->ui->compose('bpm/modal_task_run', 'bpm/bootstrap.ui.php', $renderData);
     }
+function run_test($idwf,$idcase,$resourceId){
+    $debug=false;
+    $script=$this->input->post('script');
+    $this->load->model('bpm/bpm');
+    $this->load->module('bpm/engine');
+    $this->load->library('parser');
+    $this->load->library('bpm/ui');
+    $user = $this->user->getuser((int) $this->session->userdata('iduser'));
+    $case = $this->bpm->get_case($idcase, $idwf);
+    $renderData = array();
+    //---get Shape
+    $mywf = $this->bpm->load($idwf);
+    $wf = $this->bpm->bindArrayToObject($mywf ['data']);
+    $wf->idwf=$idwf;
+    
+    $shape = $this->bpm->get_shape($resourceId, $wf);
+    //---Synthesize objects
+    $this->engine->load_data($wf,$idcase);
+    $DS=$this->engine->data;
+    $CI=$this;
+    //----run the script
+    $streval = $script;
+    $script_language = ($shape->properties->script_language) ? strtolower($shape->properties->script_language) : 'php';
+// try to set data store to operation if it fails then use name
 
+    $data_store = ($shape->properties->operationref <> '') ? $shape->properties->operationref : $shape->properties->name;
+    //---define $data_store if not exists
+    if (!property_exists($DS, $data_store))
+        $DS->$data_store = null;
+    if ($debug)
+        var_dump2('$DS original:', $DS);
+    if (strlen($streval)) {
+        switch ($script_language) {
+            case 'php';
+//---TODO sanitize EVAL----------
+//--add return if not present
+                if (!strstr($streval, 'return')) {
+                    $streval = 'return(' . $streval . ');';
+                }
+///--ecxecute BE CAREFULL EXTREMLY DANGEROUS
+                try {
+                    $DS->$data_store = eval($streval);
+                } catch (ErrorException $e) {
+                    echo 'Caught exception: ', $e->getMessage(), "<br/>";
+                }
+                break;
+
+            case 'json':
+                $DS->$data_store = json_decode($streval);
+                break;
+        }
+        if ($debug)
+            var_dump2($streval, $DS->$data_store);
+//---store result in case
+        $case['data'][$data_store] = $DS->$data_store;
+        
+        var_dump($data_sore,$DS->$data_store);
+    }
+    
+    }
+
+    function save_script($idwf,$resourceId){
+        $this->user->authorize();
+        $debug=false;
+        $script=$this->input->post('script');
+        $this->load->model('bpm/bpm');
+        $this->load->module('bpm/engine');
+        $this->load->library('parser');
+        $this->load->library('bpm/ui');
+        $user = $this->user->getuser((int) $this->session->userdata('iduser'));
+        $renderData = array();
+        //---get Shape
+        $mywf = $this->bpm->load($idwf);
+        $wf = $this->bpm->bindArrayToObject($mywf ['data']);
+        $wf->idwf=$idwf;
+        
+        $shape = $this->bpm->get_shape($resourceId, $wf);
+        $shapes->properties['script']=$script;
+        //header('Content-type: application/json;charset=UTF-8');
+        echo json_encode($wf);
+    
+    }
 }
-
 /* End of file test */
 /* Location: ./system/application/controllers/welcome.php */

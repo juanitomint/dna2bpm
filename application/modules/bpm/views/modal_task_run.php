@@ -1,6 +1,6 @@
 <!-- Modal -->
-<div id="myModal" class="modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+<div id="myModal" class="modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+    <div class="modal-dialog" style="width:90%">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
@@ -8,14 +8,28 @@
             </div>
             <div class="modal-body">
                 {text}
-<div id="editor">{source}</div>
-            <div class="modal-footer">
-                <button id="runTask" class="btn pull-left btn-success" data-dismiss="modal" aria-hidden="true">
-                    <i class="fa fa-chevron-right fa-white"></i>
-                    {closeTask}
-                </button>
-                <div id="results"/>
-            </div>
+                <div class="row">
+                    <div class="col-md-8">
+                    
+                        {ignore}
+                        <div id="editor">
+                            <textarea id="editArea"  style="height: 550px; width: 100%;"><?php echo $script;?></textarea>
+                        </div>
+                        {/ignore}
+                    </div>
+                    <div class="col-md-4">
+                        <button id="testTask" class="btn pull-left btn-success">
+                        <i class="fa fa-flask fa-white"></i>
+                        TEST
+                    </button>
+                        <button id="saveTask" class="btn pull-right btn-info">
+                        <i class="fa fa-save fa-white"></i>
+                        SAVE
+                    </button>
+                    <hr/>
+                    <div id="results"/>
+                    </div>
+                </div>
         </div>
     </div>
 </div>

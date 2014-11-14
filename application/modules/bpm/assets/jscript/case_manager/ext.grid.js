@@ -1,6 +1,7 @@
 function gridClick(view, record, item, index, e, options) {
     thisCase = record.data.id;
     url = globals.module_url + 'case_manager/tokens/status/' + globals.idwf + '/' + thisCase;
+    globals.idcase=thisCase;
     tokenStore = Ext.getStore('tokenStore')
     tokenStore.proxy.url = url;
     load_data_callback = tokens_paint_all;

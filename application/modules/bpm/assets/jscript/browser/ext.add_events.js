@@ -55,8 +55,13 @@ var add_events = function(shapes) {
 
             div.on('click', function(event, target, options) {
                 resourceId = target.id.replace('overlay', '');
-                Ext.getCmp('toolTip' + resourceId).show();
+                tip=Ext.getCmp('toolTip' + resourceId);
+                if(tip.isVisible()){
+                Ext.getCmp('toolTip' + resourceId).autoHide = true;    
+                } else {
+                Ext.getCmp('toolTip' + resourceId).show(); 
                 Ext.getCmp('toolTip' + resourceId).autoHide = false;
+                }
 
                 if (window.clipboardData && clipboardData.setData) {
                     window.clipboardData.setData('text', resourceId);

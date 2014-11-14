@@ -18,12 +18,24 @@ var add_events=function(shapes){
                     break;
                  
             }
+            add=''
+            if(shape.properties.tasktype){
+                switch(shape.properties.tasktype){
+                    case 'Script':
+                        add+=(globals.idcase) ? '<a target="_blank" class="btn btn-small btn-info" href="'+globals.base_url+'bpm/test/test_task/'+globals.idwf+'/'+globals.idcase+'/'+shape.resourceId+'"><i class="fa fa-flask fa-white"></i> Test Script</button>':'';
+                        break;
+                    
+                    case 'Send':
+                        break;
+                    
+                } 
+            }
+             
             Ext.core.DomHelper.append( 'svg-box',
             {
                 tag:'div',
                 cls:'model_overlay',
                 id: 'overlay'+shape.resourceId,
-                //html:shape.properties.name,
                 style:' border-radius: 3px;\n\
                         position:absolute;\n\
                         left:'+xBound+'px;\n\
@@ -34,6 +46,19 @@ var add_events=function(shapes){
 '
             }
             );
+            config = {
+                id: 'toolTip' + shape.resourceId,
+                target: 'overlay' + shape.resourceId,
+                anchor: 'bottom',
+                dismissDelay: 0,
+                minWidth: 320,
+                //anchorOffset: 85, // center the anchor on the tooltip
+                html: add
+            };
+            tooltips.push(
+                    Ext.create('Ext.tip.ToolTip', config)
+                    );
+                    
             div=Ext.get('overlay'+shape.resourceId);
             /*
             div.on('mouseover',function(event,target,options){
@@ -47,6 +72,13 @@ var add_events=function(shapes){
             */
             div.on('click',function(event,target,options){
                 resourceId=target.id.replace('overlay','');
+                tip=Ext.getCmp('toolTip' + resourceId);
+                if(tip.isVisible()){
+                Ext.getCmp('toolTip' + resourceId).autoHide = true;    
+                } else {
+                Ext.getCmp('toolTip' + resourceId).show(); 
+                Ext.getCmp('toolTip' + resourceId).autoHide = false;
+                }
                 //console.log(resourceId);
                 tokenGrid.selModel.select(tokenGrid.store.find('resourceId',resourceId));
             });
