@@ -1006,18 +1006,19 @@ class Bpm extends CI_Model {
         return $next;
     }
 
-    function get_shape($resourceId, $wf) {
+    function get_shape($resourceId, &$wf) {
         $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
         if ($debug)
             echo "<h2>get_shape</h2>" . $resourceId . '<hr/>';
-        foreach ($wf->childShapes as $obj) {
+        foreach ($wf->childShapes as $key=>$obj) {
             if ($debug)
                 echo "Analizing:" . $obj->stencil->id . '<hr>';
             if ($obj->resourceId == $resourceId) {
-                return $obj;
+                
+                return $wf->childShapes[$key];
             }
             if (in_array($obj->stencil->id, $this->digInto)) {
-                $thisobj = $this->get_shape($resourceId, $obj);
+                $thisobj = $this->get_shape($resourceId, $wf->childShapes[$key]);
                 if ($thisobj)
                     return $thisobj;
             }

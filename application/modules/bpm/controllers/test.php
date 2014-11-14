@@ -301,12 +301,20 @@ function run_test($idwf,$idcase,$resourceId){
         $mywf = $this->bpm->load($idwf);
         $wf = $this->bpm->bindArrayToObject($mywf ['data']);
         $wf->idwf=$idwf;
-        
         $shape = $this->bpm->get_shape($resourceId, $wf);
-        $shapes->properties['script']=$script;
+        $shape->properties->script=$script;
         //header('Content-type: application/json;charset=UTF-8');
-        echo json_encode($wf);
+        $this->bpm->save($idwf, $wf, $mywf['svg']);
+        echo "Saved!";
+        
     
+    }
+    function test_ref(){
+        $arr = array(1, 2, 3, 4);
+        foreach ($arr as &$value) {
+            $value = $value * 2;
+        }
+        var_dump($arr);
     }
 }
 /* End of file test */
