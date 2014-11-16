@@ -75,6 +75,7 @@ class test extends MX_Controller {
     }
 
     function send($idwf, $idcase, $resourceId) {
+        $this->user->authorize();
         $this->load->model('bpm/bpm');
         $this->load->library('parser');
         $this->load->library('bpm/ui');
@@ -159,6 +160,7 @@ class test extends MX_Controller {
     }
 
     function send_task($idwf, $idcase) {
+        $this->user->authorize();
         $this->load->model('bpm/bpm');
         $this->load->library('parser');
         $this->load->library('bpm/ui');
@@ -188,6 +190,7 @@ class test extends MX_Controller {
     }
 
 function test_task($idwf, $idcase,$resourceId=null) {
+        $this->user->authorize();
         $this->load->model('bpm/bpm');
         $this->load->library('parser');
         $this->load->library('bpm/ui');
@@ -227,6 +230,7 @@ function test_task($idwf, $idcase,$resourceId=null) {
         $this->ui->compose('bpm/modal_task_run', 'bpm/bootstrap.ui.php', $renderData);
     }
 function run_test($idwf,$idcase,$resourceId){
+    $this->user->authorize();
     $debug=false;
     $script=$this->input->post('script');
     $this->load->model('bpm/bpm');
@@ -308,13 +312,6 @@ function run_test($idwf,$idcase,$resourceId){
         echo "Saved!";
         
     
-    }
-    function test_ref(){
-        $arr = array(1, 2, 3, 4);
-        foreach ($arr as &$value) {
-            $value = $value * 2;
-        }
-        var_dump($arr);
     }
 }
 /* End of file test */
