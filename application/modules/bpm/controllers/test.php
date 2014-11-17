@@ -286,7 +286,7 @@ function run_test($idwf,$idcase,$resourceId){
 //---store result in case
         $case['data'][$data_store] = $DS->$data_store;
         
-        var_dump($data_sore,$DS->$data_store);
+        var_dump($data_store,$DS->$data_store);
     }
     
     }

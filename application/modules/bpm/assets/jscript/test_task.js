@@ -3,7 +3,7 @@ $(document).ready(function(){
     $('#myModal').on('hidden',
         function() {
             url=globals.base_url+'dashboard';
-            window.location=url;
+            //window.location=url;
         });
     
     $('#testTask').click(function(){

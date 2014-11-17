@@ -1131,15 +1131,15 @@ class Bpm extends CI_Model {
     }
 
     function bindArrayToObject($array) {
-        $return = json_decode(json_encode($array));
-
-//        foreach ($array as $k => $v) {
-//            if (is_array($v)) {
-//                $return->$k = $this->bindArrayToObject($v);
-//            } else {
-//                $return->$k = $v;
-//            }
-//        }
+        //$return = json_decode(json_encode($array));
+        $return = new stdClass();
+        foreach ($array as $k => $v) {
+            if (is_array($v)) {
+                $return->$k = $this->bindArrayToObject($v);
+            } else {
+                $return->$k = $v;
+            }
+        }
         return $return;
     }
 
