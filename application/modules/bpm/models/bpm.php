@@ -1014,11 +1014,10 @@ class Bpm extends CI_Model {
             if ($debug)
                 echo "Analizing:" . $obj->stencil->id . '<hr>';
             if ($obj->resourceId == $resourceId) {
-                
-                return $wf->childShapes[$key];
-            }
+                return $wf->childShapes->$key;
+                }
             if (in_array($obj->stencil->id, $this->digInto)) {
-                $thisobj = $this->get_shape($resourceId, $wf->childShapes[$key]);
+                $thisobj = $this->get_shape($resourceId, $wf->childShapes->$key);
                 if ($thisobj)
                     return $thisobj;
             }
