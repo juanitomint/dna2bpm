@@ -1,0 +1,50 @@
+{
+    "createdBy": "Juan Ignacio Borda <juanignacioborda@gmail.com>",
+    "title": "Basic DashBoard",
+    "view": "layout",
+    "icon": "fa-dashboard",
+    "zones": [
+        {
+            "tiles": [
+                {
+                    "title": "Tile01",
+                    "module": "bpm",
+                    "controller": "bpmui",
+                    "function": "tile_tasks"
+                },
+                {
+                    "title": "Tile01",
+                    "module": "bpm",
+                    "controller": "bpmui",
+                    "function": "tile_tasks_done"
+                }
+                ,
+                {
+                    "title": "Tile01",
+                    "module": "bpm",
+                    "controller": "bpmui",
+                    "function": "tile_cases"
+                }
+            ]
+        },
+        {
+            "widgets": [
+                {
+                    "title": "2do",
+                    "module": "bpm",
+                    "controller": "bpmui",
+                    "function": "widget_2do"
+                    
+                },
+                {
+                    "title": "Cases",
+                    "module": "bpm",
+                    "controller": "bpmui",
+                    "function": "widget_cases"
+                    
+                }
+                
+            ]
+        }
+    ]
+}

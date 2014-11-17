@@ -13,7 +13,7 @@ class Logout extends MX_Controller {
     function Index() {
         $this->session->unset_userdata('loggedin');
         $this->session->sess_destroy();
-        header('Location: ' . base_url() . 'user/login');
+        redirect(base_url() . 'user/login');
     }
 
 }

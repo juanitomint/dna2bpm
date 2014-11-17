@@ -1,0 +1,89 @@
+{
+    "createdBy": "Juan Ignacio Borda <juanignacioborda@gmail.com>",
+    "title": "Test Params",
+    "view": "layout_2cols",
+    "icon":"fa-code",
+    "zones": [
+        {
+            "tiles": [
+                {
+                    "title": "Tile01",
+                    "module": "bpm",
+                    "controller": "kpi",
+                    "function": "tile",
+                    "params":["multi_parallel","6"]
+                },
+                {
+                    "title": "Tile01",
+                    "module": "bpm",
+                    "controller": "kpi",
+                    "function": "tile",
+                    "params":["multi_parallel","4"]
+                },
+                {
+                    "title": "Tile01",
+                    "module": "bpm",
+                    "controller": "kpi",
+                    "function": "tile",
+                    "params":["multi_parallel","3","tile-maroon"]
+                },
+                {
+                    "title": "SlaTime Cases OnTime",
+                    "module": "bpm",
+                    "controller": "kpi",
+                    "function": "tile",
+                    "params":["multi_parallel","5","tile-red"]
+                },
+                {
+                    "title": "Tile01",
+                    "module": "bpm",
+                    "controller": "bpmui",
+                    "function": "tile_tasks_done"
+                }
+                ,
+                {
+                    "title": "Tile01",
+                    "module": "bpm",
+                    "controller": "bpmui",
+                    "function": "tile_cases"
+                }
+            ]
+        },
+        {
+            "col1": [
+                {
+                    "title": "2do",
+                    "module": "inbox",
+                    "controller": "inbox",
+                    "function": "show_msgs_by_filter",
+                    "params":["fondyfpp"]
+                },
+                {
+                    "title": "2do",
+                    "module": "bpm",
+                    "controller": "bpmui",
+                    "function": "widget_tasks_done"
+                    ,"span":12
+                }
+            ]
+        },
+        {
+            "col2": [
+                {
+                    "title": "Cases",
+                    "module": "bpm",
+                    "controller": "bpmui",
+                    "function": "widget_cases"
+                    ,"span":12
+                },
+                {
+                    "title": "Cases Closed",
+                    "module": "bpm",
+                    "controller": "bpmui",
+                    "function": "widget_cases_closed"
+                    ,"span":12
+                }
+            ]
+        }
+    ]
+}

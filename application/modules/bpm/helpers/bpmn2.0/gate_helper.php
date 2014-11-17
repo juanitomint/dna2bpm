@@ -25,10 +25,54 @@ function run_ParallelGateway($shape, $wf, $CI) {
 function run_Exclusive_Databased_Gateway($shape, $wf, $CI) {
 
     $debug = (isset($CI->debug[__FUNCTION__])) ? $CI->debug[__FUNCTION__] : false;
-    //$debug = true;
+    $debug = false;
+    $iduser = (int) $CI->idu;
+    $user = $CI->user->get_user($iduser);
+    $user_groups = (array) $user->group;
+    //----ASSIGN to USER / GROUP
+//    $CI->bpm->assign($shape, $wf);
+//    //----Get token data
+//    $token = $CI->bpm->get_token($wf->idwf, $wf->case, $shape->resourceId);
     $shape_data = array();
-//---assign gate to current user
-    $shape_data['assign'][] = (int) $CI->session->userdata('iduser');
+////---assign gate to current user
+//    //$shape_data['assign'][] = (int) $CI->session->userdata('iduser');
+//    ////////////////////////////////////////////////////////////////////////////
+/////////////////////////EVAL EXECUTION POLICY////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+////--by default user is not allowed to execute this task
+////--except assign or group says otherwise
+//    $is_allowed = false;
+//    if ($debug)
+//        echo "Eval is_allowed<br/>";
+////---check if the user is assigned to the task
+//    if (isset($token['assign'])) {
+//        if (in_array($iduser, $token['assign'])) {
+//            $is_allowed = true;
+//            if ($debug)
+//                echo "is_allowed=true user is in token assign<br/>";
+//        }
+//    }
+//
+//
+////---check if user belong to the group the task is assigned to
+////---but only if the task havent been assigned to an specific user
+//    if (isset($token['idgroup']) and !isset($token['assign'])) {
+//        foreach ($user_groups as $thisgroup) {
+//            if (in_array((int) $thisgroup, $token['idgroup'])) {
+//                $is_allowed = true;
+//                if ($debug)
+//                    echo "is_allowed=true user is in token group<br/>";
+//            }
+//        }
+//    }
+//
+//
+//    if (!$is_allowed) {
+//        if ($debug)
+//            echo "is_allowed=false<br/>";
+//        return false;
+//    }
+////////////////////////////////////////////////////////////////////////////
     extract((array) $CI->data);
     if ($debug)
         var_dump('DATA', $CI->data);
@@ -44,51 +88,56 @@ function run_Exclusive_Databased_Gateway($shape, $wf, $CI) {
     if ($assignment) {
         foreach ($shape->outgoing as $key => $out) {
             $shape_out = $CI->bpm->get_shape($out->resourceId, $wf);
-//var_dump($shape_out);
-            $op = '==';
-            $cond = $shape_out->properties->conditionexpression;
-            $op_map = array(
-                '>=',
-                '>',
-                '<=',
-                '<',
-                '<>',
-                '!='
-            );
+            if ($shape_out->stencil->id == 'SequenceFlow') {
+                $op = '==';
+                $cond = $shape_out->properties->conditionexpression;
+                $op_map = array(
+                    '>=',
+                    '>',
+                    '<=',
+                    '<',
+                    '<>',
+                    '!='
+                );
 //----parse $op
-            foreach ($op_map as $operation) {
-                if (strstr($cond, $operation)) {
-                    $cond = str_replace($operation, '', $cond);
-                    $op = $operation;
-                    break;
+                foreach ($op_map as $operation) {
+                    if (strstr($cond, $operation)) {
+                        $cond = str_replace($operation, '', $cond);
+                        $op = $operation;
+                        break;
+                    }
                 }
-            }
-            if ($cond == '')
-                $cond = 'false';
+
+                if ($cond == '')
+                    $cond = 'false';
 //$streval = "return (" . $assignment . ")==('" . (string) $shape_out->properties->conditionexpression . "');";
 //---replace lang true/false
-            $true = strtolower($CI->lang->line('true'));
-            $false = strtolower($CI->lang->line('false'));
-            $cond = (strtolower($cond) == $true) ? 'true' : $cond;
-            $cond = (strtolower($cond) == $false) ? 'false' : $cond;
+                $true = strtolower($CI->lang->line('true'));
+                $false = strtolower($CI->lang->line('false'));
+                $cond = (strtolower($cond) == $true) ? 'true' : $cond;
+                $cond = (strtolower($cond) == $false) ? 'false' : $cond;
 
-            $streval = "return (" . $assignment . ")$op(" . (string) $cond . ");";
+                $streval = "return (" . $assignment . ")$op(" . (string) $cond . ");";
+//--- post process eval
+                if (strstr($cond, ',')) {
+                    $streval = "return (in_array(" . $assignment . ",explode(',','$cond')));";
+                }
+                if ($debug)
+                    var_dump('$streval', $streval);
+                $result[$shape_out->resourceId]['streval'] = $streval;
+                $result[$shape_out->resourceId]['shape'] = $shape_out;
 
-            if ($debug)
-                var_dump($streval);
-            $result[$shape_out->resourceId]['streval'] = $streval;
-            $result[$shape_out->resourceId]['shape'] = $shape_out;
-            
-            try {
-                $result[$shape_out->resourceId]['eval'] = eval($streval);
-            } catch (Exception $e) {
-                echo 'error in eval: ', $e->getMessage(), "\n";
-            }
-            if ($result[$shape_out->resourceId]['eval'])
-                $i++;
-            if ($debug) {
-                var_dump($assignment, $result[$shape_out->resourceId]['eval']);
-                echo '<hr>';
+                try {
+                    $result[$shape_out->resourceId]['eval'] = eval($streval);
+                } catch (Exception $e) {
+                    echo 'error in eval: ', $e->getMessage(), "\n";
+                }
+                if ($result[$shape_out->resourceId]['eval'])
+                    $i++;
+                if ($debug) {
+                    var_dump($assignment, eval("return($assignment);"), $result[$shape_out->resourceId]['eval']);
+                    echo '<hr>';
+                }
             }
         }
 
@@ -102,6 +151,7 @@ function run_Exclusive_Databased_Gateway($shape, $wf, $CI) {
                 }
             }
         }
+//exit;        
 //---process all Sequences and only activate one
         if ($i == 1) {
 //----mark shape as finished
@@ -169,6 +219,7 @@ function run_InclusiveGateway($shape, $wf, $CI) {
 //---if has assignment then evaluate
     if ($assignment) {
         foreach ($shape->outgoing as $key => $out) {
+
             $shape_out = $CI->bpm->get_shape($out->resourceId, $wf);
 //var_dump($shape_out);
             $streval = "return (" . $assignment . ")==('" . (string) $shape_out->properties->conditionexpression . "');";

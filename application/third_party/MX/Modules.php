@@ -99,7 +99,9 @@ class Modules
 			/* load the controller class */
 			$class = $class.CI::$APP->config->item('controller_suffix');
 			self::load_file($class, $path);
-			
+			/* update router */
+            CI::$APP->router->class=$class;
+            CI::$APP->router->method='';
 			/* create and register the new controller */
 			$controller = ucfirst($class);	
 			self::$registry[$alias] = new $controller($params);

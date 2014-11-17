@@ -10,5 +10,12 @@ $config['browser_tree_checkable_models']=false;
 //----Engine
 //---auto create user groups based on lane names
 $config['auto_create_groups']=true;
-//---allow administrators to run the tasks even if they don't belong to group
-$config['auto_assign_admin']=true;
+/*---allow administrators to run the tasks even if they don't belong to group
+options for admins:
+ */
+// add me to the array of assigned  
+$config['auto_add_admin']=true;
+// replace the assignement with my id
+$config['auto_assign_admin']=false;
+// Choose whether to make thumbnails or not
+$config['make_thumbnails']=true;

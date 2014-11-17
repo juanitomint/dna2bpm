@@ -10,6 +10,21 @@ var comboDefault = new Ext.form.ComboBox({
     valueField: 'value',
     queryMode: 'local'
 });
+// ComboBox with a custom item template
+var comboIcon = Ext.create('Ext.form.field.ComboBox', {
+    displayField: 'icon',
+    store: Ext.create('Ext.data.Store', {
+        autoDestroy: true,
+        model: 'Icons',
+        data: icons
+    }),
+    queryMode: 'local',
+    listConfig: {
+        getInnerTpl: function() {
+            return '<h5><i class="icon icon-2x {icon}"></i> {icon}</h5>';
+        }
+    }
+});
 function showCheck(v) {
     if (v) {
         str = "<input type='checkbox' checked='checked' DISABLED/>";
@@ -73,14 +88,20 @@ var propsGrid = Ext.create('Ext.grid.property.Grid', {
         'priority': 'Priority',
         'info': 'Info',
         'groups': 'Groups',
-        'callback':'CallBack'
-                 
+        'callback': 'CallBack'
+
     }
     ,
     customEditors: {
         id: readOnly
     }
     ,
+    sourceConfig: {
+        'iconCls': {
+            displayName: 'Icon',
+            editor: comboIcon,
+        }
+    },
     customRenderers: {}
     ////////////////////////////////////////////////////////////////////////////
     //////////////////////   LISTENERS    /////////////////////////////////////
@@ -106,16 +127,16 @@ var propsGrid = Ext.create('Ext.grid.property.Grid', {
         items: [
             /*
              {
-                xtype: 'button',
-                text: 'Save',
-                icon: globals.base_url + 'css/ext_icons/save.gif',
-                handler: function() {
-                    var url = globals.module_url + 'admin/save_properties';
-                    save_props(url);
-                }
-            }
-            */
-            , 
+             xtype: 'button',
+             text: 'Save',
+             icon: globals.base_url + 'css/ext_icons/save.gif',
+             handler: function() {
+             var url = globals.module_url + 'admin/save_properties';
+             save_props(url);
+             }
+             }
+             */
+            ,
             {
                 xtype: 'button',
                 text: 'Refresh',

@@ -1,0 +1,84 @@
+{
+    "createdBy": "Juan Ignacio Borda <juanignacioborda@gmail.com>",
+    "title": "Admin DashBoard",
+    "view": "layout_2cols",
+    "icon": "fa-dashboard",
+    "zones": [
+        {
+            "tiles": [
+                {
+                    "title": "Tile01",
+                    "module": "dashboard",
+                    "controller": "dashboard",
+                    "span": 2,
+                    "function": "tile_admin_users"
+
+                },
+                {
+                    "title": "Tile01",
+                    "module": "dashboard",
+                    "controller": "dashboard",
+                    "span": 2,
+                    "function": "tile_admin_bpm"
+
+                },
+                {
+                    "title": "Tile01",
+                    "module": "dashboard",
+                    "controller": "dashboard",
+                    "span": 2,
+                    "function": "tile_admin_menu"
+
+                },
+                {
+                    "title": "Tile01",
+                    "module": "git",
+                    "controller": "git",
+                    "span": 2,
+                    "function": "tile"
+
+                },
+                {
+                    "title": "Tile01",
+                    "module": "bpm",
+                    "controller": "bpmui",
+                    "function": "tile_cases"
+                }
+            ]
+        },
+        {
+            "col1": [        
+                {
+                    "title": "2do",
+                    "module": "bpm",
+                    "controller": "bpmui",
+                    "function": "widget_2do"
+                },
+                {
+                    "title": "Cases",
+                    "module": "bpm",
+                    "controller": "bpmui",
+                    "function": "widget_cases"
+                }
+            ]
+        },
+        {
+            "col2": [
+                {
+                    "title": "ministatus",
+                    "module": "bpm",
+                    "controller": "bpmui",
+                    "function": "widget_ministatus",
+                    "params":[true]
+                },
+                {
+                    "title": "Tile01",
+                    "module": "dashboard",
+                    "controller": "dashboard",
+                    "function": "widget_dashboards"
+                }
+            ]
+        }
+        
+    ]
+}

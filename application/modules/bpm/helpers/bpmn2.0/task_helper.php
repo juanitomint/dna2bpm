@@ -12,7 +12,7 @@ function run_Task($shape, $wf, $CI) {
 ////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
 //---check 4 looptype---
-    
+
     if (!property_exists($wf, 'task_run'))
         $wf->task_run = array();
     switch ($shape->properties->looptype) {
@@ -21,7 +21,7 @@ function run_Task($shape, $wf, $CI) {
         default:
             //only excutes task 1 time
             if (in_array($resourceId, $wf->task_run)) {
-                $wf->prevent_run[]=$resourceId;
+                $wf->prevent_run[] = $resourceId;
                 return;
             }
             break;
@@ -31,10 +31,10 @@ function run_Task($shape, $wf, $CI) {
 //---DATA LOAD--
 //----add $resourceId to the run stack
     $wf->task_run[] = $resourceId;
-    
+
     $data = array();
 //---get case data
-    $case = $CI->bpm->get_case($wf->case);
+    $case = $CI->bpm->get_case($wf->case, $wf->idwf);
 //---set initiator same as case creator.
     $CI->user->Initiator = (int) $case['iduser'];
 //----Get token data
@@ -76,7 +76,7 @@ function run_Task($shape, $wf, $CI) {
 
 //--------------------------------------------------
 //---load data from 'transport' from previous shape
-    $inbound = $CI->bpm->get_inbound_shapes($resourceId, $wf);
+    $inbound = $CI->bpm->get_previous($resourceId, $wf);
     foreach ($inbound as $inshape) {
         $token_in = $CI->bpm->get_token($wf->idwf, $wf->case, $inshape->resourceId);
         if (isset($token_in['data'])) {
@@ -132,36 +132,28 @@ function run_Task($shape, $wf, $CI) {
 
     switch ($shape->properties->tasktype) {
         case 'User':
+
             if ($debug)
                 echo "USER<br/>";
             //----ASSIGN TASK to USER / GROUP
             $CI->bpm->assign($shape, $wf);
             //----Get token data
-            $token = $CI->bpm->get_token($wf->idwf, $wf->case, $shape->resourceId);
+            if ($CI->break_on_next) {
+                redirect($CI->base_url . $CI->config->item('default_controller'));
+            }
+//              $token = $CI->bpm->get_token($wf->idwf, $wf->case, $shape->resourceId);
 ////////////////////////////////////////////////////////////////////////////
 ///////////////////////EVAL EXECUTION POLICY////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
 //--by default user is not allowed to execute this task
 //--except assign or group says otherwise
-            $is_allowed = false;
-//---check if the user is assigned to the task
-            if (isset($token['assign'])) {
-                if (in_array($iduser, $token['assign']))
-                    $is_allowed = true;
-            }
-
-//---check if user belong to the group the task is assigned to
-//---but only if the task havent been assigned to an specific user
-            if (isset($token['idgroup']) and !isset($token['assign'])) {
-                foreach ($user_groups as $thisgroup) {
-                    if (in_array((int) $thisgroup, $token['idgroup']))
-                        $is_allowed = true;
-                }
-            }
-
-
-            if (!$is_allowed)
+            $is_allowed = $CI->bpm->is_allowed($token, $user);
+            if (!$is_allowed) {
+                if ($debug)
+                    echo "is_allowed=false<br/>";
                 return;
+            }
+
 ////////////////////////////////////////////////////////////////////////////
 
             if ($debug)
@@ -170,13 +162,22 @@ function run_Task($shape, $wf, $CI) {
 
 //---change status to manual (stops execution and wait 4 manual input)
             $CI->bpm->set_token($wf->idwf, $wf->case, $shape->resourceId, $shape->stencil->id, 'user', $data);
+            if ($CI->break_on_next) {
+                redirect($CI->base_url . $CI->config->item('default_controller'));
+            }
             break;
         case 'Manual':
             $CI->bpm->set_token($wf->idwf, $wf->case, $shape->resourceId, $shape->stencil->id, 'user', $data);
+            if ($CI->break_on_next) {
+                redirect($CI->base_url . $CI->config->item('default_controller'));
+            }
             break;
+        
         case 'Script':
 //----run the script
-//
+            if ($CI->break_on_next) {
+                redirect($CI->base_url . $CI->config->item('default_controller'));
+            }
 //--->movenext on success
             $streval = $shape->properties->script;
             $script_language = ($shape->properties->script_language) ? strtolower($shape->properties->script_language) : 'php';
@@ -199,7 +200,6 @@ function run_Task($shape, $wf, $CI) {
 ///--ecxecute BE CAREFULL EXTREMLY DANGEROUS
                         try {
                             $DS->$data_store = eval($streval);
-                            
                         } catch (ErrorException $e) {
                             echo 'Caught exception: ', $e->getMessage(), "<br/>";
                         }
@@ -218,26 +218,52 @@ function run_Task($shape, $wf, $CI) {
             $CI->bpm->movenext($shape, $wf, $data);
             break;
         case 'Send':
-            $msg['from'] = $CI->idu;
-            $msg['subject'] = $CI->parser->parse_string($shape->properties->name, $CI->data, true, true);
-            $msg['body'] = $CI->parser->parse_string($shape->properties->documentation, $CI->data, true, true);
-            $resources = $CI->bpm->get_resources($shape, $wf);
-
-            //---if has no messageref and noone is assigned then
-            //---fire a message to lane or self         
-            if (!count($resources['assign']) and !$shape->properties->messageref) {
-                $lane = $CI->bpm->find_parent($shape, 'Lane', $wf);
-                //---try to get resources from lane
-                if ($lane) {
-                    $resources = $CI->bpm->get_resources($lane, $wf);
-                }
-                //---if can't get resources from lane then assign it self as destinatary
-                if (!count($resources['assign']))
-                    $resources['assign'][] = $CI->user->Initiator;
+            if ($CI->break_on_next) {
+                redirect($CI->base_url . $CI->config->item('default_controller'));
             }
+            //----ASSIGN TASK to USER / GROUP
+            $token['assign'] = array($iduser);
+
+//            $token = $CI->bpm->assign($shape, $wf);
+            $data = $CI->bindObjectToArray($CI->data);
+            $data['date'] = date($CI->lang->line('dateFmt'));
+            $msg['from'] = $CI->idu;
+
+            $msg['idwf'] = $wf->idwf;
+            $msg['case'] = $wf->case;
+            if ($shape->properties->properties <> '') {
+                foreach ($shape->properties->properties->items as $property) {
+                    $msg[$property->name] = $property->datastate;
+                }
+            }
+            $resources = $CI->bpm->get_resources($shape, $wf, $case);
+//            var_dump($resources);
+//            exit;
             //---process inbox--------------
-            foreach ($resources['assign'] as $to)
-                $msg = $CI->msg->send($msg, $to);
+            //---Override FROM if Performer is set
+            if (isset($resource['Performer'])) {
+                if (count($resource['Performer'])) {
+                    $msg['from'] = array_pop($resource['Performer']);
+                    $data['from'] = $CI->user->get_user_safe($resource['Performer']);
+                    $user = $CI->bpm->get_user(array_pop($resource['Performer']));
+                }
+            } else {
+                //---set from equals to user
+                $data['from'] = $user;
+            }
+            //---Get FROM
+            $user = $CI->user->get_user_safe($msg['from']);
+            $data['user'] = (array) $user;
+            $msg['subject'] = $CI->parser->parse_string($shape->properties->name, $data, true, true);
+            $msg['body'] = $CI->parser->parse_string($shape->properties->documentation, $data, true, true);
+
+            $to = (isset($resources['assign'])) ? $resources['assign'] : $token['assign'];
+            $to = array_unique(array_filter($to));
+            foreach ($to as $to_user) {
+                if ($debug)
+                    echo "Sending msg to user:$to_user<br/>";
+                $CI->msg->send($msg, $to_user);
+            }
             //---fires triger if everything is ok
             if ($shape->properties->messageref)
                 run_IntermediateEventThrowing($shape, $wf);
@@ -261,48 +287,9 @@ function run_Task($shape, $wf, $CI) {
             //---change status to manual (stops execution and wait 4 manual input)
             //$CI->bpm->set_token($wf->idwf, $wf->case, $shape->resourceId, $shape->stencil->id, 'manual', $data);
             $CI->bpm->movenext($shape, $wf);
+            if ($CI->break_on_next) {
+                redirect($CI->base_url . $CI->config->item('default_controller'));
+            }
             break;
     }
 }
-
-function send_message($subject, $body, $users) {
-
-    $CI = & get_instance();
-    $DS = $CI->bindObjectToArray($CI->data);
-    $debug = (isset($CI->debug[__FUNCTION__])) ? $CI->debug[__FUNCTION__] : false;
-    $debug = true;
-
-    //---set prefix 4 email subjects
-    $email_prefix = '[DNA2] ';
-    $CI->load->library('email');
-
-    if ($debug) {
-        echo '<H1>SEND:' . $subject . '</H1>';
-        echo "sending msg to:" . count($users) . ' users';
-        echo "<hr/>$body<hr/>";
-    }
-    foreach ($users as $user) {
-        $sendTo[] = $user['email'];
-    }
-
-    var_dump2($sendTo);
-    $CI->email->initialize();
-    $CI->email->from('dna2@dna2.org', 'DNA2BOT');
-
-    foreach ($users as $user) {
-        $mail_data = array_merge($DS, $user);
-        if ($debug)
-            var_dump2('$mail_data', $mail_data);
-        $CI->email->to($user['email']);
-        $CI->email->subject($CI->parser->parse_string($email_prefix . $subject, $mail_data, true));
-        //-------prepare message body
-        $body = $CI->parser->parse_string($body, $mail_data, true);
-        $CI->email->message($body);
-        $result = $CI->email->send();
-        if ($debug)
-            echo '<hr/>' . $CI->email->print_debugger() . '<hr/>';
-    }
-    return true;
-}
-
-?>

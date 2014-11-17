@@ -1,0 +1,90 @@
+{
+    "createdBy": "Gabriel Fojo <trialvd@gmail.com>",
+    "title": "Demo DashBoard",
+    "view": "layout_2cols",
+    "icon": "fa-flask",
+    "zones": [
+        {
+            "tiles": [
+                {
+                    "title": "Tile01",
+                    "module": "dashboard",
+                    "controller": "dashboard",
+                    "span": 2,
+                    "function": "tile_admin_users"
+
+                },
+                {
+                    "title": "Tile01",
+                    "module": "dashboard",
+                    "controller": "dashboard",
+                    "span": 2,
+                    "function": "tile_admin_bpm"
+
+                },
+                {
+                    "title": "Tile01",
+                    "module": "dashboard",
+                    "controller": "dashboard",
+                    "span": 2,
+                    "function": "tile_admin_menu"
+
+                },
+                {
+                    "title": "Tile01",
+                    "module": "git",
+                    "controller": "git",
+                    "span": 2,
+                    "function": "tile"
+
+                },
+                {
+                    "title": "Tile01",
+                    "module": "bpm",
+                    "controller": "bpmui",
+                    "function": "tile_cases"
+                }
+            ]
+        },
+        {
+            "col1": [        
+                {
+                    "title": "2do",
+                    "module": "dashboard",
+                    "controller": "dashboard",
+                    "function": "knob",
+                    "js":[{"0":"knob"},{"{base_url}dashboard/assets/jscript/knob.js":"knobJS"}],
+ 					"params":[
+ 					"[{'value':50,'data-label':'Knob1 orange','data-fgColor':'#f60'},{'value':90,'data-label':'Knob2'},{'value':20,'data-label':'Knob3'}]",
+ 					"{'title':'Knob TEST','col-md':4,'col-sm':6,'col-xs':6}"
+ 					]
+                },
+                {
+                    "title": "HighCharts",
+                    "module": "dashboard",
+                    "controller": "dashboard",
+                    "function": "highcharts",
+                    "js":[{"0":"highCharts"}]
+                }
+            ]
+        },
+        {
+            "col2": [
+                {
+                    "title": "ministatus",
+                    "module": "bpm",
+                    "controller": "bpmui",
+                    "function": "widget_ministatus",
+                    "params":[true]
+                },
+                {
+                    "title": "Tile01",
+                    "module": "dashboard",
+                    "controller": "dashboard",
+                    "function": "widget_dashboards"
+                }
+            ]
+        }
+        
+    ]
+}

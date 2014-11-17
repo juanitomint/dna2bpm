@@ -60,7 +60,9 @@ class User extends CI_Model {
 
     function authenticate($username = '', $password = '') {
         //----MD5 is used for password hashing
-        $this->db->debug = false;
+        if($username=='' or $password==''){
+            return false;
+        }
         $query = array('nick' => $username, 'passw' => $this->hash($password));
         $thisUser = $this->db->select(array('idu'))->get_where('users', $query)->result();
         if (isset($thisUser[0])) {
@@ -93,17 +95,16 @@ class User extends CI_Model {
         $canaccess = false;
         //--first check if user still exists
         $thisUser = $this->get_user($this->idu);
+        $class = $this->router->class;
+        $method = $this->router->method;
         if (!$thisUser) {
             //----user doesn't exists in db
             $canaccess = false;
         } else {
             //----user exists
             //---define the path for module auth
-            $path = str_replace('../', '', $this->router->fetch_directory() . implode('/', array(
-                        $this->router->class,
-                        $this->router->method,
-                            )
-            ));
+            //var_dump($this->router);
+            $path = str_replace('../', '', $this->router->fetch_directory() . implode('/', array_filter(array($class, $method))));
             /*
              * Auto-discover from existent will add all the paths it's hits
              * turn off for production
@@ -121,14 +122,17 @@ class User extends CI_Model {
                 //----$reqlevel override $path
                 $path = (isset($reqlevel)) ? $reqlevel : $path;
                 //---give access if have path exists
-                if ($this->user->has('root/' . $path, $thisUser))
+                if ($this->user->has('root/' . $path, $thisUser)) {
                     $canaccess = true;
+                } else {
+                    show_error("User doesn't have: $path </br>");
+                }
             }
         }
         if (!$canaccess) {
             $this->session->set_userdata('redir', base_url() . uri_string());
             $this->session->set_userdata('msg', 'nolevel');
-            header('Location: ' . base_url() . 'user/login');
+            redirect(base_url() . 'user/login');
         }
     }
 
@@ -152,7 +156,7 @@ class User extends CI_Model {
         if (!$this->session->userdata('loggedin')) {
             $this->session->set_userdata('redir', base_url() . uri_string());
             $this->session->set_userdata('msg', 'hastolog');
-            header('Location: ' . base_url() . 'user/login');
+            redirect(base_url() . 'user/login');
         } else {
             return true;
         }
@@ -168,6 +172,7 @@ class User extends CI_Model {
                 ->get('perm.groups')
                 ->result();
         //$level=$this->db->result();
+
         if (count($level)) {
             return true;
         } else {
@@ -308,7 +313,7 @@ class User extends CI_Model {
         //var_dump(json_encode($query));
         $user = $this->db->get_where('users', $query)->result();
         if ($user) {
-            unset($user[0]->password);
+            unset($user[0]->passw);
             unset($user[0]->_id);
             return $user[0];
         }
@@ -342,9 +347,7 @@ class User extends CI_Model {
         return $rs;
     }
 
-    function get_users($offset = 0, $limit = 50, $order = null, $query_txt = null, $idgroup = null, $match = 'both') {
-        $this->db->get('users');
-        //var_dump($start,$limit,$idgroup, $order, $idgroup);
+    function get_users_count($query_txt = null, $idgroup = null,$match='both') {
         if ($idgroup) {
             $this->db->where_in('group', (array) $idgroup);
         }
@@ -354,6 +357,29 @@ class User extends CI_Model {
             $this->db->or_like('name', $query_txt, $match);
             $this->db->or_like('lastname', $query_txt, $match);
             $this->db->or_like('email', $query_txt, $match);
+
+            if (is_numeric($query_txt)) {
+                $this->db->or_where('idu', (int) $query_txt);
+            }
+
+            //$query+=array('$where'=>"this.name.match(/$query_txt/i)");
+        }
+        return $this->db->count_all_results('users');
+    }
+
+    function get_users($offset = 0, $limit = 50, $order = null, $query_txt = null, $idgroup = null, $match = 'both') {
+        $this->db->get('users');
+               
+        //var_dump($start,$limit,$idgroup, $order, $idgroup);
+        if ($idgroup) {
+            $this->db->where_in('group', (array) $idgroup);
+        }
+               
+        if ($query_txt) {
+            $this->db->or_like('nick', $query_txt);
+            $this->db->or_like('name', $query_txt);
+            $this->db->or_like('lastname', $query_txt);
+            $this->db->or_like('email', $query_txt);
 
             if (is_numeric($query_txt)) {
                 $this->db->or_where('idu', (int) $query_txt);
@@ -396,9 +422,13 @@ class User extends CI_Model {
                 $result = $this->save($user_data);
                 $user = $user_data;
             } else {
-                
+
+                $options = array('w' => true, 'upsert' => true);
+                $query = array('idu' => $user_data['idu']);
+                $result = $this->mongo->db->users->update($query, array('$set' => $user_data), $options);
+                $user = $user_data;
             }
-            return $user;
+            return $result;
         }
     }
 
@@ -429,7 +459,7 @@ class User extends CI_Model {
     }
 
     function delete_group($idgroup) {
-        $options_delete = array("justOne" => true, "safe" => true);
+        $options_delete = array("justOne" => true, "w" => true);
         $options_save = array('upsert' => true, 'w' => true);
         $criteria = array('idgroup' => (int) $idgroup);
         //----make backup first

@@ -12,7 +12,7 @@ class Manager extends MX_Controller {
         $this->load->model('bpm');
         $this->load->model('msg');
         $this->load->model('user/group');
-        $this->user->authorize('ADM,WFADM');
+        $this->user->authorize();
         //----LOAD LANGUAGE
         $this->types_path = 'application/modules/bpm/assets/types/';
         $this->lang->load('library', $this->config->item('language'));
@@ -205,9 +205,10 @@ class Manager extends MX_Controller {
      * 
      */
 
-    function mini_report($idcase, $output = 'array') {
-        $case = $this->bpm->get_case($idcase);
-        $tokens = $this->bpm->get_tokens($case['idwf'], $idcase, array());
+    function mini_report($idwf, $idcase, $output = 'array') {
+        //@todo set idwf
+        $case = $this->bpm->get_case($idcase, $idwf);
+        $tokens = $this->bpm->get_tokens($idwf, $idcase, array());
         $task2users = array();
         //---create array for each user
         foreach ($tokens as $token) {
@@ -239,16 +240,25 @@ class Manager extends MX_Controller {
              * HTML
              */
             case 'html':
+                $cpData = array();
+                $cpData['lang'] = $this->lang->language;
+                $cpData['base_url'] = base_url();
                 foreach ($task2users as $iduser => $tasks) {
-                    $user = $this->user->get_user($iduser);
-                    //---load cards here
-                    echo $user->name . '<br>';
+//                    var_dump($tasks);
+//                    exit;
+//                    $user = $this->user->get_user($iduser);
+//                    //---load cards here
+//                    echo $user->name . '<br>';
+//                    echo '<hr/>';
+                    $user = (array) $this->user->get_user($iduser);
                     foreach ($tasks as $task) {
-                        echo $task['title'] . '<br/>';
-                        echo $task['status'] . '<br/>';
+                        $task['date'] =date($this->lang->line('dateFmt'), strtotime($task['checkdate']));
+
+                        $user['tasks'][] = $task;
                     }
-                    echo '<hr/>';
+                    $cpData['participant'][] = $user;
                 }
+                $this->parser->parse('bpm/mini_report', $cpData);
                 break;
             /*
              * JSON
@@ -285,9 +295,9 @@ class Manager extends MX_Controller {
      * 
      */
 
-    function mini_status($idwf,$output='array',$filter=array()) {
+    function mini_status($idwf, $output = 'array', $filter = array()) {
         $filter['idwf'] = $idwf;
-        $tokens=$this->bpm->get_cases_stats($filter);
+        $tokens = $this->bpm->get_cases_stats($filter);
         switch ($output) {
 
             /*
@@ -295,7 +305,7 @@ class Manager extends MX_Controller {
              */
             case 'text':
                 foreach ($tokens as $id => $tasks) {
-                    $user = $this->user->get_user($id);
+                    //$user = $this->user->get_user($id);
                     //---load cards here
                     echo $user->name . '<br>';
                     foreach ($tasks as $task) {
@@ -311,9 +321,9 @@ class Manager extends MX_Controller {
              */
             case 'html':
                 foreach ($tokens as $id => $tasks) {
-                    $user = $this->user->get_user($id);
+                    //$user = $this->user->get_user($id);
                     //---load cards here
-                    echo $user->name . '<br>';
+                    //echo $user->name . '<br>';
                     foreach ($tasks as $task) {
                         echo $task['title'] . '<br/>';
                         echo $task['status'] . '<br/>';
@@ -325,7 +335,7 @@ class Manager extends MX_Controller {
              * JSON
              */
             case 'json':
-                
+
                 header('Content-type: application/json;charset=UTF-8');
                 echo json_encode($tokens);
                 break;

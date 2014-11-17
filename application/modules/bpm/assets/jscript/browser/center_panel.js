@@ -5,7 +5,7 @@
 
 var ModelEdit = Ext.create('Ext.Action', {
     text:'Edit',
-    iconCls:' icon-edit',
+    iconCls:'fa fa-edit',
     handler:function (){
         TreeDblClick(tree,null);
     }
@@ -13,10 +13,10 @@ var ModelEdit = Ext.create('Ext.Action', {
 
 var ModelImport= Ext.create('Ext.Action', {
     text:'Import',
-    iconCls:'icon icon-download-alt',
+    iconCls:'fa fa-download',
     handler:function (){
         Ext.create('Ext.window.Window', {
-            title: '<h5><i class="icon icon-download-alt"></i> Import Model</h5>',
+            title: '<h5><i class="fa fa-try"></i> Import Model</h5>',
             id:Ext.id(),
             height: 200,
             width: 500,
@@ -72,7 +72,7 @@ var ModelImport= Ext.create('Ext.Action', {
 
 var ModelExport= Ext.create('Ext.Action', {
     text:'Export',
-    iconCls:'icon icon-upload-alt',
+    iconCls:'fa fa-upload',
     handler:function (){
         var body = Ext.getBody(),
         n=tree.getSelectionModel().getSelection()[0];
@@ -95,7 +95,7 @@ var ModelExport= Ext.create('Ext.Action', {
 
 var ModelCloudExport= Ext.create('Ext.Action', {
     text:'Export',
-    iconCls:'icon icon-cloud-upload',
+    iconCls:'fa fa-cloud-upload',
     handler:function (){
         
     }
@@ -103,13 +103,13 @@ var ModelCloudExport= Ext.create('Ext.Action', {
 
 var ModelCloudImport= Ext.create('Ext.Action', {
     text:'Import',
-    iconCls:'icon icon-cloud-download',
+    iconCls:'fa fa-cloud-download',
     handler:function (){}
 });
 
 var ModelStatus= Ext.create('Ext.Action', {
     text:'Status',
-    iconCls:'icon icon-heart',
+    iconCls:'fa fa-heart',
     handler:function (){
           n=tree.getSelectionModel().getSelection()[0];
         //---only do something if its leaf=model
@@ -122,7 +122,7 @@ var ModelStatus= Ext.create('Ext.Action', {
 
 var ModelView = Ext.create('Ext.Action', {
     text:'View',
-    iconCls:'icon-file',
+    iconCls:'fa fa-file',
     handler:function(){
         n=tree.getSelectionModel().getSelection()[0];
         //---only do something if its leaf=model
@@ -136,7 +136,7 @@ var ModelView = Ext.create('Ext.Action', {
 });
 var ModelDump = Ext.create('Ext.Action', {
     text:'Dump',
-    iconCls:'icon-circle-arrow-down',
+    iconCls:'fa fa-arrow-circle-down',
     handler:function(){
         n=tree.getSelectionModel().getSelection()[0];
         //---only do something if its leaf=model
@@ -148,7 +148,7 @@ var ModelDump = Ext.create('Ext.Action', {
 });
 var ModelRun = Ext.create('Ext.Action', {
     text:'Run',
-    iconCls:'icon-play',
+    iconCls:'fa fa-play',
     handler:function(){
         n=tree.getSelectionModel().getSelection()[0];
         //---only do something if its leaf=model
@@ -161,7 +161,7 @@ var ModelRun = Ext.create('Ext.Action', {
 
 var ModelRunManual = Ext.create('Ext.Action', {
     text:'Run Manual',
-    iconCls:'icon-hand-right',
+    iconCls:'fa fa-hand-o-right',
     handler:function(){
         n=tree.getSelectionModel().getSelection()[0];
         //---only do something if its leaf=model
@@ -173,7 +173,7 @@ var ModelRunManual = Ext.create('Ext.Action', {
 });
 var ModelManager = Ext.create('Ext.Action', {
     text:'Manager',
-    iconCls:'icon icon-bar-chart',
+    iconCls:'fa fa-bar-chart-o',
     handler:function(){
         n=tree.getSelectionModel().getSelection()[0];
         //---only do something if its leaf=model
@@ -186,7 +186,7 @@ var ModelManager = Ext.create('Ext.Action', {
 
 var ModelKPI = Ext.create('Ext.Action', {
     text:'KPI',
-    iconCls:'icon-dashboard',
+    iconCls:'fa fa-dashboard',
     handler:function(){
         n=tree.getSelectionModel().getSelection()[0];
         //---only do something if its leaf=model
@@ -226,7 +226,7 @@ var modelPanel= Ext.create('Ext.Panel', {
 });
         
 center_panel=Ext.create('Ext.panel.Panel', {
-    title: '<i class="icon icon-bpm"></i> Model Explorer',    
+    title: '<i class="fa fa-bpm"></i> Model Explorer',    
     tbar:toolBar,
     border:2,
     layout: "fit",

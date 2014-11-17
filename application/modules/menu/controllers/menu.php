@@ -60,6 +60,7 @@ class Menu extends MX_Controller {
 
         $cpData['js'] = array(
             $this->module_url . "assets/jscript/ext.settings.js" => 'Settings',
+            $this->module_url . 'assets/jscript/ionicons.js' => 'Ion icons',
             $this->module_url . "assets/jscript/data.js" => 'Data Objects',
             $this->module_url . "assets/jscript/tree_menu.js" => 'Menu Tree',
 //            $this->module_url . "assets/jscript/ext.load_props.js" => 'Properties Loader',
@@ -124,10 +125,11 @@ class Menu extends MX_Controller {
             case 'update'://----Path added
                 $post = json_decode(file_get_contents('php://input'));
                 //----remove root from path
+                $this->menu_model->remove_path($repoId, '/');
                 foreach ($post as $menuItem) {
 //                    $path_arr = explode('/', $menuItem->path);
 //                    array_shift($path_arr);
-                    $path = str_replace('/root','',$menuItem->path);
+                    $path = str_replace('/root', '', $menuItem->path);
 //                    $path = $menuItem->path;
                     $properties = array(
                         "source" => "User",
@@ -141,7 +143,7 @@ class Menu extends MX_Controller {
             case 'read':
                 $node = ($this->input->post('node')) ? $this->input->post('node') : 'root';
                 if ($node == 'root') {
-                    $repo = $this->menu_model->get_repository(array('repoId' => $repoId),false);
+                    $repo = $this->menu_model->get_repository(array('repoId' => $repoId), false);
                     $rtnArr = $this->explodeExtTree($repo, '/');
                     //var_dump($repo);
                     //----return skip root node
@@ -168,11 +170,11 @@ class Menu extends MX_Controller {
             case 'delete':
 
                 $rtnArr['success'] = false;
-                $path = $this->input->post('path');
                 //----remove root from path
-                $path_arr = explode('/', $path);
-                array_shift($path_arr);
-                $path = implode('/', $path_arr);
+                $path = str_replace('/root', '', $this->input->post('path'));
+//                $path_arr = explode('/', $path);
+//                array_shift($path_arr);
+//                $path = implode('/', $path_arr);
                 if ($path)
                     $rtnArr['success'] = $this->menu_model->remove_path($repoId, $path);
                 break;
@@ -229,7 +231,7 @@ class Menu extends MX_Controller {
     function get_menu($repoId = '0', $ulClass = '', $check = true) {
         //---return HTML menu
         $query = array('repoId' => $repoId);
-        $repo = $this->menu_model->get_repository($query,$check);
+        $repo = $this->menu_model->get_repository($query, $check);
         $tree = $this->explodeExtTree($repo, '/');
         $menu = $this->get_ul($tree[0]->children, $ulClass);
         return $menu;
@@ -315,7 +317,7 @@ class Menu extends MX_Controller {
     }
 
     function test_menu($repoId) {
-       echo $this->get_menu($repoId) ;
+        echo $this->get_menu($repoId);
     }
 
     function get_ul($menu, $ulClass = '') {
@@ -323,16 +325,22 @@ class Menu extends MX_Controller {
         $returnStr = '';
         $returnStr.='<ul class="' . $ulClass . '">';
         foreach ($menu as $path => $node) {
-
-
             $returnStr.='<li>';
 
-            $returnStr.='<a href="' . $node->target . '" title="' . $node->title . '">' . $node->text;
+            $returnStr.='<a href="' . $node->target . '" title="' . $node->title . '"';
+            if ($node->cls)
+                $returnStr.='class="' . $node->cls . '"';
+            $returnStr.='>';
+
+
+
             if (isset($node->iconCls)) {
                 if ($node->iconCls <> '')
-                    $returnStr.='<i class="icon ' . $node->iconCls . '"></i>';
+                    $returnStr.='<i class="ion ' . $node->iconCls . '"></i>';
             }
 
+            $returnStr.=$node->text;
+            ;
             $returnStr.='</a>';
             if (!$node->leaf) {
                 if (count($node->children))

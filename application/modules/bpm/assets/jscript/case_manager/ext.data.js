@@ -84,6 +84,7 @@ var dgstore = Ext.create('Ext.data.Store', {
     id:'caseStore',
     autoLoad: false,
     model: 'caseModel',
+    pageSize: 20,
     proxy: {
         type: 'ajax',
         api: {

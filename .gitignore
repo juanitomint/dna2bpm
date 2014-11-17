@@ -1,9 +1,11 @@
 /nbproject/
 /images/
-/application/config/
 /tmp/
 /update-git.log
 /tests/
 /.buildpath
 /.project
 /.settings/
+/.c9/
+.c9revisions/
+.settings

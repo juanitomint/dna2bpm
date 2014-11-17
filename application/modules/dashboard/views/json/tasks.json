@@ -1,0 +1,74 @@
+{
+    "createdBy": "Juan Ignacio Borda <juanignacioborda@gmail.com>",
+    "title": "Tasks",
+    "view": "layout_2cols",
+    "icon": "fa-tasks",
+    "zones": [
+        {
+            "tiles": [
+                {
+                    "title": "Tile01",
+                    "module": "bpm",
+                    "controller": "bpmui",
+                    "function": "tile_tasks2me",
+                    "span":3
+                },
+                {
+                    "title": "Tile01",
+                    "module": "bpm",
+                    "controller": "bpmui",
+                    "function": "tile_tasks_done",
+                    "span":3
+                }
+                ,
+                {
+                    "title": "Tile01",
+                    "module": "bpm",
+                    "controller": "bpmui",
+                    "function": "tile_cases",
+                    "span":3
+                },
+                {
+                    "title": "Tile01",
+                    "module": "bpm",
+                    "controller": "bpmui",
+                    "function": "tile",
+                    "params": ["cases_closed"],
+                    "span":3
+                }
+            ]
+        },
+        {
+            "col1": [
+                {
+                    "title": "2do",
+                    "module": "bpm",
+                    "controller": "bpmui",
+                    "function": "widget_2doMe"
+                },
+                {
+                    "title": "2do",
+                    "module": "bpm",
+                    "controller": "bpmui",
+                    "function": "widget_tasks_done"
+                }
+            ]
+        },
+        {
+            "col2": [
+                {
+                    "title": "Cases",
+                    "module": "bpm",
+                    "controller": "bpmui",
+                    "function": "widget_cases"
+                },
+                {
+                    "title": "Cases Closed",
+                    "module": "bpm",
+                    "controller": "bpmui",
+                    "function": "widget_cases_closed"
+                }
+            ]
+        }
+    ]
+}

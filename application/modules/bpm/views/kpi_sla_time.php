@@ -1,8 +1,4 @@
 <div class="widget-box">
-    <div class="widget-title">
-        <span class="icon"><i class="icon-time"></i></span>
-        <h5>{title}</h5>
-    </div>
     {desc}
     <div class="text-center">
         <span id="gauge-{idkpi}" class="gauge_reverse"
@@ -28,6 +24,5 @@
                 </tr>
             </tbody>
         </table>
-    </div> 
-    
+    </div>  
 </div>

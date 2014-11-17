@@ -23,7 +23,7 @@ class Menu_model extends CI_Model {
             );
 
             $query = array('$set' => array('repoId' => (string) $repoId, 'path' => $path, 'properties' => $properties));
-            $options = array('upsert' => true, 'safe' => true);
+            $options = array('upsert' => true, 'w' => true);
             //----save path in rbac
             $rbac_path = "Menu/" . $repoId . $path;
             $this->rbac->put_path($rbac_path);
@@ -35,8 +35,9 @@ class Menu_model extends CI_Model {
     //---add a path to repository
     function remove_path($repoId, $path = null) {
         if ($path) {
+            $regex = new MongoRegex("/^$path*/i");
             $criteria = array(
-                'path' => $path,
+                'path' => $regex,
                 'repoId' => $repoId
             );
             $this->db->where($criteria);
@@ -94,7 +95,7 @@ class Menu_model extends CI_Model {
 //            var_dump($this->user->has("root/Menu/" . $repoId . $path,$user));
 //            echo '<hr>';
             if ($check) {
-                if ($this->user->has("root/Menu/" . $repoId . $path,$user)) {
+                if ($this->user->has("root/Menu/" . $repoId . $path, $user)) {
                     $repo[$r['path']] = $r['properties'];
                 }
             } else {

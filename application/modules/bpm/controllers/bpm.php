@@ -11,7 +11,7 @@ if (!defined('BASEPATH'))
  * @author Juan Ignacio Borda <juanignacioborda@gmail.com>
  * @date   Feb 10, 2013
  */
-class bpm extends CI_Controller {
+class bpm extends MX_Controller {
 
     function __construct() {
         parent::__construct();

@@ -1,0 +1,27 @@
+
+/* inbox */
+
+.msg:hover{
+	background-color:#eee;
+}
+
+
+/* ==== TAGS ==== */
+
+.tag_extreme{
+	color:#f00;
+	border-left:2px solid #f00;
+	}
+.tag_high{
+	color:#f60;
+	border-left:2px solid #f60;
+}
+.tag_normal{
+	color:#00A600;
+	border-left:2px solid #00A600;
+}
+.tag_low{
+	color:#50AEDD;
+	border-left:2px solid #50AEDD;
+}
+

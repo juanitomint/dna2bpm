@@ -189,4 +189,16 @@ class MX_Controller {
 	 */
 	public $bpm;
 	
+    /**
+	 *
+	 * @var kpi
+	 */
+	
+    public $kpi;
+    /**
+	 *
+	 * @var kpi_model
+	 */
+	public $kpi_model;
+	
 }

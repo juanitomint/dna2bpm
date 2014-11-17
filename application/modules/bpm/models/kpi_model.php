@@ -28,7 +28,7 @@ class Kpi_model extends CI_Model {
     }
 
     function get($idkpi) {
-        $query = array('idkpi' => (int)$idkpi);
+        $query = array('idkpi' => $idkpi);
 //        var_dump2($query);
         $result = $this->db->get_where('kpi', $query)->result_array();
         if ($result)
@@ -42,9 +42,95 @@ class Kpi_model extends CI_Model {
         return $result;
     }
 
+    function gen_kpi($idwf) {
+        $insert = array();
+        $trys = 10;
+        $i = 0;
+        $id = $idwf . '_' . chr(64 + rand(1, 26)) . chr(64 + rand(1, 26));
+        //---if passed specific id
+        if (func_num_args() > 1) {
+            $id = func_get_arg(1);
+            $passed = true;
+            //echo "passed: $id<br>";
+        }
+        $hasone = false;
+
+        while (!$hasone and $i <= $trys) {//---search until found or $trys iterations
+            $query = array('id' => $id);
+            $result = $this->db->get_where('kpi', $query)->result();
+            $i++;
+            if ($result) {
+                if ($passed) {
+                    show_error("id:$id already Exists in db.case");
+                    $hasone = true;
+                    break;
+                } else {//---continue search for free id
+                    $id = $idwf . '_' . chr(64 + rand(1, 26)) . chr(64 + rand(1, 26));
+                }
+            } else {//---result is null
+                $hasone = true;
+            }
+        }
+        if (!$hasone) {//-----cant allocate free id
+            show_error("Can't allocate an id in 'case' after $trys attempts");
+        }
+        return $id;
+    }
+
     function save($kpi) {
         $options = array('w' => true);
         $wf = $this->mongo->db->kpi->save($kpi, $options);
+    }
+
+    function get_filter($kpi) {
+        $filter = array();
+        if (isset($kpi['filter'])) {
+            switch ($kpi ['filter']) {
+                case 'group' :
+                    break;
+                case 'user' :
+                    $filter = array(
+                        'idwf' => $kpi ['idwf'],
+                        'iduser' => $this->idu
+                    );
+                    break;
+                default : // ---filter by idwf
+                    $filter = array(
+                        'idwf' => $kpi ['idwf']
+                    );
+                    break;
+            }
+        }
+        // ----process extra filters
+        $filter_extra = array();
+        if (isset($kpi ['filter_extra'])) {
+            $filter_extra = @json_decode($kpi ['filter_extra']);
+            switch (json_last_error()) {
+                case JSON_ERROR_NONE :
+                    // echo ' - No errors';
+                    break;
+                case JSON_ERROR_DEPTH :
+                    echo ' - Maximum stack depth exceeded';
+                    break;
+                case JSON_ERROR_STATE_MISMATCH :
+                    echo ' - Underflow or the modes mismatch';
+                    break;
+                case JSON_ERROR_CTRL_CHAR :
+                    echo ' - Unexpected control character found';
+                    break;
+                case JSON_ERROR_SYNTAX :
+                    echo ' - Syntax error, malformed JSON';
+                    break;
+                case JSON_ERROR_UTF8 :
+                    echo ' - Malformed UTF-8 characters, possibly incorrectly encoded';
+                    break;
+                default :
+                    echo ' - Unknown error';
+                    break;
+            }
+        }
+        $filter = array_merge((array) $filter_extra, $filter);
+        return $filter;
     }
 
 }

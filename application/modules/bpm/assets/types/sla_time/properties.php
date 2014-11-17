@@ -6,4 +6,9 @@
  * 
  */
 $type_props['time_limit']='string';
-
+$type_props['list_type']='string';
+$type_props['list_fields']='string';
+$type_props['list_detail']='string';
+$type_props['list_template']='string';
+$type_props['list_detail_template']='string';
+$type_props['list_records']='integer';

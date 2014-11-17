@@ -46,9 +46,16 @@ class Admin extends MX_Controller {
             $this->module_url . "assets/css/load_mask.css" => 'loadingmask',
             $this->module_url . "assets/css/browser.css" => 'Browser',
             $this->module_url . "assets/css/extra-icons.css" => 'Extra Icons',
+            $this->module_url . "assets/css/extra-icons.css" => 'Extra Icons',
         );
 
         $cpData['js'] = array(
+            $this->base_url . "jscript/jquery/jquery.min.js" => 'JQuery',
+            //----Pan & ZooM---------------------------------------------
+            $this->module_url . 'assets/jscript/panzoom/jquery.panzoom.min.js' => 'Panzoom Minified',
+            $this->module_url . 'assets/jscript/panzoom/jquery.mousewheel.js' => 'wheel-suppport',
+            $this->module_url . 'assets/jscript/panzoom/pnazoom_wheel.js' => 'wheel script',
+            //-----------------------------------------------------------------
             $this->module_url . "assets/jscript/ext.settings.js" => 'Settings',
             $this->module_url . 'assets/jscript/ext.model-utils.js' => 'Model utils',
             $this->module_url . "assets/jscript/browser/data.js" => 'Data Objects',
@@ -63,7 +70,7 @@ class Admin extends MX_Controller {
             'module_url' => $this->module_url,
         );
 
-        $this->ui->makeui('ext.ui.php', $cpData);
+        $this->ui->makeui('ext.ui-no-ion.php', $cpData);
     }
 
     function get_tree() {
@@ -146,7 +153,8 @@ class Admin extends MX_Controller {
         $models = $this->bpm->get_models();
         foreach ($models as $bpm) {
             $folder = (property_exists($bpm, 'folder')) ? $bpm->folder . '/' : '';
-            $m_arr[$folder . $bpm->idwf] = $bpm->data['properties']['name'] . ' [' . $bpm->idwf . ']';
+            $name = (isset($bpm->data['properties']['name'])) ? $bpm->data['properties']['name'] : "no name";
+            $m_arr[$folder . $bpm->idwf] = $name . ' [' . $bpm->idwf . ']';
         }
         $tree = $this->explodeTree($m_arr, $delimiter = '/');
 
@@ -266,7 +274,18 @@ class Admin extends MX_Controller {
     function model_move($from, $to) {
         
     }
-
+    function get_data($idwf, $idcase) {
+        $debug=false;
+        $this->load->model('bpm','bpm_model');
+        $case = $this->bpm->get_case($idcase,$idwf);
+        $data = $this->bpm->load_case_data($case);
+         if (!$debug) {
+            header('Content-type: application/json;charset=UTF-8');
+            echo json_encode($data);
+        } else {
+            var_dump($data);
+        }
+    }
     function get_model($idwf, $mode = 'html') {
         $idwf = urldecode($idwf);
         $wfData['base_url'] = base_url();

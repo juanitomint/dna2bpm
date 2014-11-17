@@ -81,7 +81,7 @@ class Login extends MX_Controller {
         $this->session->unset_userdata('msg');
         //$this->ui->makeui('user/ext.ui.php', $cpData);
         //$this->parser->parse('user/login', $cpData);
-        $this->ui->compose('user/login.bootstrap.php', 'user/bootstrap.ui.php', $cpData);
+        $this->ui->compose('user/login.bootstrap2.php', 'user/bootstrap3.ui.php', $cpData);
     }
 
 }

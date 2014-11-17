@@ -44,9 +44,9 @@ Ext.create('Ext.data.Store', {
             property: 'idgroup',
             direction: 'ASC'
         }]
-            ,
+    ,
     listeners: {
-        load: onGroupStoreLoad
+       // load: onGroupStoreLoad
     }
 
 });
@@ -70,6 +70,7 @@ Ext.define('User', {
         'phone',
         'idnumber',
         'group',
+        'signature',
         {
             name: 'locked',
             type: 'bool'

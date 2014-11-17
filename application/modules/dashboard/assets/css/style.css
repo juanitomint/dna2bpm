@@ -1,0 +1,61 @@
+/* 
+    Document   : dashboard
+    Created on : 
+    Author     : Gabriel Fojo
+    Description: Custom Css
+        
+*/
+
+
+body > .header .logo {
+  font-family: droid_sansregular;
+  background-color:#132D60 ;
+
+}
+
+body > .header .logo span{
+  font-family: chunkfiveroman;
+
+}
+
+/* PasteBoard*/
+
+#pasteboard{
+min-height:120px;
+border:1px dashed #ccc;
+margin-bottom:10px;
+background-color:#FDFFA3;
+padding-top:15px;
+display:none;
+}
+
+/* Config Panel*/
+
+@media screen {
+#config_panel_bt{
+position: fixed;
+top:150px;
+right:0px;
+background: rgba(0, 0, 0, 0.7);
+border-radius: 5px 0px 0px 5px;
+padding: 10px 15px;
+font-size: 16px;
+z-index: 999999;
+cursor: pointer;
+color: #ddd;
+}
+
+#config_panel_content{
+	width:170px;
+	position: fixed;
+	top:150px;
+	right:-170px;
+	border:3px solid rgba(0, 0, 0, 0.1);
+	min-height:120px;
+	z-index: 999999;
+	background-color:#fff;
+	padding:5px;
+}
+}
+
+

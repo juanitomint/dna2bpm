@@ -57,8 +57,8 @@ class Cimongo extends Cimongo_extras {
             show_error("In order to retreive documents from MongoDB, a collection name must be passed", 500);
         }
         if ($this->debug){
-            var_dump('Wheres',$this->wheres);
-            var_dump('Selects',$this->selects);
+            var_dump('Wheres',$this->wheres,json_encode($this->wheres));
+            var_dump('Selects',$this->selects,json_encode($this->selects));
             
         }
         $cursor = $this->db->selectCollection($collection)->find($this->wheres, $this->selects);

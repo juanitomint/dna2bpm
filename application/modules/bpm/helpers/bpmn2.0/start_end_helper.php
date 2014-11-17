@@ -11,7 +11,7 @@ function run_StartNoneEvent($shape, $wf, $CI) {
     //---this function only fowards the process and return nothing
     $CI->bpm->movenext($shape, $wf);
     //----Set status 4 Case
-    $CI->bpm->update_case($wf->idwf,$wf->case, array('status' => 'open'));
+    $CI->bpm->update_case($wf->idwf, $wf->case, array('status' => 'open'));
 }
 
 //   This function will get started by the eventThrowing handler
@@ -123,23 +123,24 @@ function run_EndNoneEvent($shape, $wf, $CI, $moveForward = true) {
             default:
                 //----Set status 4 Case
                 //---close process if all end events have been finished (or canceled)
-                $active_tokens = $CI->bpm->get_pending($wf->idwf,$wf->case, array('user', 'waiting', 'pending'), array());
-                if ($active_tokens->count() == 0)
-                    $CI->bpm->update_case($wf->idwf,$wf->case, array(
+                $active_tokens = $CI->bpm->get_pending($wf->idwf, $wf->case, array('user', 'waiting', 'pending'), array());
+                if ($active_tokens->count() == 0) {
+                    $CI->bpm->update_case($wf->idwf, $wf->case, array(
                         'status' => 'closed',
                         'checkoutdate' => date('Y-m-d H:i:s'),
-                        'set_token_status'=>array($shape->resourceId)
+                        'set_token_status' => array($shape->resourceId)
                             )
                     );
+                }
                 //----update parent case if any
-                $mycase = $CI->bpm->get_case($wf->case);
+                $mycase = $CI->bpm->get_case($wf->case, $wf->idwf);
                 if (isset($mycase['parent'])) {
                     $parent = $mycase['parent'];
                     // run_post($model, $idwf, $case, $resourceId)
                     //echo '/bpm/engine/run_post/model/' . $parent['idwf'] . '/' . $parent['case'] . '/' . $parent['token']['resourceId'];
                     //Module::run('/bpm/engine/run_post', 'model', $parent['idwf'], $parent['case'], $parent['token']['resourceId']);
                     echo "RUNING parent";
-                    $CI->run_post('model',  $parent['idwf'], $parent['case'], $parent['token']['resourceId']);
+                    $CI->run_post('model', $parent['idwf'], $parent['case'], $parent['token']['resourceId']);
                 }
                 break;
         }
@@ -174,7 +175,7 @@ function run_EndErrorEvent($shape, $wf, $CI) {
         echo "<h2>" . __FUNCTION__ . '</h2>';
     run_IntermediateEventThrowing($shape, $wf, $CI);
     //---Update case Status
-    $CI->bpm->update_case($wf->idwf,$wf->case, array('status' => 'canceled'));
+    $CI->bpm->update_case($wf->idwf, $wf->case, array('status' => 'canceled'));
     //---then move next
 }
 
@@ -184,8 +185,10 @@ function run_EndCancelEvent($shape, $wf, $CI) {
     if ($debug)
         echo "<h2>" . __FUNCTION__ . '</h2>';
     //---Update case Status
-    $CI->bpm->update_case($wf->idwf,$wf->case, array('status' => 'canceled'));
+    // $CI->bpm->update_case($wf->idwf, $wf->case, array('status' => 'canceled'));
     $CI->bpm->movenext($shape, $wf);
+    $CI->break_on_next=true;
+    
 }
 
 function run_EndCompensationEvent($shape, $wf, $CI) {
