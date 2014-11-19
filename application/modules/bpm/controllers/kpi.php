@@ -508,7 +508,7 @@ class Kpi extends MX_Controller {
 				$template .= '</thead>';
 				// body
 				$template .= '<tbody>';
-				$template .= '{cases}' . '<tr>' . '<td>' . '<a target="_blank" href="' . $detail . '">' . '<i class="fa ' . $detail_icon . '"></i>' . '</a>' . '</td>' . implode ( $values ) . "" . "</tr>{/cases}\n";
+				$template .= '{cases}' . '<tr>' . '<td>' . '<a target="_blank" class="'.$idkpi.'" href="' . $detail . '">' . '<i class="fa ' . $detail_icon . '"></i>' . '</a>' . '</td>' . implode ( $values ) . "" . "</tr>{/cases}\n";
 				$template .= '</tbody>';
 				$template .= '</table>';
 			} else {
