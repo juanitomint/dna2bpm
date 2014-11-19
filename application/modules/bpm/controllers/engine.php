@@ -402,7 +402,7 @@ class Engine extends MX_Controller {
         $renderData ['idwf'] = $idwf;
         $renderData ['idcase'] = $idcase;
         $renderData ['resourceId'] = $resourceId;
-        $renderData['date'] = date($CI->lang->line('dateFmt'));
+        $renderData['date'] = date($this->lang->line('dateFmt'));
         
         // -----load bpm
         $mywf = $this->bpm->load($idwf, $this->expandSubProcess);
@@ -413,6 +413,7 @@ class Engine extends MX_Controller {
         $case = $this->bpm->get_case($idcase, $idwf);
         // ---get token
         $token = $this->bpm->get_token($idwf, $idcase, $resourceId);
+        
         // --get shape
         $shape = $this->bpm->get_shape($token ['resourceId'], $wf);
         // -check if data is loaded
@@ -443,11 +444,19 @@ class Engine extends MX_Controller {
         }
 // 		exit;
         $renderData ['task_documentation'] = $shape->properties->documentation;
+        
         if ($resourceId) {
             $renderData += $this->bindObjectToArray($this->data);
             $renderData ['wf'] = $mywf ['data'] ['properties'];
             // $renderData+=$mywf['data']['properties'];
             $renderData ['token'] = $token;
+            //---map users assigned
+            $renderData ['assign']=array_map(
+                function($iduser){
+                return (array)$this->user->get_user_safe($iduser);
+                },
+                $renderData['token']['assign']);
+
             $renderData ['case'] = $case;
             // --parse documentation string
             $renderData ['task_documentation'] = ($renderData ['task_documentation'] == '') ? '' : $this->parser->parse_string(nl2br($renderData ['task_documentation']), $renderData, true, true);
