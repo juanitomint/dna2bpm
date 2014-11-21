@@ -16,6 +16,6 @@ options for admins:
 // add me to the array of assigned  
 $config['auto_add_admin']=true;
 // replace the assignement with my id
-$config['auto_assign_admin']=false;
+$config['auto_assign_admin']=true;
 // Choose whether to make thumbnails or not
 $config['make_thumbnails']=true;

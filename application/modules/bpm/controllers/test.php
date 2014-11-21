@@ -132,7 +132,7 @@ class test extends MX_Controller {
                 $msg['from'] = array_pop($resources['Performer']);
             }
         }
-        $token['assign'] = (isset($token['assign'])) ? $token['assign'] : array();
+        $token['assign'] = (isset($token['assign'])) ? $token['assign'] : array($this->user->Initiator);
         $to = (isset($resources['assign'])) ? array_merge($token['assign'], $resources['assign']) : $token['assign'];
         $to = array_unique(array_filter($to));
         foreach ($to as $iduser) {
@@ -184,7 +184,7 @@ class test extends MX_Controller {
 //---tomo el template de la tarea
         $renderData['name'] = 'Test TASK->SEND: ' . $wf->properties->name;
         $renderData['shapes'] = $this->bpm->bindObjectToArray($this->bpm->get_shape_byprop(array('tasktype' => 'Send'), $wf));
-//        var_dump($renderData);
+        var_dump($renderData);
 //        exit;
         $this->ui->compose('bpm/modal_task_send', 'bpm/bootstrap.ui.php', $renderData);
     }
