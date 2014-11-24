@@ -226,7 +226,7 @@ class Gitmod extends MX_Controller {
                 $repo->run($cmd);
             }
         echo "<span class='text-success text-small'>$date <i class='fa fa-chevron-circle-right'></i> Staging ".implode(',',$files);
-        echo "<hr/>".$txtCmd."<hr/>";
+        echo "<hr/>git ".$txtCmd."<hr/>";
         echo "</span>";
     }
     
@@ -242,7 +242,7 @@ class Gitmod extends MX_Controller {
                 $repo->run($cmd);
             }
         echo "<span class='text-warning'>$date <i class='fa fa-chevron-circle-left'></i> Un Staging ".implode(',',$files);
-        echo "<hr/>".$txtCmd."<hr/>";
+        echo "<hr/>git ".$txtCmd."<hr/>";
         echo "</span>";
         
     }
