@@ -206,6 +206,10 @@ class Gitmod extends MX_Controller {
         return $this->load->view('gitmod/modal');
     }
     
+    function commit_button(){
+        return $this->load->view('gitmod/commit_button');
+    }
+    
     function stage(){
         $repo=$this->git->open(FCPATH);
         $files=$this->input->post('files');
