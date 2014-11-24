@@ -1,4 +1,47 @@
 $(document).ready(function() {
+    $("#pullBtn").click(function() {
+        url = globals.base_url + 'gitmod/pull';
+        $('#myModal').find('.modal-title').html('Pull');
+        $('#myModal').find('.modal-body').html('<h1><i class="fa fa-refresh fa-spin"></i> Pulling from upstream...</h1>');
+        $('#myModal').modal('show');
+
+        $.ajax({
+            url: url,
+            type: 'POST',
+            success: function(data) {
+                $('#result').prepend(data);
+                $('#myModal').modal('hide');
+            },
+            statusCode: {
+                404: function() {
+                    alert("page not found");
+                    $('#myModal').modal('hide');
+                }
+            }
+        });
+    });
+
+    $("#pushBtn").click(function() {
+        url = globals.base_url + 'gitmod/push';
+        $('#myModal').find('.modal-title').html('Push');
+        $('#myModal').find('.modal-body').html('<h1><i class="fa fa-refresh fa-spin"></i> Pushing to upstream...</h1>');
+        $('#myModal').modal('show');
+        $.ajax({
+            url: url,
+            type: 'POST',
+            success: function(data) {
+                $('#result').prepend(data);
+                $('#myModal').modal('hide');
+            },
+            statusCode: {
+                404: function() {
+                    alert("page not found");
+                    $('#myModal').modal('hide');
+                }
+            }
+        });
+    });
+
     $("#commitBtn").click(function() {
         data = {
             'commitTxt': $(this).parent().parent().find('textarea').val()
@@ -19,7 +62,7 @@ $(document).ready(function() {
                 }
             }
         });
-    })
+    });
 
     init_sortable();
 

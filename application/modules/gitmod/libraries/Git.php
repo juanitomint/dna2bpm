@@ -661,7 +661,7 @@ class GitRepo {
 	 * @param string $branch
 	 * @return string
 	 */
-	public function push($remote, $branch) {
+	public function push($remote=null, $branch=null) {
 		return $this->run("push --tags $remote $branch");
 	}
 
@@ -674,7 +674,7 @@ class GitRepo {
 	 * @param string $branch
 	 * @return string
 	 */
-	public function pull($remote, $branch) {
+	public function pull($remote=null, $branch=null) {
 		return $this->run("pull $remote $branch");
 	}
 

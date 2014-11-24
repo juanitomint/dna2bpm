@@ -201,6 +201,10 @@ class Gitmod extends MX_Controller {
         $renderData['content']='<blockquote id="result" class="result" />';
         return $this->parser->parse('dashboard/widgets/box_default_solid', $renderData,true,true);
     }
+    function pullpush(){
+        $renderData['base_url'] = $this->base_url;
+        return $this->parser->parse('gitmod/pullpush', $renderData,true,true);;
+    }
     
     function modal(){
         return $this->load->view('gitmod/modal');
@@ -255,6 +259,30 @@ class Gitmod extends MX_Controller {
         } else {
         echo "<span class='text-warning'>$date <i class='fa fa-thumbs-down'></i> Can't commit with empy text</span><hr/>";
 
+        }
+    }
+    
+    function pull(){
+        $repo=$this->git->open(FCPATH);
+        $date=date('H:i:s');
+        try{
+        $msg=nl2br($repo->pull());            
+        echo "<span class='text-info'>$date <i class='fa fa-thumbs-up'></i> $msg</span><hr/>";
+        } catch(Exception $e){
+        echo "<span class='text-danger'>$date <i class='fa fa-thumbs-down'></i>".$e->getMessage()."</span><hr/>";
+            
+        }
+    }
+    
+    function push(){
+        $repo=$this->git->open(FCPATH);
+        $date=date('H:i:s');
+        try{
+        $msg=nl2br($repo->push());            
+        echo "<span class='text-info'>$date <i class='fa fa-thumbs-up'></i> $msg</span><hr/>";
+        } catch(Exception $e){
+        echo "<span class='text-danger'>$date <i class='fa fa-thumbs-down'></i>".$e->getMessage()."</span><hr/>";
+            
         }
     }
 }

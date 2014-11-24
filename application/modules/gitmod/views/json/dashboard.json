@@ -41,6 +41,12 @@
         {
                 "col2":[
                 {
+                    "title": "pull push",
+                    "module": "gitmod",
+                    "controller": "gitmod",
+                    "function": "pullpush"
+                },
+                {
                     "title": "result",
                     "module": "gitmod",
                     "controller": "gitmod",
