@@ -662,7 +662,7 @@ class GitRepo {
 	 * @return string
 	 */
 	public function push($remote=null, $branch=null) {
-		return $this->run("push --tags $remote $branch");
+		return $this->run("push $remote $branch");
 	}
 
 	/**

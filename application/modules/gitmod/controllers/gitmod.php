@@ -28,6 +28,7 @@ class Gitmod extends MX_Controller {
         $this->module_url = base_url() . $this->router->fetch_module() . '/';
         $this->load->library('gitmod/git');
         $this->stageInculde=array('A ','D ','R','M ');
+        $this->repo_path=FCPATH;
         //---Output Profiler
         //$this->output->enable_profiler(TRUE);
     }
@@ -142,7 +143,7 @@ class Gitmod extends MX_Controller {
     }
     public function status(){
         $this->load->library('parser');
-        $repo=$this->git->open(FCPATH);
+        $repo=$this->git->open($this->repo_path);
         $renderData['title'] ='Status';
         $renderData['url'] =$this->module_url.'status';
         $renderData['base_url'] = $this->base_url;
@@ -162,8 +163,7 @@ class Gitmod extends MX_Controller {
             $renderData['status']);
             $renderData['status']=array_filter($renderData['status']);
             // var_dump($renderData['status']);exit;
-        $renderData['content']=$this->parser->parse('gitmod/status', $renderData,true,true);
-        return $this->parser->parse('dashboard/widgets/box_default', $renderData,true,true);
+        return $renderData['content']=$this->parser->parse('gitmod/status', $renderData,true,true);
     }
     public function show_staged(){
         echo $this->staged();
@@ -173,7 +173,7 @@ class Gitmod extends MX_Controller {
     }
     public function staged(){
         $this->load->library('parser');
-        $repo=$this->git->open(FCPATH);
+        $repo=$this->git->open($this->repo_path);
         $renderData['title'] = "Staged [".$repo->active_branch()."]";
         $renderData['base_url'] = $this->base_url;
         $renderData['widget_url'] = $this->module_url.'show_'.__FUNCTION__;
@@ -215,7 +215,7 @@ class Gitmod extends MX_Controller {
     }
     
     function stage(){
-        $repo=$this->git->open(FCPATH);
+        $repo=$this->git->open($this->repo_path);
         $files=$this->input->post('files');
         $date=date('H:i:s');
         //---stage
@@ -231,7 +231,7 @@ class Gitmod extends MX_Controller {
     }
     
     function unstage(){
-        $repo=$this->git->open(FCPATH);
+        $repo=$this->git->open($this->repo_path);
         $files=$this->input->post('files');
         $date=date('H:i:s');
         //---unstage
@@ -247,7 +247,7 @@ class Gitmod extends MX_Controller {
         
     }
     function commit(){
-        $repo=$this->git->open(FCPATH);
+        $repo=$this->git->open($this->repo_path);
         $txt=$this->input->post('commitTxt');
         $date=date('H:i:s');
         if($txt){
@@ -263,7 +263,7 @@ class Gitmod extends MX_Controller {
     }
     
     function pull(){
-        $repo=$this->git->open(FCPATH);
+        $repo=$this->git->open($this->repo_path);
         $date=date('H:i:s');
         try{
         $msg=nl2br($repo->pull());            
@@ -275,7 +275,7 @@ class Gitmod extends MX_Controller {
     }
     
     function push(){
-        $repo=$this->git->open(FCPATH);
+        $repo=$this->git->open($this->repo_path);
         $date=date('H:i:s');
         try{
         $msg=nl2br($repo->push());            
