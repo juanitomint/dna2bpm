@@ -20,53 +20,76 @@ $(document).ready(function() {
             }
         });
     })
-    $(".connectedSortable").sortable({
-        start: function(event, ui) {
-            item = ui.item;
-            oldList = ui.item.parent().attr('id');
-        },
-        stop: function(event, ui) {
-            data = {
-                'files': [ui.item.find('.filename').text()]
 
-            };
-            newList = ui.item.parent().attr('id');
-            // console.log(oldList, newList);
-            if (newList != oldList) {
-
-                switch (oldList) {
-                    case "staged":
-                        // console.log('un-stage this file:' + data.filename);
-                        url = globals.base_url + 'gitmod/unstage';
-                        break;
-
-                    case "status":
-                        // console.log('stage this file:' + data.filename);
-                        url = globals.base_url + 'gitmod/stage';
-                        break;
-                }
-                $.ajax({
-                    url: url,
-                    type: 'POST',
-                    data: data,
-                    success: function(data) {
-                        $('#result').prepend(data);
-                    },
-                    statusCode: {
-                        404: function() {
-                            alert("page not found");
-                        }
-                    }
-                });
-            }
-        }
-    });
+    init_sortable();
 
 });
 
 /*
-/   Reload all 
+/   Init sortable
 */
+function init_sortable() {
+        $(".connectedSortable").sortable({
+            placeholder: "sort-highlight",
+            connectWith: ".connectedSortable",
+            handle: ".box-header, .nav-tabs",
+            forcePlaceholderSize: true,
+            zIndex: 999999
+        }).disableSelection();
+
+        $(".todo-list").sortable({
+            placeholder: "sort-highlight",
+            handle: ".handle",
+            forcePlaceholderSize: true,
+            zIndex: 999999
+        }).disableSelection();;
+
+        $(".connectedSortable").sortable({
+            start: function(event, ui) {
+                item = ui.item;
+                oldList = ui.item.parent().attr('id');
+            },
+            stop: function(event, ui) {
+                data = {
+                    'files': [ui.item.find('.filename').text()]
+
+                };
+                newList = ui.item.parent().attr('id');
+                // console.log(oldList, newList);
+                if (newList != oldList) {
+
+                    switch (oldList) {
+                        case "staged":
+                            // console.log('un-stage this file:' + data.filename);
+                            url = globals.base_url + 'gitmod/unstage';
+                            break;
+
+                        case "status":
+                            // console.log('stage this file:' + data.filename);
+                            url = globals.base_url + 'gitmod/stage';
+                            break;
+                    }
+                    $.ajax({
+                        url: url,
+                        type: 'POST',
+                        data: data,
+                        success: function(data) {
+                            $('#result').prepend(data);
+                        },
+                        statusCode: {
+                            404: function() {
+                                alert("page not found");
+                            }
+                        }
+                    });
+                }
+            }
+        });
+
+    }
+    /*
+    /   Reload all 
+    */
 
 function reload_all() {
     $(".widget_url").each(
@@ -89,18 +112,5 @@ function reload_all() {
     /*
     /  Enabled sortable again
     */
-    $(".connectedSortable").sortable({
-        placeholder: "sort-highlight",
-        connectWith: ".connectedSortable",
-        handle: ".box-header, .nav-tabs",
-        forcePlaceholderSize: true,
-        zIndex: 999999
-    }).disableSelection();
-    
-    $(".todo-list").sortable({
-        placeholder: "sort-highlight",
-        handle: ".handle",
-        forcePlaceholderSize: true,
-        zIndex: 999999
-    }).disableSelection();;
+    init_sortable();
 }
