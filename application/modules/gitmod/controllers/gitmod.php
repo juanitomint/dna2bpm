@@ -26,7 +26,7 @@ class Gitmod extends MX_Controller {
         $this->base_url = base_url();
         $this->module_url = base_url() . $this->router->fetch_module() . '/';
         $this->load->library('gitmod/git');
-        $this->stageInculde=array('A','D ','R','M ');
+        $this->stageInculde=array('A ','D ','R','M ');
         //---Output Profiler
         //$this->output->enable_profiler(TRUE);
     }
