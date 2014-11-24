@@ -16,4 +16,8 @@
                 </div>
             </li>
             {/status}
+                    <li>
+            <!-- drag handle -->
+                <span class="text-success"><i class="fa fa-arrow-circle-up"></i> Drag files above this</span>
+        </li>
         </ul>

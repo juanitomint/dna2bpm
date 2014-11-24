@@ -1,7 +1,7 @@
 {
     "createdBy": "Juan Ignacio Borda <juanignacioborda@gmail.com>",
     "title": "Simple GIT Admin",
-    "view": "layout_2cols",
+    "view": "layout_2cols_fixed",
     "icon": "fa-git",
     "zones": [
         {

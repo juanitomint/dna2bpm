@@ -1,5 +1,9 @@
 
     <ul id="staged" class="todo-list ui-sortable connectedSortable droptrue"> 
+        <li>
+            <!-- drag handle -->
+                <span class="text-success"><i class="fa fa-arrow-circle-down"></i> Drag files below this</span>
+        </li>
         {staged}
         <li>
             <!-- drag handle -->
