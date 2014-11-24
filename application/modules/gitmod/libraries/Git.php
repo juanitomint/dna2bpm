@@ -362,13 +362,10 @@ class GitRepo {
 	public function status_extended() {
 		$msg = $this->run("status --porcelain");
 		$msg=array_filter(explode("\n",$msg));
-		
 		$msg=array_map(function($str){
-		    $str=trim(str_replace('  ',' ',$str));
-		    $arr=explode(' ',$str);
 		    return array(
-		        'filename'=>$arr[1],
-		        'status'=>$arr[0],
+		        'status'=>substr($str,0,2),
+		        'filename'=>substr($str,3),
 		        );
 		},$msg);
 		return $msg;
@@ -389,7 +386,7 @@ class GitRepo {
 		if (is_array($files)) {
 			$files = '"'.implode('" "', $files).'"';
 		}
-		return $this->run("add $files -v");
+		return $this->run("add --all $files -v");
 	}
 	
 	/**

@@ -26,7 +26,7 @@ class Gitmod extends MX_Controller {
         $this->base_url = base_url();
         $this->module_url = base_url() . $this->router->fetch_module() . '/';
         $this->load->library('gitmod/git');
-        $this->stageInculde=array('A','D','R');
+        $this->stageInculde=array('A','D ','R','M ');
         //---Output Profiler
         //$this->output->enable_profiler(TRUE);
     }
@@ -97,22 +97,11 @@ class Gitmod extends MX_Controller {
         return false;
     }
     
-    public function status(){
-        $this->load->library('parser');
-        $repo=$this->git->open(FCPATH);
-        $renderData['title'] ='Status';
-        $renderData['url'] =$this->module_url.'status';
-        $renderData['base_url'] = $this->base_url;
-        $renderData['status']=$repo->status_extended();
-        $renderData['qtty']=count($renderData['status']);
-        
-        $renderData['status']=array_map(
-            function($file){
-             $class='';
-                switch ($file['status']){
+    public function getClass($file){
+          $class='';
+           switch (trim($file['status'])){
                     case 'A'://---staged
-                    //---don't display adde
-                        $class='info';
+                        $class='success';
                         break;
                     case 'H'://---cached
                         $class='warning';
@@ -128,9 +117,11 @@ class Gitmod extends MX_Controller {
                         
                     case 'D'://---removed/deleted
                         $class='danger';
+                        break;
                     case 'R'://---renames
                         $class='warning';
                         break;
+                        
                     case 'UU'://---Conflicted
                         $class='danger';
                         break;
@@ -147,6 +138,20 @@ class Gitmod extends MX_Controller {
                         $class='primary';
                         break;
                 }
+        return $class;
+    }
+    public function status(){
+        $this->load->library('parser');
+        $repo=$this->git->open(FCPATH);
+        $renderData['title'] ='Status';
+        $renderData['url'] =$this->module_url.'status';
+        $renderData['base_url'] = $this->base_url;
+        $renderData['widget_url'] = $this->module_url.__FUNCTION__;
+        $renderData['status']=$repo->status_extended();
+        $renderData['qtty']=count($renderData['status']);
+        $renderData['status']=array_map(
+            function($file){
+            $class=$this->getClass($file);
             $file['class']=$class;
             //---dont return these
             if(in_array($file['status'],$this->stageInculde)){
@@ -165,49 +170,11 @@ class Gitmod extends MX_Controller {
         $repo=$this->git->open(FCPATH);
         $renderData['title'] = "Staged [".$repo->active_branch()."]";
         $renderData['base_url'] = $this->base_url;
+        $renderData['widget_url'] = $this->module_url.__FUNCTION__;
         $renderData['staged']=$repo->status_extended();
         $renderData['staged']=array_map(
             function($file){
-                $class='';
-                switch ($file['status']){
-                    case 'A'://---staged
-                    //---don't display adde
-                        $class='info';
-                        break;
-                    case 'H'://---cached
-                        $class='warning';
-                        break;
-                        
-                    case 'S'://---skip-worktree
-                        $class='warning';
-                        break;
-                    case 'R'://---skip-worktree
-                        $class='warning';
-                        break;
-                        
-                    case 'M'://---unmerged
-                        $class='primary';
-                        break;
-                        
-                    case 'D'://---removed/deleted
-                        $class='danger';
-                        break;
-                    case 'UU'://---Conflicted
-                        $class='danger';
-                        break;
-                        
-                    case '??' ://---untracked
-                        $class='success';
-                        break;
-                        
-                    case 'C' ://---modified/changed
-                        $class='primary';
-                        break;
-                        
-                    default :
-                        $class='primary';
-                        break;
-                }
+            $class=$this->getClass($file);
             $file['class']=$class;
             //--- return these
                 if(in_array($file['status'],$this->stageInculde)){
@@ -221,14 +188,28 @@ class Gitmod extends MX_Controller {
         $renderData['class'] ='col-md-6';
         return $this->parser->parse('dashboard/widgets/box_default_solid', $renderData,true,true);
     }
+    public function result(){
+        $this->load->library('parser');
+        $renderData['title'] = 'Results<div class="box-tools pull-right"><a href="#" id="git-log-clear"><i class="fa fa-ban>"></i></a></div>';
+        $renderData['base_url'] = $this->base_url;
+        $renderData['content']='<blockquote id="result" class="result" />';
+        return $this->parser->parse('dashboard/widgets/box_default_solid', $renderData,true,true);
+    }
     
     function stage(){
         $repo=$this->git->open(FCPATH);
         $files=$this->input->post('files');
         $date=date('H:i:s');
         //---stage
-        $repo->add($files);
-        echo "<span class='text-success'>$date <i class='fa fa-chevron-circle-right'></i> Staging ".implode(',',$files)."</span>";
+        $txtCmd='';
+            foreach($files as $filename){
+                $cmd="add --all $filename";
+                $txtCmd.=$cmd.'<br/>';
+                $repo->run($cmd);
+            }
+        echo "<span class='text-success text-small'>$date <i class='fa fa-chevron-circle-right'></i> Staging ".implode(',',$files);
+        echo "<hr/>".$txtCmd."<hr/>";
+        echo "</span>";
     }
     
     function unstage(){
@@ -236,10 +217,16 @@ class Gitmod extends MX_Controller {
         $files=$this->input->post('files');
         $date=date('H:i:s');
         //---unstage
-        foreach($files as $filename){
-            $repo->run('reset HEAD -- $filename');
-        }
-        echo "<span class='text-warning'>$date <i class='fa fa-chevron-circle-left'></i> Un Staging ".implode(',',$files)."</span>";
+        $txtCmd='';
+            foreach($files as $filename){
+                $cmd="reset HEAD -- $filename";
+                $txtCmd.=$cmd.'<br/>';
+                $repo->run($cmd);
+            }
+        echo "<span class='text-warning'>$date <i class='fa fa-chevron-circle-left'></i> Un Staging ".implode(',',$files);
+        echo "<hr/>".$txtCmd."<hr/>";
+        echo "</span>";
+        
     }
     function commit(){
         $repo=$this->git->open(FCPATH);

@@ -14,8 +14,6 @@
     </ul>
     <hr/>
     <button type="button" class="btn btn-success" data-toggle="modal" data-target="#gitModal" data-whatever="@mdo">Commit</button>
-    <blockquote id='result'>
-    </blockquote>
     <!-- Modal -->
     <div class="modal fade" id="gitModal" tabindex="-1" role="dialog" aria-labelledby="gitModalLabel" aria-hidden="true">
         <div class="modal-dialog">

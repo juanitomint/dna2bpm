@@ -1,7 +1,7 @@
 {
     "createdBy": "Juan Ignacio Borda <juanignacioborda@gmail.com>",
     "title": "Simple GIT Admin",
-    "view": "layout_clean",
+    "view": "layout_2cols",
     "icon": "fa-git",
     "zones": [
         {
@@ -10,7 +10,7 @@
             ]
         },
         {
-            "widgets": [
+            "col1": [
                 {
                     "title": "Staged",
                     "module": "gitmod",
@@ -19,6 +19,7 @@
                     "js":[{"{base_url}gitmod/assets/jscript/git.js":"GIT-JS"}],
                     "css":[{"{base_url}gitmod/assets/css/git.css":"GIT-CSS"}]
                 }
+               
                 ,
                 {
                     "title": "Status",
@@ -28,6 +29,18 @@
                 }
                 
             ]
-        }
+            
+        },
+        {
+                "col2":[
+                {
+                    "title": "result",
+                    "module": "gitmod",
+                    "controller": "gitmod",
+                    "function": "result"
+                }
+                ]
+                
+            }
     ]
 }

@@ -46,7 +46,7 @@ $(document).ready(function() {
                 type: 'POST',
                 data: data,
                 success: function(data) {
-                    $('#result').html(data);
+                    $('#result').prepend(data);
                 },
                 statusCode: {
                     404: function() {

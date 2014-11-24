@@ -2,3 +2,10 @@
     background: #eee;
     padding: 5px;
 }
+.result {
+    font-size:.8em;
+}
+
+.todo-list {
+    font-size:1em;
+}
