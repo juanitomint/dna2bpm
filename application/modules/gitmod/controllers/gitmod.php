@@ -202,6 +202,10 @@ class Gitmod extends MX_Controller {
         return $this->parser->parse('dashboard/widgets/box_default_solid', $renderData,true,true);
     }
     
+    function modal(){
+        return $this->load->view('gitmod/modal');
+    }
+    
     function stage(){
         $repo=$this->git->open(FCPATH);
         $files=$this->input->post('files');
@@ -242,11 +246,11 @@ class Gitmod extends MX_Controller {
         //---commit($message = "", $commit_all = true) 
         $repo->commit($txt,false);
         
-        echo "<span class='text-info'>$date <i class='fa fa-thumbs-up'></i> Commited ok!</span>";
+        echo "<span class='text-info'>$date <i class='fa fa-thumbs-up'></i> Commited ok!</span><hr/>";
             
         } else {
-        echo "<span class='text-warning'>$date <i class='fa fa-thumbs-down'></i> Can't commit with empy text</span>";
-            
+        echo "<span class='text-warning'>$date <i class='fa fa-thumbs-down'></i> Can't commit with empy text</span><hr/>";
+
         }
     }
 }

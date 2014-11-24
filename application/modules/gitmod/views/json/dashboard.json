@@ -38,6 +38,12 @@
                     "module": "gitmod",
                     "controller": "gitmod",
                     "function": "result"
+                },
+                {
+                    "title": "modal",
+                    "module": "gitmod",
+                    "controller": "gitmod",
+                    "function": "modal"
                 }
                 ]
                 
