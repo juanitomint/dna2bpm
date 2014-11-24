@@ -10,7 +10,8 @@ $(document).ready(function() {
             data: data,
             success: function(data) {
                 $('#result').html(data);
-                //@todo reload staged
+                reload_all();
+                $('#gitModal').modal('hide');
             },
             statusCode: {
                 404: function() {
@@ -30,17 +31,17 @@ $(document).ready(function() {
 
             };
             newList = ui.item.parent().attr('id');
-            console.log(oldList, newList);
+            // console.log(oldList, newList);
             if (newList != oldList) {
 
                 switch (oldList) {
                     case "staged":
-                        console.log('un-stage this file:' + data.filename);
+                        // console.log('un-stage this file:' + data.filename);
                         url = globals.base_url + 'gitmod/unstage';
                         break;
 
                     case "status":
-                        console.log('stage this file:' + data.filename);
+                        // console.log('stage this file:' + data.filename);
                         url = globals.base_url + 'gitmod/stage';
                         break;
                 }
@@ -62,3 +63,44 @@ $(document).ready(function() {
     });
 
 });
+
+/*
+/   Reload all 
+*/
+
+function reload_all() {
+    $(".widget_url").each(
+
+        function(index, item) {
+            var url = $(item).text()
+            if (url) {
+                //@todo add a loading mask overlay
+                var box = $(item).parents('.box');
+                box.html('<i class="fa fa-2x fa-refresh fa-spin"></i>');
+                $.ajax({
+                    url: url,
+                    context: box,
+                    async: false
+                }).done(function(data) {
+                    $(this).replaceWith(data);
+                });
+            }
+        });
+    /*
+    /  Enabled sortable again
+    */
+    $(".connectedSortable").sortable({
+        placeholder: "sort-highlight",
+        connectWith: ".connectedSortable",
+        handle: ".box-header, .nav-tabs",
+        forcePlaceholderSize: true,
+        zIndex: 999999
+    }).disableSelection();
+    
+    $(".todo-list").sortable({
+        placeholder: "sort-highlight",
+        handle: ".handle",
+        forcePlaceholderSize: true,
+        zIndex: 999999
+    }).disableSelection();;
+}

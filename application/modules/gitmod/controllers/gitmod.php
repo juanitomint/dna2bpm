@@ -22,6 +22,7 @@ class Gitmod extends MX_Controller {
     function __construct() {
         parent::__construct();
 
+        $this->user->authorize();
         //---base variables
         $this->base_url = base_url();
         $this->module_url = base_url() . $this->router->fetch_module() . '/';
@@ -34,7 +35,6 @@ class Gitmod extends MX_Controller {
         $this->git_dashboard();
     }
     function git_dashboard(){
-        $this->user->authorize();
         Modules::run('dashboard/dashboard', 'gitmod/json/dashboard.json');
     }
     function update() {
@@ -146,7 +146,7 @@ class Gitmod extends MX_Controller {
         $renderData['title'] ='Status';
         $renderData['url'] =$this->module_url.'status';
         $renderData['base_url'] = $this->base_url;
-        $renderData['widget_url'] = $this->module_url.__FUNCTION__;
+        $renderData['widget_url'] = $this->module_url.'show_'.__FUNCTION__;
         $renderData['status']=$repo->status_extended();
         $renderData['qtty']=count($renderData['status']);
         $renderData['status']=array_map(
@@ -165,12 +165,18 @@ class Gitmod extends MX_Controller {
         $renderData['content']=$this->parser->parse('gitmod/status', $renderData,true,true);
         return $this->parser->parse('dashboard/widgets/box_default', $renderData,true,true);
     }
+    public function show_staged(){
+        echo $this->staged();
+    }
+    public function show_status(){
+        echo $this->status();
+    }
     public function staged(){
         $this->load->library('parser');
         $repo=$this->git->open(FCPATH);
         $renderData['title'] = "Staged [".$repo->active_branch()."]";
         $renderData['base_url'] = $this->base_url;
-        $renderData['widget_url'] = $this->module_url.__FUNCTION__;
+        $renderData['widget_url'] = $this->module_url.'show_'.__FUNCTION__;
         $renderData['staged']=$repo->status_extended();
         $renderData['staged']=array_map(
             function($file){
@@ -232,9 +238,15 @@ class Gitmod extends MX_Controller {
         $repo=$this->git->open(FCPATH);
         $txt=$this->input->post('commitTxt');
         $date=date('H:i:s');
+        if($txt){
         //---commit($message = "", $commit_all = true) 
         $repo->commit($txt,false);
         
         echo "<span class='text-info'>$date <i class='fa fa-thumbs-up'></i> Commited ok!</span>";
+            
+        } else {
+        echo "<span class='text-warning'>$date <i class='fa fa-thumbs-down'></i> Can't commit with empy text</span>";
+            
+        }
     }
 }
