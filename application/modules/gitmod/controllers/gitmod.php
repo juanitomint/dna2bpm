@@ -279,7 +279,7 @@ class Gitmod extends MX_Controller {
         $date=date('H:i:s');
         try{
         $msg=nl2br($repo->push());            
-        echo "<span class='text-info'>$date <i class='fa fa-thumbs-up'></i> $msg</span><hr/>";
+        echo "<span class='text-info'>$date <i class='fa fa-thumbs-up'></i> Push Ok! $msg</span><hr/>";
         } catch(Exception $e){
         echo "<span class='text-danger'>$date <i class='fa fa-thumbs-down'></i>".$e->getMessage()."</span><hr/>";
             
