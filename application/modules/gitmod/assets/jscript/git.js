@@ -4,14 +4,14 @@ $(document).ready(function() {
             'commitTxt': $(this).parent().parent().find('textarea').val()
         };
         url = globals.base_url + 'gitmod/commit';
+        $('#gitModal').modal('hide');
         $.ajax({
             url: url,
             type: 'POST',
             data: data,
             success: function(data) {
-                $('#result').html(data);
+                $('#result').prepend(data);
                 reload_all();
-                $('#gitModal').modal('hide');
             },
             statusCode: {
                 404: function() {
