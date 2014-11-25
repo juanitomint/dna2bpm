@@ -14,8 +14,8 @@ $config['auto_create_groups']=true;
 options for admins:
  */
 // add me to the array of assigned  
-$config['auto_add_admin']=true;
+$config['auto_add_admin']=false;
 // replace the assignement with my id
-$config['auto_assign_admin']=true;
+$config['auto_assign_admin']=false;
 // Choose whether to make thumbnails or not
 $config['make_thumbnails']=true;
