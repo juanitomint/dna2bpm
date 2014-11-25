@@ -3,7 +3,7 @@
     <div class="box-header">
         <h3 class="box-title">{title}</h3>
         <div class="box-tools pull-right">
-             <a class="btn btn-primary btn-sm refresh-btn reload_widget" href="{widget_url}" data-toggle="tooltip" title="Reload"><i class="fa fa-refresh"></i> Reload</a>
+             <a id="gitStatusReload" class="btn btn-primary btn-sm refresh-btn" href="{widget_url}" data-toggle="tooltip" title="Reload repo status"><i class="fa fa-refresh"></i> Reload</a>
             <button data-original-title="Collapse" class="btn btn-default btn-sm" data-widget="collapse" data-toggle="tooltip" title=""><i class="fa fa-minus"></i></button>
             <button data-original-title="Remove" class="btn btn-default btn-sm" data-widget="remove" data-toggle="tooltip" title=""><i class="fa fa-times"></i></button>
         </div>

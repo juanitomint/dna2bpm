@@ -1,3 +1,4 @@
+var git_timeout=null;
 $(document).ready(function() {
     
     $(document).on('click', "#pullBtn",function() {
@@ -12,6 +13,7 @@ $(document).ready(function() {
             success: function(data) {
                 $('#result').prepend(data);
                 $('#myModal').modal('hide');
+                reload_all();
             },
             statusCode: {
                 404: function() {
@@ -21,7 +23,24 @@ $(document).ready(function() {
             }
         });
     });
-
+    
+    $(document).on('click',"#gitStatusReload",function(event) {
+       event.preventDefault();
+       var url = $(this).attr('href');
+            if (url) {
+                //@todo add a loading mask overlay
+                var box = $(item).parents('.box');
+                box.html('<i class="fa fa-2x fa-refresh fa-spin"></i>');
+                $.ajax({
+                    url: url,
+                    context: box,
+                    async: false
+                }).done(function(data) {
+                    $(this).replaceWith(data);
+                    init_sortable();
+                });
+            } 
+    });
     $(document).on('click',"#pushBtn",function() {
         url = globals.base_url + 'gitmod/push';
         $('#myModal').find('.modal-title').html('Push');
@@ -43,6 +62,9 @@ $(document).ready(function() {
         });
     });
 
+    $(document).on('click',"#gitCommit",function() {
+        $('#gitModal').modal('show');
+    });
     $(document).on('click',"#commitBtn",function() {
         data = {
             'commitTxt': $(this).parent().parent().find('textarea').val()
@@ -64,9 +86,10 @@ $(document).ready(function() {
             }
         });
     });
-
+    
     init_sortable();
 
+    
 });
 
 /*

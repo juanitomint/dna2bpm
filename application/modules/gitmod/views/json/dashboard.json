@@ -22,13 +22,6 @@
                
                 ,
                 {
-                    "title": "Commit Button",
-                    "module": "gitmod",
-                    "controller": "gitmod",
-                    "function": "commit_button"
-                }
-                ,
-                {
                     "title": "Status",
                     "module": "gitmod",
                     "controller": "gitmod",

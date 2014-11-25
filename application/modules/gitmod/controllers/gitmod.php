@@ -119,6 +119,9 @@ class Gitmod extends MX_Controller {
                     case 'D'://---removed/deleted
                         $class='danger';
                         break;
+                    case 'MD'://---removed/deleted
+                        $class='danger';
+                        break;
                     case 'R'://---renames
                         $class='warning';
                         break;
@@ -189,10 +192,9 @@ class Gitmod extends MX_Controller {
             },
             $renderData['staged']);
         $renderData['staged']=array_filter($renderData['staged']);
-        $renderData['content']=$this->parser->parse('gitmod/staged', $renderData,true,true);
         
-        $renderData['class'] ='col-md-6';
-        return $this->parser->parse('dashboard/widgets/box_default_solid', $renderData,true,true);
+        // $renderData['class'] ='col-md-6';
+        return $renderData['content']=$this->parser->parse('gitmod/staged', $renderData,true,true);
     }
     public function result(){
         $this->load->library('parser');
