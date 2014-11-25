@@ -5,7 +5,11 @@
 .result {
     /*font-size:.8em;*/
 }
-
 .todo-list {
-    font-size:1em;
+    font-size: 1em;
+}
+.box .chat .item > img {
+    width: 60px;
+    height: 60px;
+    border-radius: 5% !important;
 }
