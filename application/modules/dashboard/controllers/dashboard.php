@@ -329,14 +329,18 @@ class Dashboard extends MX_Controller {
                     $markup = $myWidget['module'] . '/' . $myWidget['controller'] . '/' . $myWidget['function'] . $markup;
 
                 // Si es un array uso el zonekey para identificar el markup
-                
-                if(is_array($markup)){
-                	$mycontent=$markup['content'];
-                	// inlineJS
-                	if(isset($markup['inlineJS']))
-                	$return['inlineJS'].=$markup['inlineJS'];
+                if(isset($markup)){
+                    if(is_array($markup)){
+                    	$mycontent=$markup['content'];
+                    	// inlineJS
+                    	if(isset($markup['inlineJS']))
+                    	$return['inlineJS'].=$markup['inlineJS'];
+                    }else{
+                    	$mycontent=$markup;
+                    }
                 }else{
-                	$mycontent=$markup;
+                    $markup="";
+                    $mycontent="";
                 }
                 
                 
