@@ -38,7 +38,15 @@
                     "module": "gitmod",
                     "controller": "gitmod",
                     "function": "pullpush"
-                },
+                }
+                ,
+                {
+                    "title": "log",
+                    "module": "gitmod",
+                    "controller": "gitmod",
+                    "function": "log"
+                }
+                ,
                 {
                     "title": "result",
                     "module": "gitmod",

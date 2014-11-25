@@ -309,4 +309,28 @@ class Gitmod extends MX_Controller {
         echo "<span class='text-info'>$date <i class='fa fa-thumbs-up'></i> Revert Ok! $msg</span><hr/>";
         }
     }
+    function show_log(){
+        echo $this->log();
+    }
+    function log(){
+        $this->load->library('parser');
+        $repo=$this->git->open($this->repo_path); 
+        $result=$repo->run("log -20 --pretty=format:'%cd}*%h}*%an}*%ae}*%s' --abbrev-commit");
+        $renderData['history'] = array();
+        $output=explode("\n",$result);
+        $fields=array('date','hash','name','email','subject');
+        foreach($output as $line){
+            $values=explode('}*',$line);
+            $entry=array_combine($fields,$values);
+            $gravatar_hash =md5(strtolower(trim($entry['email'])));
+            $img="http://www.gravatar.com/avatar/$gravatar_hash";
+            $entry['gravatar']=$img;
+            $renderData['history'][]=$entry;
+            
+        }
+        $renderData['base_url'] = $this->base_url;
+         $renderData['widget_url'] = $this->module_url.'show_'.__FUNCTION__;
+        // return $this->parser->parse('gitmod/log', $renderData,true,true);
+        return $this->parser->parse('gitmod/log', $renderData,true,true);
+    }
 }

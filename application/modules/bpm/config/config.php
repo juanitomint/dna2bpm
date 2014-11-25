@@ -18,4 +18,4 @@ $config['auto_add_admin']=false;
 // replace the assignement with my id
 $config['auto_assign_admin']=false;
 // Choose whether to make thumbnails or not
-$config['make_thumbnails']=true;
+$config['make_thumbnails']=false;
