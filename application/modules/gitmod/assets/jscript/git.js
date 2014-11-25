@@ -1,5 +1,6 @@
 $(document).ready(function() {
-    $("#pullBtn").click(function() {
+    
+    $(document).on('click', "#pullBtn",function() {
         url = globals.base_url + 'gitmod/pull';
         $('#myModal').find('.modal-title').html('Pull');
         $('#myModal').find('.modal-body').html('<h1><i class="fa fa-refresh fa-spin"></i> Pulling from upstream...</h1>');
@@ -21,7 +22,7 @@ $(document).ready(function() {
         });
     });
 
-    $("#pushBtn").click(function() {
+    $(document).on('click',"#pushBtn",function() {
         url = globals.base_url + 'gitmod/push';
         $('#myModal').find('.modal-title').html('Push');
         $('#myModal').find('.modal-body').html('<h1><i class="fa fa-refresh fa-spin"></i> Pushing to upstream...</h1>');
@@ -42,7 +43,7 @@ $(document).ready(function() {
         });
     });
 
-    $("#commitBtn").click(function() {
+    $(document).on('click',"#commitBtn",function() {
         data = {
             'commitTxt': $(this).parent().parent().find('textarea').val()
         };
