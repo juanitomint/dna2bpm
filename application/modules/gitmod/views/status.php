@@ -21,7 +21,7 @@
                 <span class="text-{class}">[{status}]</span>
                 <span class="text-{class} filename">{filename}</span>
                 <div class="tools">
-                    <a href='#'>
+                    <a href="{filename}" class="gitRevert">
                         <i class="fa fa-reply checkout"></i>
                         Discard
                     </a>
@@ -39,4 +39,3 @@
         {footer}
     </div>
 </div>
-        

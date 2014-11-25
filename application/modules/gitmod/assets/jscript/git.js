@@ -64,11 +64,35 @@ $(document).ready(function() {
     $(document).on('click', "#gitCommit", function() {
         $('#gitModal').modal('show');
     });
+    
     $(document).on('click', "#commitBtn", function() {
         data = {
             'commitTxt': $(this).parent().parent().find('textarea').val()
         };
         url = globals.base_url + 'gitmod/commit';
+        $('#gitModal').modal('hide');
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: data,
+            success: function(data) {
+                $('#result').prepend(data);
+                reload_all();
+            },
+            statusCode: {
+                404: function() {
+                    alert("page not found");
+                }
+            }
+        });
+    });
+    
+    $(document).on('click', ".gitRevert", function(event) {
+        event.preventDefault();
+        data = {
+            'files': [$(this).attr('href')]
+        };
+        url = globals.base_url + 'gitmod/revert';
         $('#gitModal').modal('hide');
         $.ajax({
             url: url,

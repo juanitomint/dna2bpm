@@ -287,4 +287,26 @@ class Gitmod extends MX_Controller {
             
         }
     }
+    
+    function revert(){
+        $files=$this->input->post('files');
+        $repo=$this->git->open($this->repo_path); 
+        $msg=array();
+        $date=date('H:i:s');
+        foreach ($files as $filename){
+            $command="checkout $filename";
+            try {
+            $result=$repo->run($command);
+            $msg[]= "Reverting: $filename<br/>";
+            } catch (Exception $e){
+                $result=$e->getMessage();
+                if(strstr($result,'did not match any file(s) known to git')){
+                    $msg[]= "Deleting: $filename<br/>";
+                    unlink ($filename); 
+                }
+            }
+        $msg='<br/>'.implode('<br/>',$msg);    
+        echo "<span class='text-info'>$date <i class='fa fa-thumbs-up'></i> Revert Ok! $msg</span><hr/>";
+        }
+    }
 }
