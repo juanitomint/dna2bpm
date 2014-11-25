@@ -200,7 +200,7 @@ class Gitmod extends MX_Controller {
         $this->load->library('parser');
         $renderData['title'] = 'Results<div class="box-tools pull-right"><a href="#" id="git-log-clear"><i class="fa fa-ban>"></i></a></div>';
         $renderData['base_url'] = $this->base_url;
-        $renderData['content']='<blockquote id="result" class="result" />';
+        $renderData['content']='<div style="overflow: auto; width: auto; height: 250px;"><blockquote id="result" class="result" /></div>';
         return $this->parser->parse('dashboard/widgets/box_default_solid', $renderData,true,true);
     }
     function pullpush(){
