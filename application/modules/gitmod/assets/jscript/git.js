@@ -1,7 +1,6 @@
-var git_timeout=null;
 $(document).ready(function() {
-    
-    $(document).on('click', "#pullBtn",function() {
+
+    $(document).on('click', "#pullBtn", function() {
         url = globals.base_url + 'gitmod/pull';
         $('#myModal').find('.modal-title').html('Pull');
         $('#myModal').find('.modal-body').html('<h1><i class="fa fa-refresh fa-spin"></i> Pulling from upstream...</h1>');
@@ -23,25 +22,25 @@ $(document).ready(function() {
             }
         });
     });
-    
-    $(document).on('click',"#gitStatusReload",function(event) {
-       event.preventDefault();
-       var url = $(this).attr('href');
-            if (url) {
-                //@todo add a loading mask overlay
-                var box = $(item).parents('.box');
-                box.html('<i class="fa fa-2x fa-refresh fa-spin"></i>');
-                $.ajax({
-                    url: url,
-                    context: box,
-                    async: false
-                }).done(function(data) {
-                    $(this).replaceWith(data);
-                    init_sortable();
-                });
-            } 
+
+    $(document).on('click', "#gitStatusReload", function(event) {
+        event.preventDefault();
+        var url = $(this).attr('href');
+        if (url) {
+            //@todo add a loading mask overlay
+            var box = $(this).parents('.box');
+            box.html('<i class="fa fa-2x fa-refresh fa-spin"></i>');
+            $.ajax({
+                url: url,
+                context: box,
+                async: false
+            }).done(function(data) {
+                $(this).replaceWith(data);
+                init_sortable();
+            });
+        }
     });
-    $(document).on('click',"#pushBtn",function() {
+    $(document).on('click', "#pushBtn", function() {
         url = globals.base_url + 'gitmod/push';
         $('#myModal').find('.modal-title').html('Push');
         $('#myModal').find('.modal-body').html('<h1><i class="fa fa-refresh fa-spin"></i> Pushing to upstream...</h1>');
@@ -62,10 +61,10 @@ $(document).ready(function() {
         });
     });
 
-    $(document).on('click',"#gitCommit",function() {
+    $(document).on('click', "#gitCommit", function() {
         $('#gitModal').modal('show');
     });
-    $(document).on('click',"#commitBtn",function() {
+    $(document).on('click', "#commitBtn", function() {
         data = {
             'commitTxt': $(this).parent().parent().find('textarea').val()
         };
@@ -86,10 +85,10 @@ $(document).ready(function() {
             }
         });
     });
-    
+
     init_sortable();
 
-    
+
 });
 
 /*
