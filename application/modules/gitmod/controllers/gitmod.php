@@ -27,6 +27,7 @@ class Gitmod extends MX_Controller {
         $this->base_url = base_url();
         $this->module_url = base_url() . $this->router->fetch_module() . '/';
         $this->load->library('gitmod/git');
+        $this->idu = (int) $this->session->userdata('iduser');
         $this->stageInculde=array('A ','D ','R','M ');
         $this->repo_path=FCPATH;
         //---Output Profiler
@@ -252,9 +253,11 @@ class Gitmod extends MX_Controller {
         $repo=$this->git->open($this->repo_path);
         $txt=$this->input->post('commitTxt');
         $date=date('H:i:s');
+        $user=$this->user->get_user_safe($this->idu);
+        $author=$user->name.' '.$user->lastname.' <'.$user->email.'>';
         if($txt){
         //---commit($message = "", $commit_all = true) 
-        $repo->commit($txt,false);
+        $repo->commit($txt,false,$author);
         
         echo "<span class='text-info'>$date <i class='fa fa-thumbs-up'></i> Commited ok!</span><hr/>";
             
