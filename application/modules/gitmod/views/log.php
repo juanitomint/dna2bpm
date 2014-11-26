@@ -15,10 +15,13 @@
                             <small class="text-muted pull-right"><i class="fa fa-clock-o"></i> {date}</small> {name}
                         </a>
                         {subject}
+                        <br/>
+                        {files}
                     </p>
-
                 </div>
+                <hr/>
                 {/history}
+                
             </div>
         </div>
         <!-- /.chat -->

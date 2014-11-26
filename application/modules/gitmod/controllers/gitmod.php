@@ -326,8 +326,11 @@ class Gitmod extends MX_Controller {
             $gravatar_hash =md5(strtolower(trim($entry['email'])));
             $img="https://www.gravatar.com/avatar/$gravatar_hash";
             $entry['gravatar']=$img;
-            $renderData['history'][]=$entry;
+            $files=$repo->run('show --pretty="format:" --name-only '.$entry['hash']);
+            // $entry['files']=explode("\n",$files);
+            $entry['files']=nl2br($files);
             
+            $renderData['history'][]=$entry;
         }
         $renderData['base_url'] = $this->base_url;
          $renderData['widget_url'] = $this->module_url.'show_'.__FUNCTION__;
