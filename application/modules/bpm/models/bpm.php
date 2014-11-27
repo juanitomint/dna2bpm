@@ -140,9 +140,7 @@ class Bpm extends CI_Model {
         //var_dump2($mywf);
         unset($mywf['_id']);
         $wf = $this->db->where($query)->update('workflow', $mywf, array('upsert' => true));
-        if ($this->config->item('make_thumbnails')) {
-            $this->save_image_file($idwf, $svg);
-        }
+        $this->save_image_file($idwf, $svg);
         $this->save_mode_file($idwf, $data);
         $this->zip_model($idwf, $data);
 
@@ -312,23 +310,26 @@ class Bpm extends CI_Model {
         $filename_thumb_small = $path_thumb . $idwf . '-small.png';
 
         $result = write_file($filename, $svg);
+        
         $rtn = '';
-        $command = "$phantom_path/bin/phantomjs $phantom_path/rasterize.js $filename $filename_thumb";
-        exec($command, $cmd, $rtn);
-        if ($debug) {
-            echo "$command\n rt:$rtn\n";
-        }
-        $command = "$phantom_path/bin/phantomjs $phantom_path/crop.js $filename $filename_crop";
-        exec($command, $cmd, $rtn);
-
-        if ($debug) {
-            echo "$command\n rt:$rtn\n";
-        }
-        $command = "$phantom_path/bin/phantomjs $phantom_path/zoom.js $filename_crop $filename_thumb_small .5";
-        exec($command, $cmd, $rtn);
-        if ($debug) {
-            echo getcwd() . "\n";
-            echo "$command\n rt:$rtn\n";
+        if ($this->config->item('make_thumbnails')) {
+            $command = "$phantom_path/bin/phantomjs $phantom_path/rasterize.js $filename $filename_thumb";
+            exec($command, $cmd, $rtn);
+            if ($debug) {
+                echo "$command\n rt:$rtn\n";
+            }
+            $command = "$phantom_path/bin/phantomjs $phantom_path/crop.js $filename $filename_crop";
+            exec($command, $cmd, $rtn);
+    
+            if ($debug) {
+                echo "$command\n rt:$rtn\n";
+            }
+            $command = "$phantom_path/bin/phantomjs $phantom_path/zoom.js $filename_crop $filename_thumb_small .5";
+            exec($command, $cmd, $rtn);
+            if ($debug) {
+                echo getcwd() . "\n";
+                echo "$command\n rt:$rtn\n";
+            }
         }
         return $result;
     }
