@@ -81,8 +81,8 @@ class Gitmod extends MX_Controller {
         $data['title']='Branch:<br/>'.$this->getBranchName().'<br>E:'.ENVIRONMENT;
         //$data['number']='Branch';
         $data['icon']='ion-usb';
-        $data['more_info_link']=$this->base_url.'git/viewlog';
-        $data['more_info_text']='view log';
+        $data['more_info_link']=$this->module_url;
+        $data['more_info_text']='Simple GIT';
         echo $this->parser->parse('dashboard/tiles/tile-orange', $data, true, true);
         
     }
@@ -270,23 +270,32 @@ class Gitmod extends MX_Controller {
     function pull(){
         $repo=$this->git->open($this->repo_path);
         $date=date('H:i:s');
+        $out['date']=$date;
         try{
-        $msg=nl2br($repo->pull());            
-        echo "<span class='text-info'>$date <i class='fa fa-thumbs-up'></i> $msg</span><hr/>";
+        $msg=nl2br($repo->pull());
+        $out['msg']=$msg;
+        $out['status']= "<span class='text-info'>$date <i class='fa fa-thumbs-up'></i> $msg</span><hr/>";
+        $out['ok']=true;
+            
         } catch(Exception $e){
-        echo "<span class='text-danger'>$date <i class='fa fa-thumbs-down'></i>".$e->getMessage()."</span><hr/>";
+        $out['status']="<span class='text-danger'>$date <i class='fa fa-thumbs-down'></i>".$e->getMessage()."</span><hr/>";
+        $out['ok']=false;
             
         }
+        header('Content-type: application/json;charset=UTF-8');
+        echo json_encode($out);
     }
     
     function push(){
         $repo=$this->git->open($this->repo_path);
         $date=date('H:i:s');
+        $out['date']=$date;
         try{
-        $msg=nl2br($repo->push());            
-        echo "<span class='text-info'>$date <i class='fa fa-thumbs-up'></i> Push Ok! $msg</span><hr/>";
+        $msg=nl2br($repo->push());
+        $out['msg']=$msg;
+        $out['status']="<span class='text-info'>$date <i class='fa fa-thumbs-up'></i> Push Ok! $msg</span><hr/>";
         } catch(Exception $e){
-        echo "<span class='text-danger'>$date <i class='fa fa-thumbs-down'></i>".$e->getMessage()."</span><hr/>";
+        $out['status']="<span class='text-danger'>$date <i class='fa fa-thumbs-down'></i>".$e->getMessage()."</span><hr/>";
             
         }
     }

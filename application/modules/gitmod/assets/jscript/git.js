@@ -10,7 +10,7 @@ $(document).ready(function() {
             url: url,
             type: 'POST',
             success: function(data) {
-                $('#result').prepend(data);
+                $('#result').prepend(data.status);
                 $('#myModal').modal('hide');
                 reload_all();
             },
@@ -49,7 +49,7 @@ $(document).ready(function() {
             url: url,
             type: 'POST',
             success: function(data) {
-                $('#result').prepend(data);
+                $('#result').prepend(data.status);
                 $('#myModal').modal('hide');
             },
             statusCode: {
