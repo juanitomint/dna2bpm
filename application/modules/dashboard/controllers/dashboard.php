@@ -157,7 +157,7 @@ class Dashboard extends MX_Controller {
 
     // ==== Dashboard
 
-    function Dashboard($json = 'dashboard/json/dashboard.json',$extraData=null, $debug = false) {
+    function Dashboard($json = 'dashboard/json/dashboard.json',$debug = false,$extraData=null) {
         /* eval Group hooks first */
         $this->session->set_userdata('json', $json);
         $user = $this->user->get_user((int) $this->idu);
