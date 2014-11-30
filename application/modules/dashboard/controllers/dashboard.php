@@ -267,7 +267,30 @@ class Dashboard extends MX_Controller {
         $return['js']=array();
         $return['css']=array();
         $return['inlineJS']="";
-        
+        // CSS 
+ 		if(isset($myconfig['css'])){
+ 			foreach($myconfig['css'] as $item){
+ 				foreach($item as $k=>$v){
+ 					if(is_numeric($k))
+ 						$return['css'][]=$v;
+ 					else{
+ 						$return['css'][$k]=$v;
+ 					}
+ 				}
+ 			}
+ 		}
+    	// JS 
+ 		if(isset($myconfig['js'])){
+ 			foreach($myconfig['js'] as $item){
+ 				foreach($item as $k=>$v){
+ 					if(is_numeric($k))
+ 						$return['js'][]=$v;
+ 					else{
+ 						$return['js'][$k]=$v;
+ 					}
+ 				}
+ 			}		
+ 		}
         //Zones
         foreach ($myconfig['zones'] as $zones) {
             $content = "";
@@ -285,7 +308,6 @@ class Dashboard extends MX_Controller {
                 if (isset($item["span"]))
                     $empty_spans++;
             }
-
             //$content.="<div class='row zone_$myzone_key  '>";
             $Qspan = 0;
 
@@ -386,7 +408,6 @@ class Dashboard extends MX_Controller {
 
             $return[$myzone_key] = $content;
         }
-
         return $return;
     }
 
