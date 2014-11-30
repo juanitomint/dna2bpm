@@ -298,6 +298,8 @@ class Gitmod extends MX_Controller {
         $out['status']="<span class='text-danger'>$date <i class='fa fa-thumbs-down'></i>".$e->getMessage()."</span><hr/>";
             
         }
+        header('Content-type: application/json;charset=UTF-8');
+        echo json_encode($out);
     }
     
     function revert(){
