@@ -3,7 +3,7 @@ $(document).ready(function() {
     $(document).on('click', "#pullBtn", function() {
         url = globals.base_url + 'gitmod/pull';
         $('#myModal').find('.modal-title').html('Pull');
-        $('#myModal').find('.modal-body').html('<h1><i class="fa fa-refresh fa-spin"></i> Pulling from upstream...</h1>');
+        $('#myModal').find('.modal-body').html('<h1><i class="fa fa-circle-o-notch fa-spin"></i> Pulling from upstream...</h1>');
         $('#myModal').modal('show');
 
         $.ajax({
@@ -43,7 +43,7 @@ $(document).ready(function() {
     $(document).on('click', "#pushBtn", function() {
         url = globals.base_url + 'gitmod/push';
         $('#myModal').find('.modal-title').html('Push');
-        $('#myModal').find('.modal-body').html('<h1><i class="fa fa-refresh fa-spin"></i> Pushing to upstream...</h1>');
+        $('#myModal').find('.modal-body').html('<h1><i class="fa fa-circle-o-notch fa-spin"></i> Pushing to upstream...</h1>');
         $('#myModal').modal('show');
         $.ajax({
             url: url,
@@ -182,9 +182,9 @@ function init_sortable() {
     */
 
 function reload_all() {
-    $('#myModal').find('.modal-title').html('Reload All');
-    $('#myModal').find('.modal-body').html('<h1><i class="fa fa-refresh fa-spin"></i> Refreshing...</h1>');
-    $('#myModal').modal('show');
+    // $('#myModal').find('.modal-title').html('Reload All');
+    // $('#myModal').find('.modal-body').html('<h1><i class="fa fa-circle-o-notch fa-spin"></i> Refreshing...</h1>');
+    // $('#myModal').modal('show');
     $(".widget_url").each(
 
         function(index, item) {
@@ -206,5 +206,5 @@ function reload_all() {
     /  Enabled sortable again
     */
     init_sortable();
-    $('#myModal').modal('hide');
+    // $('#myModal').modal('hide');
 }
