@@ -64,7 +64,7 @@ $(document).ready(function() {
     $(document).on('click', "#gitCommit", function() {
         $('#gitModal').modal('show');
     });
-    
+
     $(document).on('click', "#commitBtn", function() {
         data = {
             'commitTxt': $(this).parent().parent().find('textarea').val()
@@ -86,7 +86,7 @@ $(document).ready(function() {
             }
         });
     });
-    
+
     $(document).on('click', ".gitRevert", function(event) {
         event.preventDefault();
         data = {
@@ -182,6 +182,9 @@ function init_sortable() {
     */
 
 function reload_all() {
+    $('#myModal').find('.modal-title').html('Reload All');
+    $('#myModal').find('.modal-body').html('<h1><i class="fa fa-refresh fa-spin"></i> Refreshing...</h1>');
+    $('#myModal').modal('show');
     $(".widget_url").each(
 
         function(index, item) {
@@ -203,4 +206,5 @@ function reload_all() {
     /  Enabled sortable again
     */
     init_sortable();
+    $('#myModal').modal('hide');
 }
