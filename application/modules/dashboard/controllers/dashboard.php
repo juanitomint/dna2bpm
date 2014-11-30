@@ -310,7 +310,7 @@ class Dashboard extends MX_Controller {
             }
             //$content.="<div class='row zone_$myzone_key  '>";
             $Qspan = 0;
-
+            $markup='';
             foreach ($widgets as $k => $myWidget) {
 
                 // Span handle
