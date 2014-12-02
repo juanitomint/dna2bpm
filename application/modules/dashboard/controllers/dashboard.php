@@ -100,6 +100,7 @@ class Dashboard extends MX_Controller {
 
     function Index() {
         $dashboard = ($this->session->userdata('json')) ? $this->session->userdata('json'):null;
+         $this->hooks_group();
         if ($this->user->isAdmin()) {
             $dashboard = 'dashboard/json/admin.json';
         }
@@ -161,7 +162,6 @@ class Dashboard extends MX_Controller {
         /* eval Group hooks first */
         $this->session->set_userdata('json', $json);
         $user = $this->user->get_user((int) $this->idu);
-        $this->hooks_group($user);
         $myconfig = $this->parse_config($json, $debug);
 
         $layout = ($myconfig['view'] <> '') ? $myconfig['view'] : 'layout';
