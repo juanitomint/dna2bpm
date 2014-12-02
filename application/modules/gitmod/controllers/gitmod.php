@@ -22,7 +22,6 @@ class Gitmod extends MX_Controller {
     function __construct() {
         parent::__construct();
 
-        $this->user->authorize();
         //---base variables
         $this->base_url = base_url();
         $this->module_url = base_url() . $this->router->fetch_module() . '/';
@@ -34,12 +33,15 @@ class Gitmod extends MX_Controller {
         //$this->output->enable_profiler(TRUE);
     }
     function Index(){
+        $this->user->authorize();
         $this->git_dashboard();
     }
     function git_dashboard(){
+        $this->user->authorize();
         Modules::run('dashboard/dashboard', 'gitmod/json/dashboard.json');
     }
     function update() {
+        $this->user->authorize();
         echo "<h1>Update from GIT server V1.15.log</h1>";
 
 //----log to file
@@ -72,11 +74,13 @@ class Gitmod extends MX_Controller {
     }
 
     function viewlog() {
+        $this->user->authorize();
         $log = $página_inicio = file_get_contents('update-git.log');
         echo nl2br($log);
     }
 
     function tile() {
+        $this->user->authorize();
         $this->load->library('parser');
         $data['title']='Branch:<br/>'.$this->getBranchName().'<br>E:'.ENVIRONMENT;
         //$data['number']='Branch';
@@ -146,6 +150,7 @@ class Gitmod extends MX_Controller {
         return $class;
     }
     public function status(){
+        $this->user->authorize();
         $this->load->library('parser');
         $repo=$this->git->open($this->repo_path);
         $renderData['title'] ='Status';
@@ -176,6 +181,7 @@ class Gitmod extends MX_Controller {
         echo $this->status();
     }
     public function staged(){
+        $this->user->authorize();
         $this->load->library('parser');
         $repo=$this->git->open($this->repo_path);
         $renderData['title'] = "Staged [".$repo->active_branch()."]";
@@ -198,6 +204,7 @@ class Gitmod extends MX_Controller {
         return $renderData['content']=$this->parser->parse('gitmod/staged', $renderData,true,true);
     }
     public function result(){
+        $this->user->authorize();
         $this->load->library('parser');
         $renderData['title'] = 'Results<div class="box-tools pull-right"><a href="#" id="git-log-clear"><i class="fa fa-ban>"></i></a></div>';
         $renderData['base_url'] = $this->base_url;
@@ -205,19 +212,23 @@ class Gitmod extends MX_Controller {
         return $this->parser->parse('dashboard/widgets/box_default_solid', $renderData,true,true);
     }
     function pullpush(){
+        $this->user->authorize();
         $renderData['base_url'] = $this->base_url;
         return $this->parser->parse('gitmod/pullpush', $renderData,true,true);;
     }
     
     function modal(){
+        $this->user->authorize();
         return $this->load->view('gitmod/modal');
     }
     
     function commit_button(){
+        $this->user->authorize();
         return $this->load->view('gitmod/commit_button');
     }
     
     function stage(){
+        $this->user->authorize();
         $repo=$this->git->open($this->repo_path);
         $files=$this->input->post('files');
         $date=date('H:i:s');
@@ -234,6 +245,7 @@ class Gitmod extends MX_Controller {
     }
     
     function unstage(){
+        $this->user->authorize();
         $repo=$this->git->open($this->repo_path);
         $files=$this->input->post('files');
         $date=date('H:i:s');
@@ -250,6 +262,7 @@ class Gitmod extends MX_Controller {
         
     }
     function commit(){
+        $this->user->authorize();
         $repo=$this->git->open($this->repo_path);
         $txt=$this->input->post('commitTxt');
         $date=date('H:i:s');
@@ -268,6 +281,7 @@ class Gitmod extends MX_Controller {
     }
     
     function pull(){
+        $this->user->authorize();
         $repo=$this->git->open($this->repo_path);
         $date=date('H:i:s');
         $out['date']=$date;
@@ -287,6 +301,7 @@ class Gitmod extends MX_Controller {
     }
     
     function push(){
+        $this->user->authorize();
         $repo=$this->git->open($this->repo_path);
         $date=date('H:i:s');
         $out['date']=$date;
@@ -303,6 +318,7 @@ class Gitmod extends MX_Controller {
     }
     
     function revert(){
+        $this->user->authorize();
         $files=$this->input->post('files');
         $repo=$this->git->open($this->repo_path); 
         $msg=array();
@@ -327,6 +343,7 @@ class Gitmod extends MX_Controller {
         echo $this->log($n);
     }
     function log($n=null){
+        $this->user->authorize();
         $this->load->library('parser');
         $repo=$this->git->open($this->repo_path); 
         $long=($n)?$n:20;
