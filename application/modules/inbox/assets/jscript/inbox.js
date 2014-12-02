@@ -228,11 +228,8 @@ $(document).on("submit","[name='form_search']",function(e){
 
 //====== Reload : update the count in folders and the content of msgs
 function reload(url,target,whereiam){
-	
 	update_counters();
-	
 	$.post( url, function( data ) {
-
 		$(target).html(data);
 
 		//==== icheck
@@ -250,10 +247,8 @@ function reload(url,target,whereiam){
 	        $("input[type='checkbox']", ".table-mailbox").iCheck("check");
 	    });
 	    //====
-	    //var folder=$('#whereiam').val();
 	    $('.nav-stacked li').removeClass('active');
-	    var folder=url.match(/print_folder\/(.+)/i);
-	    $('#bt_'+folder[1]).addClass('active');
+
 	});
 }
 
