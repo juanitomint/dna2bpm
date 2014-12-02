@@ -58,7 +58,7 @@ class Msg extends CI_Model {
     
     // ===== Get MSGs using a filter
     function get_msgs_by_filter($filter = array()) {
-    	return $this->mongo->db->msg->find($filter);
+    	return $this->mongo->db->msg->find((array)$filter);
     }
 
     function count_msgs($iduser, $folder='inbox') {
