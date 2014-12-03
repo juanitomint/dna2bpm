@@ -267,9 +267,10 @@ class Gitmod extends MX_Controller {
         $txt=$this->input->post('commitTxt');
         $date=date('H:i:s');
         $user=$this->user->get_user_safe($this->idu);
-        $author=$user->name.' '.$user->lastname.' <'.$user->email.'>';
+        $author=null;
         //---skip author if user is admin
-        $author=($user->nick=='admin') ? null:$author;
+        if($user->nick<>'admin')
+            $author=$user->name.' '.$user->lastname.' <'.$user->email.'>';
         if($txt){
         //---commit($message = "", $commit_all = true) 
         $repo->commit($txt,false,$author);
