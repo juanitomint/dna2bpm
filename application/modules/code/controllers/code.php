@@ -37,19 +37,30 @@ class Code extends MX_Controller {
         Modules::run('dashboard/dashboard', 'code/json/dashboard.json');
     }
     
-    function code_block($code,$theme='monokai', $lang='php',$rows=16){
+    function code_block($code, $lang='php',$theme='monokai',$rows=16){
         return '<textarea rows="'.$rows.'" class="code_block" theme="'.$theme.'" lang="'.$lang.'">'.$code.'</textarea>';
         
     }
     
     function demo($filetype){
-    $this->load->helper('file');
-    $this->load->module('dashboard');
-    $filename=FCPATH . APPPATH . "modules/code/views/$filetype.php";
-    $code=read_file($filename);
-    $data['content']=$this->code_block($code);
-    $data['title']="Demo: ".$filetype;
-    $template="dashboard/widgets/box_info_solid";
-    echo $this->dashboard->widget($template, $data);
+        $this->load->helper('file');
+        $this->load->module('dashboard');
+        $filename=FCPATH . APPPATH . "modules/code/views/$filetype.php";
+        $code=read_file($filename);
+        $data['content']=$this->code_block($code,$filetype);
+        $data['title']="Demo: ".$filetype;
+        $template="dashboard/widgets/box_info_solid";
+        echo $this->dashboard->widget($template, $data);
     }
+    function file($file,$lang,$theme='monokai'){
+        $this->load->helper('file');
+        $this->load->module('dashboard');
+        $filename=FCPATH . APPPATH . $file;
+        $code=read_file($filename);
+        $data['content']=$this->code_block($code,$lang,$theme);
+        $data['title']="File: ".$filename;
+        $template="dashboard/widgets/box_info_solid";
+        echo $this->dashboard->widget($template, $data);
+    }
+    
 }
