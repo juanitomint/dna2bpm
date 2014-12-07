@@ -294,6 +294,19 @@ class Engine extends MX_Controller {
             if ($resourceId) {
                 $shape = $this->bpm->get_shape($resourceId, $wf);
                 if ($shape) {
+                    //---save postdata in case
+                    if(property_exists($shape->properties->datainputset, 'items')){
+                        $thisCase=$this->bpm->get_case($case);
+                        $thisCase['data']['datainputset']=(isset($thisCase['data']['datainputset']))?(array)$thisCase['data']['datainputset']:array();
+                        if(count($_POST)){
+                            foreach ($shape->properties->datainputset->items as $item) {
+                                if(isset($_POST[$item->name]))
+                                    $thisCase['data']['datainputset'][$item->name]=$_POST[$item->name];
+                            }
+                            $this->bpm->save_case($thisCase);
+                        }
+                    }
+                    //---MOVENEXT
                     $this->bpm->movenext($shape, $wf);
                 } else {
                     show_error("The shape $resourceId doesn't exists anymore");
@@ -442,6 +455,19 @@ class Engine extends MX_Controller {
                 }
             }
         }
+        //  var_dump($shape->properties->datainputset);
+        //----prepare manual input
+        if(property_exists($shape->properties->datainputset, 'items')){
+            foreach ($shape->properties->datainputset->items as $item){
+                if(!strstr('.',$item->name) and $item->whileexecuting=='true'){
+                  $renderData['DataInputSet'][]=array(
+                      'name'=>$item->name,
+                      'required'=>($item->optional=='true')?'required':'',
+                      );  
+                }
+            }
+        }
+        // var_dump($renderData['DataInputSet']);
 // 		exit;
         $renderData ['task_documentation'] = $shape->properties->documentation;
         

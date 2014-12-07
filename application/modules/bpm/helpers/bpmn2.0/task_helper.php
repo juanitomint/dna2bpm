@@ -97,11 +97,13 @@ function run_Task($shape, $wf, $CI) {
     }
     if ($data_in) {
         foreach ($data_in as $item) {
-            list($ds_source, $ds_item) = explode('.', $item->name);
-            if ($debug)
-                var_dump2('Data In', $item);
-            $datain = $DS->$ds_source;
-            $data[$ds_source][$ds_item] = $datain[$ds_item];
+            if(strstr('.',$item->name)){
+                list($ds_source, $ds_item) = explode('.', $item->name);
+                if ($debug)
+                    var_dump2('Data In', $item);
+                $datain = $DS->$ds_source;
+                $data[$ds_source][$ds_item] = $datain[$ds_item];
+            }
         }
 
         if ($debug) {
