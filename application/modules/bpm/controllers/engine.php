@@ -424,6 +424,8 @@ class Engine extends MX_Controller {
         $wf = bindArrayToObject($mywf ['data']);
         // ---get case
         $case = $this->bpm->get_case($idcase, $idwf);
+        //---set inititaror
+        $renderData['Initiator']=(array)$this->user->get_user_safe($case['iduser']);
         // ---get token
         $token = $this->bpm->get_token($idwf, $idcase, $resourceId);
         
@@ -527,6 +529,11 @@ class Engine extends MX_Controller {
         $wf = bindArrayToObject($mywf ['data']);
         // ---load data 4 templating
         $this->load_data($wf, $idcase);
+        // ---get case
+        $case = $this->bpm->get_case($idcase, $idwf);
+        //---set inititaror
+        $renderData['Initiator']=(array)$this->user->get_user_safe($case['iduser']);
+        
         $i = 1;
 
         if ($resourceId) {
