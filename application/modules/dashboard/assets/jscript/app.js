@@ -204,5 +204,27 @@ $(document).ready(function() {
     	window.print();
     });
     
+    /* =====================================================================================
+     * 
+     *  anchors with .ajax will be loaded in data-target or replace anchor if not presnet
+     *  
+     */
+    
+    $(document).on('click', ".ajax", function(e) {
+        e.preventDefault();
+        var me=$(this);
+        if($(this).attr('data-target')){
+            var target='#'+$(this).attr('data-target');
+            var url=$(this).attr('href');
+            $( target ).load( url );
+        }else{
+            var url=$(this).attr('href');
+            $.post(url,function(data){
+                me.parent().html(data);
+            });
+        }
+
+    });
+    
 
 });
