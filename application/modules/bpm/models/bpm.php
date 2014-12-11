@@ -1243,8 +1243,8 @@ class Bpm extends CI_Model {
         return $start_shapes;
     }
 
-    function update_history($idcase, $data) {
-        $query = array('id' => $idcase);
+    function update_history($idwf,$idcase, $data) {
+        $query = array('id' => $idcase,'idwf'=>$idwf);
         $options = array('w' => true, 'justOne' => true);
         $action = array(
             '$push' => array(
@@ -1315,7 +1315,7 @@ class Bpm extends CI_Model {
             'status' => $token['status'],
             'name' => (isset($shape_src->properties->name)) ? $shape_src->properties->name : ''
         );
-        $this->update_history($wf->case, $history);
+        $this->update_history($wf->idwf,$wf->case, $history);
         //---remove lock
         $token['lockedBy'] = null;
         $token['lockedDate'] = null;

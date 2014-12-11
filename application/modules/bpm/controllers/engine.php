@@ -361,7 +361,7 @@ class Engine extends MX_Controller {
                         'status' => $token ['status'],
                         'name' => (isset($shape->properties->name)) ? $shape->properties->name : ''
                     );
-                    $this->bpm->update_history($wf->case, $history);
+                    $this->bpm->update_history($wf->idwf,$wf->case, $history);
                     $shape_flow = $this->bpm->get_shape($flowId, $wf);
                     // run_SequenceFlow(_flow, $wf);
                     $this->bpm->movenext($shape_flow, $wf);
