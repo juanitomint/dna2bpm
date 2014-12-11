@@ -240,6 +240,11 @@ class Case_manager extends MX_Controller {
                 switch ($action) {
                     case 'history':
                         $tokens = array_slice($case['history'], 0, 100);
+                        $status = array('$in'=>array('user','waiting'));
+                        $status_tokens = $this->bpm->get_tokens($idwf, $idcase,$status);
+                        $tokens=array_merge($tokens,$status_tokens);
+                        //---merge status with history
+                        
                         break;
                     case 'status':
                         // select all tokens
@@ -259,6 +264,7 @@ class Case_manager extends MX_Controller {
                 $user = $this->user->get_user($token['iduser']);
                 $token['user'] = $user->nick;
                 //----set date
+                if(isset($token['name'])) $token['title']=$token['name'];
                 $token['date'] = isset($token['checkdate']) ? date($this->lang->line('dateFmt'), strtotime($token['checkdate'])) : '???';
                 $token['icon'] = "<img src='" . $this->base_url . $this->bpm->get_icon($token['type']) . "' />";
                 $out['rows'][] = $token;
