@@ -1516,13 +1516,13 @@ class Bpm extends CI_Model {
           if ($debug)
           echo '<H3>Auto-Assign Runner have no parent "LANE"</H3>';
           //----Assign the the shape to the runner
-          $data['assign'][] = $this->idu;
-          } */
-
+          $data['assign'][] = $this->user->Initiator;
+          } 
+        */
         /*
          * EVAL SHAPE RESOURCES
          */
-        //---now get spacific task assignements and added (if no parent lanes runner will be in assign group
+        //---now get specific task assignements and added (if no parent lanes runner has to be in assign group
         if (isset($shape->properties->resources->items)) {
             //---merge assignment with specific data.
             $resources = $this->get_resources($shape, $wf);
@@ -1562,13 +1562,15 @@ class Bpm extends CI_Model {
         $data = array_filter($data);
 
         //---if assignment not set either by group or explicit assignment then assign task to "Initiator"
-        if (isset($data['assign']) && !count($data['assign'])) {
-            if (count($data['idgroup'])) {
-                $initiator = $this->user->get_user($this->user->Initiator);
-                if (array_intersect($data['idgroup'], $initiator->group)) {
-                    $data['assign'][] = $this->user->Initiator;
-                    if ($debug)
-                        echo '<H3>Assign Initiator as him belongs to lane group</H3>';
+        if (!isset($data['assign']) or !count($data['assign'])) {
+            if (isset($data['idgroup'])){
+                if(count($data['idgroup'])) {
+                    $initiator = $this->user->get_user($this->user->Initiator);
+                    if (array_intersect($data['idgroup'], $initiator->group)) {
+                        $data['assign'][] = $this->user->Initiator;
+                        if ($debug)
+                            echo '<H3>Assign Initiator as him belongs to lane group</H3>';
+                    }
                 }
             } else {
                 $data['assign'][] = $this->user->Initiator;
