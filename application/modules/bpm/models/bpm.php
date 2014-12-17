@@ -131,7 +131,7 @@ class Bpm extends CI_Model {
         //@todo make a backup before overwrite
         //---update modification date
         unset($mywf['_id']);
-        $data->properties->modificationdate = date('Y-m-d') . 'T'.date('H:i:s');
+        $data->properties->modificationdate = date('Y-m-d') . 'T00:00:00';
         $mywf['idwf'] = $idwf;
         $mywf['data'] = (isset($data)) ? $data : $mywf['data'];
         $mywf['svg'] = (isset($svg)) ? $svg : $mywf['svg'];
