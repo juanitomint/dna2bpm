@@ -209,7 +209,7 @@ if (is_dir($application_folder)) {
  */
 $custom_conf_dir=FCPATH.APPPATH.'config/'.ENVIRONMENT;
 if(!is_dir($custom_conf_dir)){
-    mkdir($custom_conf_dir);
+    @mkdir($custom_conf_dir);
 }
 /*
  * --------------------------------------------------------------------
