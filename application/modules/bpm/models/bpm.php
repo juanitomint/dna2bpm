@@ -133,7 +133,7 @@ class Bpm extends CI_Model {
         $wf_back=$mywf;
         //----if set make a zip backup of actual model
         if($this->config->item('make_model_backup')){
-            copy("images/zip/$idwf.zip","images/zip/$idwf-".date('Y-m-d-H-i-s').".zip");
+            copy("images/zip/$idwf.zip","images/zip/$idwf-BACKUP-".date('Y-m-d-H-i-s').".zip");
         }
         $data->properties->modificationdate = date('Y-m-d') . 'T00:00:00';
         $mywf['idwf'] = $idwf;
