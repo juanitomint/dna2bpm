@@ -130,7 +130,8 @@ class Bpm extends CI_Model {
         //*
         //@todo make a backup before overwrite
         //---update modification date
-        $data->properties->modificationdate = date('Y-m-d') . 'T00:00:00';
+        unset($mywf['_id']);
+        $data->properties->modificationdate = date('Y-m-d') . 'T'.date('H:i:s');
         $mywf['idwf'] = $idwf;
         $mywf['data'] = (isset($data)) ? $data : $mywf['data'];
         $mywf['svg'] = (isset($svg)) ? $svg : $mywf['svg'];
@@ -138,7 +139,6 @@ class Bpm extends CI_Model {
         array_filter($mywf);
         //--only save if 
         //var_dump2($mywf);
-        unset($mywf['_id']);
         $wf = $this->db->where($query)->update('workflow', $mywf, array('upsert' => true));
         $this->save_image_file($idwf, $svg);
         $this->save_mode_file($idwf, $data);
