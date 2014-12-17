@@ -19,3 +19,5 @@ $config['auto_add_admin']=false;
 $config['auto_assign_admin']=false;
 // Choose whether to make thumbnails or not
 $config['make_thumbnails']=false;
+// Choose whether to make backups or not
+$config['make_model_backup']=true;

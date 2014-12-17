@@ -124,13 +124,17 @@ class Bpm extends CI_Model {
     }
 
     function save($idwf, $data, $svg) {
-
         $query = array('idwf' => $idwf);
         $mywf = $this->load($idwf);
         //*
         //@todo make a backup before overwrite
         //---update modification date
         unset($mywf['_id']);
+        $wf_back=$mywf;
+        //----if set make a zip backup of actual model
+        if($this->config->item('make_model_backup')){
+            copy("images/zip/$idwf.zip","images/zip/$idwf-".date('Y-m-d-H-i-s').".zip");
+        }
         $data->properties->modificationdate = date('Y-m-d') . 'T00:00:00';
         $mywf['idwf'] = $idwf;
         $mywf['data'] = (isset($data)) ? $data : $mywf['data'];
@@ -143,7 +147,6 @@ class Bpm extends CI_Model {
         $this->save_image_file($idwf, $svg);
         $this->save_mode_file($idwf, $data);
         $this->zip_model($idwf, $data);
-
         return json_encode($wf);
     }
 
@@ -352,8 +355,8 @@ class Bpm extends CI_Model {
         $zip->addFile($filename_thumb_small);
         $zip->close();
     }
-
-    function delete($idwf) {
+    
+function delete($idwf) {
         $options = array('w' => true, 'justOne' => true);
         $criteria = array('idwf' => $idwf);
         //var_dump2($options,$criteria);
