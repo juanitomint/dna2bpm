@@ -233,6 +233,7 @@ function run_Task($shape, $wf, $CI) {
 
             $msg['idwf'] = $wf->idwf;
             $msg['case'] = $wf->case;
+            $msg['resourceId'] = $resourceId;
             if ($shape->properties->properties <> '') {
                 foreach ($shape->properties->properties->items as $property) {
                     $msg[$property->name] = $property->datastate;
