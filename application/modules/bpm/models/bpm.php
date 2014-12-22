@@ -130,10 +130,10 @@ class Bpm extends CI_Model {
         //@todo make a backup before overwrite
         //---update modification date
         unset($mywf['_id']);
-        $wf_back=$mywf;
+        $wf_back = $mywf;
         //----if set make a zip backup of actual model
-        if($this->config->item('make_model_backup') && is_file("images/zip/$idwf.zip")){
-            copy("images/zip/$idwf.zip","images/zip/$idwf-BACKUP-".date('Y-m-d-H-i-s').".zip");
+        if ($this->config->item('make_model_backup') && is_file("images/zip/$idwf.zip")) {
+            copy("images/zip/$idwf.zip", "images/zip/$idwf-BACKUP-" . date('Y-m-d-H-i-s') . ".zip");
         }
         $data->properties->modificationdate = date('Y-m-d') . 'T00:00:00';
         $mywf['idwf'] = $idwf;
@@ -145,7 +145,7 @@ class Bpm extends CI_Model {
         //var_dump2($mywf);
         $wf = $this->db->where($query)->update('workflow', $mywf, array('upsert' => true));
         $this->save_image_file($idwf, $svg);
-        $this->save_mode_file($idwf, $data);
+        $this->save_model_file($idwf, $data);
         $this->zip_model($idwf, $data);
         return json_encode($wf);
     }
@@ -288,7 +288,7 @@ class Bpm extends CI_Model {
         return $data;
     }
 
-    function save_mode_file($idwf, $data) {
+    function save_model_file($idwf, $data) {
         $this->load->helper('file');
         $path = 'images/model/';
         $filename = $path . $idwf . '.json';
@@ -313,7 +313,7 @@ class Bpm extends CI_Model {
         $filename_thumb_small = $path_thumb . $idwf . '-small.png';
 
         $result = write_file($filename, $svg);
-        
+
         $rtn = '';
         if ($this->config->item('make_thumbnails')) {
             $command = "$phantom_path/bin/phantomjs $phantom_path/rasterize.js $filename $filename_thumb";
@@ -323,7 +323,7 @@ class Bpm extends CI_Model {
             }
             $command = "$phantom_path/bin/phantomjs $phantom_path/crop.js $filename $filename_crop";
             exec($command, $cmd, $rtn);
-    
+
             if ($debug) {
                 echo "$command\n rt:$rtn\n";
             }
@@ -352,11 +352,12 @@ class Bpm extends CI_Model {
         //---add SVG diagram
         $zip->addFile($svg);
         //---Add thumbnail
-        $zip->addFile($filename_thumb_small);
+        if (is_file($filename_thumb_small))
+            $zip->addFile($filename_thumb_small);
         $zip->close();
     }
-    
-function delete($idwf) {
+
+    function delete($idwf) {
         $options = array('w' => true, 'justOne' => true);
         $criteria = array('idwf' => $idwf);
         //var_dump2($options,$criteria);
@@ -374,7 +375,7 @@ function delete($idwf) {
         if (!isset($data['iduser']))
             $data['iduser'] = (int) $this->session->userdata('iduser');
 
-        if (!isset($idwf) or ! isset($case) or ! isset($resourceId)) {
+        if (!isset($idwf) or !isset($case) or !isset($resourceId)) {
             show_error("Can't update whith: idwf:$idwf case:$case  resourceId:$resourceId<br/>Incomplete Data.");
         }
         //$title=(isset($shape->properties->title))?$shape->properties->title;$shape->stencil->id;
@@ -615,7 +616,7 @@ function delete($idwf) {
         $query+=$filter;
         toRegex($query);
         //var_dump2(json_encode($query));
-        return $this->mongo->db->tokens->find($query)->sort(array('_id'=>true));
+        return $this->mongo->db->tokens->find($query)->sort(array('_id' => true));
     }
 
     function get_triggers() {
@@ -747,7 +748,7 @@ function delete($idwf) {
         unset($case['_id']);
         $query = array(
             'id' => $case['id'],
-            'idwf'=>$case['idwf']
+            'idwf' => $case['idwf']
         );
         //----get the status tokens
         //$case['token_status'] = $this->get_token_status($case['idwf'], $case['id']);
@@ -778,7 +779,7 @@ function delete($idwf) {
         $hasone = false;
 
         while (!$hasone and $i <= $trys) {//---search until found or $trys iterations
-            $query = array('id' => $id,'idwf'=>$idwf);
+            $query = array('id' => $id, 'idwf' => $idwf);
             $result = $this->db->get_where('case', $query)->result();
             $i++;
             if ($result) {
@@ -1014,12 +1015,12 @@ function delete($idwf) {
         $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
         if ($debug)
             echo "<h2>get_shape</h2>" . $resourceId . '<hr/>';
-        foreach ($wf->childShapes as $key=>$obj) {
+        foreach ($wf->childShapes as $key => $obj) {
             if ($debug)
                 echo "Analizing:" . $obj->stencil->id . '<hr>';
             if ($obj->resourceId == $resourceId) {
                 return $wf->childShapes->$key;
-                }
+            }
             if (in_array($obj->stencil->id, $this->digInto)) {
                 $thisobj = $this->get_shape($resourceId, $wf->childShapes->$key);
                 if ($thisobj)
@@ -1246,8 +1247,8 @@ function delete($idwf) {
         return $start_shapes;
     }
 
-    function update_history($idwf,$idcase, $data) {
-        $query = array('id' => $idcase,'idwf'=>$idwf);
+    function update_history($idwf, $idcase, $data) {
+        $query = array('id' => $idcase, 'idwf' => $idwf);
         $options = array('w' => true, 'justOne' => true);
         $action = array(
             '$push' => array(
@@ -1318,7 +1319,7 @@ function delete($idwf) {
             'status' => $token['status'],
             'name' => (isset($shape_src->properties->name)) ? $shape_src->properties->name : ''
         );
-        $this->update_history($wf->idwf,$wf->case, $history);
+        $this->update_history($wf->idwf, $wf->case, $history);
         //---remove lock
         $token['lockedBy'] = null;
         $token['lockedDate'] = null;
@@ -1520,8 +1521,8 @@ function delete($idwf) {
           echo '<H3>Auto-Assign Runner have no parent "LANE"</H3>';
           //----Assign the the shape to the runner
           $data['assign'][] = $this->user->Initiator;
-          } 
-        */
+          }
+         */
         /*
          * EVAL SHAPE RESOURCES
          */
@@ -1566,8 +1567,8 @@ function delete($idwf) {
 
         //---if assignment not set either by group or explicit assignment then assign task to "Initiator"
         if (!isset($data['assign']) or !count($data['assign'])) {
-            if (isset($data['idgroup'])){
-                if(count($data['idgroup'])) {
+            if (isset($data['idgroup'])) {
+                if (count($data['idgroup'])) {
                     $initiator = $this->user->get_user($this->user->Initiator);
                     if (array_intersect($data['idgroup'], $initiator->group)) {
                         $data['assign'][] = $this->user->Initiator;
@@ -1752,7 +1753,7 @@ function delete($idwf) {
 
 //---check if user belong to the group the task is assigned to
 //---but only if the task havent been assigned to an specific user
-        if (isset($token['idgroup']) and ! isset($token['assign'])) {
+        if (isset($token['idgroup']) and !isset($token['assign'])) {
             foreach ($user->group as $thisgroup) {
                 if (in_array((int) $thisgroup, $token['idgroup'])) {
                     $is_allowed = true;
