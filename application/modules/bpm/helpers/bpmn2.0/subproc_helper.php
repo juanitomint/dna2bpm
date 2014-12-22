@@ -9,17 +9,42 @@ function run_CollapsedSubprocess($shape, $wf, $CI) {
     $parent['token'] = $token;
     $parent['case'] = $wf->case;
     $parent['idwf'] = $wf->idwf;
+    //----Set token status to waiting
     $CI->bpm->set_token($wf->idwf, $wf->case, $shape->resourceId, $shape->stencil->id, 'waiting');
+    //---check if child proceses already exists.
     if (isset($token['child'])) {
         $CI->Run('model', $token['child']['idwf'], $token['child']['case']);
+        // ---now run child processes
+        if (isset($token ['child'])) {
+            if ($shape->properties->entry) {
+                $child_idwf = $shape->properties->entry;
+                foreach ($token['child'][$child_idwf] as $child_idcase) {
+                    $this->Run('model', $child_idwf, $child_idcase);
+                }
+            }
+        }
     } else {
         if ($shape->properties->entry) {
-            $idwf = $shape->properties->entry;
-            //----Set token status to waiting
-            //----Create new child case
-            $silent=false;
-            $CI->newcase('model', $idwf, false, $parent,$silent);
-            
+            $child_idwf = $shape->properties->entry;
+            /* Create new child cases
+             * Check if multiple
+             */
+            switch ($shape->properties->looptype) {
+                case "Sequential"://---start one instance at a time
+                    break;
+                case "Parallel"://---start all instances at once
+                    // loop thru data input and start a case for each one
+                    
+                    break;
+                case "Standard":
+                    break;
+                case "Standard":
+                    break;
+                default://-- "None"
+                    $silent = false;
+                    $CI->newcase('model', $child_idwf, false, $parent, $silent);
+                    break;
+            }
         }
     }
 }
