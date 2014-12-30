@@ -269,14 +269,14 @@ function run_Task($shape, $wf, $CI) {
             }
             //---fires triger if everything is ok
             if ($shape->properties->messageref)
-                run_IntermediateEventThrowing($shape, $wf);
+                run_IntermediateEventThrowing($shape, $wf, $CI);
             //---move to next shape
             $CI->bpm->movenext($shape, $wf);
             break;
 
         case 'Receive':
             //--call the generic catching event
-            run_IntermediateEventCatching($shape, $wf);
+            run_IntermediateEventCatching($shape, $wf, $CI);
             break;
 
         case 'Business Rule':

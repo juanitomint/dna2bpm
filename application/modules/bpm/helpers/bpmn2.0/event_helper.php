@@ -149,7 +149,7 @@ function run_IntermediateEventThrowing($shape, $wf, $CI) {
 function run_IntermediateEventCatching($shape, $wf, $CI) {
 
     $debug = (isset($CI->debug[__FUNCTION__])) ? $CI->debug[__FUNCTION__] : false;
-//$debug=true;
+    // $debug=true;
     if ($debug)
         echo "<h2>" . __FUNCTION__ . '</h2>';
     if ($debug) {
@@ -169,9 +169,8 @@ function run_IntermediateEventCatching($shape, $wf, $CI) {
 //---get throwers by flow
     $inbound = $CI->bpm->get_inbound_shapes($shape->resourceId, $wf);
 
-
 //---search thrower 4 events Catching/Throwing
-    $trigger = '';
+    $trigger = $shape->properties->name;
     if (strstr($shape->stencil->id, 'Catching')) {
         $trigger = str_replace('Catching', 'Throwing', $shape->stencil->id);
     }
@@ -180,12 +179,14 @@ function run_IntermediateEventCatching($shape, $wf, $CI) {
         $trigger = str_replace('Start', 'End', $shape->stencil->id);
     }
 
-
 //----get throwers searching by same name as this shape
     if ($shape->properties->name <> '' and $trigger <> '') {
-        //---make a fake $wf to search into
+        //---make a fake $wf much smaller to search into
         $throwers_name['childShapes'] = $CI->bpm->get_shape_byname("/^$trigger$/", $wf);
-
+        
+        if($debug)
+            echo 'searching for:'.$shape->properties->name.'<br/>';
+            
         $throwers_name = $CI->bpm->get_shape_byprop(array('name' => $shape->properties->name), $throwers_name);
 
 //----clean up throwers
@@ -216,12 +217,14 @@ function run_IntermediateEventCatching($shape, $wf, $CI) {
     }
 //----merge by name & by ref
     $throwers = array_merge($throwers_name, $throwers_ref);
-
+    
 //---seems like parallel gateway (must wait 4 all before move)
 //---check if all throwers  or inbound has finished
 //---Same as parallel gateway
     $has_finished_flow = true;
-    $has_finished_thrower = (count($throwers)) ? false : true;
+    $has_finished_thrower = (count($throwers)>0) ? false : true;
+    $has_finished_thrower = false;
+    
     $is_normal_flow = false;
     $is_boundary_event = false;
 //----handle BOUNDARY and NORMAL FLOW different
@@ -317,7 +320,8 @@ function run_IntermediateEventCatching($shape, $wf, $CI) {
         if ($debug)
             echo '<h1>HAS FINISHED TRUE</h1>';
         $CI->bpm->movenext($shape, $wf);
-//----cancel boundary if exists
+        //----cancel boundary if exists
+        
     } else {
         if ($debug)
             echo '<h1>FALSE</h1>';
