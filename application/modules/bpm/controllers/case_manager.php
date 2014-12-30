@@ -239,7 +239,8 @@ class Case_manager extends MX_Controller {
             if (isset($idwf) && isset($idcase)) {
                 switch ($action) {
                     case 'history':
-                        $tokens = array_slice($case['history'], 0, 100);
+                        // $tokens = array_slice($case['history'], 0, 100);
+                        $tokens = $case['history'];
                         $status = array('$in'=>array('user','waiting'));
                         $status_tokens = $this->bpm->get_tokens($idwf, $idcase,$status);
                         $tokens=array_merge($tokens,$status_tokens);
