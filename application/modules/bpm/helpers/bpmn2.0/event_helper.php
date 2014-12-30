@@ -6,7 +6,7 @@
 function run_IntermediateEventThrowing($shape, $wf, $CI) {
 
     $debug = (isset($CI->debug[__FUNCTION__])) ? $CI->debug[__FUNCTION__] : false;
-    //$debug = true;
+    // $debug = true;
     if ($debug)
         echo "<h2>" . __FUNCTION__ . '</h2>';
     if ($debug) {
@@ -71,7 +71,9 @@ function run_IntermediateEventThrowing($shape, $wf, $CI) {
 
     $catchers_byname = array_merge($catchers_byname, $catchers_multiple);
 
-
+    if($shape->properties->name<>'')
+        $catchers_byref = $CI->bpm->get_shape_byprop(array('messageref' => $shape->properties->name), $wf);
+    
     //---get catcher by messageref
     if ($shape->stencil->id == 'Task') {
         if ($shape->properties->messageref <> '') {
@@ -105,6 +107,9 @@ function run_IntermediateEventThrowing($shape, $wf, $CI) {
         var_dump($catchers);
     }
 
+//------ ADVANCE this shape-----------------------------------------//
+    $CI->bpm->movenext($shape, $wf, array('name' => $shape->properties->name));
+    //---Process Catchers now
     foreach ($catchers as $catcher) {
 //var_dump2('$catcher->properties->name == $shape->properties->name', $catcher->properties->name == $shape->properties->name);
         $launch_catcher = false;
@@ -137,10 +142,9 @@ function run_IntermediateEventThrowing($shape, $wf, $CI) {
                 echo '>>> Launching:' . $catcher->properties->name . '<br>';
                 var_dump2($catcher);
             }
+            run_IntermediateEventCatching($catcher, $wf, $CI);
         }
     }//---end foreach catcher
-//------ ADVANCE this shape-----------------------------------------//
-    $CI->bpm->movenext($shape, $wf, array('name' => $shape->properties->name));
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -153,7 +157,7 @@ function run_IntermediateEventCatching($shape, $wf, $CI) {
     if ($debug)
         echo "<h2>" . __FUNCTION__ . '</h2>';
     if ($debug) {
-        echo '<h1> << IntermediateEventCatching:' . $shape->stencil->id . '</h1>';
+        echo '<h1> << IntermediateEventCatching:' . $shape->stencil->id .' '.$shape->properties->name. '</h1>';
     }
     $token = $CI->bpm->get_token($wf->idwf, $wf->case, $shape->resourceId);
 //---if token already canceled then exit
@@ -168,9 +172,12 @@ function run_IntermediateEventCatching($shape, $wf, $CI) {
     $throwers = array();
 //---get throwers by flow
     $inbound = $CI->bpm->get_inbound_shapes($shape->resourceId, $wf);
-
+//---set trigger to a message type    
+    $trigger='IntermediateMessageEventThrowing';
 //---search thrower 4 events Catching/Throwing
-    $trigger = $shape->properties->name;
+    $event_name =(property_exists($shape->properties,'messageref') && $shape->properties->messageref) ? $shape->properties->messageref: $shape->properties->name;
+    
+    
     if (strstr($shape->stencil->id, 'Catching')) {
         $trigger = str_replace('Catching', 'Throwing', $shape->stencil->id);
     }
@@ -179,15 +186,16 @@ function run_IntermediateEventCatching($shape, $wf, $CI) {
         $trigger = str_replace('Start', 'End', $shape->stencil->id);
     }
 
+    if($debug) 
+        echo "<h2>Event name is: $event_name</h2><h2>Trigger name is: $trigger</h2>";
 //----get throwers searching by same name as this shape
-    if ($shape->properties->name <> '' and $trigger <> '') {
+    if ($trigger <> '') {
         //---make a fake $wf much smaller to search into
         $throwers_name['childShapes'] = $CI->bpm->get_shape_byname("/^$trigger$/", $wf);
-        
         if($debug)
-            echo 'searching for:'.$shape->properties->name.'<br/>';
+            echo 'searching for:'.$trigger.'<br/>';
             
-        $throwers_name = $CI->bpm->get_shape_byprop(array('name' => $shape->properties->name), $throwers_name);
+        $throwers_name = $CI->bpm->get_shape_byprop(array('name' => $event_name), $throwers_name);
 
 //----clean up throwers
         $throwers_name = array_filter($throwers_name);
@@ -217,7 +225,11 @@ function run_IntermediateEventCatching($shape, $wf, $CI) {
     }
 //----merge by name & by ref
     $throwers = array_merge($throwers_name, $throwers_ref);
-    
+    if($debug){
+        echo 'has: '.count($throwers).'<br/>';
+        // var_dump2($throwers);
+        
+    }
 //---seems like parallel gateway (must wait 4 all before move)
 //---check if all throwers  or inbound has finished
 //---Same as parallel gateway
