@@ -423,7 +423,8 @@ class Bpm extends CI_Model {
                             'checkdate' => date('Y-m-d H:i:s'),
                             //---reset history 
                             'history' => array(),
-                            'run_manual' => (isset($case['run_manual'])) ? $case['run_manual'] : false
+                            'run_manual' => (isset($case['run_manual'])) ? $case['run_manual'] : false,
+                            'data' => (isset($case['data'])) ? $case['data'] : array()
                         )
         );
     }
@@ -1260,7 +1261,7 @@ class Bpm extends CI_Model {
 
     function movenext($shape_src, $wf, $token = array(), $process_out = true) {
         $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
-        //$debug=true;
+        // $debug=true;
 
         if ($debug)
             echo '<h2>' . __FUNCTION__ . '</h2>';
@@ -1300,6 +1301,8 @@ class Bpm extends CI_Model {
         //////////////     UPDATE PARENT LANE                     ////////////// 
         //////////////////////////////////////////////////////////////////////// 
         $shape = $shape_src;
+        if($debug)
+            echo "<h2>".$shape->resourceId.' '.$shape->stencil->id.'</h2>';
         $lane = $this->find_parent($shape, 'Lane', $wf);
         //---try to get resources from lane
         if ($lane) {
@@ -1340,6 +1343,8 @@ class Bpm extends CI_Model {
                     if (!isset($token['status']) or true) {
                         $status = 'pending';
                         $shape = $this->get_shape($pointer->resourceId, $wf);
+                        if($debug)
+                        echo "Setting 'pending' to ".$shape->resourceId.' '.$shape->stencil->id.'<br/>';
                         $token = $this->token_checkin($token, $wf, $shape);
                         //var_dump2('pointer', $pointer->resourceId);
                         //----skip ignored

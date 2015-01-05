@@ -9,6 +9,7 @@ function run_CollapsedSubprocess($shape, $wf, $CI) {
     $parent['token'] = $token;
     $parent['case'] = $wf->case;
     $parent['idwf'] = $wf->idwf;
+    $silent = true;
     //----Set token status to waiting
     $CI->bpm->set_token($wf->idwf, $wf->case, $shape->resourceId, $shape->stencil->id, 'waiting');
     //---check if child proceses already exists.
@@ -29,19 +30,35 @@ function run_CollapsedSubprocess($shape, $wf, $CI) {
             /* Create new child cases
              * Check if multiple
              */
+            $prev=$CI->bpm->get_previous($shape->resourceId, $wf);
+            foreach($prev as $prev_shape){
+                if($prev_shape->stencil->id=='DataStore'){
+                $dataStoreName=$prev_shape->properties->name;
+                }
+            }
             switch ($shape->properties->looptype) {
-                case "Sequential"://---start one instance at a time
+                case "Sequential"://---start one instance at a time assumes data input does not change
                     break;
                 case "Parallel"://---start all instances at once
+                // echo "paralell";
                     // loop thru data input and start a case for each one
-                    
+                    if($CI->data->$dataStoreName){
+                        foreach($CI->data->$dataStoreName as $item){
+                            //start a case with $item as data in data['parent_data']
+                            // var_dump($item);
+                            $data['parent_data']=$item;
+                            //---Newcase($model, $idwf, $manual = false, $parent = null, $silent = false,$data=array())
+                            $CI->newcase('model', $child_idwf, false, $parent, $silent,$data);
+                        }
+                    } else {
+                        show_error('DataStore:'.$dataStoreName.' not loaded');
+                    }
                     break;
                 case "Standard":
                     break;
                 case "Standard":
                     break;
                 default://-- "None"
-                    $silent = false;
                     $CI->newcase('model', $child_idwf, false, $parent, $silent);
                     break;
             }

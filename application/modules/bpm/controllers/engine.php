@@ -91,7 +91,7 @@ class Engine extends MX_Controller {
         $this->run_post($model, $idwf, $idcase, $src_resourceId);
     }
 
-    function Newcase($model, $idwf, $manual = false, $parent = null, $silent = false) {
+    function Newcase($model, $idwf, $manual = false, $parent = null, $silent = false,$data=array()) {
         // ---Gen new case ID
         $idcase = $this->bpm->gen_case($idwf);
         if ($manual) {
@@ -105,6 +105,7 @@ class Engine extends MX_Controller {
         if ($parent) {
             $mycase = $this->bpm->get_case($idcase, $idwf);
             $mycase ['parent'] = $parent;
+            $mycase['data']=$data;
             $this->bpm->save_case($mycase);
             /*
              * UPDATE PARENT
@@ -113,7 +114,7 @@ class Engine extends MX_Controller {
             $token = $this->bpm->get_token($parent ['token'] ['idwf'], $parent ['token'] ['case'], $parent ['token'] ['resourceId']);
             $token ['child'] = isset($token ['child']) ? $token ['child'] : array();
             //@todo check if child not present
-            $token['child'][$idwf][] = $child;
+            $token['child'][$idwf][] = $idcase;
             $this->bpm->save_token($token);
         }
         // ---Start the case (will move next on startnone shapes)
@@ -170,6 +171,7 @@ class Engine extends MX_Controller {
         if (!$silent) {
             header("Location:" . $this->base_url . $redir);
         } else {
+            //echo "created:  $idwf, $idcase<hr/>";
             // $this->Run('model', $idwf, $case);
         }
     }
@@ -476,12 +478,14 @@ class Engine extends MX_Controller {
             $renderData ['wf'] = $mywf ['data'] ['properties'];
             // $renderData+=$mywf['data']['properties'];
             $renderData ['token'] = $token;
+            
             //---map users assigned
-            $renderData ['assign'] = array_map(
+            if(isset($renderData['token']['assign'])){
+                $renderData ['assign'] = array_map(
                     function($iduser) {
-                return (array) $this->user->get_user_safe($iduser);
-            }, $renderData['token']['assign']);
-
+                    return (array) $this->user->get_user_safe($iduser);
+                }, $renderData['token']['assign']);
+            }
             $renderData ['case'] = $case;
             // --parse documentation string
             $renderData ['task_documentation'] = ($renderData ['task_documentation'] == '') ? '' : $this->parser->parse_string(nl2br($renderData ['task_documentation']), $renderData, true, true);
@@ -491,9 +495,13 @@ class Engine extends MX_Controller {
                 var_dump($renderData);
             // ---prepare UI
             $renderData ['title'] = 'Manual Task';
+            //----Skip javascript if no modal asked
+            if(!$this->debug['show_modal']){
             $renderData ['js'] = array(
                 $this->module_url . 'assets/jscript/manual_task.js' => 'Manual task JS'
             );
+                
+            }
             // ---prepare globals 4 js
             $renderData ['global_js'] = array(
                 'base_url' => $this->base_url,
