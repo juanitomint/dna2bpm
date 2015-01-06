@@ -36,9 +36,17 @@ class Code extends MX_Controller {
         $this->user->authorize();
         Modules::run('dashboard/dashboard', 'code/json/dashboard.json');
     }
+    function highlight(){
+        $this->user->authorize();
+        Modules::run('dashboard/dashboard', 'code/json/highlight.json');
+    }
     
     function code_block($code, $lang='php',$theme='monokai',$rows=16){
         return '<textarea rows="'.$rows.'" class="code_block" theme="'.$theme.'" lang="'.$lang.'">'.$code.'</textarea>';
+        
+    }
+    function highlight_block($code, $lang='php',$theme='monokai',$rows=16){
+        return '<pre><code class="'.$lang.'" lang="'.$lang.'">'.$code.'</code></pre>';
         
     }
     
@@ -52,12 +60,32 @@ class Code extends MX_Controller {
         $template="dashboard/widgets/box_info_solid";
         echo $this->dashboard->widget($template, $data);
     }
+    function demo_highlight($filetype){
+        $this->load->helper('file');
+        $this->load->module('dashboard');
+        $filename=FCPATH . APPPATH . "modules/code/views/$filetype.php";
+        $code=read_file($filename);
+        $data['content']=$this->highlight_block($code,$filetype);
+        $data['title']="Demo: ".$filetype;
+        $template="dashboard/widgets/box_info_solid";
+        echo $this->dashboard->widget($template, $data);
+    }
     function file($file,$lang,$theme='monokai'){
         $this->load->helper('file');
         $this->load->module('dashboard');
         $filename=FCPATH . APPPATH . $file;
         $code=read_file($filename);
         $data['content']=$this->code_block($code,$lang,$theme);
+        $data['title']="File: ".$filename;
+        $template="dashboard/widgets/box_info_solid";
+        echo $this->dashboard->widget($template, $data);
+    }
+    function highlight_file($file,$lang,$theme='monokai'){
+        $this->load->helper('file');
+        $this->load->module('dashboard');
+        $filename=FCPATH . APPPATH . $file;
+        $code=read_file($filename);
+        $data['content']=$this->highlight_block($code,$lang,$theme);
         $data['title']="File: ".$filename;
         $template="dashboard/widgets/box_info_solid";
         echo $this->dashboard->widget($template, $data);
