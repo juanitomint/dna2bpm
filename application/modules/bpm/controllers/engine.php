@@ -2,8 +2,10 @@
 
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
-/*
- * This is the core BPM Engine This class has all what is needed to run a bpm model @author Juan Ignacio Borda <juanignacioborda@gmail.com> @date Feb 10, 2013
+/**
+ * This is the core BPM Engine This class has all what is needed to run a bpm model 
+ * @author Juan Ignacio Borda <juanignacioborda@gmail.com> 
+ * @date Feb 10, 2013
  */
 
 class Engine extends MX_Controller {
