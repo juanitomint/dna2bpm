@@ -3,14 +3,14 @@ if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
 /*
- *  this file is for daemons and anonymous callers  
+ *  This Class exposes services for daemons and anonymous callers
  * 
  * @author Borda Juan Ignacio
  * 
  */
-class Engine extends MX_Controller {
+class Service extends MX_Controller {
 
-    function Engine() {
+    function Service() {
         parent::__construct();
         $this->debug = false;
         //$this->debug = true;
