@@ -3,11 +3,18 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-class Bpm extends CI_Model {
-    /*
-     * Sets container for bpm models
+    /**
+     * This class is for manipulate all related to bpm objects: models, cases and tokens
+     * @author Juan Ignacio Borda <juanignacioborda@gmail.com>
+     * @date Feb 10, 2013
+     *
      */
+class Bpm extends CI_Model {
 
+    /**
+     * Container for storing models
+     * @var bpm_container
+     */
     public $bpm_container = 'workflow';
     public $debug = array();
     public $digInto = array('Pool', 'Subprocess', 'CollapsedSubprocess', 'Lane');
