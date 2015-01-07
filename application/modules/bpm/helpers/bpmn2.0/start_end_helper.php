@@ -220,17 +220,25 @@ function run_EndMultipleEvent($shape, $wf, $CI) {
     //then finish like none
     run_EndNoneEvent($shape, $wf, $CI);
 }
-
+/**
+ * Terminate BPMN2.0 flow
+ * @param type $shape
+ * @param type $wf
+ * @param type $CI
+ */
 function run_EndTerminateEvent($shape, $wf, $CI) {
-    //---will terminate process execution and remove all data associated
-    //---will delete tokens and case data.
-
+    
     $debug = (isset($CI->debug[__FUNCTION__])) ? true : false;
     if ($debug)
         echo "<h2>" . __FUNCTION__ . '</h2>';
-    //---TODO Cancel all pending tasks
-    //---remove all tokens and remove case
-    $CI->bpm->delete_case($wf->idwf, $wf->case);
+    /**
+     * @todo Cancel all pending tasks and close
+     */
+    $active_tokens = $CI->bpm->get_pending($wf->idwf, $wf->case, array('user', 'waiting', 'pending'), array());
+    foreach($active_tokens as $token){
+        $token['status']='canceled';
+        $CI->bpm->save_token($token);
+                 
+    }
+    run_EndNoneEvent($shape, $wf, $CI);
 }
-
-?>
