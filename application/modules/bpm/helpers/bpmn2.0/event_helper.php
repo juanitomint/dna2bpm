@@ -139,10 +139,10 @@ function run_IntermediateEventThrowing($shape, $wf, $CI) {
         if ($launch_catcher) {
             $CI->bpm->set_token($wf->idwf, $wf->case, $catcher->resourceId, $catcher->stencil->id, 'pending');
             if ($debug) {
-                echo '>>> Launching:' . $catcher->properties->name . '<br>';
+                echo '>>> Launching:' . $catcher->properties->name .':'.$catcher->stencil->id . '<br>';
                 var_dump2($catcher);
             }
-            run_IntermediateEventCatching($catcher, $wf, $CI);
+            //run_IntermediateEventCatching($catcher, $wf, $CI);
         }
     }//---end foreach catcher
 }
