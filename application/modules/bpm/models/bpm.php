@@ -922,7 +922,7 @@ class Bpm extends CI_Model {
             37 => 'jscript/bpm-dna2/stencilsets/bpmn2.0/icons/endevent/signal.png',
             38 => 'jscript/bpm-dna2/stencilsets/bpmn2.0/icons/endevent/terminate.png',
             39 => 'jscript/bpm-dna2/stencilsets/bpmn2.0/icons/gateway/complex.png',
-            40 => 'jscript/bpm-dna2/stencilsets/bpmn2.0/icons/gateway/eventbased.png',
+            'EventbasedGateway' => 'jscript/bpm-dna2/stencilsets/bpmn2.0/icons/gateway/eventbased.png',
             'Exclusive_Databased_Gateway' => 'jscript/bpm-dna2/stencilsets/bpmn2.0/icons/gateway/exclusive.databased.png',
             42 => 'jscript/bpm-dna2/stencilsets/bpmn2.0/icons/gateway/inclusive.png',
             'ParallelGateway' => 'jscript/bpm-dna2/stencilsets/bpmn2.0/icons/gateway/parallel.png',
@@ -998,9 +998,10 @@ class Bpm extends CI_Model {
         //var_dump(json_encode($query));
         return $this->mongo->db->tokens->find($query);
     }
-
+    /** 
+    *  get next shape in diagram skiping flows
+    */ 
     function get_outgoing_shapes($shape, $wf) {
-        //---get next shape in diagram skiping flows
         $out = array();
         foreach ($shape->outgoing as $out_shape) {
             $out[] = $this->get_shape($out_shape->resourceId, $wf);
@@ -1014,7 +1015,7 @@ class Bpm extends CI_Model {
         foreach ($shape->outgoing as $out) {
             $this_shape = $this->get_shape($out->resourceId, $wf);
             if ($this_shape->stencil->id == 'SequenceFlow')
-                $next[] = $this->get_shape($this_shape->outogoing[0]->resourceId, $wf);
+                $next[] = $this->get_shape($this_shape->outogoing{0}->resourceId, $wf);
         }
         return $next;
     }
