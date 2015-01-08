@@ -129,6 +129,7 @@ function paint(resourceId, color, stroke_width) {
                     $('#' + shape.resourceId + ' .stencils .me [id*="_frame"]').attr('style', '').attr('stroke-width', stroke_with).attr('stroke', color);
                     break;
                 case "ParallelGateway":
+                case "EventbasedGateway":
                     $('#' + shape.resourceId + ' .stencils .me [id*="_frame"]').attr('style', '').attr('stroke-width', stroke_with).attr('stroke', color);
 
                     break;
