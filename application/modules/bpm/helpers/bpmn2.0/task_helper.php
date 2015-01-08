@@ -169,6 +169,7 @@ function run_Task($shape, $wf, $CI) {
             }
             break;
         case 'Manual':
+            //---change status to manual (stops execution and wait 4 manual input)
             $CI->bpm->set_token($wf->idwf, $wf->case, $shape->resourceId, $shape->stencil->id, 'user', $data);
             if ($CI->break_on_next) {
                 redirect($CI->base_url . $CI->config->item('default_controller'));
