@@ -233,6 +233,7 @@ class Engine extends MX_Controller {
                 $filter ['resourceId'] = $run_resourceId;
 
             while ($i <= 100 and $open = $this->bpm->get_tokens_byFilter($filter)) {
+            if($debug) echo "<h1>Step:$i</h1>";
                 $i ++;
                 foreach ($open as $token) {
                     // ---only call tokens that correspond to user.
