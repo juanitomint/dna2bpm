@@ -58,4 +58,23 @@ color: #ddd;
 }
 }
 
+//==== Loader
 
+.box-body,.box{
+    position:relative;
+}
+.loader{
+    position:absolute;
+    width:100%;
+    text-align: center;
+   top:50%;
+   margin-top:-20px;
+
+}  
+
+.loader > div{
+    background: #fff;
+    display:inline;
+    padding: 14px 8px;
+    border-radius: 8px;
+}   
