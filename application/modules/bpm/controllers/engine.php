@@ -10,7 +10,8 @@ if (!defined('BASEPATH'))
 
 class Engine extends MX_Controller {
 
-    private $debug = array();
+    public $debug = array();
+    public $run_filter=array();
     public $create_start_msg = false;
     public $run_after_stack = array();
 
@@ -182,7 +183,7 @@ class Engine extends MX_Controller {
      * Engine core, here is where the functions for each shape get called @param string='model' @param string @param string @param string
      */
 
-    function Run($model, $idwf, $case, $run_resourceId = null) {
+    function Run($model, $idwf, $case, $run_resourceId = null,$silent=null) {
         $this->data = (object) null;
         $debug = (isset($this->debug [__FUNCTION__])) ? $this->debug [__FUNCTION__] : false;
         if ($debug)
@@ -223,11 +224,13 @@ class Engine extends MX_Controller {
             // $open = $this->bpm->get_tokens($idwf, $case, 'pending');
             $status = 'pending';
             $wf->prevent_run = array();
-            $filter = array(
+            $filter =(count($this->run_filter))?$this->run_filter: array(
                 'idwf' => $idwf,
                 'case' => $case,
                 'status' => 'pending'
             );
+            
+            // var_dump(json_encode($filter));exit;
             // ----filter specific shape to run
             if ($run_resourceId)
                 $filter ['resourceId'] = $run_resourceId;
@@ -263,6 +266,8 @@ class Engine extends MX_Controller {
 //            if ($this->break_on_next) {
 //                redirect($this->base_url . $this->config->item('default_controller'));
 //            }
+            //----return if silent
+            if($silent) return;
             $this->get_pending('model', $idwf, $case, $run_resourceId);
             $this->run_after();
             $run_resourceId = null;

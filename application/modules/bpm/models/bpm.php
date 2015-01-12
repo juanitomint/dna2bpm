@@ -1831,5 +1831,25 @@ class Bpm extends CI_Model {
         }//---not error
         return $rtnObject;
     }
-
+    
+    function clone_case($from_idwf, $to_idwf, $idcase) {
+        
+        $case = $this->get_case($idcase, $from_idwf);
+        $case_to = $this->get_case($idcase, $to_idwf);
+        if (!$case_to) {
+            /*
+            *    Clone case
+            */
+            $this->gen_case($to_idwf, $idcase);
+            $case_to = $this->bpm->get_case($idcase, $to_idwf);
+            $case_to['data'] = $case['data'];
+            $case_to['iduser'] = $case['iduser'];
+            $case_to = $this->save_case($case_to);
+            //---return true if cloned successfully
+            return true;
+        } else {
+            //---return false if already exists
+            return false;
+        }
+    }
 }
