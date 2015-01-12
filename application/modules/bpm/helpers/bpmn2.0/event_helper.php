@@ -630,7 +630,7 @@ function run_IntermediateEscalationEventThrowing($shape, $wf, $CI) {
 
 function run_IntermediateLinkEventThrowing($shape, $wf, $CI) {
     $debug = (isset($CI->debug[__FUNCTION__])) ? true : false;
-    // $debug=true;
+    //$debug=true;
     if ($debug)
         echo "<h2>" . __FUNCTION__ . '</h2>';
     if($shape->properties->entry){
@@ -656,7 +656,9 @@ function run_IntermediateLinkEventThrowing($shape, $wf, $CI) {
                 $mywf ['data'] ['folder'] = $mywf ['folder'];
                 $to_wf = bindArrayToObject($mywf ['data']);
                 //---1st try to get catcher links
+                if($debug) echo "run_IntermediateEventThrowing<br/>";
                 run_IntermediateEventThrowing($shape, $to_wf, $CI);
+                if($debug) echo "Runing: ".$to_wf->idwf.'<br/>';
                 $CI->Run('model', $to_idwf, $wf->case);
             // }
             
