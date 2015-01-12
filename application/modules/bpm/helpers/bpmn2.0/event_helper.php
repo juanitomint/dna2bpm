@@ -629,11 +629,42 @@ function run_IntermediateEscalationEventThrowing($shape, $wf, $CI) {
 }
 
 function run_IntermediateLinkEventThrowing($shape, $wf, $CI) {
-
     $debug = (isset($CI->debug[__FUNCTION__])) ? true : false;
+    // $debug=true;
     if ($debug)
         echo "<h2>" . __FUNCTION__ . '</h2>';
-    run_IntermediateEventThrowing($shape, $wf, $CI);
+    if($shape->properties->entry){
+        //---off page link
+        //---first run events
+        run_IntermediateEventThrowing($shape, $wf, $CI);
+        $to_idwf=$shape->properties->entry;
+        if($debug) echo "Cloning: ".$wf->idwf.' to:'.$to_idwf.'<br/>';
+        $mywf = $CI->bpm->model_exists($to_idwf);
+        
+        if($mywf){
+            
+            
+            
+            $clone=$CI->bpm->clone_case($wf->idwf, $to_idwf, $wf->case);
+            // if($clone){
+            //     //----Start
+            //     $CI->Startcase('model', $to_idwf, $wf->case);
+            // } else {
+                //----Run
+                $mywf ['data'] ['idwf'] = $to_idwf;
+                $mywf ['data'] ['case'] = $wf->case;
+                $mywf ['data'] ['folder'] = $mywf ['folder'];
+                $to_wf = bindArrayToObject($mywf ['data']);
+                //---1st try to get catcher links
+                run_IntermediateEventThrowing($shape, $to_wf, $CI);
+                $CI->Run('model', $to_idwf, $wf->case);
+            // }
+            
+        }
+    } else{
+        //----same page link
+        run_IntermediateEventThrowing($shape, $wf, $CI);
+    }
 }
 
 function run_IntermediateCompensationEventThrowing($shape, $wf, $CI) {
