@@ -51,7 +51,7 @@ class ui {
         $this->styles['fullcalendar'][] = $data['base_url'] . "dashboard/assets/bootstrap-wysihtml5/css/fullcalendar/fullcalendar.css";
         $this->styles['selectJS'][] = $data['base_url'] . "jscript/select2-3.4.5/select2.css";
         $this->styles['selectJS'][] = $data['base_url'] . "jscript/select2-3.4.5/select2-bootstrap.css";
-
+        $this->styles['inboxJS'][] = $data['base_url'] . "inbox/assets/css/inbox.css";
 
         
         // Load default JS 
