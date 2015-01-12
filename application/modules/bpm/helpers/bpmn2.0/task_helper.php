@@ -2,7 +2,7 @@
 
 function run_Task($shape, $wf, $CI) {
     $debug = (isset($CI->debug[__FUNCTION__])) ? $CI->debug[__FUNCTION__] : false;
-    //$debug = true;
+    // $debug = true;
     //$CI = & get_instance('Engine');
     $resourceId = $shape->resourceId;
 //---set DS pointer to Data Storage
@@ -251,14 +251,17 @@ function run_Task($shape, $wf, $CI) {
                     $data['from'] = $CI->user->get_user_safe($resource['Performer']);
                     $user = $CI->bpm->get_user(array_pop($resource['Performer']));
                 }
-            } else {
-                //---set from equals to user
-                $data['from'] = $user;
-            }
+            } 
             //---Get FROM
             $user = $CI->user->get_user_safe($msg['from']);
             $data['user'] = (array) $user;
+                if ($debug){
+                    echo "Parsing Subject:<br/>";
+                    var_dump($data);
+                }
             $msg['subject'] = $CI->parser->parse_string($shape->properties->name, $data, true, true);
+                if ($debug)
+                    echo "Parsing Body:<br/>";
             $msg['body'] = $CI->parser->parse_string($shape->properties->documentation, $data, true, true);
 
             $to = (isset($resources['assign'])) ? $resources['assign'] : $token['assign'];
