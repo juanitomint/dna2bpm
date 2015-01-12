@@ -14,7 +14,8 @@ $(document).ready(function() {
         event.preventDefault();
         var box = $(this).parents('.box');
         var url = $(this).attr('href');
-
+       
+        var body=box.find('.box-body').append('<div class="loader " ><div><i class="fa fa-spinner fa-spin fa-2x" ></i> <span class="">Cargando</span></div></div>');
         $.ajax({
             url: url,
             context: box
