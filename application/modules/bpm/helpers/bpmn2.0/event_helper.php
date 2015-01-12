@@ -346,8 +346,8 @@ function run_IntermediateEventCatching($shape, $wf, $CI) {
 //////////////////    CATCHING EVENTS    ///////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 function run_IntermediateTimerEvent($shape, $wf, $CI) {
-
     $debug = (isset($CI->debug[__FUNCTION__])) ? $CI->debug[__FUNCTION__] : false;
+    // $debug=true;
     if ($debug)
         echo "<h2>" . __FUNCTION__ . '</h2>';
     $token = $CI->bpm->get_token($wf->idwf, $wf->case, $shape->resourceId);
@@ -359,6 +359,9 @@ function run_IntermediateTimerEvent($shape, $wf, $CI) {
             show_error("cannot convert". $shape->properties->name." to a valid time \n");
         } else {
             $trigger = date('Y-m-d H:i:s', strtotime($shape->properties->name));
+            if ($debug) 
+            echo 'trigger:'.$shape->properties->name.' -> '.date('Y-m-d H:i:s',time()).' -> '.$trigger.'</br>';
+            
         }
         $CI->bpm->set_token($wf->idwf, $wf->case, $shape->resourceId, $shape->stencil->id, 'waiting', array('trigger' => $trigger));
         $token = $CI->bpm->get_token($wf->idwf, $wf->case, $shape->resourceId);
@@ -371,7 +374,7 @@ function run_IntermediateTimerEvent($shape, $wf, $CI) {
                 var_dump2(date('Y-m-d H:i:s', mktime()), $token['trigger'], mktime() > strtotime($token['trigger']));
 
             if (mktime() >= strtotime($token['trigger'])) {
-                run_IntermediateEventCatching($shape, $wf, $CI);
+                $CI->bpm->movenext($shape, $wf);
             }
             break;
     }
