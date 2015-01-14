@@ -30,7 +30,7 @@ class Case_manager extends MX_Controller {
         $this->module_path = 'application/modules/bpm/';
         //----LOAD LANGUAGE
         $this->lang->load('library', $this->config->item('language'));
-        $this->idu = (int) $this->session->userdata('iduser');
+        $this->idu = $this->user->idu;
         $this->base_url = base_url();
         $this->module_url = base_url() . $this->router->fetch_module() . '/';
     }

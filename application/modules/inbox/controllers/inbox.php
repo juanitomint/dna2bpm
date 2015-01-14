@@ -18,7 +18,7 @@ class Inbox extends MX_Controller {
         //----LOAD LANGUAGE
         $this->lang->load('inbox', $this->config->item('language'));
 
-        $this->idu = (int) $this->session->userdata('iduser');
+        $this->idu = $this->user->idu;
         
 
         

@@ -65,11 +65,13 @@ class Engine extends MX_Controller {
         $this->debug ['run_EndNoneEvent'] = null;
         $this->debug ['get_start_shapes'] = null;
         $this->debug ['get_shape_parent'] = null;
-        $this->idu = (int) $this->session->userdata('iduser');
+        $this->idu = $this->user->idu;
         // $this->debug['get_shape_byname']=false;
     }
 
     function Index() {
+        echo "<h1>BPM Engine</h1>";
+        // var_dump($this->user->get_user_safe($this->idu));
         
     }
 

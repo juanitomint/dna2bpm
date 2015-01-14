@@ -15,7 +15,7 @@ class Repository extends MX_Controller {
         $this->user->authorize();
 //----LOAD LANGUAGE
         $this->lang->load('library', $this->config->item('language'));
-        $this->idu = (int) $this->session->userdata('iduser');
+        $this->idu = $this->user->idu;
         $this->debug = array();
         $this->base_url = base_url();
         $this->module_url = base_url() . $this->router->fetch_module() . '/';

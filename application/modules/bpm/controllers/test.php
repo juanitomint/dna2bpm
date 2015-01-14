@@ -25,7 +25,7 @@ class test extends MX_Controller {
         $this->load->model('bpm');
         $this->load->model('app');
         $this->load->model('msg');
-        $this->idu = (int) $this->session->userdata('iduser');
+        $this->idu = $this->user->idu;
 
         $this->load->library('parser');
         $this->load->helper('bpm');
