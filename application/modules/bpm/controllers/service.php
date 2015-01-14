@@ -39,6 +39,14 @@ class Service extends MX_Controller {
         $debug = (isset($CI->debug[__FUNCTION__])) ? $CI->debug[__FUNCTION__] : false;
         // $debug=true;
         $silent=true;
+        $run=false;
+        /**
+         * Impersonates as 666=daemon
+         */ 
+        $this->idu=666;
+        //---register if it has logged is
+        $this->session->set_userdata('loggedin', true);
+        echo "1";
         $this->load->module('bpm/engine');
         $filter=($idwf)? array('idwf'=>$idwf):array();
         $filter['type']='IntermediateTimerEvent';
@@ -53,22 +61,32 @@ class Service extends MX_Controller {
                 'idwf' => $idwf,
                 'case' => $idcase,
                 'status' => 'waiting',
-                 'resourceId'=>$token['resourceId'],
+                'resourceId'=>$token['resourceId'],
             );
-            //----run only this shape
-             $this->engine->run('model', $idwf, $idcase, null,$silent);
-             //---now process the rest of shapes
-             $this->engine->run_filter=array();
-             $this->engine->run('model', $idwf, $idcase, null,$silent);
-             $out['timers'][]=array(
+             if($run){
+                //----run only this shape
+                $this->engine->run('model', $idwf, $idcase, null,$silent);
+                //---now process the rest of shapes
+                $this->engine->run_filter=array();
+                $this->engine->run('model', $idwf, $idcase, null,$silent);
+             }
+             $tlog=array(
                  '_id'=>$token['_id'],
                  'idwf'=>$token['idwf'],
                  'case'=>$token['case'],
                  'trigger'=>$token['trigger'],
                  'resourceId'=>$token['resourceId'],
+                 'checkdate'=>date('Y-m-d H:i:s'),
+                 'microtime'=>microtime(),
                  );
+            //----Log timer
+            $options = array('w' => true);
+            if(!$debug)
+                $wf = $this->mongo->db->log_timers->save($tlog, $options);
+             $out['timers'][]=$tlog;
          }
-        
+        //---un-register if it has logged is
+        $this->session->set_userdata('loggedin', false);
         if (!$debug) {
             header('Content-type: application/json;charset=UTF-8');
             echo json_encode($out);
