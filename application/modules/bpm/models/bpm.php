@@ -1280,6 +1280,7 @@ class Bpm extends CI_Model {
         //---mark this shape as FINISHED
         $token = $this->get_token($wf->idwf, $wf->case, $shape_src->resourceId);
         //---if shape haven't been assigned then assign to performer / runner
+        $boundary=array();
         if ($shape_src->stencil->id == 'Task') {
             if (!isset($token['assign'])) {
                 $token['assign'] = array($this->idu);
@@ -1287,6 +1288,8 @@ class Bpm extends CI_Model {
                 if ($token['assign'] == '')
                     $token['assign'] = array($this->idu);
             }
+            //Cancel boundary
+            $boundary=$this->cancel_boundary($shape_src,$wf);
         }
         //---set status
         $token['status'] = 'finished';
@@ -1345,7 +1348,9 @@ class Bpm extends CI_Model {
                     $token = $this->get_token($wf->idwf, $wf->case, $pointer);
 
                     //---If token already has status leave it alone!
-                    if (!isset($token['status']) or true) {
+                    $token['status']=(isset($token['status'])) ? $token['status']:'';
+                    //---start non boundary
+                    if (!in_array($pointer->resourceId,$boundary)) {
                         $status = 'pending';
                         $shape = $this->get_shape($pointer->resourceId, $wf);
                         if($debug)
@@ -1852,4 +1857,29 @@ class Bpm extends CI_Model {
             return false;
         }
     }
+    
+    /**
+    * Cancel boundary shapes
+    */
+    function cancel_boundary($shape,$wf){
+        $boundary=array();
+        $boundary_arr=array();
+        foreach ($shape->outgoing as $out) {
+        $this_shape = $this->bpm->get_shape($out->resourceId, $wf);
+            if ($this_shape->stencil->id == 'IntermediateTimerEvent') {
+                $boundary[]=$this_shape;
+                $boundary_arr[]=$this_shape->resourceId;
+            }
+        }
+        $data = array('canceledBy' => $shape->resourceId, 'canceledName' => $shape->properties->name);
+        foreach($boundary as $child){
+            $token = $this->bpm->get_token($wf->idwf, $wf->case, $child->resourceId);
+            if ($token['status'] !== 'finished') {
+                $this->bpm->set_token($wf->idwf, $wf->case, $child->resourceId, $child->stencil->id, 'canceled', $data);
+            }
+            $token = $this->bpm->get_token($wf->idwf, $wf->case, $child->resourceId);
+        }
+        return $boundary_arr;
+    }
+     
 }
