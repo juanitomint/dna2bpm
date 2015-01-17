@@ -557,7 +557,7 @@ class Engine extends MX_Controller {
                 $shape_out = $this->bpm->get_shape($out->resourceId, $wf);
                 $name = ($shape_out->properties->conditionexpression) ? $shape_out->properties->conditionexpression : $i;
                 if ($shape_out->properties->conditiontype == 'Default')
-                    $name .= '(default)';
+                    $name .= ' (default)';
                 $renderData ['button'] [] = array(
                     'name' => $name,
                     'resourceId' => $shape_out->resourceId
