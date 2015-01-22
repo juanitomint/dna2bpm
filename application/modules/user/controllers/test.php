@@ -51,6 +51,10 @@ class Test extends MX_Controller {
         echo "<h3>Remove Group:$newid</h3>";
         $this->group->delete($newid);
     }
+    
+    function get_avatar(){
+    echo $this->user->get_avatar();    
+    }
 
 }
 

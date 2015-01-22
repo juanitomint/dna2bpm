@@ -431,8 +431,25 @@ class User extends CI_Model {
             return $result;
         }
     }
+    /**
+    * Get user avatar from disk
+    */
+    function get_avatar($idu=null){
+        $iduser=($idu)? $idu:$this->idu;
+        $current_user=(array) $this->user->get_user_safe($iduser);
+        $genero = isset($current_user['gender']) ? ($current_user['gender']) : ("male");
 
-    /*
+        // Chequeo avatar
+        if ( is_file("images/avatar/".$this->idu.".jpg")){
+        	return base_url()."images/avatar/".$this->idu.".jpg";
+        }elseif(is_file("images/avatar/".$this->idu.".png")){
+        	return base_url()."images/avatar/".$this->idu.".png";
+        }else{
+        	return ($genero == "male")?(base_url()."images/avatar/male.jpg"):(base_url()."images/avatar/female.jpg");    	
+        }
+    }
+
+    /**
      * Save Raw user data
      */
 
