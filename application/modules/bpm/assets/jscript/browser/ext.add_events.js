@@ -38,6 +38,7 @@ var add_events = function(shapes) {
             );
 
             documentation = (shape.properties.documentation != null) ? shape.properties.documentation : '';
+            rendering = (shape.properties.rendering != null) ? '<br/><span>Rendering:<br/>'+ shape.properties.rendering+'<br/>' : '';
             config = {
                 id: 'toolTip' + shape.resourceId,
                 target: 'overlay' + shape.resourceId,
@@ -45,8 +46,9 @@ var add_events = function(shapes) {
                 dismissDelay: 0,
                 minWidth: 320,
                 //anchorOffset: 85, // center the anchor on the tooltip
-                html: "<span class='resourceId'>resourceId:<br/>" + shape.resourceId + "</span><br/>Doc:" + documentation
+                html: "<span class='resourceId'>resourceId:<br/>" + shape.resourceId + "</span><br/>Doc:" + documentation + rendering
             };
+            
             tooltips.push(
                     Ext.create('Ext.tip.ToolTip', config)
                     );
