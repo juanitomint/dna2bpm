@@ -53,7 +53,8 @@ class Test extends MX_Controller {
     }
     
     function get_avatar(){
-    echo $this->user->get_avatar();    
+    echo 'me:'. $this->user->get_avatar().'<hr/>';    
+    echo 'UserId:10:'. $this->user->get_avatar(10);    
     }
 
 }

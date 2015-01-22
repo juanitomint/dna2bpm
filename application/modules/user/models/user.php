@@ -440,10 +440,10 @@ class User extends CI_Model {
         $genero = isset($current_user['gender']) ? ($current_user['gender']) : ("male");
 
         // Chequeo avatar
-        if ( is_file("images/avatar/".$this->idu.".jpg")){
-        	return base_url()."images/avatar/".$this->idu.".jpg";
-        }elseif(is_file("images/avatar/".$this->idu.".png")){
-        	return base_url()."images/avatar/".$this->idu.".png";
+        if ( is_file("images/avatar/".$iduser.".jpg")){
+        	return base_url()."images/avatar/".$iduser.".jpg";
+        }elseif(is_file("images/avatar/".$iduser.".png")){
+        	return base_url()."images/avatar/".$iduser.".png";
         }else{
         	return ($genero == "male")?(base_url()."images/avatar/male.jpg"):(base_url()."images/avatar/female.jpg");    	
         }
