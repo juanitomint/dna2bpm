@@ -38,9 +38,10 @@ class mongo_connector extends CI_Model {
                 }
                 
             } else {
-                while($arr = $rs->getNext())
+                while($arr = $rs->getNext()){
                     $arr['_id'] = null;
                     $rtn_arr=array_filter($arr);
+                }
             }
             return $rtn_arr;
         }
