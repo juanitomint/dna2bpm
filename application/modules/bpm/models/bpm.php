@@ -592,7 +592,7 @@ class Bpm extends CI_Model {
 
     function get_token_byid($id) {
         $query = array(
-            '_id' => $id,
+            '_id' => new MongoId($id),
         );
         //var_dump2(json_encode($query));
         return $this->mongo->db->tokens->findOne($query);
@@ -1390,7 +1390,7 @@ class Bpm extends CI_Model {
         $token['type'] = $shape->stencil->id;
         $token['idwf'] = $wf->idwf;
         $token['case'] = $wf->case;
-        $token['idu'] = $this->idu;
+        $token['iduser'] = $this->idu;
         $token['microtime'] = microtime();
         $token['checkdate'] = (!isset($token['checkdate'])) ? date('Y-m-d H:i:s') : $token['checkdate'];
         return $token;
