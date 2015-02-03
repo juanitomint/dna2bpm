@@ -414,7 +414,7 @@ class Bpmui extends MX_Controller {
         return $data;
     }
 
-    private function prepare_tasks($tasks, $chunk, $pagesize) {
+    public function prepare_tasks($tasks, $chunk, $pagesize) {
         $data = array();
         $data['module_url'] = $this->module_url;
         $data['base_url'] = $this->base_url;
