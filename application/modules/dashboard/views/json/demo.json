@@ -76,19 +76,7 @@
         },
         {
             "col2": [
-                {
-                    "title": "ministatus",
-                    "module": "bpm",
-                    "controller": "bpmui",
-                    "function": "widget_ministatus",
-                    "params":[true]
-                },
-                {
-                    "title": "Tile01",
-                    "module": "dashboard",
-                    "controller": "dashboard",
-                    "function": "widget_dashboards"
-                }
+
             ]
         }
         
