@@ -365,7 +365,31 @@ class Dashboard extends MX_Controller {
                     $mycontent="";
                 }
                 
-                
+            //==== Box Management  ========================= 
+            if(isset($myWidget['box_class'])){
+               // box info present, use this box bitch --
+     
+                $customData['box_class']=implode(" ",$myWidget['box_class']);
+                // Color schema
+                if(in_array('box-primary',$myWidget['box_class']))$customData['btn_class']='btn-primary';
+                if(in_array('box-danger',$myWidget['box_class']))$customData['btn_class']='btn-danger';
+                if(in_array('box-info',$myWidget['box_class']))$customData['btn_class']='btn-info';
+                if(in_array('box-warning',$myWidget['box_class']))$customData['btn_class']='btn-warning';
+                if(in_array('box-success',$myWidget['box_class']))$customData['btn_class']='btn-success';
+                $customData['title']=(isset($myWidget['title']))?($myWidget['title']):('');
+                $customData['box_icon']=(isset($myWidget['box_icon']))?($myWidget['box_icon']):('');
+                $customData['content']=$mycontent;
+                //Buttons
+                $customData['button_collapse']=(in_array('collapse',$myWidget['box_buttons']))?("1"):("0");
+                $customData['button_remove']=(in_array('remove',$myWidget['box_buttons']))?("1"):("0");
+                // Collapsed init ?
+                if(isset($myWidget['box_collapsed']) && $myWidget['box_collapsed']=='1'){
+                    $customData['box_class'].=' collapsed-box';
+                    $customData['body_style']='display:none';
+                }
+                        
+                $mycontent=$this->parser->parse('widgets/box', $customData, true, true);
+            }    
                 if (!$empty_spans)
                 	$content.=$mycontent;
                 else

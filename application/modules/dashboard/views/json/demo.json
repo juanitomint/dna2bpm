@@ -53,6 +53,10 @@
                     "module": "dashboard",
                     "controller": "dashboard",
                     "function": "knob",
+                    "box_icon":"fa-bar-chart-o",
+                    "box_class":["box"],
+                    "box_buttons":["remove","collapse"],
+                    "box_collapsed":"0",
                     "js":[{"0":"knob"},{"{base_url}dashboard/assets/jscript/knob.js":"knobJS"}],
  					"params":[
  					"[{'value':50,'data-label':'Knob1 orange','data-fgColor':'#f60'},{'value':90,'data-label':'Knob2'},{'value':20,'data-label':'Knob3'}]",
