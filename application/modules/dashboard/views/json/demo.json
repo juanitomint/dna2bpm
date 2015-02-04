@@ -1,6 +1,6 @@
 {
     "createdBy": "Gabriel Fojo <trialvd@gmail.com>",
-    "title": "Demo DashBoard",
+    "title": "Kitchen Sink",
     "view": "layout_2cols",
     "icon": "fa-flask",
     "zones": [
@@ -32,14 +32,6 @@
                 },
                 {
                     "title": "Tile01",
-                    "module": "git",
-                    "controller": "git",
-                    "span": 2,
-                    "function": "tile"
-
-                },
-                {
-                    "title": "Tile01",
                     "module": "bpm",
                     "controller": "bpmui",
                     "function": "tile_cases"
@@ -49,11 +41,11 @@
         {
             "col1": [        
                 {
-                    "title": "2do",
+                    "title": "Knob",
                     "module": "dashboard",
                     "controller": "dashboard",
                     "function": "knob",
-                    "box_icon":"fa-bar-chart-o",
+                    "box_icon":"fa-pie-chart",
                     "box_class":["box"],
                     "box_buttons":["remove","collapse"],
                     "box_collapsed":"0",
@@ -62,6 +54,16 @@
  					"[{'value':50,'data-label':'Knob1 orange','data-fgColor':'#f60'},{'value':90,'data-label':'Knob2'},{'value':20,'data-label':'Knob3'}]",
  					"{'title':'Knob TEST','col-md':4,'col-sm':6,'col-xs':6}"
  					]
+                },
+                {
+                    "title": "JSON Box Settings",
+                    "module": "dashboard",
+                    "controller": "dashboard",
+                    "function": "kitchensink_boxes",
+                    "box_icon":"fa-book",
+                    "box_class":["box"],
+                    "box_buttons":["remove","collapse"],
+                    "box_collapsed":"0"
                 },
                 {
                     "title": "HighCharts",

@@ -366,11 +366,14 @@ class Dashboard extends MX_Controller {
                 }
                 
             //==== Box Management  ========================= 
+            
+                
             if(isset($myWidget['box_class'])){
                // box info present, use this box bitch --
      
                 $customData['box_class']=implode(" ",$myWidget['box_class']);
                 // Color schema
+                $customData['btn_class']='btn-default';
                 if(in_array('box-primary',$myWidget['box_class']))$customData['btn_class']='btn-primary';
                 if(in_array('box-danger',$myWidget['box_class']))$customData['btn_class']='btn-danger';
                 if(in_array('box-info',$myWidget['box_class']))$customData['btn_class']='btn-info';
@@ -590,6 +593,13 @@ BLOCK;
 //        exit;
 
         return $this->parser->parse('widgets/dashboards', $data, true, true);
+    }
+    
+    //=== Kitchen Sink :: Boxes
+    function kitchensink_boxes(){
+   
+        return $this->parser->parse('widgets/kitchensink_boxes', array(), true, true);
+
     }
 
 }
