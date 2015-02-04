@@ -204,6 +204,12 @@ class Bpm extends CI_Model {
         $rs = $this->db->get('case');
         return $rs->result_array();
     }
+  
+    function get_cases_byFilter_count($filter) {
+        //$this->db->debug=true;
+        $this->db->where($filter);
+        return $this->db->count_all_results('case');
+    }
 
     function get_cases_stats($filter) {
 
@@ -527,6 +533,14 @@ class Bpm extends CI_Model {
         $rs = $this->db->get('tokens');
         return $rs->result_array();
     }
+    
+    function get_tokens_byFilter_count($filter, $fields = array(), $sort = array()) {
+        //$this->db->debug=true;
+        $this->db->where($filter);
+        $this->db->select($fields);
+        $this->db->order_by($sort);
+        return $this->db->count_all_results('tokens');
+    }
 
     function get_last_token($idwf, $idcase) {
         $query = array_filter(
@@ -592,7 +606,7 @@ class Bpm extends CI_Model {
 
     function get_token_byid($id) {
         $query = array(
-            '_id' => new MongoId($id),
+            '_id' => $id,
         );
         //var_dump2(json_encode($query));
         return $this->mongo->db->tokens->findOne($query);
@@ -772,14 +786,19 @@ class Bpm extends CI_Model {
         //$case['token_status'] = $this->get_token_status($case['idwf'], $case['id']);
         return $this->db->where($query)->update('case_archive', $case);
     }
-
-    function gen_case($idwf) {
+/**
+ * Generates an empy case with passed idwf 
+ * @param type $idwf
+ * @param type $data
+ * @return string
+ */
+    function gen_case($idwf,$id=null,$data=array()) {
         $insert = array();
         $trys = 10;
         $i = 0;
         $id = chr(64 + rand(1, 26)) . chr(64 + rand(1, 26)) . chr(64 + rand(1, 26)) . chr(64 + rand(1, 26));
         //---if passed specific id
-        if (func_num_args() > 1) {
+        if ($id) {
             $id = func_get_arg(1);
             $passed = true;
             //echo "passed: $id<br>";
@@ -811,6 +830,7 @@ class Bpm extends CI_Model {
         $insert['iduser'] = $this->idu;
         $insert['status'] = 'open';
         $insert['checkdate'] = date('Y-m-d H:i:s');
+        $insert['data'] = $data;
         //----Allocate id in the collection (may result in empty docs)
         $options = array('w' => true);
         $this->db->insert('case', $insert);
@@ -1390,7 +1410,7 @@ class Bpm extends CI_Model {
         $token['type'] = $shape->stencil->id;
         $token['idwf'] = $wf->idwf;
         $token['case'] = $wf->case;
-        $token['iduser'] = $this->idu;
+        $token['idu'] = $this->idu;
         $token['microtime'] = microtime();
         $token['checkdate'] = (!isset($token['checkdate'])) ? date('Y-m-d H:i:s') : $token['checkdate'];
         return $token;
@@ -1881,5 +1901,18 @@ class Bpm extends CI_Model {
         }
         return $boundary_arr;
     }
+    
+    /**
+    * Cancel boundary shapes
+    */
+        function get_data($collection,$filter, $fields = array(), $sort = array()) {
+        //$this->db->debug=true;
+        $this->db->where($filter);
+        $this->db->select($fields);
+        $this->db->order_by($sort);
+        $rs = $this->db->get($collection);
+        return $rs->result_array();
+    }
+    
      
 }
