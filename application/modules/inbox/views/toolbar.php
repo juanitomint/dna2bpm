@@ -1,4 +1,4 @@
-<li class="dropdown messages-menu">
+<li class="dropdown messages-menu" id='toolbar_inbox'>
     <a href="#" class="dropdown-toggle"	data-toggle="dropdown"> 
         <i class="fa fa-envelope"></i> 
         <span	class="label label-success"><span class='unread_count'>{unread_count}</span></span>

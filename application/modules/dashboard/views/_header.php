@@ -63,8 +63,9 @@
                 <div class="navbar-right">
                     <ul class="nav navbar-nav">
                         <!-- Messages: style can be found in dropdown.less-->
+                     
                         {toolbar_inbox}
-
+                    
 
 
                         <!-- ========== USER PROFILE  ==========-->

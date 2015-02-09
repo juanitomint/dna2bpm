@@ -11,7 +11,7 @@
 				"module": "inbox",
 				"controller": "inbox",
 				"function": "index",
-				"js":[{"0":"selectJS"}]
+				"js":[{"0":"selectJS"},{"1":"ckeditor"}]
                 }
             ]
         }

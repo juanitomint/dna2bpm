@@ -184,12 +184,17 @@ class Inbox extends MX_Controller {
     		}else{
     			$msg['msg_time']=$datetime1->format('Y-m-d H:i'); 
     		}
-			// 
-    		$msg['excerpt']=substr($msg['body'],0,10);
+                // 
+
+    		$msg['excerpt']=substr(strip_tags($msg['body']),0,10);
     		$customData['mymsgs'][] = $msg;
      	}
     	return $this->parser->parse('inbox/toolbar', $customData, true, true);
 
+    }
+    
+    function print_toolbar(){
+        echo $this->toolbar();
     }
     
     //====  Widget - show msgs by case
@@ -277,7 +282,7 @@ class Inbox extends MX_Controller {
         $data=$this->input->post('data');    
         $to=explode(",",$data[0]['value']);
         $subject=$data[1]['value'];
-        $body=$data[2]['value'];
+        $body=  $data[2]['value'];
         $msg=array(
         'subject'=>$subject,
         'body'=>$body,

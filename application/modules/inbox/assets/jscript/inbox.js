@@ -80,9 +80,13 @@ $(document).on('submit','#new_msg',function(e){
 	var data=$(this).serializeArray();
 	$.post(globals.base_url+"inbox/inbox/send",{data:data},function(resp){
         $('#myModal').find('.modal-body').html('Message sent!');
-	});
-	
-  });
+	}).done(function( ) {
+               	var whereiam=$('#whereiam').val();
+                var url = globals['base_url']+"inbox/print_folder/"+whereiam;
+                reload(url,target,whereiam);
+         });
+       
+  })
 
 // Action dropdown handle
 $(document).on("click","#msg_action a,#msg_tag a",function(){
@@ -255,12 +259,22 @@ function reload(url,target,whereiam){
 function update_counters(){
 	// Keep counters 
 	var letscount = globals['base_url']+"inbox/print_count_msgs/";
+        
 	$.post( letscount, function( data ) {
 		var json=JSON.parse(data);
 		for (var prop in json) {
 			$('.'+prop).html(json[prop]);
+                        console.log(prop+' '+json[prop]);
 			}
 	});
+        
+        // Toolbar inbox
+        var toolbar = globals['base_url']+"inbox/print_toolbar/";
+       	$.post( toolbar, function( data ) {
+            $( "#toolbar_inbox" ).replaceWith( data);
+            console.log(data);
+	});
+        
 }
 
 

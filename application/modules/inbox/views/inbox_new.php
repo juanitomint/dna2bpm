@@ -9,39 +9,27 @@
         {/if}
 
 
-<form class="form-horizontal" id="new_msg">
+<form  id="new_msg">
 <!--  To -->
       
   <div class="form-group">
-    <label class="col-sm-2 control-label">{lang to}:</label>
-    <div class="col-sm-10">
-		    <input type="hidden" name="to" class="select2 form-control"   multiple="multiple" />
-  </div>
+            <input type="hidden" name="{lang to}" class="select2 form-control"   multiple="multiple" />
   </div>
 <!--  Title -->
   <div class="form-group">
-    <label class="col-sm-2 control-label">{lang subject}:</label>
-    <div class="col-sm-10">
     <input type="text" name="subject" class="form-control"  placeholder="Subject">
-     </div>
   </div>
 <!--  MSG -->
   <div class="form-group">
-    <label class="col-sm-2 control-label">{lang body}:</label>
-    <div class="col-sm-10">
-     <textarea rows="5" name="body" placeholder="Body" class="form-control">{user signature}</textarea>
-     </div>
+     <textarea rows="5" name="body"  id="editor1" >{user signature}</textarea>
   </div>
  <!--  SEND -->
-  <div class="form-group">
-    <div class="col-sm-12">
-      <button type="submit" class="btn btn-primary pull-right">Send</button>
-     </div>
+
+  <div class="form-group" style="margin-bottom: 40px">
+      <button type="submit" class="btn btn-primary pull-right">{lang send}</button>
   </div> 
 
-  
-
-  
+ 
 </form>
 
 <script>
@@ -69,7 +57,10 @@
 
 	    });
 
+// ===== Ckeditor
 
+
+CKEDITOR.replace( 'editor1' );
 
 		
  });

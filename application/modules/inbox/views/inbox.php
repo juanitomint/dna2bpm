@@ -15,10 +15,10 @@
                                             <div style="margin-top: 15px;">
                                                 <ul class="nav nav-pills nav-stacked">
                                                     <li class="header">{lang folders}</li>
-                                                    <li id="bt_inbox" class="{if {folder}=='inbox'}active{/if}"><a href="{base_url}inbox/print_folder/inbox" class="ajax" data-target="inbox-list"><i class="fa fa-inbox"></i> {lang inbox} ({inbox_count})</a></li>
-                                                    <li id="bt_outbox" class="{if {folder}=='outbox'}active{/if}"><a href="{base_url}inbox/print_folder/outbox" class="ajax" data-target="inbox-list"><i class="fa fa-mail-forward"></i> {lang sent}</a></li>
-                                                    <li id="bt_star" class="{if {folder}=='star'}active{/if}" ><a  href="{base_url}inbox/print_folder/star" class="ajax" data-target="inbox-list"><i class="fa fa-star"></i> {lang starred}</a></li>
-                                                    <li id="bt_trash" class="{if {folder}=='trash'}active{/if}"><a href="{base_url}inbox/print_folder/trash" class="ajax" data-target="inbox-list"><i class="fa fa-folder"></i> {lang trash}</a></li>
+                                                    <li id="bt_inbox" class="{if {folder}=='inbox'}active{/if}"><a href="{base_url}inbox/print_folder/inbox" class="ajax" data-target="inbox-list"><i class="fa fa-inbox"></i> {lang inbox} (<span class='inbox_count'>{inbox_count}</span>)</a></li>
+                                                    <li id="bt_outbox" class="{if {folder}=='outbox'}active{/if}"><a href="{base_url}inbox/print_folder/outbox" class="ajax" data-target="inbox-list"><i class="fa fa-mail-forward"></i> {lang sent} ({<span class='sent_count'>{inbox_count}</span>)</a></li>
+                                                    <li id="bt_star" class="{if {folder}=='star'}active{/if}" ><a  href="{base_url}inbox/print_folder/star" class="ajax" data-target="inbox-list"><i class="fa fa-star"></i> {lang starred} (<span class='inbox_count'>{star_count}</span>)</a></li>
+                                                    <li id="bt_trash" class="{if {folder}=='trash'}active{/if}"><a href="{base_url}inbox/print_folder/trash" class="ajax" data-target="inbox-list"><i class="fa fa-folder"></i> {lang trash} (<span class='inbox_count'>{trash_count}</span>)</a></li>
                                                 </ul>
                                             </div>
                                         </div><!-- /.col (LEFT) -->

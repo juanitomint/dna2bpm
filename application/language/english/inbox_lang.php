@@ -26,6 +26,7 @@ $lang["to"]='To';
 $lang["subject"]='Subject';
 $lang["body"]='Body';
 $lang["send"]='Send';
+$lang["print"]='Print';
 //Tags
 $lang["extreme_priority"]='Extreme priority';
 $lang["high_priority"]='High priority';
