@@ -288,7 +288,7 @@ function update_counters(){
         var toolbar = globals['base_url']+"inbox/print_toolbar/";
        	$.post( toolbar, function( data ) {
             $( "#toolbar_inbox" ).replaceWith( data);
-            console.log(data);
+            //console.log(data);
 	});
         
 }
