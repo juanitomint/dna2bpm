@@ -553,7 +553,6 @@ BLOCK;
 //          $data[]=array('value'=>50,'data-label'=>'Fuck');
 //          $data[]=array('value'=>10,'data-fgColor'=>'#f60','data-label'=>'Fuck');
 		//==
-        var_dump($data);
 
         foreach($data as $item){
         	$myconfig=array_merge($config,$item);
