@@ -77,16 +77,32 @@ $(document).on("click",".msg",function(e){
 $(document).on('submit','#new_msg',function(e){
 	e.preventDefault();
 	console.log('sending');
+        
+        var config={'status':'warning','body':'Mensaje Enviado!!!'};
+        myalert=BT_alert(config);
+
+        $('#myModal').find('.modal-body').html(myalert);
 	var data=$(this).serializeArray();
-	$.post(globals.base_url+"inbox/inbox/send",{data:data},function(resp){
+        //====== AJAX
+        $.ajax({
+        type: "POST",
+        url: globals.base_url+"inbox/inbox/send",
+        data: {data:data},
+        success: function(resp){
         $('#myModal').find('.modal-body').html('Message sent!');
-	}).done(function( ) {
+	},
+        error: function(resp){
+        $('#myModal').find('.modal-body').html('Message couldn\'t be sent!');
+	}
+        }).done(function( ) {
                	var whereiam=$('#whereiam').val();
                 var url = globals['base_url']+"inbox/print_folder/"+whereiam;
                 reload(url,target,whereiam);
          });
-       
-  })
+
+
+       //<i class="fa fa-spinner fa-spin fa-2x" ></i>
+  });
 
 // Action dropdown handle
 $(document).on("click","#msg_action a,#msg_tag a",function(){

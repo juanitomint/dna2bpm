@@ -27,6 +27,8 @@ $lang["subject"]='Subject';
 $lang["body"]='Body';
 $lang["send"]='Send';
 $lang["print"]='Print';
+$lang["message_sent"]='Message sent!';
+$lang["message_not_sent"]='The message couln\'t be sent!';
 //Tags
 $lang["extreme_priority"]='Extreme priority';
 $lang["high_priority"]='High priority';

@@ -229,3 +229,17 @@ $(document).ready(function() {
     
 
 });
+
+
+/* ==============================
+ *  Wrappers BT & LTE
+ * 
+ ============================== */
+
+function BT_alert(json){
+    
+   var myalert='<div class="alert alert-'+json.status+' alert-dismissable">\n\
+<i class="fa fa-ban"></i><button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>\n\\n\
+'+json.body+'</div>';
+   return ;
+}

@@ -26,6 +26,8 @@ $lang["to"]='Para';
 $lang["subject"]='Titulo';
 $lang["body"]='Cuerpo';
 $lang["send"]='Enviar';
+$lang["message_sent"]='Mensaje enviadot!';
+$lang["message_not_sent"]='El mensaje no ha podido enviarse!';
 //Tags
 $lang["extreme_priority"]='Prioridad extrema';
 $lang["high_priority"]='Prioridad alta';
