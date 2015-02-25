@@ -320,7 +320,8 @@ class admin extends MX_Controller {
             //---register if it has logged is
             $this->session->set_userdata('loggedin', true);
             //---register the user id
-            $this->session->set_userdata('iduser', $idu);
+            $this->session->set_userdata('iduser', (int)$idu);
+            $this->session->set_userdata('impersonated', true);
             //---register level string
             $redir = base_url() . $this->config->item('default_controller');
             //---redirect
