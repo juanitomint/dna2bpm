@@ -1412,7 +1412,6 @@ class Bpm extends CI_Model {
         $token['case'] = $wf->case;
         $token['idu'] = $this->idu;
         $token['microtime'] = microtime();
-        $token['checkdate'] = (!isset($token['checkdate'])) ? date('Y-m-d H:i:s') : $token['checkdate'];
         return $token;
     }
 
