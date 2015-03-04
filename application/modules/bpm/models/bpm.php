@@ -796,13 +796,13 @@ class Bpm extends CI_Model {
         $insert = array();
         $trys = 10;
         $i = 0;
-        $id = chr(64 + rand(1, 26)) . chr(64 + rand(1, 26)) . chr(64 + rand(1, 26)) . chr(64 + rand(1, 26));
-        //---if passed specific id
         if ($id) {
             $id = func_get_arg(1);
             $passed = true;
             //echo "passed: $id<br>";
         }
+        $id = chr(64 + rand(1, 26)) . chr(64 + rand(1, 26)) . chr(64 + rand(1, 26)) . chr(64 + rand(1, 26));
+        //---if passed specific id
         $hasone = false;
 
         while (!$hasone and $i <= $trys) {//---search until found or $trys iterations
