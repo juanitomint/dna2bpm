@@ -638,7 +638,7 @@ class Bpm extends CI_Model {
         $query+=$filter;
         toRegex($query);
         //var_dump2(json_encode($query));
-        return $this->mongo->db->tokens->find($query)->sort(array('_id' => true));
+        return $this->mongo->db->tokens->find($query); //->sort(array('_id' => true));
     }
 
     function get_triggers() {
@@ -1333,12 +1333,6 @@ class Bpm extends CI_Model {
         $shape = $shape_src;
         if ($debug)
             echo "<h2>" . $shape->resourceId . ' ' . $shape->stencil->id . '</h2>';
-        $lane = $this->find_parent($shape, 'Lane', $wf);
-        //---try to get resources from lane
-        if ($lane) {
-            $tokenLane['interval'] = date_diff($dateOut, $dateIn, true);
-            $this->set_token($wf->idwf, $wf->case, $lane->resourceId, 'Lane', $status = 'finished', $tokenLane);
-        }
         //////////////////////////////////////////////////////////////////////// 
         //////////////     SAVE HISTORY IN CASE          /////////////////////// 
         //////////////////////////////////////////////////////////////////////// 
@@ -1362,6 +1356,7 @@ class Bpm extends CI_Model {
         $this->save_token($token);
         //---Update case status
         $this->update_case_token_status($wf->idwf, $wf->case);
+
         //---process outgoing
         if ($process_out) {
             if ($shape_src->outgoing) {
@@ -1403,6 +1398,24 @@ class Bpm extends CI_Model {
                 }
             }
         }//---don't process outgoing flow
+        //---Update parent lane
+        $lane = $this->find_parent($shape, 'Lane', $wf);
+        //---try to get resources from lane
+        if ($lane) {
+            $l_status = 'finished';
+            //---get child status
+            $filter = array('status' => array('$ne' => 'finished'));
+            foreach ($lane->childShapes as $child) {
+                if (in_array($child->stencil->id, array('Task')))
+                    $filter['resourceId']['$in'][] = $child->resourceId;
+            }
+            $child_status = $this->get_tokens_byFilter($filter, array('_id'));
+//            var_dump(count($child_status), json_encode($filter));
+            if (count($child_status))
+                $l_status = 'open';
+            $tokenLane['interval'] = date_diff($dateOut, $dateIn, true);
+            $this->set_token($wf->idwf, $wf->case, $lane->resourceId, 'Lane', $l_status, $tokenLane);
+        }
         return true;
     }
 
