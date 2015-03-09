@@ -3,12 +3,12 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-    /**
-     * This class is for manipulate all related to bpm objects: models, cases and tokens
-     * @author Juan Ignacio Borda <juanignacioborda@gmail.com>
-     * @date Feb 10, 2013
-     *
-     */
+/**
+ * This class is for manipulate all related to bpm objects: models, cases and tokens
+ * @author Juan Ignacio Borda <juanignacioborda@gmail.com>
+ * @date Feb 10, 2013
+ *
+ */
 class Bpm extends CI_Model {
 
     /**
@@ -204,7 +204,7 @@ class Bpm extends CI_Model {
         $rs = $this->db->get('case');
         return $rs->result_array();
     }
-  
+
     function get_cases_byFilter_count($filter) {
         //$this->db->debug=true;
         $this->db->where($filter);
@@ -533,7 +533,7 @@ class Bpm extends CI_Model {
         $rs = $this->db->get('tokens');
         return $rs->result_array();
     }
-    
+
     function get_tokens_byFilter_count($filter, $fields = array(), $sort = array()) {
         //$this->db->debug=true;
         $this->db->where($filter);
@@ -786,22 +786,23 @@ class Bpm extends CI_Model {
         //$case['token_status'] = $this->get_token_status($case['idwf'], $case['id']);
         return $this->db->where($query)->update('case_archive', $case);
     }
-/**
- * Generates an empy case with passed idwf 
- * @param type $idwf
- * @param type $data
- * @return string
- */
-    function gen_case($idwf,$id=null,$data=array()) {
+
+    /**
+     * Generates an empy case with passed idwf 
+     * @param type $idwf
+     * @param type $data
+     * @return string
+     */
+    function gen_case($idwf, $id = null, $data = array()) {
         $insert = array();
         $trys = 10;
         $i = 0;
         if ($id) {
-            $id = func_get_arg(1);
             $passed = true;
             //echo "passed: $id<br>";
+        } else {
+            $id = chr(64 + rand(1, 26)) . chr(64 + rand(1, 26)) . chr(64 + rand(1, 26)) . chr(64 + rand(1, 26));
         }
-        $id = chr(64 + rand(1, 26)) . chr(64 + rand(1, 26)) . chr(64 + rand(1, 26)) . chr(64 + rand(1, 26));
         //---if passed specific id
         $hasone = false;
 
@@ -951,14 +952,14 @@ class Bpm extends CI_Model {
             'StartParallelMultipleEvent' => 'jscript/bpm-dna2/stencilsets/bpmn2.0/icons/startevent/multiple.parallel.png',
             'StartMultipleEvent' => 'jscript/bpm-dna2/stencilsets/bpmn2.0/icons/startevent/multiple.png',
             'StartNoneEvent' => 'jscript/bpm-dna2/stencilsets/bpmn2.0/icons/startevent/none.png',
-            'StartSignalEvent'  => 'jscript/bpm-dna2/stencilsets/bpmn2.0/icons/startevent/signal.png',
+            'StartSignalEvent' => 'jscript/bpm-dna2/stencilsets/bpmn2.0/icons/startevent/signal.png',
             'StartTimerEvent' => 'jscript/bpm-dna2/stencilsets/bpmn2.0/icons/startevent/timer.png',
             'Lane' => 'jscript/bpm-dna2/stencilsets/bpmn2.0/icons/swimlane/lane.png',
             'Pool' => 'jscript/bpm-dna2/stencilsets/bpmn2.0/icons/swimlane/pool.png',
             'processparticipant' => 'jscript/bpm-dna2/stencilsets/bpmn2.0/icons/swimlane/process.participant.png',
             'IntermediateCompensationEventThrowing' => 'jscript/bpm-dna2/stencilsets/bpmn2.0/icons/throwing/compensation.png',
             'IntermediateEscalationEventThrowing' => 'jscript/bpm-dna2/stencilsets/bpmn2.0/icons/throwing/escalation.png',
-            'IntermediateLinkEventThrowing'=> 'jscript/bpm-dna2/stencilsets/bpmn2.0/icons/throwing/link.png',
+            'IntermediateLinkEventThrowing' => 'jscript/bpm-dna2/stencilsets/bpmn2.0/icons/throwing/link.png',
             'IntermediateMessageEventThrowing' => 'jscript/bpm-dna2/stencilsets/bpmn2.0/icons/throwing/message.png',
             'IntermediateMultipleEventThrowing' => 'jscript/bpm-dna2/stencilsets/bpmn2.0/icons/throwing/multiple.png',
             'IntermediateEvent' => 'jscript/bpm-dna2/stencilsets/bpmn2.0/icons/throwing/none.png',
@@ -1015,9 +1016,10 @@ class Bpm extends CI_Model {
         //var_dump(json_encode($query));
         return $this->mongo->db->tokens->find($query);
     }
-    /** 
-    *  get next shape in diagram skiping flows
-    */ 
+
+    /**
+     *  get next shape in diagram skiping flows
+     */
     function get_outgoing_shapes($shape, $wf) {
         $out = array();
         foreach ($shape->outgoing as $out_shape) {
@@ -1300,7 +1302,7 @@ class Bpm extends CI_Model {
         //---mark this shape as FINISHED
         $token = $this->get_token($wf->idwf, $wf->case, $shape_src->resourceId);
         //---if shape haven't been assigned then assign to performer / runner
-        $boundary=array();
+        $boundary = array();
         if ($shape_src->stencil->id == 'Task') {
             if (!isset($token['assign'])) {
                 $token['assign'] = array($this->idu);
@@ -1309,7 +1311,7 @@ class Bpm extends CI_Model {
                     $token['assign'] = array($this->idu);
             }
             //Cancel boundary
-            $boundary=$this->cancel_boundary($shape_src,$wf);
+            $boundary = $this->cancel_boundary($shape_src, $wf);
         }
         //---set status
         $token['status'] = 'finished';
@@ -1329,8 +1331,8 @@ class Bpm extends CI_Model {
         //////////////     UPDATE PARENT LANE                     ////////////// 
         //////////////////////////////////////////////////////////////////////// 
         $shape = $shape_src;
-        if($debug)
-            echo "<h2>".$shape->resourceId.' '.$shape->stencil->id.'</h2>';
+        if ($debug)
+            echo "<h2>" . $shape->resourceId . ' ' . $shape->stencil->id . '</h2>';
         $lane = $this->find_parent($shape, 'Lane', $wf);
         //---try to get resources from lane
         if ($lane) {
@@ -1368,13 +1370,13 @@ class Bpm extends CI_Model {
                     $token = $this->get_token($wf->idwf, $wf->case, $pointer);
 
                     //---If token already has status leave it alone!
-                    $token['status']=(isset($token['status'])) ? $token['status']:'';
+                    $token['status'] = (isset($token['status'])) ? $token['status'] : '';
                     //---start non boundary
-                    if (!in_array($pointer->resourceId,$boundary)) {
+                    if (!in_array($pointer->resourceId, $boundary)) {
                         $status = 'pending';
                         $shape = $this->get_shape($pointer->resourceId, $wf);
-                        if($debug)
-                        echo "Setting 'pending' to ".$shape->resourceId.' '.$shape->stencil->id.'<br/>';
+                        if ($debug)
+                            echo "Setting 'pending' to " . $shape->resourceId . ' ' . $shape->stencil->id . '<br/>';
                         $token = $this->token_checkin($token, $wf, $shape);
                         //var_dump2('pointer', $pointer->resourceId);
                         //----skip ignored
@@ -1855,15 +1857,15 @@ class Bpm extends CI_Model {
         }//---not error
         return $rtnObject;
     }
-    
+
     function clone_case($from_idwf, $to_idwf, $idcase) {
-        
+
         $case = $this->get_case($idcase, $from_idwf);
         $case_to = $this->get_case($idcase, $to_idwf);
         if (!$case_to) {
             /*
-            *    Clone case
-            */
+             *    Clone case
+             */
             $this->gen_case($to_idwf, $idcase);
             $case_to = $this->bpm->get_case($idcase, $to_idwf);
             $case_to['data'] = $case['data'];
@@ -1876,22 +1878,22 @@ class Bpm extends CI_Model {
             return false;
         }
     }
-    
+
     /**
-    * Cancel boundary shapes
-    */
-    function cancel_boundary($shape,$wf){
-        $boundary=array();
-        $boundary_arr=array();
+     * Cancel boundary shapes
+     */
+    function cancel_boundary($shape, $wf) {
+        $boundary = array();
+        $boundary_arr = array();
         foreach ($shape->outgoing as $out) {
-        $this_shape = $this->bpm->get_shape($out->resourceId, $wf);
+            $this_shape = $this->bpm->get_shape($out->resourceId, $wf);
             if ($this_shape->stencil->id == 'IntermediateTimerEvent') {
-                $boundary[]=$this_shape;
-                $boundary_arr[]=$this_shape->resourceId;
+                $boundary[] = $this_shape;
+                $boundary_arr[] = $this_shape->resourceId;
             }
         }
         $data = array('canceledBy' => $shape->resourceId, 'canceledName' => $shape->properties->name);
-        foreach($boundary as $child){
+        foreach ($boundary as $child) {
             $token = $this->bpm->get_token($wf->idwf, $wf->case, $child->resourceId);
             if ($token['status'] !== 'finished') {
                 $this->bpm->set_token($wf->idwf, $wf->case, $child->resourceId, $child->stencil->id, 'canceled', $data);
@@ -1900,11 +1902,11 @@ class Bpm extends CI_Model {
         }
         return $boundary_arr;
     }
-    
+
     /**
-    * Cancel boundary shapes
-    */
-        function get_data($collection,$filter, $fields = array(), $sort = array()) {
+     * Cancel boundary shapes
+     */
+    function get_data($collection, $filter, $fields = array(), $sort = array()) {
         //$this->db->debug=true;
         $this->db->where($filter);
         $this->db->select($fields);
@@ -1912,6 +1914,5 @@ class Bpm extends CI_Model {
         $rs = $this->db->get($collection);
         return $rs->result_array();
     }
-    
-     
+
 }
