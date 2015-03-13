@@ -388,7 +388,7 @@ class Bpm extends CI_Model {
         if (!isset($data['iduser']))
             $data['iduser'] = (int) $this->session->userdata('iduser');
 
-        if (!isset($idwf) or !isset($case) or !isset($resourceId)) {
+        if (!isset($idwf) or ! isset($case) or ! isset($resourceId)) {
             show_error("Can't update whith: idwf:$idwf case:$case  resourceId:$resourceId<br/>Incomplete Data.");
         }
         //$title=(isset($shape->properties->title))?$shape->properties->title;$shape->stencil->id;
@@ -638,7 +638,7 @@ class Bpm extends CI_Model {
         $query+=$filter;
         toRegex($query);
         //var_dump2(json_encode($query));
-        return $this->mongo->db->tokens->find($query);//->sort(array('_id' => true));
+        return $this->mongo->db->tokens->find($query); //->sort(array('_id' => true));
     }
 
     function get_triggers() {
@@ -864,6 +864,7 @@ class Bpm extends CI_Model {
 
     function update_case($idwf, $id, $data) {
 
+        $data['idwf'] = $idwf;
         $data['id'] = $id;
         $case = $this->get_case($id);
         //---calculate interval since case started
@@ -878,7 +879,7 @@ class Bpm extends CI_Model {
 //      $data['token_status'] = (isset($data['token_status'])) ? $data['token_status'] : $this->get_token_status($case['idwf'], $case['id']);
         $data['token_status'] = $this->get_token_status($case['idwf'], $case['id']);
         $query = array('$set' => (array) $data);
-        $criteria = array('id' => $id);
+        $criteria = array('idwf'=>$idwf,'id' => $id);
         $options = array('upsert' => true, 'w' => true);
         //var_dump2($query,$criteria,$options);
         $this->mongo->db->case->update($criteria, $query, $options);
@@ -1404,14 +1405,14 @@ class Bpm extends CI_Model {
         if ($lane) {
             $l_status = 'finished';
             //---get child status
-            $filter = array('status' => array('$ne' => 'finished'));
+            $filter = array('idwf'=>$wf->idwf,'case'=>$wf->case, 'status' => array('$ne' => 'finished'));
             foreach ($lane->childShapes as $child) {
                 if (in_array($child->stencil->id, array('Task')))
                     $filter['resourceId']['$in'][] = $child->resourceId;
             }
-            $child_status = $this->get_tokens_byFilter($filter, array('_id'));
+            $child_status = $this->get_tokens_byFilter_count($filter, array('_id'));
 //            var_dump(count($child_status), json_encode($filter));
-            if (count($child_status))
+            if ($child_status)
                 $l_status = 'open';
             $tokenLane['interval'] = date_diff($dateOut, $dateIn, true);
             $this->set_token($wf->idwf, $wf->case, $lane->resourceId, 'Lane', $l_status, $tokenLane);
@@ -1615,7 +1616,7 @@ class Bpm extends CI_Model {
         $data = array_filter($data);
 
         //---if assignment not set either by group or explicit assignment then assign task to "Initiator"
-        if (!isset($data['assign']) or !count($data['assign'])) {
+        if (!isset($data['assign']) or ! count($data['assign'])) {
             if (isset($data['idgroup'])) {
                 if (count($data['idgroup'])) {
                     $initiator = $this->user->get_user($this->user->Initiator);
@@ -1802,7 +1803,7 @@ class Bpm extends CI_Model {
 
 //---check if user belong to the group the task is assigned to
 //---but only if the task havent been assigned to an specific user
-        if (isset($token['idgroup']) and !isset($token['assign'])) {
+        if (isset($token['idgroup']) and ! isset($token['assign'])) {
             foreach ($user->group as $thisgroup) {
                 if (in_array((int) $thisgroup, $token['idgroup'])) {
                     $is_allowed = true;
