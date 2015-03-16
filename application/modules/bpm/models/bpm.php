@@ -851,7 +851,7 @@ class Bpm extends CI_Model {
     function update_case_token_status($idwf, $idcase) {
         $case = $this->get_case($idcase, $idwf);
         if (isset($case['status'])) {
-            if ($case['status'] <> 'closed') {
+            if ($case['status']) {
                 $data['token_status'] = $this->get_token_status($idwf, $idcase);
                 $query = array('$set' => (array) $data);
                 $criteria = array('idwf' => $idwf, 'id' => $idcase);
