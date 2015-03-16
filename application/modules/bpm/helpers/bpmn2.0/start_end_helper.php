@@ -127,8 +127,7 @@ function run_EndNoneEvent($shape, $wf, $CI, $moveForward = true) {
                 if ($active_tokens->count() == 0) {
                     $CI->bpm->update_case($wf->idwf, $wf->case, array(
                         'status' => 'closed',
-                        'checkoutdate' => date('Y-m-d H:i:s'),
-                        'set_token_status' => array($shape->resourceId)
+                        'checkoutdate' => date('Y-m-d H:i:s')
                             )
                     );
                 }
