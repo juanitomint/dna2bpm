@@ -1355,8 +1355,6 @@ class Bpm extends CI_Model {
         $token = array_filter($token);
         //---SAVE Token as finished
         $this->save_token($token);
-        //---Update case status
-        $this->update_case_token_status($wf->idwf, $wf->case);
 
         //---process outgoing
         if ($process_out) {
@@ -1417,6 +1415,8 @@ class Bpm extends CI_Model {
             $tokenLane['interval'] = date_diff($dateOut, $dateIn, true);
             $this->set_token($wf->idwf, $wf->case, $lane->resourceId, 'Lane', $l_status, $tokenLane);
         }
+        //---Update case status
+        $this->update_case_token_status($wf->idwf, $wf->case);
         return true;
     }
 
