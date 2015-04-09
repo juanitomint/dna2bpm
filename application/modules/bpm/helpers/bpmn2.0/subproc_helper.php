@@ -14,16 +14,11 @@ function run_CollapsedSubprocess($shape, $wf, $CI) {
     $CI->bpm->set_token($wf->idwf, $wf->case, $shape->resourceId, $shape->stencil->id, 'waiting');
     //---check if child proceses already exists.
     if (isset($token['child'])) {
-        $CI->Run('model', $token['child']['idwf'], $token['child']['case']);
-        // ---now run child processes
-        if (isset($token ['child'])) {
-            if ($shape->properties->entry) {
-                $child_idwf = $shape->properties->entry;
-                foreach ($token['child'][$child_idwf] as $child_idcase) {
-                    $this->Run('model', $child_idwf, $child_idcase);
-                }
+        if($shape->properties->looptype=='None'){
+            $child_idwf=key($token['child']);
+            $child_case=$token['child'][$child_idwf][0];
+            $CI->Run('model', $child_idwf, $child_case);
             }
-        }
     } else {
         if ($shape->properties->entry) {
             $child_idwf = $shape->properties->entry;
@@ -58,8 +53,8 @@ function run_CollapsedSubprocess($shape, $wf, $CI) {
                     break;
                 case "Standard":
                     break;
-                default://-- "None"
-                    $CI->newcase('model', $child_idwf, false, $parent, $silent);
+                default://-- "None" start just 1 child case
+                    $CI->newcase('model', $child_idwf, false, $parent, false);
                     break;
             }
         }
