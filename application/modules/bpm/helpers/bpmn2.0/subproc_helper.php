@@ -51,8 +51,6 @@ function run_CollapsedSubprocess($shape, $wf, $CI) {
                     break;
                 case "Standard":
                     break;
-                case "Standard":
-                    break;
                 default://-- "None" start just 1 child case
                     $CI->newcase('model', $child_idwf, false, $parent, false);
                     break;
