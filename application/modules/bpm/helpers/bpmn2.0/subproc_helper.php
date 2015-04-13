@@ -9,10 +9,9 @@ function run_CollapsedSubprocess($shape, $wf, $CI) {
     $parent['token'] = $token;
     $parent['case'] = $wf->case;
     $parent['idwf'] = $wf->idwf;
-    $case=$this->bpm->get_case($wf->idcase, $wf->idwf);
+    $case=$CI->bpm->get_case($wf->case, $wf->idwf);
     $silent = true;
-    //----Set token status to waiting
-    $CI->bpm->set_token($wf->idwf, $wf->case, $shape->resourceId, $shape->stencil->id, 'waiting');
+    
     //---check if child proceses already exists.
     if (isset($token['child'])) {
         $CI->Run('model', $token['child']['idwf'], $token['child']['case']);
@@ -26,6 +25,8 @@ function run_CollapsedSubprocess($shape, $wf, $CI) {
             }
         }
     } else {
+        //--Set token status to waiting
+        $CI->bpm->set_token($wf->idwf, $wf->case, $shape->resourceId, $shape->stencil->id, 'waiting');
         if ($shape->properties->entry) {
             $child_idwf = $shape->properties->entry;
             /* Create new child cases
@@ -39,7 +40,7 @@ function run_CollapsedSubprocess($shape, $wf, $CI) {
             }
             $data=array();
             //-----determines how data is treated in child process
-            switch($parent->properties['subprocesstype']){
+            switch($shape->properties->subprocesstype){
                         
                     case  "Embedded":
                     //----exports data to parent as it is embeded.
@@ -73,9 +74,8 @@ function run_CollapsedSubprocess($shape, $wf, $CI) {
                     }
                     break;
                 case "Standard":
-                    break;
                 default://-- "None" start just 1 child case
-                    $CI->newcase('model', $child_idwf, false, $parent, false);
+                    $CI->newcase('model', $child_idwf, false, $parent, false,$data);
                     break;
             }
         }
