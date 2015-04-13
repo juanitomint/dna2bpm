@@ -189,7 +189,7 @@ class Engine extends MX_Controller {
         $this->data = (object) null;
         $debug = (isset($this->debug [__FUNCTION__])) ? $this->debug [__FUNCTION__] : false;
         if ($debug)
-            echo "<h2>" . __FUNCTION__ . '</h2>';
+            echo "<h2>" . __FUNCTION__ . " $idwf -> $case </h2>";
         //---Set break_on_next to false
         $this->break_on_next = false;
         // ---check if case is locked
