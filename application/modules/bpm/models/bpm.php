@@ -98,16 +98,18 @@ class Bpm extends CI_Model {
                             break;
 
                         case "Embedded":
+                            if ($item['properties']['entry']) {
+                               $wf = $this->bpm->load($item['properties']['entry'], true);
+                               //var_dump2('linked',$wf['data']['childShapes']);
+                               $item['childShapes'] = $wf['data']['childShapes'];
+                            }
                             break;
                     }
                     //----4 now we do the same for all: load the model into the shape
-                    if ($item['properties']['entry']) {
-                        $wf = $this->bpm->load($item['properties']['entry'], true);
-                        //var_dump2('linked',$wf['data']['childShapes']);
-                        $item['childShapes'] = $wf['data']['childShapes'];
-                    }
+                    
                 }
             }//---isset
+            //----check ChildShapes
             if (isset($item['childShapes'])) {
                 $item['childShapes'] = array_map(array($this->bpm, 'replace_subproc'), (array) $item['childShapes']);
             }
