@@ -4,14 +4,18 @@ if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
 class User extends CI_Model {
-
+    //---default discover policy
+    var  $autodiscover=true;
+    
     function __construct() {
         parent::__construct();
         $this->idu = $this->session->userdata('iduser');
         $this->config->load('user/config');
         $this->load->library('cimongo/cimongo');
         $this->db = $this->cimongo;
+        $this->autodiscover=($this->config->item('autodiscover'))?true:false;
     }
+    
 
     function add($user_data) {
         $user = null;
@@ -109,12 +113,13 @@ class User extends CI_Model {
              * Auto-discover from existent will add all the paths it's hits
              * turn off for production
              */
-            $this->rbac->put_path($path, array(
-                'source' => 'AutoDiscovery',
-                'checkdate' => date('Y-m-d H:i:s'),
-                'idu' => $this->idu
-            ));
-
+            if($this->autodiscover){ 
+                $this->rbac->put_path($path, array(
+                    'source' => 'AutoDiscovery',
+                    'checkdate' => date('Y-m-d H:i:s'),
+                    'idu' => $this->idu
+                ));
+            }
             //---give access if belong to group ADMINS
             if ($this->isAdmin($thisUser)) {
                 $canaccess = true;
