@@ -98,16 +98,18 @@ class Bpm extends CI_Model {
                             break;
 
                         case "Embedded":
+                            if ($item['properties']['entry']) {
+                               $wf = $this->bpm->load($item['properties']['entry'], true);
+                               //var_dump2('linked',$wf['data']['childShapes']);
+                               $item['childShapes'] = $wf['data']['childShapes'];
+                            }
                             break;
                     }
                     //----4 now we do the same for all: load the model into the shape
-                    if ($item['properties']['entry']) {
-                        $wf = $this->bpm->load($item['properties']['entry'], true);
-                        //var_dump2('linked',$wf['data']['childShapes']);
-                        $item['childShapes'] = $wf['data']['childShapes'];
-                    }
+                    
                 }
             }//---isset
+            //----check ChildShapes
             if (isset($item['childShapes'])) {
                 $item['childShapes'] = array_map(array($this->bpm, 'replace_subproc'), (array) $item['childShapes']);
             }
@@ -851,7 +853,7 @@ class Bpm extends CI_Model {
     function update_case_token_status($idwf, $idcase) {
         $case = $this->get_case($idcase, $idwf);
         if (isset($case['status'])) {
-            if ($case['status'] <> 'closed') {
+            if ($case['status']) {
                 $data['token_status'] = $this->get_token_status($idwf, $idcase);
                 $query = array('$set' => (array) $data);
                 $criteria = array('idwf' => $idwf, 'id' => $idcase);
