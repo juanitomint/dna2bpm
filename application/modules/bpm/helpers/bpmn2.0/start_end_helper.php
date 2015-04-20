@@ -98,24 +98,29 @@ function run_StartParallelMultipleEvent($shape, $wf, $CI) {
 function run_EndNoneEvent($shape, $wf, $CI, $moveForward = true) {
 
     $debug = (isset($CI->debug[__FUNCTION__])) ? true : false;
-
+    //$debug=true;
     if ($debug)
         echo "<h2>" . __FUNCTION__ . '</h2>';
 //----don't forward tokens if has events
     if ($moveForward)
         $CI->bpm->movenext($shape, $wf);
     //---check if parent is present
-    $parent = $CI->bpm->get_shape_parent($shape->resourceId, $wf);
+    $parent_resourceId = property_exists($shape->properties,'subproc_parent')? $shape->properties->subproc_parent:null;
+    $parent=isset($parent_resourceId)? $CI->bpm->get_shape($parent_resourceId, $wf):null;
     if ($debug)
         var_dump('parent', $parent);
     if ($parent) {
         switch ($parent->stencil->id) {
             case 'Subprocess':
+                if ($debug)
+                echo '<h3>Finish Subprocess</h3>';
                 //---Finish the process
                 $CI->bpm->movenext($parent, $wf);
                 break;
-
-            case 'CollapsedSubprocess':
+            //----embedded subproces only
+            case 'CollapsedSubprocess': 
+                if ($debug)
+                echo '<h3>Finish CollapsedSubprocess</h3>';
                 //---Finish the process
                 $CI->bpm->movenext($parent, $wf);
                 break;

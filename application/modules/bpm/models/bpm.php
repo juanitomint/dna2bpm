@@ -27,7 +27,7 @@ class Bpm extends CI_Model {
         $this->load->config('bpm/config');
     }
 
-    function load($idwf, $replace = false) {
+    function load($idwf, $replace = true) {
 
         $query = array('idwf' => $idwf);
 //        var_dump2($query);
@@ -44,7 +44,7 @@ class Bpm extends CI_Model {
             if ($replace)
                 $wf = array_map(array($this->bpm, 'replace_subproc'), (array) $wf);
             //echo '<hr/>';
-            //var_dump2($wf);
+            // var_dump2($wf); exit;
         } else {//----return deleted msg
         }
         return $wf;
@@ -100,8 +100,24 @@ class Bpm extends CI_Model {
                         case "Embedded":
                             if ($item['properties']['entry']) {
                                $wf = $this->bpm->load($item['properties']['entry'], true);
-                               //var_dump2('linked',$wf['data']['childShapes']);
+                                //----set resourceId parent for replaced subproc
+                                $postfix='_'.$item['properties']['name'];
+                               foreach($wf['data']['childShapes'] as &$child) {
+                                    $child['properties']['subproc_parent']=$item['resourceId'];
+                                    $child['resourceId'].=$postfix;
+                                    if(count ($child['outgoing'])){
+                                        foreach ($child['outgoing'] as &$out){
+                                            $out['resourceId'].=$postfix;
+                                        }
+                                    }
+                                    if(isset($child['target']) && count ($child['target'])){
+                                        $child['target']['resourceId'].=$postfix;
+                                        
+                                    }
+                               }
+                               //var_dump2('linked',$wf['data']['childShapes']);exit;
                                $item['childShapes'] = $wf['data']['childShapes'];
+                               //---
                             }
                             break;
                     }
@@ -1184,6 +1200,7 @@ class Bpm extends CI_Model {
         //$debug=true;
         if ($debug)
             echo '<h2>' . __FUNCTION__ . '</h2>' . $resourceId . '<hr/>';
+       
         foreach ($wf->childShapes as $obj) {
             if ($debug)
                 echo 'Analizing:' . $obj->stencil->id . '<hr>';
