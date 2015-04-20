@@ -126,28 +126,28 @@ function run_EndNoneEvent($shape, $wf, $CI, $moveForward = true) {
                 break;
 
             default:
-                //----Set status 4 Case
-                //---close process if all end events have been finished (or canceled)
-                $active_tokens = $CI->bpm->get_pending($wf->idwf, $wf->case, array('user', 'waiting', 'pending'), array());
-                if ($active_tokens->count() == 0) {
-                    $CI->bpm->update_case($wf->idwf, $wf->case, array(
-                        'status' => 'closed',
-                        'checkoutdate' => date('Y-m-d H:i:s')
-                            )
-                    );
-                }
-                //----update parent case if any
-                $mycase = $CI->bpm->get_case($wf->case, $wf->idwf);
-                if (isset($mycase['parent'])) {
-                    $parent = $mycase['parent'];
-                    // run_post($model, $idwf, $case, $resourceId)
-                    //echo '/bpm/engine/run_post/model/' . $parent['idwf'] . '/' . $parent['case'] . '/' . $parent['token']['resourceId'];
-                    //Module::run('/bpm/engine/run_post', 'model', $parent['idwf'], $parent['case'], $parent['token']['resourceId']);
-                    echo "RUNING parent";
-                    $CI->run_post('model', $parent['idwf'], $parent['case'], $parent['token']['resourceId']);
-                }
                 break;
         }
+    }
+    //----Set status 4 Case
+    //---close process if all end events have been finished (or canceled)
+    $active_tokens = $CI->bpm->get_pending($wf->idwf, $wf->case, array('user', 'waiting', 'pending'), array());
+    if ($active_tokens->count() == 0) {
+        $CI->bpm->update_case($wf->idwf, $wf->case, array(
+            'status' => 'closed',
+            'checkoutdate' => date('Y-m-d H:i:s')
+                )
+        );
+    }
+    //----update parent case if any
+    $mycase = $CI->bpm->get_case($wf->case, $wf->idwf);
+    if (isset($mycase['parent'])) {
+        $parent = $mycase['parent'];
+        // run_post($model, $idwf, $case, $resourceId)
+        //echo '/bpm/engine/run_post/model/' . $parent['idwf'] . '/' . $parent['case'] . '/' . $parent['token']['resourceId'];
+        //Module::run('/bpm/engine/run_post', 'model', $parent['idwf'], $parent['case'], $parent['token']['resourceId']);
+        echo "RUNING parent";
+        $CI->run_post('model', $parent['idwf'], $parent['case'], $parent['token']['resourceId']);
     }
 }
 
