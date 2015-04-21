@@ -96,7 +96,7 @@ class Process extends MX_Controller {
         } else {
             $redir = 'dna2/controlpanel';
         }
-        header("Location:".base_url().$redir);
+        redirect(base_url().$redir);
     }
 
 }

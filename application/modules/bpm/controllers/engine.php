@@ -173,7 +173,7 @@ class Engine extends MX_Controller {
         // ---Redir the browser to engine Run
         $redir = "bpm/engine/run/model/$idwf/$idcase";
         if (!$silent) {
-            header("Location:" . $this->base_url . $redir);
+            redirect( $this->base_url . $redir);
         } else {
             //echo "created:  $idwf, $idcase<hr/>";
             // $this->Run('model', $idwf, $case);
@@ -341,7 +341,7 @@ class Engine extends MX_Controller {
 
         $redir = "bpm/engine/run/model/$idwf/$case";
         if (!$debug) {
-            header("Location:" . $this->base_url . $redir);
+            redirect($this->base_url . $redir);
         } else {
             echo 'Location:<a href="' . $this->base_url . $redir . '"> >>> Click here to continue <<< </a>';
         }
@@ -396,7 +396,7 @@ class Engine extends MX_Controller {
         }
         // ---Redir the browser to engine Run
         $redir = "bpm/engine/run/model/$idwf/$case";
-        header("Location:" . $this->base_url . $redir);
+        redirect($this->base_url . $redir);
     }
 
     function task_locked($model, $idwf, $idcase, $resourceId) {
