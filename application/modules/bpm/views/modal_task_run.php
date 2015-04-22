@@ -27,9 +27,9 @@
                         SAVE
                     </button>
                     <hr/>
-                    <div id="results"/>
+                        <div id="results"/>
+                        </div>
                     </div>
                 </div>
-        </div>
-    </div>
+            </div>
 </div>

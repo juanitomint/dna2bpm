@@ -128,7 +128,7 @@ class Repository extends MX_Controller {
     function load($model, $idwf, $mode = '', $debug = false) {
 //---decode url string
         $idwf = urldecode($idwf);
-        $mywf = $this->bpm->load($idwf);
+        $mywf = $this->bpm->load($idwf,false);
         if (!$debug)
             header('Content-type: application/json;charset=UTF-8');
         $template = array(
@@ -162,12 +162,12 @@ class Repository extends MX_Controller {
         $this->parser->parse('bpm/editor', $wfData);
     }
 
-    function dump($model, $idwf, $mode = '') {
+    function dump($model, $idwf, $expand=false) {
         $wfData['htmltitle'] = 'WF-Manager:' . $idwf;
         $wfData['theme'] = $this->config->item('theme');
         $wfData['base_url'] = $this->base_url;
         $wfData['idwf'] = $idwf;
-        $mywf = $this->bpm->load($idwf);
+        $mywf = $this->bpm->load($idwf,$expand);
         $wfData['data'] = $mywf['data'];
         ini_set('xdebug.var_display_max_data', 512);
         ini_set('xdebug.var_display_max_depth', -1);
@@ -176,7 +176,63 @@ class Repository extends MX_Controller {
         header('Content-type: application/json;charset=UTF-8');
         echo json_encode($wfData);
     }
-
+    function json_view($model,$idwf,$expand=false){
+        $this->load->library('ui');
+        $mywf = $this->bpm->load($idwf,$expand);
+        $renderData['data'] = $mywf['data'];
+        //---flatten some data
+        $renderData['properties'] = $mywf['data']['properties'];
+        
+        $renderData ['base_url'] = $this->base_url;
+        // ---prepare UI
+        $renderData ['js'] = array(
+            $this->module_url . 'assets/jscript/modal_window.js' => 'Modal Window Generic JS'
+        );
+        // ---prepare globals 4 js
+        $renderData ['global_js'] = array(
+            'base_url' => $this->base_url,
+            'module_url' => $this->module_url,
+            'idwf' => $idwf,
+            
+        );
+        
+        $renderData['css'] = array(
+            $this->module_url . 'assets/css/jsoneditor.min.css' => 'JSON-Editor CSS',
+            $this->module_url . 'assets/css/json_view.css' => 'JSON-Editor CSS',
+        );
+        
+        $renderData['js'] = array(
+            $this->module_url . 'assets/jscript/jsoneditor.min.js' => 'JSON-Editor',
+            $this->module_url . 'assets/jscript/repository/json_view.js' => 'JSON-View Init',
+        );
+        $this->ui->compose('bpm/json_editor', 'bpm/bootstrap.ui.php', $renderData);
+    }
+        /*
+        * Save edited script
+        */
+        
+    function save_script($idwf,$resourceId){
+        $this->user->authorize();
+        $debug=false;
+        $script=$this->input->post('script');
+        $this->load->model('bpm/bpm');
+        $this->load->module('bpm/engine');
+        $this->load->library('parser');
+        $this->load->library('bpm/ui');
+        $user = $this->user->getuser((int) $this->session->userdata('iduser'));
+        $renderData = array();
+        //---get Shape
+        // $mywf = $this->bpm->load($idwf);
+        // $wf = $script;
+        
+        
+        
+        //header('Content-type: application/json;charset=UTF-8');
+        $this->bpm->save($idwf, $wf, $mywf['svg']);
+        echo "Saved!";
+        
+    
+    }
     function thumbnail($idwf, $width, $heigth) {
         $svg = $this->bpm->svg($idwf);
         header("Content-type: image/svg+xml");
@@ -193,7 +249,7 @@ class Repository extends MX_Controller {
 //$svg = $this->bpm->svg($idwf);
 //$this->parser->parse('bpm/svg', $svg);
 
-        $mywf = $this->bpm->load($idwf);
+        $mywf = $this->bpm->load($idwf,false);
         $svg[] = $mywf['svg'];
 //var_dump($svg);
         $data['svg'] = str_replace('>', ">\n", $mywf['svg']);
@@ -234,7 +290,7 @@ class Repository extends MX_Controller {
         $data['theme'] = $this->config->item('theme');
         $data['base_url'] = $this->base_url;
         $data['idwf'] = $idwf;
-        $wf = $this->bpm->load($idwf);
+        $wf = $this->bpm->load($idwf,false);
         $data+=$wf['data']['properties'];
 //var_dump($wfData);
 //---read model SVG
@@ -322,7 +378,7 @@ class Repository extends MX_Controller {
         $wfData['theme'] = $this->config->item('theme');
         $wfData['base_url'] = $this->base_url;
         $wfData['idwf'] = $idwf;
-        $mywf = $this->bpm->load($idwf);
+        $mywf = $this->bpm->load($idwf,false);
         $wf = $this->bpm->bindArrayToObject($mywf['data']);
         $shape = $this->bpm->get_shape($resourceId, $wf);
         echo $shape->stencil->id . '<br/>';
