@@ -4,6 +4,7 @@
           success: function(json) {
               var options = {
                   mode: 'view',
+                  indentation: 4,
                   modes: ['code', 'form', 'text', 'tree', 'view'], // allowed modes
                   error: function(err) {
                       alert(err.toString());
