@@ -101,10 +101,10 @@ class Bpm extends CI_Model {
                             if ($item['properties']['entry']) {
                                $wf = $this->bpm->load($item['properties']['entry'], true);
                                 //----set resourceId parent for replaced subproc
-                                $postfix='_'.$item['properties']['name'];
+                                
                                
                                //var_dump2('linked',$wf['data']['childShapes']);exit;
-                               $item['childShapes'] = $this->replace_resourceId($wf['data']['childShapes'],$postfix);
+                               $item['childShapes'] = $this->replace_resourceId($wf['data']['childShapes'],$item);
                                //---
                             }
                             break;
@@ -120,9 +120,10 @@ class Bpm extends CI_Model {
         } //---is array
         return $item;
     }
-    function replace_resourceId($childs,$postfix){
+    function replace_resourceId($childs,$item){
+        $postfix='_'.$item['properties']['name'];
         foreach($childs as &$child) {
-            // $child['properties']['subproc_parent']=$item['resourceId'];
+            $child['properties']['subproc_parent']=$item['resourceId'];
             $child['resourceId'].=$postfix;
             if(count ($child['outgoing'])){
                 foreach ($child['outgoing'] as &$out){
@@ -135,7 +136,7 @@ class Bpm extends CI_Model {
             }
             //----check ChildShapes
             if (isset($child['childShapes'])) {
-            $child['childShapes'] = $this->replace_resourceId($child['childShapes'],$postfix);
+            $child['childShapes'] = $this->replace_resourceId($child['childShapes'],$item);
             }
         }
         return $childs;

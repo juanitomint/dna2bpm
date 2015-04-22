@@ -54,6 +54,8 @@ class Case_manager extends MX_Controller {
         $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
         if ($debug)
             echo '<h2>' . __FUNCTION__ . '</h2>';
+        //---sanitize resourceId
+        $resourceId = urldecode($resourceId);
         $case = $this->bpm->get_case($idcase);
         $token = $this->bpm->get_token($idwf, $idcase, $resourceId);
         $filter = array(
