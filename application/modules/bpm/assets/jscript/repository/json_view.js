@@ -11,7 +11,7 @@
                   }
               };
               var container = document.getElementById('jsoneditor');
-              globals.jsonEd = new JSONEditor(container, options, json);
+              globals.jsonEd = new JSONEditor(container, options, json.data);
           }
       });
 
@@ -19,7 +19,7 @@
   $('#saveTask').click(function() {
       url = globals.base_url + 'bpm/repository/save_script/' + globals.idwf + '/' + globals.resourceId;
       data = {
-          script: editAreaLoader.getValue("editArea")
+          script: globals.jsonEd.get()
       }
       $.ajax({
           url: url,

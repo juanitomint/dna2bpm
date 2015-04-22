@@ -182,7 +182,7 @@ class Repository extends MX_Controller {
         $renderData['data'] = $mywf['data'];
         //---flatten some data
         $renderData['properties'] = $mywf['data']['properties'];
-        
+        $renderData['title']=$renderData['properties']['name'];
         $renderData ['base_url'] = $this->base_url;
         // ---prepare UI
         $renderData ['js'] = array(
@@ -215,6 +215,8 @@ class Repository extends MX_Controller {
         $this->user->authorize();
         $debug=false;
         $script=$this->input->post('script');
+        // ----LOAD LANGUAGE
+        $this->lang->load('library', $this->config->item('language'));
         $this->load->model('bpm/bpm');
         $this->load->module('bpm/engine');
         $this->load->library('parser');
@@ -222,14 +224,15 @@ class Repository extends MX_Controller {
         $user = $this->user->getuser((int) $this->session->userdata('iduser'));
         $renderData = array();
         //---get Shape
-        // $mywf = $this->bpm->load($idwf);
+        $mywf = $this->bpm->load($idwf);
         // $wf = $script;
+        $wf = $mywf['data'];
         
         
         
         //header('Content-type: application/json;charset=UTF-8');
-        $this->bpm->save($idwf, $wf, $mywf['svg']);
-        echo "Saved!";
+        //$this->bpm->save($idwf, $wf, $mywf['svg']);
+        echo date($this->lang->line('dateFmt'))." Saved!";
         
     
     }
