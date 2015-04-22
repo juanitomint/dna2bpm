@@ -102,21 +102,9 @@ class Bpm extends CI_Model {
                                $wf = $this->bpm->load($item['properties']['entry'], true);
                                 //----set resourceId parent for replaced subproc
                                 $postfix='_'.$item['properties']['name'];
-                               foreach($wf['data']['childShapes'] as &$child) {
-                                    $child['properties']['subproc_parent']=$item['resourceId'];
-                                    $child['resourceId'].=$postfix;
-                                    if(count ($child['outgoing'])){
-                                        foreach ($child['outgoing'] as &$out){
-                                            $out['resourceId'].=$postfix;
-                                        }
-                                    }
-                                    if(isset($child['target']) && count ($child['target'])){
-                                        $child['target']['resourceId'].=$postfix;
-                                        
-                                    }
-                               }
+                               
                                //var_dump2('linked',$wf['data']['childShapes']);exit;
-                               $item['childShapes'] = $wf['data']['childShapes'];
+                               $item['childShapes'] = $this->replace_resourceId($wf['data']['childShapes'],$postfix);
                                //---
                             }
                             break;
@@ -132,7 +120,27 @@ class Bpm extends CI_Model {
         } //---is array
         return $item;
     }
-
+    function replace_resourceId($childs,$postfix){
+        foreach($childs as &$child) {
+            // $child['properties']['subproc_parent']=$item['resourceId'];
+            $child['resourceId'].=$postfix;
+            if(count ($child['outgoing'])){
+                foreach ($child['outgoing'] as &$out){
+                    $out['resourceId'].=$postfix;
+                }
+            }
+            if(isset($child['target']) && count ($child['target'])){
+                $child['target']['resourceId'].=$postfix;
+                
+            }
+            //----check ChildShapes
+            if (isset($child['childShapes'])) {
+            $child['childShapes'] = $this->replace_resourceId($child['childShapes'],$postfix);
+            }
+        }
+        return $childs;
+    }
+    
     function get_properties($idwf) {
         $query = array('idwf' => $idwf);
 //        var_dump2($query);
