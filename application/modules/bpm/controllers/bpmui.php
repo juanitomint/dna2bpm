@@ -427,6 +427,7 @@ class Bpmui extends MX_Controller {
         $data['qtty'] = $total;
         $parts = array_chunk($tasks, $pagesize, true);
         $pages = count($parts);
+        $data['mytasks']=array();//--prevent parser problems
         if ($pages) {
             $tasks = $parts[$chunk - 1];
             foreach ($tasks as $task) {
