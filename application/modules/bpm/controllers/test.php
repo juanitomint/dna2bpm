@@ -25,7 +25,7 @@ class test extends MX_Controller {
         $this->load->model('bpm');
         $this->load->model('app');
         $this->load->model('msg');
-        $this->idu = (int) $this->session->userdata('iduser');
+        $this->idu = $this->user->idu;
 
         $this->load->library('parser');
         $this->load->helper('bpm');
@@ -132,7 +132,7 @@ class test extends MX_Controller {
                 $msg['from'] = array_pop($resources['Performer']);
             }
         }
-        $token['assign'] = (isset($token['assign'])) ? $token['assign'] : array();
+        $token['assign'] = (isset($token['assign'])) ? $token['assign'] : array($this->user->Initiator);
         $to = (isset($resources['assign'])) ? array_merge($token['assign'], $resources['assign']) : $token['assign'];
         $to = array_unique(array_filter($to));
         foreach ($to as $iduser) {
@@ -184,7 +184,7 @@ class test extends MX_Controller {
 //---tomo el template de la tarea
         $renderData['name'] = 'Test TASK->SEND: ' . $wf->properties->name;
         $renderData['shapes'] = $this->bpm->bindObjectToArray($this->bpm->get_shape_byprop(array('tasktype' => 'Send'), $wf));
-//        var_dump($renderData);
+        var_dump($renderData);
 //        exit;
         $this->ui->compose('bpm/modal_task_send', 'bpm/bootstrap.ui.php', $renderData);
     }
@@ -286,7 +286,7 @@ function run_test($idwf,$idcase,$resourceId){
 //---store result in case
         $case['data'][$data_store] = $DS->$data_store;
         
-        var_dump($data_sore,$DS->$data_store);
+        var_dump($data_store,$DS->$data_store);
     }
     
     }

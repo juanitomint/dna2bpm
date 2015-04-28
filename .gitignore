@@ -9,3 +9,5 @@
 /.c9/
 .c9revisions/
 .settings
+/API/
+/application/modules/qr/cache/

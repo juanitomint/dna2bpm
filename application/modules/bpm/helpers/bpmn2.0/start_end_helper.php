@@ -98,52 +98,56 @@ function run_StartParallelMultipleEvent($shape, $wf, $CI) {
 function run_EndNoneEvent($shape, $wf, $CI, $moveForward = true) {
 
     $debug = (isset($CI->debug[__FUNCTION__])) ? true : false;
-
+    //$debug=true;
     if ($debug)
         echo "<h2>" . __FUNCTION__ . '</h2>';
 //----don't forward tokens if has events
     if ($moveForward)
         $CI->bpm->movenext($shape, $wf);
     //---check if parent is present
-    $parent = $CI->bpm->get_shape_parent($shape->resourceId, $wf);
+    $parent_resourceId = property_exists($shape->properties,'subproc_parent')? $shape->properties->subproc_parent:null;
+    $parent=isset($parent_resourceId)? $CI->bpm->get_shape($parent_resourceId, $wf):null;
     if ($debug)
         var_dump('parent', $parent);
     if ($parent) {
         switch ($parent->stencil->id) {
             case 'Subprocess':
+                if ($debug)
+                echo '<h3>Finish Subprocess</h3>';
                 //---Finish the process
                 $CI->bpm->movenext($parent, $wf);
                 break;
-
-            case 'CollapsedSubprocess':
+            //----embedded subproces only
+            case 'CollapsedSubprocess': 
+                if ($debug)
+                echo '<h3>Finish CollapsedSubprocess</h3>';
                 //---Finish the process
                 $CI->bpm->movenext($parent, $wf);
                 break;
 
             default:
-                //----Set status 4 Case
-                //---close process if all end events have been finished (or canceled)
-                $active_tokens = $CI->bpm->get_pending($wf->idwf, $wf->case, array('user', 'waiting', 'pending'), array());
-                if ($active_tokens->count() == 0) {
-                    $CI->bpm->update_case($wf->idwf, $wf->case, array(
-                        'status' => 'closed',
-                        'checkoutdate' => date('Y-m-d H:i:s'),
-                        'set_token_status' => array($shape->resourceId)
-                            )
-                    );
-                }
-                //----update parent case if any
-                $mycase = $CI->bpm->get_case($wf->case, $wf->idwf);
-                if (isset($mycase['parent'])) {
-                    $parent = $mycase['parent'];
-                    // run_post($model, $idwf, $case, $resourceId)
-                    //echo '/bpm/engine/run_post/model/' . $parent['idwf'] . '/' . $parent['case'] . '/' . $parent['token']['resourceId'];
-                    //Module::run('/bpm/engine/run_post', 'model', $parent['idwf'], $parent['case'], $parent['token']['resourceId']);
-                    echo "RUNING parent";
-                    $CI->run_post('model', $parent['idwf'], $parent['case'], $parent['token']['resourceId']);
-                }
                 break;
         }
+    }
+    //----Set status 4 Case
+    //---close process if all end events have been finished (or canceled)
+    $active_tokens = $CI->bpm->get_pending($wf->idwf, $wf->case, array('user', 'waiting', 'pending'), array());
+    if ($active_tokens->count() == 0) {
+        $CI->bpm->update_case($wf->idwf, $wf->case, array(
+            'status' => 'closed',
+            'checkoutdate' => date('Y-m-d H:i:s')
+                )
+        );
+    }
+    //----update parent case if any
+    $mycase = $CI->bpm->get_case($wf->case, $wf->idwf);
+    if (isset($mycase['parent'])) {
+        $parent = $mycase['parent'];
+        // run_post($model, $idwf, $case, $resourceId)
+        //echo '/bpm/engine/run_post/model/' . $parent['idwf'] . '/' . $parent['case'] . '/' . $parent['token']['resourceId'];
+        //Module::run('/bpm/engine/run_post', 'model', $parent['idwf'], $parent['case'], $parent['token']['resourceId']);
+        echo "RUNING parent";
+        $CI->run_post('model', $parent['idwf'], $parent['case'], $parent['token']['resourceId']);
     }
 }
 
@@ -220,17 +224,25 @@ function run_EndMultipleEvent($shape, $wf, $CI) {
     //then finish like none
     run_EndNoneEvent($shape, $wf, $CI);
 }
-
+/**
+ * Terminate BPMN2.0 flow
+ * @param type $shape
+ * @param type $wf
+ * @param type $CI
+ */
 function run_EndTerminateEvent($shape, $wf, $CI) {
-    //---will terminate process execution and remove all data associated
-    //---will delete tokens and case data.
-
+    
     $debug = (isset($CI->debug[__FUNCTION__])) ? true : false;
     if ($debug)
         echo "<h2>" . __FUNCTION__ . '</h2>';
-    //---TODO Cancel all pending tasks
-    //---remove all tokens and remove case
-    $CI->bpm->delete_case($wf->idwf, $wf->case);
+    /**
+     * @todo Cancel all pending tasks and close
+     */
+    $active_tokens = $CI->bpm->get_pending($wf->idwf, $wf->case, array('user', 'waiting', 'pending'), array());
+    foreach($active_tokens as $token){
+        $token['status']='canceled';
+        $CI->bpm->save_token($token);
+                 
+    }
+    run_EndNoneEvent($shape, $wf, $CI);
 }
-
-?>

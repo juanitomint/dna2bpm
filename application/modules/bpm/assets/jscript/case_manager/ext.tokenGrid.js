@@ -2,6 +2,7 @@ var second = null;
 var third = null;
 var gridIndex = 0;
 var HSPEED = 1300;
+
 function revertTo(result) {
     if (result == 'yes') {
         resourceId = this.get('resourceId');
@@ -9,22 +10,23 @@ function revertTo(result) {
         idcase = gridSel.get('id');
         url = globals.base_url + 'bpm/case_manager/revert/model/' + globals.idwf + '/' + idcase + '/' + resourceId;
         Ext.Ajax.request({
-                // the url to the remote source
-                url: url,
-                method: 'POST',
-                // define a handler for request success
-                success: function(response, options){
-                    gridClick(null,mygrid.selModel.selected.items[0])
-                    Ext.Msg.alert('Status', 'Changes saved successfully.');
-                },
-                // NO errors ! ;)
-                failure: function(response,options){
-                    Ext.Msg.alert('Error', 'Error Loading:'+response.err);
-                }
-            });
+            // the url to the remote source
+            url: url,
+            method: 'POST',
+            // define a handler for request success
+            success: function(response, options) {
+                gridClick(null, mygrid.selModel.selected.items[0])
+                Ext.Msg.alert('Status', 'Changes saved successfully.');
+            },
+            // NO errors ! ;)
+            failure: function(response, options) {
+                Ext.Msg.alert('Error', 'Error Loading:' + response.err);
+            }
+        });
         //window.open(url);
     }
 }
+
 function playShape(result) {
     if (result == 'yes') {
         resourceId = this.get('resourceId');
@@ -34,27 +36,41 @@ function playShape(result) {
         window.open(url);
     }
 }
+
 function highlightToken(view, record, item, index, e, options) {
     //console.log(view,record,record.internalId,item,index,e,options );
     //console.log(record.internalId);
 
-    if (third) {
-        stroke_width = 2;
-        color = 'black';
-        //paint(third,color,stroke_width)
-    }
-    if (second) {
-        stroke_width = 3;
-        color = 'green';
-        paint(second, color, stroke_width)
-        third = second;
-    }
+    // if (third) {
+    //      stroke_width = 2;
+    //     //paint(third,color,stroke_width)
+    // }
+      if (second) {
+        
+         last=tokenGrid.store.getAt(tokenGrid.store.find('resourceId',second))
+        
+         switch (last.get('status')) {
+            case "canceled":
+                color = 'FireBrick';
+                break;
+            case "waiting":
+                color = 'orange';
+                break;
+            default:
+                color = 'green';
+                break;
+        }
+         stroke_width = 3;
+         paint(second, color, stroke_width)
+         third = second;
+     }
+    
+    color = 'orange';
     resourceId = record.data.resourceId;
     lockedBy = record.data.lockedBy;
 
     isrun = record.data.run;
-    stroke_width = 4;
-    color = 'orange';
+    stroke_width = 5;
     paint(resourceId, color, stroke_width);
     //---set badge
 
@@ -111,19 +127,23 @@ var playTokens = runner.newTask({
     run: play,
     interval: TokensTimeSlider.getValue()
 });
+
 function start_play() {
     playTokens.start();
 
 }
+
 function stop() {
     playTokens.stop();
 }
+
 function play() {
     store = tokenGrid.store;
     if (gridIndex == store.count()) {
         playTokens.stop();
         load_data_callback = null;
-    } else {
+    }
+    else {
         tokenGrid.selModel.select(gridIndex);
         record = store.getAt(gridIndex);
         highlightToken(null, record);
@@ -131,6 +151,7 @@ function play() {
     }
 
 }
+
 function tokens_paint_all() {
     TokensFolow.setValue(0);
     store = tokenGrid.store;
@@ -138,6 +159,7 @@ function tokens_paint_all() {
         highlightToken(null, record);
     });
 }
+
 function step_forward() {
     store = tokenGrid.store;
     if (gridIndex < store.count()) {
@@ -148,6 +170,7 @@ function step_forward() {
     }
 
 }
+
 function step_backward() {
     store = tokenGrid.store;
     if (gridIndex > 0) {
@@ -158,6 +181,7 @@ function step_backward() {
     }
 
 }
+
 function tokens_reload() {
     load_data_callback = null;
     load_model(globals.idwf);
@@ -180,6 +204,7 @@ function tokens_load_history(idwf, idcase) {
     Ext.getCmp('ModelPanelTbar').enable();
     gridIndex = 0;
 }
+
 function tokens_load_status(idwf, idcase) {
     idwf = (idwf) ? idwf : globals.idwf;
     idcase = (idcase) ? idcase : globals.idcase;
@@ -194,164 +219,140 @@ function tokens_load_status(idwf, idcase) {
     Ext.getCmp('ModelPanelTbar').enable();
     gridIndex = 0;
 }
-var TokensStatus = Ext.create('Ext.Action',
-        {
-            text: 'Status',
-            iconCls: 'icon icon-info-sign icon2x',
-            toggleGroup: 'filter',
-            handler: function() {
-                tokens_load_status();
-            }
-        });
-var TokensHistory = Ext.create('Ext.Action',
-        {
-            text: 'History',
-            iconCls: 'icon icon-time icon2x',
-            toggleGroup: 'filter',
-            handler: function() {
-                tokens_load_history();
-            }
-        });
-var TokensReload = Ext.create('Ext.Action',
-        {
-            text: 'Reload',
-            iconCls: 'icon icon-refresh icon2x',
-            handler: tokens_reload
-        });
-var TokensPlay = Ext.create('Ext.Action',
-        {
-            text: '',
-            iconCls: 'icon icon-play icon2x',
-            handler: start_play
-        });
-var TokensStepForward = Ext.create('Ext.Action',
-        {
-            text: '',
-            iconCls: 'icon icon-step-forward icon2x',
-            handler: step_forward
-        });
-var TokensStepBackward = Ext.create('Ext.Action',
-        {
-            text: '',
-            iconCls: 'icon icon-step-backward icon2x',
-            handler: step_backward
-        });
-var TokensStop = Ext.create('Ext.Action',
-        {
-            text: '',
-            iconCls: 'icon icon-stop icon2x',
-            handler: stop
-        });
-var TokensPaintAll = Ext.create('Ext.Action',
-        {
-            text: 'Paint All',
-            iconCls: 'icon icon-circle icon2x',
-            handler: tokens_paint_all
-        });
-var tokenGrid = Ext.create('Ext.grid.Panel',
-        {
-            columnLines: false,
-            autoScroll: true,
-            stripeRows: true,
-            id: 'tokenGrid',
-            indexes: ['name', 'desc'],
-            //store:dgstore,    
-            store: Ext.getStore('tokenStore'),
-            columns: [
-                Ext.create('Ext.grid.RowNumberer'),
-                {
-                    menuDisabled: true,
-                    sortable: false,
-                    xtype: 'actioncolumn',
-                    width: 40,
-                    text: 'Play',
-                    items: [
-                        {
-                            text: 'play',
-                            icon:globals.module_url+'assets/images/113.png',
-                            handler: function(grid, rowIndex, colIndex) {
-                                var rec = tokenstore.getAt(rowIndex);
-                                Ext.Msg.confirm('Confirm', 'Are you sure you want to Play: ' + rec.get('type') + '?', playShape, rec);
-
-                            }
-                        }
-                    ]
-                },
-                {
-                    menuDisabled: true,
-                    sortable: false,
-                    xtype: 'actioncolumn',
-                    width: 40,
-                    text: 'Revert',
-                    items: [
-                        {
-                            text: 'Revert',
-                            icon:globals.module_url+'assets/images/118.png',
-                            handler: function(grid, rowIndex, colIndex) {
-                                var rec = tokenstore.getAt(rowIndex);
-                                Ext.Msg.confirm('Confirm', 'Are you sure you want to rewind to: ' + rec.get('type') + '?', revertTo, rec);
-
-                            }
-                        }
-                    ]
-                },
-                {
-                    text: "Icon",
-                    flex: 1,
-                    dataIndex: 'icon',
-                    sortable: true
+var TokensStatus = Ext.create('Ext.Action', {
+    text: 'Status',
+    iconCls: 'icon icon-info-sign icon2x',
+    toggleGroup: 'filter',
+    handler: function() {
+        tokens_load_status();
+    }
+});
+var TokensHistory = Ext.create('Ext.Action', {
+    text: 'History',
+    iconCls: 'icon icon-time icon2x',
+    toggleGroup: 'filter',
+    handler: function() {
+        tokens_load_history();
+    }
+});
+var TokensReload = Ext.create('Ext.Action', {
+    text: 'Reload',
+    iconCls: 'icon icon-refresh icon2x',
+    handler: tokens_reload
+});
+var TokensPlay = Ext.create('Ext.Action', {
+    text: '',
+    iconCls: 'icon icon-play icon2x',
+    handler: start_play
+});
+var TokensStepForward = Ext.create('Ext.Action', {
+    text: '',
+    iconCls: 'icon icon-step-forward icon2x',
+    handler: step_forward
+});
+var TokensStepBackward = Ext.create('Ext.Action', {
+    text: '',
+    iconCls: 'icon icon-step-backward icon2x',
+    handler: step_backward
+});
+var TokensStop = Ext.create('Ext.Action', {
+    text: '',
+    iconCls: 'icon icon-stop icon2x',
+    handler: stop
+});
+var TokensPaintAll = Ext.create('Ext.Action', {
+    text: 'Paint All',
+    iconCls: 'icon icon-circle icon2x',
+    handler: tokens_paint_all
+});
+var tokenGrid = Ext.create('Ext.grid.Panel', {
+    columnLines: false,
+    autoScroll: true,
+    stripeRows: true,
+    id: 'tokenGrid',
+    indexes: ['name', 'desc'],
+    //store:dgstore,    
+    store: Ext.getStore('tokenStore'),
+    columns: [
+        Ext.create('Ext.grid.RowNumberer'), {
+            menuDisabled: true,
+            sortable: false,
+            xtype: 'actioncolumn',
+            width: 40,
+            text: 'Play',
+            items: [{
+                text: 'play',
+                icon: globals.module_url + 'assets/images/113.png',
+                handler: function(grid, rowIndex, colIndex) {
+                    var rec = tokenstore.getAt(rowIndex);
+                    Ext.Msg.confirm('Confirm', 'Are you sure you want to Play: ' + rec.get('type') + '?', playShape, rec);
 
                 }
-                ,
-                {
-                    text: "Name",
-                    flex: 1,
-                    dataIndex: 'title',
-                    sortable: true
+            }]
+        }, {
+            menuDisabled: true,
+            sortable: false,
+            xtype: 'actioncolumn',
+            width: 40,
+            text: 'Revert',
+            items: [{
+                text: 'Revert',
+                icon: globals.module_url + 'assets/images/118.png',
+                handler: function(grid, rowIndex, colIndex) {
+                    var rec = tokenstore.getAt(rowIndex);
+                    Ext.Msg.confirm('Confirm', 'Are you sure you want to rewind to: ' + rec.get('type') + '?', revertTo, rec);
 
                 }
-                ,
-                {
-                    text: "Type",
-                    flex: 1,
-                    dataIndex: 'type',
-                    sortable: true
+            }]
+        }, {
+            text: "Icon",
+            flex: 1,
+            dataIndex: 'icon',
+            sortable: true
 
-                }
-                ,
-                {
-                    text: "resourceId",
-                    flex: 1,
-                    dataIndex: 'resourceId',
-                    editor: {
-                        allowBlank: false
-                    },
-                    sortable: true
+        }, {
+            text: "Name",
+            flex: 1,
+            dataIndex: 'title',
+            sortable: true
 
-                }
-                ,
-                {
-                    text: "status",
-                    flex: 1,
-                    dataIndex: 'status',
-                    sortable: true
+        }, {
+            text: "Type",
+            flex: 1,
+            dataIndex: 'type',
+            sortable: true
 
-                }
-            ],
-            listeners: {
-                //itemclick: highlightToken,
-                selectionchange: function(me, selected, eOpts) {
-                    if (selected[0]) {
-                        highlightToken(me, selected[0], eOpts);
-                        gridIndex = selected[0].index;
-                    }
-
-                }
+        }, {
+            text: "resourceId",
+            flex: 1,
+            dataIndex: 'resourceId',
+            editor: {
+                allowBlank: false
             },
-            plugins: [{
-                    ptype: 'cellediting',
-                    clicksToEdit: 1
-                }]
+            sortable: true
+
+        }, {
+            text: "status",
+            flex: 1,
+            dataIndex: 'status',
+            sortable: true
+
+        }
+    ],
+    listeners: {
+        //itemclick: highlightToken,
+        selectionchange: function(me, selected, eOpts) {
+            if (selected[0]) {
+                highlightToken(me, selected[0], eOpts);
+                gridIndex = selected[0].index;
+            }
+
+        }
+    },
+    plugins: [{
+        ptype: 'cellediting',
+        clicksToEdit: 1
+    }]
 
 
-        });
+});

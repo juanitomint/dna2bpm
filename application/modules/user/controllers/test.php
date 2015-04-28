@@ -18,7 +18,7 @@ class Test extends MX_Controller {
         $this->load->library('parser');
         //----LOAD LANGUAGE
         $this->lang->load('library', $this->config->item('language'));
-        $this->idu = (int) $this->session->userdata('iduser');
+        $this->idu = $this->user->idu;
     }
 
     function Index() {
@@ -50,6 +50,11 @@ class Test extends MX_Controller {
         );
         echo "<h3>Remove Group:$newid</h3>";
         $this->group->delete($newid);
+    }
+    
+    function get_avatar(){
+    echo 'me:'. $this->user->get_avatar().'<hr/>';    
+    echo 'UserId:10:'. $this->user->get_avatar(10);    
     }
 
 }

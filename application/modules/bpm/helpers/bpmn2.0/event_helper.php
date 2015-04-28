@@ -6,7 +6,7 @@
 function run_IntermediateEventThrowing($shape, $wf, $CI) {
 
     $debug = (isset($CI->debug[__FUNCTION__])) ? $CI->debug[__FUNCTION__] : false;
-    //$debug = true;
+    // $debug = true;
     if ($debug)
         echo "<h2>" . __FUNCTION__ . '</h2>';
     if ($debug) {
@@ -71,7 +71,9 @@ function run_IntermediateEventThrowing($shape, $wf, $CI) {
 
     $catchers_byname = array_merge($catchers_byname, $catchers_multiple);
 
-
+    if($shape->properties->name<>'')
+        $catchers_byref = $CI->bpm->get_shape_byprop(array('messageref' => $shape->properties->name), $wf);
+    
     //---get catcher by messageref
     if ($shape->stencil->id == 'Task') {
         if ($shape->properties->messageref <> '') {
@@ -105,6 +107,9 @@ function run_IntermediateEventThrowing($shape, $wf, $CI) {
         var_dump($catchers);
     }
 
+//------ ADVANCE this shape-----------------------------------------//
+    $CI->bpm->movenext($shape, $wf, array('name' => $shape->properties->name));
+    //---Process Catchers now
     foreach ($catchers as $catcher) {
 //var_dump2('$catcher->properties->name == $shape->properties->name', $catcher->properties->name == $shape->properties->name);
         $launch_catcher = false;
@@ -134,13 +139,12 @@ function run_IntermediateEventThrowing($shape, $wf, $CI) {
         if ($launch_catcher) {
             $CI->bpm->set_token($wf->idwf, $wf->case, $catcher->resourceId, $catcher->stencil->id, 'pending');
             if ($debug) {
-                echo '>>> Launching:' . $catcher->properties->name . '<br>';
+                echo '>>> Launching:' . $catcher->properties->name .':'.$catcher->stencil->id . '<br>';
                 var_dump2($catcher);
             }
+            //run_IntermediateEventCatching($catcher, $wf, $CI);
         }
     }//---end foreach catcher
-//------ ADVANCE this shape-----------------------------------------//
-    $CI->bpm->movenext($shape, $wf, array('name' => $shape->properties->name));
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -149,11 +153,11 @@ function run_IntermediateEventThrowing($shape, $wf, $CI) {
 function run_IntermediateEventCatching($shape, $wf, $CI) {
 
     $debug = (isset($CI->debug[__FUNCTION__])) ? $CI->debug[__FUNCTION__] : false;
-//$debug=true;
+    // $debug=true;
     if ($debug)
         echo "<h2>" . __FUNCTION__ . '</h2>';
     if ($debug) {
-        echo '<h1> << IntermediateEventCatching:' . $shape->stencil->id . '</h1>';
+        echo '<h1> << IntermediateEventCatching:' . $shape->stencil->id .' '.$shape->properties->name. '</h1>';
     }
     $token = $CI->bpm->get_token($wf->idwf, $wf->case, $shape->resourceId);
 //---if token already canceled then exit
@@ -168,10 +172,12 @@ function run_IntermediateEventCatching($shape, $wf, $CI) {
     $throwers = array();
 //---get throwers by flow
     $inbound = $CI->bpm->get_inbound_shapes($shape->resourceId, $wf);
-
-
+//---set trigger to a message type    
+    $trigger='IntermediateMessageEventThrowing';
 //---search thrower 4 events Catching/Throwing
-    $trigger = '';
+    $event_name =(property_exists($shape->properties,'messageref') && $shape->properties->messageref) ? $shape->properties->messageref: $shape->properties->name;
+    
+    
     if (strstr($shape->stencil->id, 'Catching')) {
         $trigger = str_replace('Catching', 'Throwing', $shape->stencil->id);
     }
@@ -180,13 +186,16 @@ function run_IntermediateEventCatching($shape, $wf, $CI) {
         $trigger = str_replace('Start', 'End', $shape->stencil->id);
     }
 
-
+    if($debug) 
+        echo "<h2>Event name is: $event_name</h2><h2>Trigger name is: $trigger</h2>";
 //----get throwers searching by same name as this shape
-    if ($shape->properties->name <> '' and $trigger <> '') {
-        //---make a fake $wf to search into
+    if ($trigger <> '') {
+        //---make a fake $wf much smaller to search into
         $throwers_name['childShapes'] = $CI->bpm->get_shape_byname("/^$trigger$/", $wf);
-
-        $throwers_name = $CI->bpm->get_shape_byprop(array('name' => $shape->properties->name), $throwers_name);
+        if($debug)
+            echo 'searching for:'.$trigger.'<br/>';
+            
+        $throwers_name = $CI->bpm->get_shape_byprop(array('name' => $event_name), $throwers_name);
 
 //----clean up throwers
         $throwers_name = array_filter($throwers_name);
@@ -216,12 +225,18 @@ function run_IntermediateEventCatching($shape, $wf, $CI) {
     }
 //----merge by name & by ref
     $throwers = array_merge($throwers_name, $throwers_ref);
-
+    if($debug){
+        echo 'has: '.count($throwers).'<br/>';
+        // var_dump2($throwers);
+        
+    }
 //---seems like parallel gateway (must wait 4 all before move)
 //---check if all throwers  or inbound has finished
 //---Same as parallel gateway
     $has_finished_flow = true;
-    $has_finished_thrower = (count($throwers)) ? false : true;
+    $has_finished_thrower = (count($throwers)>0) ? false : true;
+    $has_finished_thrower = false;
+    
     $is_normal_flow = false;
     $is_boundary_event = false;
 //----handle BOUNDARY and NORMAL FLOW different
@@ -317,7 +332,8 @@ function run_IntermediateEventCatching($shape, $wf, $CI) {
         if ($debug)
             echo '<h1>HAS FINISHED TRUE</h1>';
         $CI->bpm->movenext($shape, $wf);
-//----cancel boundary if exists
+        //----cancel boundary if exists
+        
     } else {
         if ($debug)
             echo '<h1>FALSE</h1>';
@@ -330,8 +346,8 @@ function run_IntermediateEventCatching($shape, $wf, $CI) {
 //////////////////    CATCHING EVENTS    ///////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 function run_IntermediateTimerEvent($shape, $wf, $CI) {
-
     $debug = (isset($CI->debug[__FUNCTION__])) ? $CI->debug[__FUNCTION__] : false;
+    // $debug=true;
     if ($debug)
         echo "<h2>" . __FUNCTION__ . '</h2>';
     $token = $CI->bpm->get_token($wf->idwf, $wf->case, $shape->resourceId);
@@ -343,6 +359,9 @@ function run_IntermediateTimerEvent($shape, $wf, $CI) {
             show_error("cannot convert". $shape->properties->name." to a valid time \n");
         } else {
             $trigger = date('Y-m-d H:i:s', strtotime($shape->properties->name));
+            if ($debug) 
+            echo 'trigger:'.$shape->properties->name.' -> '.date('Y-m-d H:i:s',time()).' -> '.$trigger.'</br>';
+            
         }
         $CI->bpm->set_token($wf->idwf, $wf->case, $shape->resourceId, $shape->stencil->id, 'waiting', array('trigger' => $trigger));
         $token = $CI->bpm->get_token($wf->idwf, $wf->case, $shape->resourceId);
@@ -355,7 +374,7 @@ function run_IntermediateTimerEvent($shape, $wf, $CI) {
                 var_dump2(date('Y-m-d H:i:s', mktime()), $token['trigger'], mktime() > strtotime($token['trigger']));
 
             if (mktime() >= strtotime($token['trigger'])) {
-                run_IntermediateEventCatching($shape, $wf, $CI);
+                $CI->bpm->movenext($shape, $wf);
             }
             break;
     }
@@ -613,11 +632,44 @@ function run_IntermediateEscalationEventThrowing($shape, $wf, $CI) {
 }
 
 function run_IntermediateLinkEventThrowing($shape, $wf, $CI) {
-
     $debug = (isset($CI->debug[__FUNCTION__])) ? true : false;
+    //$debug=true;
     if ($debug)
         echo "<h2>" . __FUNCTION__ . '</h2>';
-    run_IntermediateEventThrowing($shape, $wf, $CI);
+    if($shape->properties->entry){
+        //---off page link
+        //---first run events
+        run_IntermediateEventThrowing($shape, $wf, $CI);
+        $to_idwf=$shape->properties->entry;
+        if($debug) echo "Cloning: ".$wf->idwf.' to:'.$to_idwf.'<br/>';
+        $mywf = $CI->bpm->model_exists($to_idwf);
+        
+        if($mywf){
+            
+            
+            
+            $clone=$CI->bpm->clone_case($wf->idwf, $to_idwf, $wf->case);
+            // if($clone){
+            //     //----Start
+            //     $CI->Startcase('model', $to_idwf, $wf->case);
+            // } else {
+                //----Run
+                $mywf ['data'] ['idwf'] = $to_idwf;
+                $mywf ['data'] ['case'] = $wf->case;
+                $mywf ['data'] ['folder'] = $mywf ['folder'];
+                $to_wf = bindArrayToObject($mywf ['data']);
+                //---1st try to get catcher links
+                if($debug) echo "run_IntermediateEventThrowing<br/>";
+                run_IntermediateEventThrowing($shape, $to_wf, $CI);
+                if($debug) echo "Runing: ".$to_wf->idwf.'<br/>';
+                $CI->Run('model', $to_idwf, $wf->case);
+            // }
+            
+        }
+    } else{
+        //----same page link
+        run_IntermediateEventThrowing($shape, $wf, $CI);
+    }
 }
 
 function run_IntermediateCompensationEventThrowing($shape, $wf, $CI) {

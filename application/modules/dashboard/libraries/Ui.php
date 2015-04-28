@@ -43,6 +43,7 @@ class ui {
         $this->register_script('inboxJS', $data['base_url'] . 'inbox/assets/jscript/inbox.js', array('jquery'));
         $this->register_script('highCharts', $data['base_url'] . 'jscript/Highcharts-4.0.4/js/highcharts.js', array('jquery'));
         $this->register_script('inboxJS', $data['base_url'] . 'inbox/assets/jscript/inbox.js', array('jquery'));
+        $this->register_script('ckeditor', $data['base_url'] . 'jscript/ckeditor/ckeditor.js', array('jquery'));
         $this->register_script('jquery.smooth-scroll', $data['base_url'] . 'jscript/jquery/plugins/jquery.smooth-scroll.min.js', array('jquery'));
 
         //===== CSS loaded only when same JS  handle is loaded
@@ -51,7 +52,7 @@ class ui {
         $this->styles['fullcalendar'][] = $data['base_url'] . "dashboard/assets/bootstrap-wysihtml5/css/fullcalendar/fullcalendar.css";
         $this->styles['selectJS'][] = $data['base_url'] . "jscript/select2-3.4.5/select2.css";
         $this->styles['selectJS'][] = $data['base_url'] . "jscript/select2-3.4.5/select2-bootstrap.css";
-
+        $this->styles['inboxJS'][] = $data['base_url'] . "inbox/assets/css/inbox.css";
 
         
         // Load default JS 

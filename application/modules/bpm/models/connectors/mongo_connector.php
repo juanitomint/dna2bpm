@@ -25,13 +25,23 @@ class mongo_connector extends CI_Model {
             } else {
                 $rs = $this->mongo->db->selectCollection($resource['itemsubjectref'])->find($query);
             }
+         
             if (isset($resource['sort']))
                 $rs->sort($sort);
             $rtn_arr = array();
-            while ($arr = $rs->getNext()) {
-                //---remove _id to avoid save problems
-                $arr['_id'] = null;
-                $rtn_arr+=array_filter($arr);
+            
+            if($rs->count()>1){
+                while ($arr = $rs->getNext()) {
+                    //---remove _id to avoid save problems
+                    $arr['_id'] = null;
+                    $rtn_arr[]=array_filter($arr);
+                }
+                
+            } else {
+                while($arr = $rs->getNext()){
+                    $arr['_id'] = null;
+                    $rtn_arr=array_filter($arr);
+                }
             }
             return $rtn_arr;
         }

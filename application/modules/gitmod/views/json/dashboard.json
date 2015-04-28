@@ -1,0 +1,68 @@
+{
+    "createdBy": "Juan Ignacio Borda <juanignacioborda@gmail.com>",
+    "title": "Simple GIT Admin",
+    "view": "layout_2cols_fixed",
+    "icon": "fa-git",
+    "js": [{
+        "{base_url}gitmod/assets/jscript/git.js": "GIT-JS"
+
+    }, {
+        "{base_url}jscript/jquery/jquery-ui-touch-punch/jquery.ui.touch-punch.min.js": "GIT-JS-touch"
+    }],
+    "css": [{
+        "{base_url}gitmod/assets/css/git.css": "GIT-CSS"
+    }],
+    "zones": [{
+        "tiles": [
+
+        ]
+    }, {
+        "col1": [{
+                "title": "Staged",
+                "module": "gitmod",
+                "controller": "gitmod",
+                "function": "staged",
+                "js": [{
+                    "{base_url}gitmod/assets/jscript/git.js": "GIT-JS"
+
+                }, {
+                    "{base_url}jscript/jquery/jquery-ui-touch-punch/jquery.ui.touch-punch.min.js": "GIT-JS-touch"
+                }],
+                "css": [{
+                    "{base_url}gitmod/assets/css/git.css": "GIT-CSS"
+                }]
+
+            }, {
+                "title": "Status",
+                "module": "gitmod",
+                "controller": "gitmod",
+                "function": "status"
+            }
+
+        ]
+
+    }, {
+        "col2": [{
+            "title": "pull push",
+            "module": "gitmod",
+            "controller": "gitmod",
+            "function": "pullpush"
+        }, {
+            "title": "log",
+            "module": "gitmod",
+            "controller": "gitmod",
+            "function": "log"
+        }, {
+            "title": "result",
+            "module": "gitmod",
+            "controller": "gitmod",
+            "function": "result"
+        }, {
+            "title": "modal",
+            "module": "gitmod",
+            "controller": "gitmod",
+            "function": "modal"
+        }]
+
+    }]
+}

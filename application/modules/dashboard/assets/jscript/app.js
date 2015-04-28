@@ -14,7 +14,8 @@ $(document).ready(function() {
         event.preventDefault();
         var box = $(this).parents('.box');
         var url = $(this).attr('href');
-
+       
+        var body=box.find('.box-body').append('<div class="loader " ><div><i class="fa fa-spinner fa-spin fa-2x" ></i> <span class="">Cargando</span></div></div>');
         $.ajax({
             url: url,
             context: box
@@ -74,7 +75,7 @@ $(document).ready(function() {
         handle: ".box-header, .nav-tabs",
         forcePlaceholderSize: true,
         zIndex: 999999
-    }).disableSelection();
+    });
     $(".box-header, .nav-tabs").css("cursor", "move");
     //jQuery UI sortable for the todo list
     $(".todo-list").sortable({
@@ -82,7 +83,7 @@ $(document).ready(function() {
         handle: ".handle",
         forcePlaceholderSize: true,
         zIndex: 999999
-    }).disableSelection();
+    });
     ;
 
     //=========== ICHECK 
@@ -204,5 +205,41 @@ $(document).ready(function() {
     	window.print();
     });
     
+    /* =====================================================================================
+     * 
+     *  anchors with .ajax will be loaded in data-target or replace anchor if not presnet
+     *  
+     */
+    
+    $(document).on('click', ".ajax", function(e) {
+        e.preventDefault();
+        var me=$(this);
+        if($(this).attr('data-target')){
+            var target='#'+$(this).attr('data-target');
+            var url=$(this).attr('href');
+            $( target ).load( url );
+        }else{
+            var url=$(this).attr('href');
+            $.post(url,function(data){
+                me.parent().html(data);
+            });
+        }
+
+    });
+    
 
 });
+
+
+/* ==============================
+ *  Wrappers BT & LTE
+ * 
+ ============================== */
+
+function BT_alert(json){
+    
+   var myalert='<div class="alert alert-'+json.status+' alert-dismissable">\n\
+<i class="fa fa-ban"></i><button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>\n\\n\
+'+json.body+'</div>';
+   return ;
+}

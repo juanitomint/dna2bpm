@@ -141,7 +141,7 @@ var ModelDump = Ext.create('Ext.Action', {
         n=tree.getSelectionModel().getSelection()[0];
         //---only do something if its leaf=model
         if(n && n.isLeaf()){
-            url= globals.module_url+'repository/dump/model/'+n.data.id;
+            url= globals.module_url+'repository/json_view/model/'+n.data.id;
             window.open(url);
         }
     }

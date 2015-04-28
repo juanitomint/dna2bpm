@@ -1,5 +1,23 @@
 <?php
-
+function run_MessageFlow($shape, $wf,$CI) {
+    $debug = (isset($CI->debug[__FUNCTION__])) ? $CI->debug[__FUNCTION__] : false;
+    $idwf = $wf->idwf;
+    $case = $wf->case;
+    $data=array();
+    //----End catching
+    foreach ($shape->outgoing as $out) {
+        $this_shape = $CI->bpm->get_shape($out->resourceId, $wf);
+            //@todo check what happens when messageflow reach other targets
+            switch ($this_shape->stencil->id == 'IntermediateTimerEvent') {
+                case "IntermediateMessageEventCatching":
+                    $CI->bpm->movenext($this_shape, $wf, $data);
+                    break;
+        }
+    }
+    
+    $CI->bpm->movenext($shape, $wf,$data);
+    
+}
 function run_SequenceFlow($shape, $wf,$CI) {
     $debug = (isset($CI->debug[__FUNCTION__])) ? $CI->debug[__FUNCTION__] : false;
     

@@ -2,7 +2,7 @@
 
 function run_Task($shape, $wf, $CI) {
     $debug = (isset($CI->debug[__FUNCTION__])) ? $CI->debug[__FUNCTION__] : false;
-    //$debug = true;
+    // $debug = true;
     //$CI = & get_instance('Engine');
     $resourceId = $shape->resourceId;
 //---set DS pointer to Data Storage
@@ -97,11 +97,13 @@ function run_Task($shape, $wf, $CI) {
     }
     if ($data_in) {
         foreach ($data_in as $item) {
-            list($ds_source, $ds_item) = explode('.', $item->name);
-            if ($debug)
-                var_dump2('Data In', $item);
-            $datain = $DS->$ds_source;
-            $data[$ds_source][$ds_item] = $datain[$ds_item];
+            if(strstr('.',$item->name)){
+                list($ds_source, $ds_item) = explode('.', $item->name);
+                if ($debug)
+                    var_dump2('Data In', $item);
+                $datain = $DS->$ds_source;
+                $data[$ds_source][$ds_item] = $datain[$ds_item];
+            }
         }
 
         if ($debug) {
@@ -167,6 +169,7 @@ function run_Task($shape, $wf, $CI) {
             }
             break;
         case 'Manual':
+            //---change status to manual (stops execution and wait 4 manual input)
             $CI->bpm->set_token($wf->idwf, $wf->case, $shape->resourceId, $shape->stencil->id, 'user', $data);
             if ($CI->break_on_next) {
                 redirect($CI->base_url . $CI->config->item('default_controller'));
@@ -231,6 +234,7 @@ function run_Task($shape, $wf, $CI) {
 
             $msg['idwf'] = $wf->idwf;
             $msg['case'] = $wf->case;
+            $msg['resourceId'] = $resourceId;
             if ($shape->properties->properties <> '') {
                 foreach ($shape->properties->properties->items as $property) {
                     $msg[$property->name] = $property->datastate;
@@ -247,14 +251,17 @@ function run_Task($shape, $wf, $CI) {
                     $data['from'] = $CI->user->get_user_safe($resource['Performer']);
                     $user = $CI->bpm->get_user(array_pop($resource['Performer']));
                 }
-            } else {
-                //---set from equals to user
-                $data['from'] = $user;
-            }
+            } 
             //---Get FROM
             $user = $CI->user->get_user_safe($msg['from']);
             $data['user'] = (array) $user;
+                if ($debug){
+                    echo "Parsing Subject:<br/>";
+                    var_dump($data);
+                }
             $msg['subject'] = $CI->parser->parse_string($shape->properties->name, $data, true, true);
+                if ($debug)
+                    echo "Parsing Body:<br/>";
             $msg['body'] = $CI->parser->parse_string($shape->properties->documentation, $data, true, true);
 
             $to = (isset($resources['assign'])) ? $resources['assign'] : $token['assign'];
@@ -266,14 +273,14 @@ function run_Task($shape, $wf, $CI) {
             }
             //---fires triger if everything is ok
             if ($shape->properties->messageref)
-                run_IntermediateEventThrowing($shape, $wf);
+                run_IntermediateEventThrowing($shape, $wf, $CI);
             //---move to next shape
             $CI->bpm->movenext($shape, $wf);
             break;
 
         case 'Receive':
             //--call the generic catching event
-            run_IntermediateEventCatching($shape, $wf);
+            run_IntermediateEventCatching($shape, $wf, $CI);
             break;
 
         case 'Business Rule':

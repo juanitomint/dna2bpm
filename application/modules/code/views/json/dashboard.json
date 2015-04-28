@@ -1,0 +1,76 @@
+{
+    "createdBy": "Juan Ignacio Borda <juanignacioborda@gmail.com>",
+    "title": "Code Blocks",
+    "view": "layout_2cols_fixed",
+    "icon": "fa-code",
+    "js": [{
+            "{base_url}code/assets/jscript/jquery-ace.min.js": "JQuery-ACE"
+
+        }, {
+            "{base_url}code/assets/jscript/src-min/ace.js": "ACE"
+
+        }, {
+            "{base_url}code/assets/jscript/src-min/mode-php.js": "ACE-PHP"
+
+        }, {
+            "{base_url}code/assets/jscript/src-min/mode-html.js": "ACE-HTML"
+
+        },
+
+        {
+            "{base_url}code/assets/jscript/src-min/mode-javascript.js": "ACE-JS"
+
+        },
+        {
+            "{base_url}code/assets/jscript/src-min/mode-json.js": "ACE-JSON"
+
+        },
+
+        {
+            "{base_url}code/assets/jscript/code.js": "Code-core"
+
+        }
+
+    ],
+    "css": [{
+            "{base_url}code/assets/css/code.css": "Code-CSS"
+
+        }
+
+    ],
+    "zones": [{
+        "tiles": [
+
+        ]
+    }, {
+        "col1": [{
+                "title": "PHP",
+                "module": "code",
+                "controller": "code",
+                "function": "demo",
+                "params": ["php"]
+            }
+
+
+        ]
+
+    }, {
+        "col2": [
+            {
+            "title": "JS",
+            "module": "code",
+            "controller": "code",
+            "function": "demo",
+            "params": ["javascript"]
+        },
+        {
+            "title": "JS",
+            "module": "code",
+            "controller": "code",
+            "function": "file",
+            "params": ["modules/code/views/json/dashboard.json","json","textmate"]
+        }
+        ]
+
+    }]
+}

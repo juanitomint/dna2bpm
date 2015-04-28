@@ -14,13 +14,12 @@ class Application extends MX_Controller {
         //---Helpers
         $this->load->helper('directory');
         $this->load->helper('file');
-        $this->idu = $this->session->userdata('iduser');
         $this->user->authorize('USE,ADM,SUP');
         $this->load->helper('dbframe');
 
         //----LOAD LANGUAGE
         $this->lang->load('library', $this->config->item('language'));
-        $this->idu = (int) $this->session->userdata('iduser');
+        $this->idu = $this->user->idu;
         $this->types_path = 'application/modules/application/assets/types/';
         $this->module_path = 'application/modules/application/';
         //----Variables

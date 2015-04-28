@@ -28,7 +28,7 @@ class Dashboard extends MX_Controller {
         $this->user->authorize();
         //----LOAD LANGUAGE
         $this->lang->load('library', $this->config->item('language'));
-        $this->idu = (int) $this->session->userdata('iduser');
+        $this->idu = $this->user->idu;
     }
 
     function Application($idapp) {
@@ -100,6 +100,7 @@ class Dashboard extends MX_Controller {
 
     function Index() {
         $dashboard = ($this->session->userdata('json')) ? $this->session->userdata('json'):null;
+         $this->hooks_group();
         if ($this->user->isAdmin()) {
             $dashboard = 'dashboard/json/admin.json';
         }
@@ -157,11 +158,10 @@ class Dashboard extends MX_Controller {
 
     // ==== Dashboard
 
-    function Dashboard($json = 'dashboard/json/dashboard.json',$extraData=null, $debug = false) {
+    function Dashboard($json = 'dashboard/json/dashboard.json',$debug = false,$extraData=null) {
         /* eval Group hooks first */
         $this->session->set_userdata('json', $json);
         $user = $this->user->get_user((int) $this->idu);
-        $this->hooks_group($user);
         $myconfig = $this->parse_config($json, $debug);
 
         $layout = ($myconfig['view'] <> '') ? $myconfig['view'] : 'layout';
@@ -267,7 +267,30 @@ class Dashboard extends MX_Controller {
         $return['js']=array();
         $return['css']=array();
         $return['inlineJS']="";
-        
+        // CSS 
+ 		if(isset($myconfig['css'])){
+ 			foreach($myconfig['css'] as $item){
+ 				foreach($item as $k=>$v){
+ 					if(is_numeric($k))
+ 						$return['css'][]=$v;
+ 					else{
+ 						$return['css'][$k]=$v;
+ 					}
+ 				}
+ 			}
+ 		}
+    	// JS 
+ 		if(isset($myconfig['js'])){
+ 			foreach($myconfig['js'] as $item){
+ 				foreach($item as $k=>$v){
+ 					if(is_numeric($k))
+ 						$return['js'][]=$v;
+ 					else{
+ 						$return['js'][$k]=$v;
+ 					}
+ 				}
+ 			}		
+ 		}
         //Zones
         foreach ($myconfig['zones'] as $zones) {
             $content = "";
@@ -285,10 +308,9 @@ class Dashboard extends MX_Controller {
                 if (isset($item["span"]))
                     $empty_spans++;
             }
-
             //$content.="<div class='row zone_$myzone_key  '>";
             $Qspan = 0;
-
+            $markup='';
             foreach ($widgets as $k => $myWidget) {
 
                 // Span handle
@@ -329,17 +351,48 @@ class Dashboard extends MX_Controller {
                     $markup = $myWidget['module'] . '/' . $myWidget['controller'] . '/' . $myWidget['function'] . $markup;
 
                 // Si es un array uso el zonekey para identificar el markup
-                
-                if(is_array($markup)){
-                	$mycontent=$markup['content'];
-                	// inlineJS
-                	if(isset($markup['inlineJS']))
-                	$return['inlineJS'].=$markup['inlineJS'];
+                if(isset($markup)){
+                    if(is_array($markup)){
+                    	$mycontent=$markup['content'];
+                    	// inlineJS
+                    	if(isset($markup['inlineJS']))
+                    	$return['inlineJS'].=$markup['inlineJS'];
+                    }else{
+                    	$mycontent=$markup;
+                    }
                 }else{
-                	$mycontent=$markup;
+                    $markup="";
+                    $mycontent="";
                 }
                 
+            //==== Box Management  ========================= 
+            
                 
+            if(isset($myWidget['box_class'])){
+               // box info present, use this box bitch --
+     
+                $customData['box_class']=implode(" ",$myWidget['box_class']);
+                // Color schema
+                $customData['btn_class']='btn-default';
+                if(in_array('box-primary',$myWidget['box_class']))$customData['btn_class']='btn-primary';
+                if(in_array('box-danger',$myWidget['box_class']))$customData['btn_class']='btn-danger';
+                if(in_array('box-info',$myWidget['box_class']))$customData['btn_class']='btn-info';
+                if(in_array('box-warning',$myWidget['box_class']))$customData['btn_class']='btn-warning';
+                if(in_array('box-success',$myWidget['box_class']))$customData['btn_class']='btn-success';
+                $customData['title']=(isset($myWidget['title']))?($myWidget['title']):('');
+                $customData['box_icon']=(isset($myWidget['box_icon']))?($myWidget['box_icon']):('');
+                $customData['content']=$mycontent;
+                //Buttons
+                $customData['button_collapse']=(in_array('collapse',$myWidget['box_buttons']))?("1"):("0");
+                $customData['button_remove']=(in_array('remove',$myWidget['box_buttons']))?("1"):("0");
+                // Collapsed init ?
+                if(isset($myWidget['box_collapsed']) && $myWidget['box_collapsed']=='1'){
+                    $customData['box_class'].=' collapsed-box';
+                    $customData['body_style']='display:none';
+                }
+                        
+                $mycontent=$this->parser->parse('widgets/box', $customData, true, true);
+            }    
                 if (!$empty_spans)
                 	$content.=$mycontent;
                 else
@@ -382,7 +435,6 @@ class Dashboard extends MX_Controller {
 
             $return[$myzone_key] = $content;
         }
-
         return $return;
     }
 
@@ -501,7 +553,6 @@ BLOCK;
 //          $data[]=array('value'=>50,'data-label'=>'Fuck');
 //          $data[]=array('value'=>10,'data-fgColor'=>'#f60','data-label'=>'Fuck');
 		//==
-        var_dump($data);
 
         foreach($data as $item){
         	$myconfig=array_merge($config,$item);
@@ -541,6 +592,13 @@ BLOCK;
 //        exit;
 
         return $this->parser->parse('widgets/dashboards', $data, true, true);
+    }
+    
+    //=== Kitchen Sink :: Boxes
+    function kitchensink_boxes(){
+   
+        return $this->parser->parse('widgets/kitchensink_boxes', array(), true, true);
+
     }
 
 }

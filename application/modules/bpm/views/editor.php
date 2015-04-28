@@ -10,20 +10,20 @@ echo '<?xml version="1.0" encoding="utf-8"?>';
     <head profile="http://purl.org/NET/erdf/profile">
         <title>Oryx-Editor - Oryx</title>
         <!-- libraries -->
-        <script src="{base_url}jscript/bpm/lib/prototype-1.5.1.js" type="text/javascript" />
-        <script src="{base_url}jscript/bpm/lib/path_parser.js" type="text/javascript" />
-        <script src="{base_url}jscript/bpm/lib/ext-2.0.2/adapter/ext/ext-base.js" type="text/javascript" />
-        <script src="{base_url}jscript/bpm/lib/ext-2.0.2/ext-all.js" type="text/javascript" />
-        <script src="{base_url}jscript/bpm/lib/ext-2.0.2/color-field.js" type="text/javascript" />
+        <script src="{base_url}jscript/bpm/lib/prototype-1.5.1.js" type="text/javascript" ></script>
+        <script src="{base_url}jscript/bpm/lib/path_parser.js" type="text/javascript" ></script>
+        <script src="{base_url}jscript/bpm/lib/ext-2.0.2/adapter/ext/ext-base.js" type="text/javascript" ></script>
+        <script src="{base_url}jscript/bpm/lib/ext-2.0.2/ext-all.js" type="text/javascript" ></script>
+        <script src="{base_url}jscript/bpm/lib/ext-2.0.2/color-field.js" type="text/javascript" ></script>
         <style media="screen" type="text/css">
             @import url("{base_url}jscript/bpm/lib/ext-2.0.2/resources/css/ext-all.css");
             @import url("{base_url}jscript/bpm/lib/ext-2.0.2/resources/css/xtheme-gray.css");
         </style>
         <!-- oryx editor -->
         <!-- language files -->
-        <script src="{base_url}jscript/bpm/i18n/translation_en_us.js" type="text/javascript" />
-        <script src="{base_url}jscript/bpm-dna2/profiles/oryx.core.uncompressed.js" type="text/javascript" />
-        <script src="{base_url}jscript/bpm-dna2/profiles/bpmn2.0.js" type="text/javascript" />
+        <script src="{base_url}jscript/bpm/i18n/translation_en_us.js" type="text/javascript" ></script>
+        <script src="{base_url}jscript/bpm-dna2/profiles/oryx.core.uncompressed.js" type="text/javascript" ></script>
+        <script src="{base_url}jscript/bpm-dna2/profiles/bpmn2.0.js" type="text/javascript" ></script>
         <!-- custom functions here -->
         <!--
         <script src="{base_url}jscript/bpm-dna2/plugins/scripts/file.js" type="text/javascript" />

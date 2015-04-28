@@ -1,7 +1,8 @@
-<li class="dropdown messages-menu"><a href="#" class="dropdown-toggle"
-	data-toggle="dropdown"> <i class="fa fa-envelope"></i> <span
-		class="label label-success"><span class='unread_count'>{unread_count}</span></span>
-</a>
+<li class="dropdown messages-menu" id='toolbar_inbox'>
+    <a href="#" class="dropdown-toggle"	data-toggle="dropdown"> 
+        <i class="fa fa-envelope"></i> 
+        <span	class="label label-success"><span class='unread_count'>{unread_count}</span></span>
+    </a>
 	<ul class="dropdown-menu">
 		<li class="header">You have <span class='unread_count'>{unread_count}</span> messages unread</li>   
 		<li>
@@ -23,4 +24,5 @@
 		</li>
         
 		<li class="footer"><a href="{base_url}dashboard/inbox">See All Messages</a></li>
-	</ul></li>
+	</ul>
+</li>

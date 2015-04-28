@@ -21,7 +21,7 @@ class Bpmui extends MX_Controller {
         $this->load->library('parser');
         $this->base_url = base_url();
         $this->module_url = base_url() . $this->router->fetch_module() . '/';
-        $this->idu = (int) $this->session->userdata('iduser');
+        $this->idu = $this->user->idu;
         $this->activeUser = $this->user->get_user($this->idu);
         //----LOAD LANGUAGE
         $this->lang->load('library', $this->config->item('language'));
@@ -414,7 +414,7 @@ class Bpmui extends MX_Controller {
         return $data;
     }
 
-    private function prepare_tasks($tasks, $chunk, $pagesize) {
+    public function prepare_tasks($tasks, $chunk, $pagesize) {
         $data = array();
         $data['module_url'] = $this->module_url;
         $data['base_url'] = $this->base_url;
@@ -427,6 +427,7 @@ class Bpmui extends MX_Controller {
         $data['qtty'] = $total;
         $parts = array_chunk($tasks, $pagesize, true);
         $pages = count($parts);
+        $data['mytasks']=array();//--prevent parser problems
         if ($pages) {
             $tasks = $parts[$chunk - 1];
             foreach ($tasks as $task) {

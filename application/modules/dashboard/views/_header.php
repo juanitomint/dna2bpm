@@ -63,14 +63,17 @@
                 <div class="navbar-right">
                     <ul class="nav navbar-nav">
                         <!-- Messages: style can be found in dropdown.less-->
+                     
                         {toolbar_inbox}
-
+                    
 
 
                         <!-- ========== USER PROFILE  ==========-->
                         <li class="dropdown user user-menu">
+                            
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                <i class="glyphicon glyphicon-user"></i>
+                                <img src="{avatar}" class="avatar" alt="User Image" style="float:left;height:28px;width:28px;margin-right:8px;"/>
+              
                                 <span>{name} <i class="caret"></i></span>
                             </a>
                             <ul class="dropdown-menu">

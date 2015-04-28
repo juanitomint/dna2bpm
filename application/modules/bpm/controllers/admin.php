@@ -3,6 +3,11 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
+/**
+ * This class is used by the administration backend
+ * @author Juan Ignacio Borda <juanignacioborda@gmail.com>
+ * @date Feb 10, 2013
+ */
 class Admin extends MX_Controller {
 
     public function __construct() {
@@ -17,13 +22,20 @@ class Admin extends MX_Controller {
         $this->user->authorize();
         //----LOAD LANGUAGE
         $this->lang->load('library', $this->config->item('language'));
-        $this->idu = (int) $this->session->userdata('iduser');
+        $this->idu = $this->user->idu;
     }
 
+    /**
+     * This is the main function of the module
+     */
     function Index() {
         $this->Newb();
     }
 
+    /**
+     * Shows a mini task panel
+     * 
+     */
     function Newb() {
 
         $this->load->library('ui');
@@ -73,6 +85,10 @@ class Admin extends MX_Controller {
         $this->ui->makeui('ext.ui-no-ion.php', $cpData);
     }
 
+    /**
+     * Get a model tree representation in JSON format
+     * 
+     */
     function get_tree() {
         // $this->load->helper('ext');
         $debug = false;
@@ -111,7 +127,9 @@ class Admin extends MX_Controller {
         }
     }
 
-    //---handle crud for process tree
+    /**
+     * handle CRUD for model tree
+     */
     function tree($action) {
         $debug = false;
         $msg = array('ok' => true);
@@ -177,7 +195,10 @@ class Admin extends MX_Controller {
         }
     }
 
-    //---delete this function when converted to EXT
+    /**
+     * convert an array of models to an EXT tree-item
+     * @todo delete this function when converted to EXT
+     */
     function convert_to_item($array, $id) {
         $rtn_arr = array();
         $i = 1;
@@ -207,6 +228,10 @@ class Admin extends MX_Controller {
         return $rtn_arr;
     }
 
+    /**
+     * convert an array of models to an EXT tree-item
+     * @todo check wich function is needed
+     */
     function convert_to_ext($array) {
         $rtn_arr = array();
         foreach ($array as $key => $value) {
@@ -240,6 +265,9 @@ class Admin extends MX_Controller {
         return array_filter($rtn_arr);
     }
 
+    /**
+     * Shows the import form
+     */
     function import_form() {
         $this->load->helper('file');
         $wfData = array();
@@ -249,6 +277,9 @@ class Admin extends MX_Controller {
         $this->parser->parse('bpm/import_form.php', $wfData);
     }
 
+    /**
+     * Shows the New Model form
+     */
     function new_model_form() {
         $wfData = array();
         $wfData = $this->lang->language;
@@ -274,18 +305,30 @@ class Admin extends MX_Controller {
     function model_move($from, $to) {
         
     }
+
+    /**
+     * Returns a JSON representattion of a case for a given model
+     * @param string $idwf The idwf of the model
+     * @param string $idcase The id of the case
+     */
     function get_data($idwf, $idcase) {
-        $debug=false;
-        $this->load->model('bpm','bpm_model');
-        $case = $this->bpm->get_case($idcase,$idwf);
+        $debug = false;
+        $this->load->model('bpm', 'bpm_model');
+        $case = $this->bpm->get_case($idcase, $idwf);
         $data = $this->bpm->load_case_data($case);
-         if (!$debug) {
+        if (!$debug) {
             header('Content-type: application/json;charset=UTF-8');
             echo json_encode($data);
         } else {
             var_dump($data);
         }
     }
+
+    /**
+     * Returns a representattion of a case for a given model in HTML or JSON
+     * @param string $idwf The idwf of the model
+     * @param string $mode html or json
+     */
     function get_model($idwf, $mode = 'html') {
         $idwf = urldecode($idwf);
         $wfData['base_url'] = base_url();
@@ -306,6 +349,9 @@ class Admin extends MX_Controller {
         //var_dump($cpData);
     }
 
+    /**
+     * Returns a JSON representation of all models (flat)
+     */
     function get_models() {
         $wfData = array();
         $wfData = $this->lang->language;
@@ -333,7 +379,9 @@ class Admin extends MX_Controller {
         header('Content-type: application/json;charset=UTF-8');
         echo json_encode($result);
     }
-
+    /**
+     * Converts an array of paths into a Tree
+     */
     function explodeTree($array, $delimiter = '_', $baseval = false) {
         if (!is_array($array))
             return false;
@@ -371,7 +419,10 @@ class Admin extends MX_Controller {
         asort($returnArr);
         return $returnArr;
     }
-
+    /**
+     * Movi interface
+     * @deprecated since version .5
+     */
     function movi($idwf, $idcase = null) {
         $wfData = array();
         $wfData = $this->lang->language;

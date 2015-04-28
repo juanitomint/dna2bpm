@@ -12625,9 +12625,9 @@ ORYX.Core.Shape = {
 										//TODO what is the dafault path?
 										var hrefAttr = svgElem.getAttributeNodeNS('http://www.w3.org/1999/xlink', 'xlink:href');
 										if(hrefAttr) {
-											hrefAttr.textContent = prop;
+											hrefAttr.textContent ='editor.xhtml#model/'+ prop;
 										} else {
-											svgElem.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', prop);
+											svgElem.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href','editor.xhtml#model/'+ prop);
 										}	
 										break;
 								}

@@ -7,7 +7,7 @@ class util extends MX_Controller {
         $this->load->library('parser');
         $this->load->model('user');
         $this->load->model('group');
-        $this->idu = (int) $this->session->userdata('iduser');
+        $this->idu = $this->user->idu;
     }
 
     function Index() {

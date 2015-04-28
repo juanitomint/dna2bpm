@@ -10,7 +10,7 @@ class Menu_model extends CI_Model {
         $this->container = 'container.menu';
         $this->load->library('cimongo/cimongo');
         $this->db = $this->cimongo;
-        $this->idu = $this->session->userdata('iduser');
+        $this->idu =$this->user->idu;
     }
 
     //---add a path to repository

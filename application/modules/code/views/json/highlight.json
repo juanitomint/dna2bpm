@@ -1,0 +1,58 @@
+{
+    "createdBy": "Juan Ignacio Borda <juanignacioborda@gmail.com>",
+    "title": "Code Blocks",
+    "view": "layout_2cols_fixed",
+    "icon": "fa-lightbulb-o",
+    "js": [{
+            "{base_url}code/assets/jscript/highlight/highlight.pack.js": "Highlight core"
+
+        },
+
+        {
+            "{base_url}code/assets/jscript/highlight.js": "Highlight-core"
+
+        }
+
+    ],
+    "css": [{
+            "{base_url}code/assets/jscript/highlight/styles/monokai.css": "Code-CSS"
+
+        }
+
+    ],
+    "zones": [{
+        "tiles": [
+
+        ]
+    }, {
+        "col1": [{
+                "title": "PHP",
+                "module": "code",
+                "controller": "code",
+                "function": "demo_highlight",
+                "params": ["php"]
+            }
+
+
+        ]
+
+    }, {
+        "col2": [
+            {
+            "title": "JS",
+            "module": "code",
+            "controller": "code",
+            "function": "demo_highlight",
+            "params": ["javascript"]
+        },
+        {
+            "title": "JS",
+            "module": "code",
+            "controller": "code",
+            "function": "highlight_file",
+            "params": ["modules/code/views/json/highlight.json","json","textmate"]
+        }
+        ]
+
+    }]
+}

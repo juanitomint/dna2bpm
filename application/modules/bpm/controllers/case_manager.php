@@ -30,7 +30,7 @@ class Case_manager extends MX_Controller {
         $this->module_path = 'application/modules/bpm/';
         //----LOAD LANGUAGE
         $this->lang->load('library', $this->config->item('language'));
-        $this->idu = (int) $this->session->userdata('iduser');
+        $this->idu = $this->user->idu;
         $this->base_url = base_url();
         $this->module_url = base_url() . $this->router->fetch_module() . '/';
     }
@@ -54,6 +54,8 @@ class Case_manager extends MX_Controller {
         $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
         if ($debug)
             echo '<h2>' . __FUNCTION__ . '</h2>';
+        //---sanitize resourceId
+        $resourceId = urldecode($resourceId);
         $case = $this->bpm->get_case($idcase);
         $token = $this->bpm->get_token($idwf, $idcase, $resourceId);
         $filter = array(
@@ -239,7 +241,13 @@ class Case_manager extends MX_Controller {
             if (isset($idwf) && isset($idcase)) {
                 switch ($action) {
                     case 'history':
-                        $tokens = array_slice($case['history'], 0, 100);
+                        // $tokens = array_slice($case['history'], 0, 100);
+                        $tokens = $case['history'];
+                        $status = array('$in'=>array('user','waiting','canceled'));
+                        $status_tokens = $this->bpm->get_tokens($idwf, $idcase,$status);
+                        $tokens=array_merge($tokens,$status_tokens);
+                        //---merge status with history
+                        
                         break;
                     case 'status':
                         // select all tokens
@@ -259,6 +267,7 @@ class Case_manager extends MX_Controller {
                 $user = $this->user->get_user($token['iduser']);
                 $token['user'] = $user->nick;
                 //----set date
+                if(isset($token['name'])) $token['title']=$token['name'];
                 $token['date'] = isset($token['checkdate']) ? date($this->lang->line('dateFmt'), strtotime($token['checkdate'])) : '???';
                 $token['icon'] = "<img src='" . $this->base_url . $this->bpm->get_icon($token['type']) . "' />";
                 $out['rows'][] = $token;

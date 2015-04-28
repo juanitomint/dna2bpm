@@ -77,11 +77,31 @@ $(document).on("click",".msg",function(e){
 $(document).on('submit','#new_msg',function(e){
 	e.preventDefault();
 	console.log('sending');
+        
+        var config={'status':'warning','body':'Mensaje Enviado!!!'};
+        myalert=BT_alert(config);
+
+        $('#myModal').find('.modal-body').html(myalert);
 	var data=$(this).serializeArray();
-	$.post(globals.base_url+"inbox/inbox/send",{data:data},function(resp){
+        //====== AJAX
+        $.ajax({
+        type: "POST",
+        url: globals.base_url+"inbox/inbox/send",
+        data: {data:data},
+        success: function(resp){
         $('#myModal').find('.modal-body').html('Message sent!');
-	});
-	
+	},
+        error: function(resp){
+        $('#myModal').find('.modal-body').html('Message couldn\'t be sent!');
+	}
+        }).done(function( ) {
+               	var whereiam=$('#whereiam').val();
+                var url = globals['base_url']+"inbox/print_folder/"+whereiam;
+                reload(url,target,whereiam);
+         });
+
+
+       //<i class="fa fa-spinner fa-spin fa-2x" ></i>
   });
 
 // Action dropdown handle
@@ -228,11 +248,8 @@ $(document).on("submit","[name='form_search']",function(e){
 
 //====== Reload : update the count in folders and the content of msgs
 function reload(url,target,whereiam){
-	
 	update_counters();
-	
 	$.post( url, function( data ) {
-
 		$(target).html(data);
 
 		//==== icheck
@@ -250,22 +267,30 @@ function reload(url,target,whereiam){
 	        $("input[type='checkbox']", ".table-mailbox").iCheck("check");
 	    });
 	    //====
-	    //var folder=$('#whereiam').val();
 	    $('.nav-stacked li').removeClass('active');
-	    var folder=url.match(/print_folder\/(.+)/i);
-	    $('#bt_'+folder[1]).addClass('active');
+
 	});
 }
 
 function update_counters(){
 	// Keep counters 
 	var letscount = globals['base_url']+"inbox/print_count_msgs/";
+        
 	$.post( letscount, function( data ) {
 		var json=JSON.parse(data);
 		for (var prop in json) {
 			$('.'+prop).html(json[prop]);
+                        console.log(prop+' '+json[prop]);
 			}
 	});
+        
+        // Toolbar inbox
+        var toolbar = globals['base_url']+"inbox/print_toolbar/";
+       	$.post( toolbar, function( data ) {
+            $( "#toolbar_inbox" ).replaceWith( data);
+            //console.log(data);
+	});
+        
 }
 
 

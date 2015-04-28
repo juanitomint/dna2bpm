@@ -290,4 +290,56 @@ function run_InclusiveGateway($shape, $wf, $CI) {
             }
         }
     }
+    
+}
+
+function run_EventbasedGateway($shape, $wf, $CI) {
+    $debug = (isset($CI->debug[__FUNCTION__])) ? $CI->debug[__FUNCTION__] : false;
+    // $debug=true;
+    /**
+     * @todo: don't process if no new events
+     */
+    $has_finished = true;
+    $flows=$CI->bpm->get_outgoing_shapes($shape, $wf);
+    $cancel_events=false;
+    foreach ($flows as $flow) {
+            $trigger_resourceId=$flow->outgoing->{0}->resourceId;
+            $token_trigger=$CI->bpm->get_token($wf->idwf, $wf->case, $trigger_resourceId);
+            // var_dump2($token_trigger);
+            //---if not exists the initialize tokens for engine
+            if(!$token_trigger){
+                $shape_trigger=$CI->bpm->get_shape($trigger_resourceId, $wf);
+                //$CI->bpm->movenext($shape_trigger,$wf);
+                $token_trigger=$CI->bpm->token_checkin(array(), $wf, $shape_trigger);
+                $token_trigger['status']='pending';
+                $CI->bpm->save_token($token_trigger);
+            }
+            
+            $trigger_status=$token_trigger['status'];
+            //---Add shapes to be canceled
+            if($trigger_status=='finished'){
+                
+                //---set flag for process cancelations
+                $cancel_events=true;
+                //---set finished to flow preceeding
+                $CI->bpm->set_token($wf->idwf, $wf->case, $flow->resourceId, $flow->stencil->id, 'finished');
+            } else {
+                $triggers[]=array(
+                'flow'=>$flow,
+                'shape'=>$CI->bpm->get_shape($trigger_resourceId, $wf));
+            }
+            
+        }
+    //---process cancelations
+    if($cancel_events){
+        if($debug) echo "process Cancelations<br/>";
+        $data = array('canceledBy' => $shape->resourceId, 'canceledName' => $shape->properties->name);
+        foreach($triggers as $arr){
+            $flow=$arr['flow'];
+            $shape_cancel=$arr['shape'];
+            $CI->bpm->set_token($wf->idwf, $wf->case, $shape_cancel->resourceId, $shape_cancel->stencil->id, 'canceled', $data);
+        }
+        //---now set $shape as finished
+        $CI->bpm->set_token($wf->idwf, $wf->case, $shape->resourceId, $shape->stencil->id, 'finished');
+    }
 }

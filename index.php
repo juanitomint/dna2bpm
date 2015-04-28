@@ -202,7 +202,15 @@ if (is_dir($application_folder)) {
 
     define('APPPATH', BASEPATH . $application_folder . '/');
 }
-
+/*
+ * --------------------------------------------------------------------
+ * TRY TO CREATE ENVIROMENT SPACIFIC FOLDER
+ * --------------------------------------------------------------------
+ */
+$custom_conf_dir=FCPATH.APPPATH.'config/'.ENVIRONMENT;
+if(!is_dir($custom_conf_dir)){
+    @mkdir($custom_conf_dir);
+}
 /*
  * --------------------------------------------------------------------
  * LOAD THE BOOTSTRAP FILE

@@ -22,7 +22,7 @@ class Kpi extends MX_Controller {
 		$this->types_path = 'application/modules/bpm/assets/types/';
 		$this->module_path = 'application/modules/bpm/';
 		$this->lang->load ( 'library', $this->config->item ( 'language' ) );
-		$this->idu = ( int ) $this->session->userdata ( 'iduser' );
+		$this->idu = $this->user->idu;
 		$this->base_url = base_url ();
 		$this->module_url = base_url () . $this->router->fetch_module () . '/';
 		$this->modules_path = APPPATH . 'modules/';
@@ -508,7 +508,7 @@ class Kpi extends MX_Controller {
 				$template .= '</thead>';
 				// body
 				$template .= '<tbody>';
-				$template .= '{cases}' . '<tr>' . '<td>' . '<a target="_blank" href="' . $detail . '">' . '<i class="fa ' . $detail_icon . '"></i>' . '</a>' . '</td>' . implode ( $values ) . "" . "</tr>{/cases}\n";
+				$template .= '{cases}' . '<tr>' . '<td>' . '<a target="_blank" class="'.$idkpi.'" href="' . $detail . '">' . '<i class="fa ' . $detail_icon . '"></i>' . '</a>' . '</td>' . implode ( $values ) . "" . "</tr>{/cases}\n";
 				$template .= '</tbody>';
 				$template .= '</table>';
 			} else {
