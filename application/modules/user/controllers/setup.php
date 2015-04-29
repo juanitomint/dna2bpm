@@ -7,8 +7,10 @@ class Setup extends CI_Controller {
         $this->load->library('parser');
         $this->load->model('user');
         $this->load->model('group');
+        $this->load->model('rbac');
         $this->load->library('index/ui');
         $this->config->load('user/config');
+        $this->load->helper('file');
         //---base variables
         $this->base_url = base_url();
         $this->module_url = base_url() . $this->router->fetch_module() . '/';
@@ -71,8 +73,54 @@ class Setup extends CI_Controller {
             }
             $cpData['msgcode'][] = array('msg' => $folder . '   ' . $badge);
         }
+        $groupUser=$this->group->get($this->config->item('groupUser'));
+        //---creates a group
+        if(!$groupUser){
+             $cpData['msgcode'][] = array('msg' => "Creating Users Group.");
+             $grp = array(
+                "idgroup" => 1000,
+                "name" => "DNA² Users",
+                "desc" => "Group for Regular users, everybody on this group will have sytem access rights",
+                "perm" => array('USE'),
+                "idsup" => "1"
+            );
+            $this->group->save($grp);
+        } else {
+             $cpData['msgcode'][] = array('msg' => "User's Group already exists:".$groupUser['name']);
+        }
+        $groupUser=$this->group->get($this->config->item('groupUser'));
+        
+        //------ensures basic premisions
+        $file_path=APPPATH . 'modules/user/assets/json/perm.user.json';
+        if(is_file($file_path)){
+          $cpData['msgcode'][] = array('msg' => "Importing basic User Group permissions");
+          $data =json_decode(read_file($file_path));
+          foreach($data as $path){
+              $this->rbac->put_path($path, array(
+                    'source' => 'Setup',
+                    'checkdate' => date('Y-m-d H:i:s'),
+                ));
+                $this->rbac->put_path_to_group($path,$this->config->item('groupUser'));
+          }
+          $cpData['msgcode'][] = array('msg' => "Imported ".count($data).' paths.');
+        } else {
+            $cpData['msgcode'][] = array('msg' => "file not exists");
+        }
         $cpData['msgcode'][] = array('msg' => "Click <a href='" . $this->module_url . "login'>>>here<<</a> to log-in");
         $this->ui->compose('user/setup.bootstrap.php', 'user/bootstrap.ui.php', $cpData);
     }
-
+    
+    function make_group_file($group=null){
+    $this->user->authorize();
+    $idgroup=isset($group) ? $group : $this->config->item('groupUser');
+    $repo=$this->rbac->get_group_paths((int)$idgroup);
+    $path=APPPATH . 'modules/user/assets/json/perm.user.json';
+    $data=json_encode($repo);
+        if (!write_file($path, $data))
+        {
+            echo "Unable to write the file $path from group $idgroup";
+        } else {
+            echo "Created $path from group $idgroup";
+        }
+    }
 }
