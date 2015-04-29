@@ -67,9 +67,9 @@ class Setup extends CI_Controller {
         $cpData['msgcode'][] = array('msg' => "Checking Permissions: the folders below has to have write permission to the user runing the site, usually www-data");
         foreach ($this->writable_folders as $folder) {
             if (is_writable($folder)) {
-                $badge = '<span class="label label-success">OK</span>';
+                $badge = '<span class="label label-success pull-right">OK</span>';
             } else {
-                $badge = '<span class="label label-warning">Not Writable</span>';
+                $badge = '<span class="label label-warning pull-right">Not Writable</span>';
             }
             $cpData['msgcode'][] = array('msg' => $folder . '   ' . $badge);
         }
