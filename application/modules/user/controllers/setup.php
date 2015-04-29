@@ -54,8 +54,8 @@ class Setup extends CI_Controller {
             $adm['name'] = 'System';
             $adm['lastname'] = 'Administrator';
             $adm['perm'] = array('ADM');
-            $adm['idgroup'] = 1; //---primary group
-            $adm['group'] = array(1); //---group that user belong
+            $adm['idgroup'] = $this->config->item('groupAdmin'); //---primary group
+            $adm['group'] = array($this->config->item('groupAdmin')); //---group that user belong
 
             $adm['checkdate'] = date('Y-m-d h:i:s');
             $this->user->save($adm);
@@ -88,8 +88,26 @@ class Setup extends CI_Controller {
         } else {
              $cpData['msgcode'][] = array('msg' => "User's Group already exists:".$groupUser['name']);
         }
-        $groupUser=$this->group->get($this->config->item('groupUser'));
         
+        $groupUser=$this->group->get($this->config->item('groupUser'));
+        //---ensures at least 1 user in the users group;
+        $users = count($this->user->getByGroup($this->config->item('groupUser')));
+        //var_dump($adm->count());
+        //---create administrator user if not exists
+        if (!$users) {
+            $user = array();
+            $user['nick'] = 'user';
+            $user['passw'] = '123456';
+            $user['name'] = 'John';
+            $user['lastname'] = 'Doe';
+            $user['perm'] = array('USE');
+            $user['idgroup'] = $this->config->item('groupUser'); //---primary group
+            $user['group'] = array($this->config->item('groupUser')); //---group that user belong
+            $user['checkdate'] = date('Y-m-d h:i:s');
+            $this->user->add($user);
+            $cpData['msgcode'][] = array('msg' => 'Created Regular user:');
+            $cpData['msgcode'][] = array('msg' => "Nick: " . $user['nick'] . '<br/>password: 123456<br/>Name: ' . $user['name'] . '<br/>Last Name: ' . $user['lastname']);
+        }  
         //------ensures basic premisions
         $file_path=APPPATH . 'modules/user/assets/json/perm.user.json';
         if(is_file($file_path)){
