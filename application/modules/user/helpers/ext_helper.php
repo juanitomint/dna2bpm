@@ -78,7 +78,7 @@ function explodeExtTree($array, $delimiter = '/') {
     $rtnArr=array(&$root);
     foreach ($array as $key => $val) {
         // Get parent parts and the current leaf
-        $parts = array_filter(explode('/', $key));
+        $parts = explode('/', $key);
         // Build parent structure
         $localpath = array('root');
         $cachepath = array();
