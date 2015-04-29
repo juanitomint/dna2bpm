@@ -58,20 +58,27 @@ function explodeTree($array, $delimiter = '/') {
 function explodeExtTree($array, $delimiter = '/') {
     if (!is_array($array))
         return false;
+        
+    $debug=false;
     //---Setings
     $expanded=false;
     $leafCls='dot-green';
     $splitRE = '/' . preg_quote($delimiter, '/') . '/';
-    $returnArr = array((object) array(
+    $pointer_index=array();
+    
+     $root= (object) array(
             "id" => 'root',
             "text" => "Object Repository",
             "cls" => "folder",
             "expanded" => true,
             "checked" => false,
-            ));
+            );
+    //---save index to object            
+    $pointer_index['root']=&$root;
+    $rtnArr=array(&$root);
     foreach ($array as $key => $val) {
         // Get parent parts and the current leaf
-        $parts = preg_split($splitRE, $key, -1, PREG_SPLIT_NO_EMPTY);
+        $parts = array_filter(explode('/', $key));
         // Build parent structure
         $localpath = array('root');
         $cachepath = array();
@@ -94,40 +101,45 @@ function explodeExtTree($array, $delimiter = '/') {
                 $obj->data = $val;   
             }
             //---set the internal pointer to the parent
-            $pointer = search($returnArr, 'id', $thisparentpath);
+            $pointer =&$pointer_index[$thisparentpath];
             //----if parent exists (we start with 1 root so has to exists but just in case...)
             if ($pointer) {
-                $pointerChild = search($returnArr, 'id', $thispath);
+                if($debug)
+                    echo "Pointer Found: $thisparentpath<br/>";
+                
+                $pointerChild = &$pointer_index[$thispath];
                 //---check if child exists
                 if (!$pointerChild){
-                    $pointer['leaf']=false;
-                    $pointer['expanded'] = $expanded;
-                    if(isset($pointer['children'])){
-                    $pointer['children'][] = $obj;
+                //---adds object to pointer index
+                $pointer_index[$thispath]=$obj;
+                if($debug)
+                     echo "No PointerChild: $thispath<br/>";
+                    $pointer->leaf=false;
+                    $pointer->expanded = $expanded;
+                    //---check if object has childrens
+                    if(property_exists($pointer,'children')){
+                        if($debug)
+                            echo "Childrens<br/>";
+                        $pointer->children[] = &$pointer_index[$thispath];
                     } else {
-                        $pointer['children']=array($obj);
+                        if($debug)
+                            echo "no Childrens<br/>";
+                        $pointer->children= array(&$pointer_index[$thispath]);
                     }
+                    
+                } else {
+                    if($debug)
+                        echo "PointerChild: $thispath<br/>";
                     
                 }
             }
+            if($debug){
+                echo "<hr/>";
+                echo "Parent: $thisparentpath<br/>";
+                echo "Child: $thispath<br/>";
+                var_dump($pointer_index);
+            }
         }
     }
-    return $returnArr;
-}
-
-/*
- *  This function returns a pointer to the part of the array matching key=>value
- */
-
-function search(&$arr, $key, $value) {
-    $arrIt = new RecursiveIteratorIterator(new RecursiveArrayIterator($arr));
-    foreach ($arrIt as $sub) {
-        $subArray = $arrIt->getSubIterator();
-        $subArray->jj = true;
-        if (isset($subArray[$key]) && $subArray[$key] == $value) {
-            //return iterator_to_array($subArray);
-            return $subArray;
-        }
-    }
-    return null;
+    return $rtnArr;
 }
