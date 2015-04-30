@@ -63,6 +63,7 @@ class Group extends CI_Model {
     }
 
     function get_groups($order = null, $query_txt = null) {
+        $groups=array();
         $query = array();
         if ($query_txt) {
             $query = array('name' => new MongoRegex('/' . $query_txt . '/i'));

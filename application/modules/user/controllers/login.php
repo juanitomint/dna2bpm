@@ -24,7 +24,7 @@ class Login extends MX_Controller {
         $cpData['base_url'] = base_url();
         $cpData['show_warn'] = $this->config->item('show_warn');
         $cpData['theme'] = $this->config->item('theme');
-        $cpData['plugins'] =(class_exists('Userlayer')) ? implode(',', $this->config->item('user_plugin')):array();
+        $cpData['plugins'] = (class_exists('Userlayer')) ? implode(',', $this->config->item('user_plugin')) : array();
         //----load login again with msg 
         $this->parser->parse('user/login', $cpData);
     }
@@ -41,7 +41,7 @@ class Login extends MX_Controller {
         $cpData['base_url'] = $this->base_url;
         $cpData['module_url'] = $this->module_url;
         $cpData['theme'] = $this->config->item('theme');
-        $cpData['plugins'] =(class_exists('Userlayer')) ? implode(',', $this->config->item('user_plugin')):array();
+        $cpData['plugins'] = (class_exists('Userlayer')) ? implode(',', $this->config->item('user_plugin')) : array();
         //----NO USER
 
         if ($msg == 'nouser') {

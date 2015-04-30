@@ -20,7 +20,8 @@ class User extends CI_Model {
     function add($user_data) {
         $user = null;
         //---1st check if user exists by its idu
-        $user_data['group'] = array_map('intval', explode(',', $user_data['group']));
+        if(!is_array($user_data['group']))
+            $user_data['group'] = array_map('intval', explode(',', $user_data['group']));
         $user_data['idu'] = isset($user_data['idu']) ? $user_data['idu'] : null;
         if ($user_data['idu']) {
             //---set proper typo 4 id

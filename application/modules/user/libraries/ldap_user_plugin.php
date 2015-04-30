@@ -166,30 +166,47 @@ class ldap_user_plugin extends User {
 
         if ($query_txt) {
             $filter[] = "(uid=$query_txt*)";
+            $filter[] = "(cn=*$query_txt*)";
         } else {
             $filter[] = "(uid=*)";
         }
         $filter_str = '(|' . implode('', $filter) . ')';
 //        echo $filter_str . '<hr/>';
-        $result = ldap_search($ldapconn, $this->config->item('baseDN'), $filter_str, array('dn')) or die("Search error.");
-        $data = ldap_get_entries($ldapconn, $result);
-        $groups = array();
-        $users = array();
-        for ($i = 0; $i < ldap_count_entries($ldapconn, $result); $i++) {
-            $user = $this->get_user_byDN($data[$i]['dn']);
-            if ($idgroup) {
-                if (in_array($idgroup, $this->get_user_groups($data[$i]['dn'])))
+//        var_dump($query_txt == null);
+        if ($idgroup && $query_txt == null) {
+            $filter = "(gidnumber=$idgroup)";
+            $result = ldap_search($ldapconn, $this->config->item('groupsDN'), $filter, array()) or die("Search error.");
+            $data = ldap_get_entries($ldapconn, $result);
+            $groups = array();
+            $data = $data[0];
+            $ldap_users = (isset($data[$this->config->item('member_attr')])) ? $data[$this->config->item('member_attr')] : array();
+            unset($ldap_users['count']);
+            $ldap_users = array_slice($ldap_users, $offset, $limit);
+            $users = array();
+            foreach ($ldap_users as $dn) {
+                $users[] = $this->get_user_byDN($dn);
+            }
+        } else {
+            $result = ldap_search($ldapconn, $this->config->item('baseDN'), $filter_str, array('dn')) or die("Search error.");
+            $data = ldap_get_entries($ldapconn, $result);
+            $groups = array();
+            $users = array();
+            $max = min(ldap_count_entries($ldapconn, $result), $limit);
+            for ($i = $offset; $i < ldap_count_entries($ldapconn, $result); $i++) {
+                if ($idgroup) {
+                    if (in_array($idgroup, $this->get_user_groups($data[$i]['dn'])))
+                        $users[] = $this->get_user_byDN($data[$i]['dn']);
+                } else {
                     $users[] = $this->get_user_byDN($data[$i]['dn']);
-            } else {
-                $users[] = $this->get_user_byDN($data[$i]['dn']);
+                }
             }
         }
-        $users= array_slice($users, $offset, $limit);
+        //$users= array_slice($users, $offset, $limit);
         return array_filter($users);
     }
 
     function get_users_count($query_txt = null, $idgroup = null, $match = 'both') {
-                $ldapconn = $this->connect();
+        $ldapconn = $this->connect();
         $ldapbind = ldap_bind($ldapconn, $this->config->item('ldaprdn'), $this->config->item('ldappass')) or die("Could not bind with password to: " . $this->config->item('ldaprdn'));
         $filter = array(
                 // "(objectclass=*)"
@@ -202,6 +219,18 @@ class ldap_user_plugin extends User {
         }
         $filter_str = '(|' . implode('', $filter) . ')';
 //        echo $filter_str . '<hr/>';
+         if ($idgroup && $query_txt == null) {
+            $filter = "(gidnumber=$idgroup)";
+            $result = ldap_search($ldapconn, $this->config->item('groupsDN'), $filter, array()) or die("Search error.");
+            $data = ldap_get_entries($ldapconn, $result);
+            $data = $data[0];
+            $ldap_users = (isset($data[$this->config->item('member_attr')])) ? $data[$this->config->item('member_attr')] : array();
+            unset($ldap_users['count']);
+            $users = array();
+            foreach ($ldap_users as $dn) {
+                $users[] = $dn;
+            }
+        } else {
         $result = ldap_search($ldapconn, $this->config->item('baseDN'), $filter_str, array('dn')) or die("Search error.");
         $data = ldap_get_entries($ldapconn, $result);
         $groups = array();
@@ -215,6 +244,8 @@ class ldap_user_plugin extends User {
                 $users[] = $data[$i]['dn'];
             }
         }
+        
+            }
         return count($users);
     }
 

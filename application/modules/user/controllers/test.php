@@ -18,7 +18,7 @@ class Test extends MX_Controller {
         $this->load->library('parser');
         //----LOAD LANGUAGE
         $this->lang->load('library', $this->config->item('language'));
-        $this->idu = $this->user->idu;
+        $this->idu = (double) $this->session->userdata('iduser');
     }
 
     function Index() {
@@ -55,6 +55,17 @@ class Test extends MX_Controller {
     function get_avatar(){
     echo 'me:'. $this->user->get_avatar().'<hr/>';    
     echo 'UserId:10:'. $this->user->get_avatar(10);    
+    }
+    
+    function testint(){
+        $users=$this->mongo->db->users->find();
+        while ($user=$users->getNext()){
+            if(isset($user['idu'])){
+                if(gettype($user['idu']*1)<>'integer'){
+                    echo "Not Int:".$user['idu'].'->'.gettype($user['idu']*1).'<br/>';
+                }
+            }
+        }
     }
 
 }
