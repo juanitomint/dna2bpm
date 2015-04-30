@@ -15,13 +15,20 @@ class Rbac extends CI_Model {
 
     function get_repository($query = array()) {
         //returns a mongo cursor with matching id's
-        $rs = $this->mongo->db->selectCollection($this->permRepo)->find($query);
-        $rs->sort(array('path'));
+       $rs = $this->db
+        ->where($query)
+        ->limit(100)
+        ->get($this->permRepo)
+        ->result_array();
+        
         $repo = array();
-        while ($r = $rs->getNext()) {
+        foreach ($rs as $r) {
             $repo[$r['path']] = $r['properties'];
             //break;
-        }
+        };
+        // $repo=array_slice($repo,310,5);
+        // var_dump($repo);exit;
+        
         return $repo;
     }
 
