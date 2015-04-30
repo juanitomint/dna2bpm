@@ -14,7 +14,7 @@ class rbac_admin extends MX_Controller {
         $this->user->authorize();
         //----LOAD LANGUAGE
         //$this->lang->load('library', $this->config->item('language'));
-        $this->idu = $this->user->idu;;
+        $this->idu = (double) $this->session->userdata('iduser');
     }
 
     function repository($action) {

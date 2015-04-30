@@ -29,7 +29,7 @@ class Profile extends MX_Controller {
         $this->module_url = base_url() . $this->router->fetch_module() . '/';
         //----LOAD LANGUAGE
         $this->lang->load('profile', $this->config->item('language'));
-        $this->idu = $this->user->idu;
+        $this->idu = (double) $this->session->userdata('iduser');
     }
 
     /*
@@ -98,7 +98,7 @@ class Profile extends MX_Controller {
 
         $customData['base_url'] = base_url();
         $customData['module_url'] = base_url() . 'user/';
-        $iduser = (int) $this->session->userdata('iduser');
+        $iduser = (double) $this->session->userdata('iduser');
 
         $allowed=array('name','gender','lastname','idnumber','birthdate','email','phone','celular','address','cp','city','signature','notification_by_email');
 
@@ -107,7 +107,7 @@ class Profile extends MX_Controller {
  			$post_obj[$item['name']]=$item['value'];
 		}
 
-        $iduser = (int) $this->session->userdata('iduser');
+        $iduser = (double) $this->session->userdata('iduser');
         $post_obj['idu'] = (int) $iduser;
 
         //lo que esta en la base
@@ -141,7 +141,7 @@ class Profile extends MX_Controller {
 
 
 
-        $iduser = (int) $this->session->userdata('iduser');
+        $iduser = (double) $this->session->userdata('iduser');
         $post_obj['nick'] = $this->input->post('nick');
         //la foto 
         $post_obj['name'] = $this->input->post('nombre');
