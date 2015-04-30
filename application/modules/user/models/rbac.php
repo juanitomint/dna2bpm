@@ -17,7 +17,6 @@ class Rbac extends CI_Model {
         //returns a mongo cursor with matching id's
        $rs = $this->db
         ->where($query)
-        ->limit(100)
         ->get($this->permRepo)
         ->result_array();
         
