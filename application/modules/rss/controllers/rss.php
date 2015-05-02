@@ -68,6 +68,7 @@ class Rss extends MX_Controller {
         );
 
         $data['items'] = $this->items;
+        $this->output->set_content_type('xml');
         $this->load->view('feed/'.$format, $data);
     }
 

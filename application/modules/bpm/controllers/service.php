@@ -28,6 +28,8 @@ class Service extends MX_Controller {
         $this->debug['run_IntermediateLinkEventThrowing']=true;
 
         //$this->debug['get_shape_byname']=false;
+        $this->base_url = base_url();
+        $this->module_url = base_url() . $this->router->fetch_module() . '/';
     }
     /**
      * Process timer tokens
@@ -110,10 +112,10 @@ class Service extends MX_Controller {
                 );
                 //var_dump(json_encode($query));exit;
                 $tasks = $this->bpm->get_tasks_byFilter($query, array(), array('checkdate' => 'desc'));
-                //$tasks=Modules::run('bpm/bpmui/prepare_tasks',$tasks,1,5);
+                $tasks=Modules::run('bpm/bpmui/prepare_tasks',$tasks,1,5);
                 $this->load->module('rss');
                 // var_dump($tasks['mytasks']);exit; 
-                foreach($tasks as $task){
+                foreach($tasks['mytasks'] as $task){
                     $this->rss->items[]=
                         array(
                              'title' => $task['title'],
@@ -124,7 +126,7 @@ class Service extends MX_Controller {
                             );
                         
                 }
-                $this->rss->render('rss');
+                $this->rss->render();
             }    
         }
     }
