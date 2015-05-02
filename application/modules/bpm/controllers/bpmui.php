@@ -208,7 +208,7 @@ class Bpmui extends MX_Controller {
             ),
             'status' => 'user'
         );
-
+        //@todo get just task count instead tasks
         $tasks = $this->bpm->get_tasks_byFilter($query);
         $data['number'] = count($tasks);
         $data['icon'] = 'ion-android-checkmark';

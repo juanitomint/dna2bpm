@@ -206,6 +206,22 @@ class User extends CI_Model {
             return false;
         }
     }
+    function getby_token($token=null) {
+        /**
+         * returns single user with matching id
+         */
+        //var_dump(json_encode($query));
+        //$this->db->debug = true;
+        $this->db->where(array('token' =>$token));
+        $result = $this->db->get('users')->result();
+        ///----return only 1st
+        //$this->db->debug = false;
+        if ($result) {
+            return $result[0];
+        } else {
+            return false;
+        }
+    }
 
     function getbyid($iduser) {
         /**

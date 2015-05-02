@@ -91,4 +91,41 @@ class Service extends MX_Controller {
             var_dump($out);
         }
      }
+     
+    function rss($token=null){
+        if($token){
+        /**
+         * Impersonates as 666=daemon
+         */ 
+        $this->user->idu=666;
+        // $this->user->idu=1;
+        //---register if it has logged is
+        $this->session->set_userdata('loggedin', true);
+            $this->load->model('bpm/bpm');
+            $user=$this->user->getby_token($token);
+            if($user){
+                $query = array(
+                    'assign' => $user->idu,
+                    'status' => 'user'
+                );
+                //var_dump(json_encode($query));exit;
+                $tasks = $this->bpm->get_tasks_byFilter($query, array(), array('checkdate' => 'desc'));
+                //$tasks=Modules::run('bpm/bpmui/prepare_tasks',$tasks,1,5);
+                $this->load->module('rss');
+                // var_dump($tasks['mytasks']);exit; 
+                foreach($tasks as $task){
+                    $this->rss->items[]=
+                        array(
+                             'title' => $task['title'],
+                             'author' => $user->name,
+                             'link' => $this->base_url.'bpm/engine/run/model/'.$task['idwf'].'/'.$task['case'].'/'.$task['resourceId'],
+                             'pubdate' => strtotime($task['checkdate']),
+                             'description' => $task['type']
+                            );
+                        
+                }
+                $this->rss->render('rss');
+            }    
+        }
+    }
 }
