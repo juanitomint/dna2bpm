@@ -352,22 +352,6 @@ class User extends CI_Model {
             return $user[0];
     }
 
-    function get_groups($order = null, $query_txt = null) {
-        /*
-         *  Function get_groups
-         * 
-         * @todo translate this function to ActiveRecord
-         */
-        $query = array();
-        if ($query_txt) {
-            $query = array('name' => new MongoRegex('/' . $query_txt . '/i'));
-        }
-        //var_dump('$order',$order,'$query',$query);
-        $rs = $this->mongo->db->groups->find($query);
-        if ($order)
-            $rs->sort(array($order => 1));
-        return $rs;
-    }
 
     function get_users_count($query_txt = null, $idgroup = null,$match='both') {
         if ($idgroup) {
