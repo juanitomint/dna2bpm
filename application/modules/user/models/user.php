@@ -393,9 +393,6 @@ class User extends CI_Model {
 
             //$query+=array('$where'=>"this.name.match(/$query_txt/i)");
         }
-        //var_dump('$order', $order, '$query', $query);
-        //$rs = $this->mongo->db->users->find($query)->skip($start)->limit($limit);
-        //$order = (isset($order)) ? $rs->sort($order) : $rs->sort(array('lastname' => 1, 'name' => 1));
         if ($order) {
             #@todo //--check order like
             $this->db->order_by($order);
@@ -407,7 +404,9 @@ class User extends CI_Model {
     function put_user($object) {
         //var_dump($object);
         $options = array('upsert' => true, 'w' => true);
-        return $this->mongo->db->users->save($object, $options);
+        unset($object['_id']);
+        $query=array('idu'=>$object['idu']);
+        return $this->db->where($query)->update('users',$object, $options);
     }
 
     function remove($iduser) {
@@ -480,17 +479,7 @@ class User extends CI_Model {
         $result = $this->db->delete('users_token');
         return $result;
     }
-
-    function delete_group($idgroup) {
-        $options_delete = array("justOne" => true, "w" => true);
-        $options_save = array('upsert' => true, 'w' => true);
-        $criteria = array('idgroup' => (int) $idgroup);
-        //----make backup first
-        $obj = $this->group->get($idgroup);
-        $this->mongo->db->selectCollection('groups.back')->save($obj, $options_save);
-        $this->mongo->db->groups->remove($criteria, $options_delete);
-    }
-
+    
     function delete_by_id($_id) {
 
         //----make backup first

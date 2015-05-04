@@ -206,7 +206,7 @@ class admin extends MX_Controller {
     }
 
     function delete_group_db($idgroup) {
-        $this->user->delete_group($idgroup);
+        $this->group->delete($idgroup);
         echo '{"result":"ok"}';
     }
 
