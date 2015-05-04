@@ -74,7 +74,11 @@ class Rbac extends CI_Model {
     function get_group_paths($idgroup) {
         $query = array('idgroup' => $idgroup);
         $rs = $this->db->where($query)->get($this->permGroups)->result_array();
-        return $rs;
+        foreach ($rs as $arr) {
+            if (isset($arr['path']))
+                $rtnArr[] = $arr['path'];
+        }
+        return $rtnArr;
     }
 
 }
