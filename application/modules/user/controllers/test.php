@@ -110,7 +110,36 @@ class Test extends MX_Controller {
         var_dump2($this->group->delete($idgroup));
         
     }
+    
+    function user(){
+        $this->load->helper('bpm/bpm');
+        $user=json_decode('{
+    "_id" : ObjectId("515f6eccc93c9d544982fb93"),
+    "birthDate" : "0000-00-00 00:00:00",
+    "checkdate" : "2011-06-29 21:06:14",
+    "email" : "omarelectric@gmail.com",
+    "group" : [ 
+        8
+    ],
+    "idgroup" : 8,
+    "idnumber" : "30323981",
+    "idu" : 1785499079,
+    "lastacc" : "2015-05-04 16:01:15",
+    "lastname" : "ricail",
+    "name" : "maria",
+    "nick" : "meri",
+    "notification_by_email" : "yes",
+    "owner" : 666,
+    "passw" : "f8461b554d59b3014e8ff5165dc62fac",
+    "phone" : "0378315910111"
+}'
+);
+        echo "<h2>genid()</h2>";
+        var_dump2($this->user->genid());
+        
+        echo "<h2>genid(1)</h2>";
+        var_dump2($this->user->genid(1));
+    }
 }
-
 /* End of file welcome.php */
 /* Location: ./system/application/controllers/welcome.php */

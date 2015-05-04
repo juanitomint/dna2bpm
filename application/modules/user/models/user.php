@@ -418,23 +418,8 @@ class User extends CI_Model {
     }
 
     function update($user_data) {
-        $user = null;
-        //---1st check if user exists by its idu
-        if (isset($user_data['idu'])) {
-            $user = $this->getbyid($user_data['idu']);
-            //---if not found then add to db
-            if (!$user) {
-                $result = $this->save($user_data);
-                $user = $user_data;
-            } else {
-
-                $options = array('w' => true, 'upsert' => true);
-                $query = array('idu' => $user_data['idu']);
-                $result = $this->mongo->db->users->update($query, array('$set' => $user_data), $options);
-                $user = $user_data;
-            }
-            return $result;
-        }
+    return $this->save($user_data);
+         
     }
     /**
     * Get user avatar from disk
@@ -460,8 +445,10 @@ class User extends CI_Model {
 
     function save($data) {
         //var_dump($data);
+        unset($data['_id']);
         $options = array('w' => true, 'upsert' => true);
-        $result = $this->mongo->db->users->save($data, $options);
+        $this->db->where(array('idu'=>$data['idu']));
+        $result = $this->db->update('users',$data, $options);
         return $result;
     }
 
@@ -469,7 +456,7 @@ class User extends CI_Model {
     function save_token($object) {
         //var_dump($object);
         $options = array('w' => true, 'upsert' => true);
-        return $this->mongo->db->users_token->save($object, $options);
+        return $this->db->insert('users_token',$object, $options);
     }
 
     function delete_token($token) {
@@ -519,9 +506,9 @@ class User extends CI_Model {
 
     function genid() {
         $insert = array();
-        $id = mt_rand();
         $trys = 10;
         $i = 0;
+        $id = mt_rand();
         $container = 'users';
         //---if passed specific id
         if (func_num_args() > 0) {
@@ -532,29 +519,26 @@ class User extends CI_Model {
         $hasone = false;
 
         while (!$hasone and $i <= $trys) {//---search until found or $trys iterations
+            
             //while (!$hasone) {//---search until found or 1000 iterations
             $query = array('idu' => $id);
-            $result = $this->mongo->db->selectCollection($container)->findOne($query);
+            $result = $this->db->where($query)->count_all_results($container);
             $i++;
             if ($result) {
                 if ($passed) {
                     show_error("id:$id already Exists in $container");
-                    $hasone = true;
                     break;
-                } else {//---continue search for free id
-                    $id = mt_rand();
-                }
-            } else {//---result is null
-                $hasone = true;
+                } 
+                $hasone = false;
+                $id = mt_rand();
+                
+            } else {
+                $hasone=true;
             }
         }
         if (!$hasone) {//-----cant allocate free id
             show_error("Can't allocate an id in $container after $trys attempts");
         }
-        //-----make basic object
-        $insert['id'] = $id;
-        //----Allocate id in the collection (may result in empty docs)
-        //$this->mongo->db->selectCollection($container)->save($insert);
         return $id;
     }
 
