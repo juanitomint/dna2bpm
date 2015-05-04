@@ -67,7 +67,49 @@ class Test extends MX_Controller {
             }
         }
     }
-
+    function group(){
+        $this->load->model('user/group');
+        $this->load->helper('bpm/bpm');
+        
+        echo "<h2>GenId</h2>";
+        var_dump2($this->group->genid());
+        
+        echo "<h2>get_count</h2>";
+        var_dump2($this->group->get_count(1));
+        
+        echo "<h2>get(1)</h2>";
+        var_dump2($this->group->get(1));
+        
+        echo "<h2>getbyid(1)</h2>";
+        var_dump2($this->group->getbyid(1));
+        
+        echo "<h2>get_byname('Equipo DNA²')</h2>";
+        var_dump2($this->group->get_byname('Equipo DNA²'));
+        
+        echo '<h2>save($object)</h2>';
+        $group=$this->group->get(1);
+        $group['checkdate']=date('Y-m-d H:i:s');
+        var_dump2($this->group->save($group));
+        var_dump2($this->group->getbyid(1));
+        
+        echo "<h2>get_groups(\$order = null, 'FonDyF')</h2>";
+        var_dump2($this->group->get_groups(null, 'FonDyF'));
+        
+        echo "<h2>save(\$data)</h2>";
+        $group=$this->group->save(array(
+            'idgroup'=>15000,
+            'name'=>'TESTO GROUP',
+            'desc'=>'delete me !',
+            ));
+        
+        var_dump2($group);
+        $idgroup=$group['idgroup'];
+        
+        echo "<h2>DELETE($idgroup)</h2>";
+        var_dump($idgroup);
+        var_dump2($this->group->delete($idgroup));
+        
+    }
 }
 
 /* End of file welcome.php */
