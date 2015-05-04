@@ -35,11 +35,9 @@ class Rbac extends CI_Model {
     function put_path($path = null, $properties = null) {
         if ($path) {
             $criteria = array_filter(array('path' => $path));
-
-            $query = array('$set' => array('path' => $path, 'properties' => $properties));
+            $data=  array('path' => $path, 'properties' => $properties);
             $options = array('upsert' => true, 'w'=>true);
-
-            return $this->mongo->db->selectCollection($this->permRepo)->update($criteria, $query, $options);
+            return $this->db->where($criteria)->update($this->permRepo, $data, $options);
         }
     }
 
@@ -56,9 +54,9 @@ class Rbac extends CI_Model {
 
     function clear_paths($idgroup) {
         if ($idgroup) {
-            $options = array("justOne" => false, "safe" => true);
+            $options = array("justOne" => false, "w" => true);
             $criteria = array('idgroup' => (int) $idgroup);
-            return $this->mongo->db->selectCollection($this->permGroups)->remove($criteria, $options);
+            return $this->db->where($criteria)->delete($this->permGroups, $options);
         } else {
             return false;
         }
@@ -69,22 +67,14 @@ class Rbac extends CI_Model {
         $obj = array('idgroup' => $idgroup, 'path' => $path);
         $options = array('upsert' => true, 'w'=>true);
         $criteria = array_filter($obj);
-
-        $query = array('$set' => $obj);
-        $options = array('upsert' => true, 'w'=>true);
-
-        return $this->mongo->db->selectCollection($this->permGroups)->update($criteria, $query, $options);
+        $this->db->where($criteria);
+        return $this->db->update($this->permGroups, $obj, $options);
     }
 
     function get_group_paths($idgroup) {
         $query = array('idgroup' => $idgroup);
-        $rs = $this->mongo->db->selectCollection($this->permGroups)->find($query);
-        $rtnArr = array();
-        while ($arr = $rs->getNext()) {
-            if (isset($arr['path']))
-                $rtnArr[] = $arr['path'];
-        }
-        return $rtnArr;
+        $rs = $this->db->where($query)->get($this->permGroups)->result_array();
+        return $rs;
     }
 
 }
