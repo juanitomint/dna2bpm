@@ -44,11 +44,9 @@ class Rbac extends CI_Model {
     //---add a path to repository
     function remove_path($path = null) {
         if ($path) {
-            $regex=new MongoRegex("/^$path*/i");
-            $criteria = array('path' =>$regex);
-            $this->db->where($criteria);
-            $this->db->delete($this->permRepo);
-            return true;
+            $this->db->like('path',$path,'i',false);
+            return $this->db->delete($this->permRepo);
+
         }
     }
 
