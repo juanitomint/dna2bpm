@@ -49,8 +49,6 @@ var removePath = Ext.create('Ext.Action', {
                             method: 'POST',
                             // define a handler for request success
                             params: {
-                                //---get the active group
-                                'idgroup': dataview.selModel.getLastSelected().data.idgroup,
                                 'path': path
                             },
                             success: function(response, options) {

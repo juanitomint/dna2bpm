@@ -54,12 +54,14 @@ class Repository extends MX_Controller {
 
     function save_as() {
         $data = json_decode($this->input->post('data'));
+        //@todo fix svg displacement
         $svg = $this->input->post('svg');
         $title = "title";
 //$idwf = $this->input->post('edit_model_title');
         $idwf = $this->input->post('title');
         $data->resourceId = $idwf;
-        $mywf = $this->bpm->load($idwf, false);
+        $query = array('idwf' => $idwf);
+        $mywf = $this->bpm->load($idwf,false);
         if ($mywf) {
             show_error('Name Already Exists', 404);
         } else {
