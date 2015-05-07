@@ -100,11 +100,10 @@ class Bpm extends CI_Model {
                         case "Embedded":
                             if ($item['properties']['entry']) {
                                $wf = $this->bpm->load($item['properties']['entry'], true);
-                                //----set resourceId parent for replaced subproc
-                                
-                               
-                               //var_dump2('linked',$wf['data']['childShapes']);exit;
-                               $item['childShapes'] = $this->replace_resourceId($wf['data']['childShapes'],$item);
+                                if($wf){
+                                    //----set resourceId parent for replaced subproc
+                                    $item['childShapes'] = $this->replace_resourceId($wf['data']['childShapes'],$item);
+                                }
                                //---
                             }
                             break;
@@ -145,7 +144,7 @@ class Bpm extends CI_Model {
     function get_properties($idwf) {
         $query = array('idwf' => $idwf);
 //        var_dump2($query);
-        $wf = $this->load($idwf);
+        $wf = $this->load($idwf,false);
 
         return $wf['data']['properties'];
     }
@@ -153,13 +152,13 @@ class Bpm extends CI_Model {
     function svg($idwf) {
         $query = array('idwf' => $idwf);
         $fields = array('svg' => true);
-        $wf = $this->load($idwf);
+        $wf = $this->load($idwf,false);
         return $wf['svg'];
     }
 
     function save($idwf, $data, $svg) {
         $query = array('idwf' => $idwf);
-        $mywf = $this->load($idwf);
+        $mywf = $this->load($idwf,false);
         //*
         //@todo make a backup before overwrite
         //---update modification date
@@ -188,7 +187,7 @@ class Bpm extends CI_Model {
         $query = array('idwf' => $idwf);
         $result = $this->db->get_where($this->bpm_container, $query)->result_array();
         if (count($result)) {
-            return $this->load($idwf);
+            return $this->load($idwf,false);
         } else {
             return false;
         }

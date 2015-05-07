@@ -59,8 +59,7 @@ class Repository extends MX_Controller {
 //$idwf = $this->input->post('edit_model_title');
         $idwf = $this->input->post('title');
         $data->resourceId = $idwf;
-        $query = array('idwf' => $idwf);
-        $mywf = (array) $this->mongo->db->workflow->findOne($query);
+        $mywf = $this->bpm->load($idwf, false);
         if ($mywf) {
             show_error('Name Already Exists', 404);
         } else {

@@ -214,7 +214,7 @@ function test_task($idwf, $idcase,$resourceId=null) {
         );
 //        $this->bpm->debug['load_case_data'] = true;
 //---saco título para el resultado
-        $mywf = $this->bpm->load($idwf);
+        $mywf = $this->bpm->load($idwf,false);
         $wf = $this->bpm->bindArrayToObject($mywf ['data']);
         
         if($resourceId){
@@ -302,7 +302,7 @@ function run_test($idwf,$idcase,$resourceId){
         $user = $this->user->getuser((int) $this->session->userdata('iduser'));
         $renderData = array();
         //---get Shape
-        $mywf = $this->bpm->load($idwf);
+        $mywf = $this->bpm->load($idwf,false);
         $wf = $this->bpm->bindArrayToObject($mywf ['data']);
         $wf->idwf=$idwf;
         $shape = $this->bpm->get_shape($resourceId, $wf);
