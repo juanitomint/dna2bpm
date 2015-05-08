@@ -182,20 +182,25 @@ class Bpm extends CI_Model {
         $this->zip_model($idwf, $data);
         return json_encode($wf);
     }
-
+    
+    /**
+     * Checks whether a model exists or not
+     * 
+     */
     function model_exists($idwf) {
         $query = array('idwf' => $idwf);
-        $result = $this->db->get_where($this->bpm_container, $query)->result_array();
-        if (count($result)) {
-            return $this->load($idwf,false);
-        } else {
-            return false;
-        }
+        $this->db->where($query);
+        return $this->db->count_all_results($this->bpm_container);
+        
     }
-
+    
+    /**
+     * Saves a model without check anything
+     * 
+     */
     function save_raw($mywf) {
-        $options = array('w' => true, 'upsert' => true);
-        $wf = $this->mongo->db->workflow->save($mywf, $options);
+        
+        return $this->db->insert($this->bpm_container,$mywf);
     }
 
     function update_folder($idwf, $folder) {
