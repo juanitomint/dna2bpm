@@ -155,7 +155,16 @@ class Bpm extends CI_Model {
         $wf = $this->load($idwf,false);
         return $wf['svg'];
     }
-
+    
+    /**
+     * Saves a model without check anything
+     * 
+     */
+    function save_raw($mywf) {
+        
+        return $this->db->insert($this->bpm_container,$mywf);
+    }
+    
     function save($idwf, $data, $svg) {
         $query = array('idwf' => $idwf);
         $mywf = $this->load($idwf,false);
@@ -194,15 +203,6 @@ class Bpm extends CI_Model {
         
     }
     
-    /**
-     * Saves a model without check anything
-     * 
-     */
-    function save_raw($mywf) {
-        
-        return $this->db->insert($this->bpm_container,$mywf);
-    }
-
     function update_folder($idwf, $folder) {
         $query = array('idwf' => $idwf);
         $action = array('$set' => array('folder' => $folder));
