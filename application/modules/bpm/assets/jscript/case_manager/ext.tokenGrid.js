@@ -16,7 +16,7 @@ function revertTo(result) {
             // define a handler for request success
             success: function(response, options) {
                 gridClick(null, mygrid.selModel.selected.items[0])
-                Ext.Msg.alert('Status', 'Changes saved successfully.');
+                //Ext.Msg.alert('Status', 'Changes saved successfully.');
             },
             // NO errors ! ;)
             failure: function(response, options) {
