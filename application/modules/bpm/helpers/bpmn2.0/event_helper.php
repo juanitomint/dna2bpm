@@ -13,7 +13,7 @@ function run_IntermediateEventThrowing($shape, $wf, $CI) {
         echo '<h1> >> IntermediateEventThrowing:' . $shape->stencil->id . '</h1>';
     }
 
-    $catchers_name = array();
+    $catchers_name = '';
 //---Search for named eventdefinitionref and start-em if not
     if (strstr($shape->stencil->id, 'Throwing')) {
         //---Get same catching
@@ -32,8 +32,8 @@ function run_IntermediateEventThrowing($shape, $wf, $CI) {
     $catchers_bytrigger = array(); //---for start shapes
     $catchers = array();
     $trigger = $shape->properties->name;
-//---if has eventdefinitionref then trigger will be set to its value
-//---else wil be it's name
+    //---if has eventdefinitionref then trigger will be set to its value
+     //---else will be it's name
     if (property_exists($shape->properties, 'eventdefinitionref')) {
         $trigger = ($shape->properties->eventdefinitionref <> '') ? $shape->properties->eventdefinitionref : $shape->properties->name;
     }
@@ -52,15 +52,14 @@ function run_IntermediateEventThrowing($shape, $wf, $CI) {
             $catchers_fake, //---where to look
             array($shape->resourceId) //---exclude self
     );
-
-//---get catchers of same type so signals doesn't mix up
+    
+    //---get catchers of same type so signals doesn't mix up
     if ($trigger <> '' and $catchers_name <> '') {
-//---get all  catching of type $catchers_name
+    //---get all  catching of type $catchers_name
         $catchers_byname['childShapes'] = $CI->bpm->get_shape_byname(
-                $catchers_name, $wf, array($shape->resourceId) //---exclude self
-        );
+                $catchers_name, $wf); 
         //---now search for same name into them
-        $catchers_byname = $CI->bpm->get_shape_byprop(array('name' => $trigger), $catchers_byname);
+        $catchers_byname = $CI->bpm->get_shape_byprop(array('name' => $trigger), $catchers_byname, array($shape->resourceId));//---exclude self
     }
     //---search for multiple
     //---get all multiple catching
@@ -77,7 +76,8 @@ function run_IntermediateEventThrowing($shape, $wf, $CI) {
     //---get catcher by messageref
     if ($shape->stencil->id == 'Task') {
         if ($shape->properties->messageref <> '') {
-            $catchers_byref = $CI->bpm->get_shape_byprop(array('messageref' => $shape->properties->messageref), $wf);
+            $catchers_byref = $CI->bpm->get_shape_byprop(array('messageref' => $shape->properties->messageref), $wf,array($shape->resourceId));
+            $catchers_byname = $CI->bpm->get_shape_byprop(array('name' => $shape->properties->messageref), $wf,array($shape->resourceId));
         }
 //
         for ($i = 0; $i < count($catchers_byref); $i++) {
@@ -137,12 +137,12 @@ function run_IntermediateEventThrowing($shape, $wf, $CI) {
             var_dump2('launch_catcher', $launch_catcher);
 //---take action
         if ($launch_catcher) {
-            $CI->bpm->set_token($wf->idwf, $wf->case, $catcher->resourceId, $catcher->stencil->id, 'pending');
+            // $CI->bpm->set_token($wf->idwf, $wf->case, $catcher->resourceId, $catcher->stencil->id, 'pending');
             if ($debug) {
                 echo '>>> Launching:' . $catcher->properties->name .':'.$catcher->stencil->id . '<br>';
-                var_dump2($catcher);
+                //var_dump2($catcher);
             }
-            //run_IntermediateEventCatching($catcher, $wf, $CI);
+            run_IntermediateEventCatching($catcher, $wf, $CI);
         }
     }//---end foreach catcher
 }
@@ -246,6 +246,7 @@ function run_IntermediateEventCatching($shape, $wf, $CI) {
         if (in_array($inshape->stencil->id, array('Task', 'Subprocess'))) {
 //---it's an event attached to a task
             $is_boundary_event = true;
+            
         } else {
 //---Assumes is normal flow
             $is_normal_flow = true;
