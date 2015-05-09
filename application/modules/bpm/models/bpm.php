@@ -205,9 +205,8 @@ class Bpm extends CI_Model {
 
     function update_folder($idwf, $folder) {
         $query = array('idwf' => $idwf);
-        $action = array('$set' => array('folder' => $folder));
-        $options = array('upsert' => false, 'w' => true);
-        $rs = $this->mongo->db->workflow->update($query, $action, $options);
+        $this->db->where($query);
+        $rs = $this->db->update($this->bpm_container,array('folder' => $folder));
         return $rs;
     }
 
@@ -660,16 +659,31 @@ class Bpm extends CI_Model {
         return $rs;
     }
 
-    function get_pending($idwf, $case, $status = 'user', $filter) {
+    function get_pending($idwf, $case, $status = 'user', $filter=array()) {
         $query = array(
             'idwf' => $idwf,
             'case' => $case,
-            'status' => array('$in' => (array) $status),
         );
+        // ----the task is assigned to the user or is for the group the user belong to
+        $user = $this->user->getuser($this->idu);
+        //@todo refactor for non mongo        
+        $filter ['$or'] [] = array(
+                'assign' => $this->idu
+            );
+            $filter ['$or'] [] = array(
+                'idgroup' => array(
+                    '$in' => $user->group
+                )
+            );
+        
         $query+=$filter;
-        toRegex($query);
+        // 'status' => array('$in' => (array) $status),
+        $this->db->where($query);
+        $this->db->where_in('status',(array) $status);
+        $this->db->order_by(array('checkdate'=>'DESC'));
         //var_dump2(json_encode($query));
-        return $this->mongo->db->tokens->find($query); //->sort(array('_id' => true));
+        $rs=$this->db->get('tokens')->result_array(); //->sort(array('_id' => true));
+        return $rs;
     }
 
     function get_triggers() {
@@ -1089,12 +1103,12 @@ class Bpm extends CI_Model {
         }
     }
 
-    function get_shape_byname($name, $wf) {
+    function get_shape_byname($name, $wf,$exclude=array()) {
         $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
-        //$debug = true;
+        // $debug = true;
         if ($debug)
             echo '<h2>' . __FUNCTION__ . '</h2>' .
-            "Called @ " . xdebug_call_file() . "<br/>Line:" . xdebug_call_line() . "<br/>from: <b>" . xdebug_call_function() . '</b><hr/>';
+            "Called @ " . xdebug_call_file() . "<br/>Line:" . xdebug_call_line() . "<br/>from: <b>" . xdebug_call_function() . '</b><br/>NAME:'.$name.'<hr/>';
         $rtnarr = array();
         //--con vert $wf to object;
         $wf = (object) $wf;
@@ -1103,14 +1117,14 @@ class Bpm extends CI_Model {
         foreach ($wf->childShapes as $obj) {
             if ($debug)
                 echo "Analizing:" . $obj->stencil->id . '<hr>';
-            if (preg_match($name, $obj->stencil->id)) {
+            if (preg_match($name, $obj->stencil->id) and !in_array($obj->resourceId,$exclude)) {
                 $rtnarr[] = $obj;
             }
             //---Search inside this objects
             if (in_array($obj->stencil->id, $this->digInto)) {
                 if ($debug)
                     echo "&nbsp;&nbsp;&nbsp;Recalling:" . $obj->stencil->id . '<hr>';
-                $shapes = $this->get_shape_byname($name, $obj);
+                $shapes = $this->get_shape_byname($name, $obj,$exclude);
                 if ($shapes)
                     $rtnarr = array_merge($shapes, $rtnarr);
             }
@@ -1120,14 +1134,14 @@ class Bpm extends CI_Model {
 
     function get_shape_byprop($parray, $wf, $exclude = array()) {
         $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
-//        $debug = true;
+        // $debug = true;
         if ($debug) {
             echo '<h2>' . __FUNCTION__ . '</h2>' .
             "Called @ " . xdebug_call_file() . "<br/>Line:" . xdebug_call_line() . "<br/>from: <b>" . xdebug_call_function() . '</b><hr/>';
             var_dump($parray);
         }
         $rtnarr = array();
-        //--con vert $wf to object;
+        //--convert $wf to object;
         $wf = (object) $wf;
         foreach ($wf->childShapes as $obj) {
             if ($debug)

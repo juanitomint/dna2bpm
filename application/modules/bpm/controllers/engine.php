@@ -871,17 +871,7 @@ class Engine extends MX_Controller {
         $renderData ['case'] = $idcase;
         $user = $this->user->getuser($this->idu);
 
-        // ----the task is assignet to the user or is for the group the user belong to
-        if (!isset($filter)) {
-            $filter ['$or'] [] = array(
-                'assign' => $this->idu
-            );
-            $filter ['$or'] [] = array(
-                'idgroup' => array(
-                    '$in' => $user->group
-                )
-            );
-        }
+        
         // ----if specific token has been passed then run this token
         if ($run_resourceId) {
             $filter ['resourceId'] = $run_resourceId;
@@ -896,10 +886,10 @@ class Engine extends MX_Controller {
             $myTasks = $this->bpm->get_pending($idwf, $idcase, array(
                 'user',
                 'manual'
-                    ), $filter);
+                    ));
             // var_dump(json_encode($filter),$myTasks);exit;
             // ---search for a suitable task to execute
-            while ($first = $myTasks->getNext()) {
+            while ($first = array_pop($myTasks)) {
                 $is_allowed = $this->bpm->is_allowed($first, $user);
 
                 if ($is_allowed)

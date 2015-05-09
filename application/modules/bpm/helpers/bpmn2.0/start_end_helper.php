@@ -132,7 +132,7 @@ function run_EndNoneEvent($shape, $wf, $CI, $moveForward = true) {
     //----Set status 4 Case
     //---close process if all end events have been finished (or canceled)
     $active_tokens = $CI->bpm->get_pending($wf->idwf, $wf->case, array('user', 'waiting', 'pending'), array());
-    if ($active_tokens->count() == 0) {
+    if (count($active_tokens) == 0) {
         $CI->bpm->update_case($wf->idwf, $wf->case, array(
             'status' => 'closed',
             'checkoutdate' => date('Y-m-d H:i:s')
