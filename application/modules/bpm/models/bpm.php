@@ -1323,16 +1323,16 @@ class Bpm extends CI_Model {
     }
 
     function update_history($idwf, $idcase, $data) {
-        $query = array('id' => $idcase, 'idwf' => $idwf);
-        $options = array('w' => true, 'justOne' => true);
-        $action = array(
-            '$push' => array(
-                'history' => $data
-            )
-        );
-        $this->mongo->db->case->update($query, $action);
+        $data += array('idcase' => $idcase, 'idwf' => $idwf);
+        
+        if(!($data['type']=='SequenceFlow' and $data['status']=='pending'))        
+            $this->db->insert('tokens.history',$data);
     }
-
+    
+    function get_token_history($idwf,$idcase){
+        $query=array('idcase' => $idcase, 'idwf' => $idwf);
+        return $this->db->get_where('tokens.history',$query)->result_array();
+    }
     function movenext($shape_src, $wf, $token = array(), $process_out = true) {
         $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
         // $debug=true;
@@ -1368,6 +1368,7 @@ class Bpm extends CI_Model {
         $token = $this->token_checkin($token, $wf, $shape_src);
         //---calculate interval since case started
         $case = $this->bpm->get_case($wf->case, $wf->idwf);
+        $case['checkdate']=(isset($case['checkdate']))?$case['checkdate']:date('Y-m-d H:i:s');
         $dateIn = new DateTime($case['checkdate']);
         //---now
         $dateOut = new DateTime();
@@ -1405,6 +1406,7 @@ class Bpm extends CI_Model {
         //---process outgoing
         if ($process_out) {
             if ($shape_src->outgoing) {
+                // var_dump($shape_src->outgoing,xdebug_get_function_stack());exit;
                 foreach ($shape_src->outgoing as $pointer) {
                     //---Get Token 4 pointer
                     $token = $this->get_token($wf->idwf, $wf->case, $pointer);
@@ -1434,7 +1436,21 @@ class Bpm extends CI_Model {
                             //----------------------------------------------------------
                             //----------SAVE token--------------------------------------
                             $this->set_token($wf->idwf, $wf->case, $shape->resourceId, $shape->stencil->id, $status, $token);
-
+                            //////////////////////////////////////////////////////////////////////// 
+                            //////////////     SAVE HISTORY IN CASE          /////////////////////// 
+                            //////////////////////////////////////////////////////////////////////// 
+                            $history = array(
+                                'checkdate' => date('Y-m-d H:i:s'),
+                                'microtime' => microtime(),
+                                'resourceId' => $shape->resourceId,
+                                'iduser' => $this->idu,
+                                'type' => $shape->stencil->id,
+                                'run' => 0,
+                                'status' => $status,
+                                'name' => (isset($shape->properties->name)) ? $shape->properties->name : ''
+                            );
+                            $history['name'].=' MN->';
+                            $this->update_history($wf->idwf, $wf->case, $history);
                             //---end if($sahpe)
                         } else {
                             show_error("The shape $pointer->resourceId doesn't exists anymore");

@@ -8,10 +8,10 @@ function run_StartNoneEvent($shape, $wf, $CI) {
     $debug = (isset($CI->debug[__FUNCTION__])) ? true : false;
     if ($debug)
         echo "<h2>" . __FUNCTION__ . '</h2>';
-    //---this function only fowards the process and return nothing
-    $CI->bpm->movenext($shape, $wf);
     //----Set status 4 Case
     $CI->bpm->update_case($wf->idwf, $wf->case, array('status' => 'open'));
+    //---this function only fowards the process and return nothing
+    $CI->bpm->movenext($shape, $wf);
 }
 
 //   This function will get started by the eventThrowing handler
