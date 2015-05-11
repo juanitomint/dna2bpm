@@ -473,7 +473,8 @@ class Bpm extends CI_Model {
             'idwf' => $idwf,
             'id' => $case
         );
-        return $this->mongo->db->case->remove($criteria);
+        $this->db->where($criteria);
+        return $this->db->delete('case');
     }
 
     function get_assigned($idwf, $case, $resourceId) {
@@ -489,7 +490,12 @@ class Bpm extends CI_Model {
             'case' => $idcase,
             'resourceId' => $resourceId
         );
-        return $this->mongo->db->tokens->findOne($query);
+        $rs=$this->db->get_where('tokens',$query)->result_array();
+        
+        if(count($rs))
+            return $rs[0];
+        else
+            return false;
     }
 
     /*
@@ -633,8 +639,12 @@ class Bpm extends CI_Model {
         $query = array(
             '_id' => $id,
         );
-        //var_dump2(json_encode($query));
-        return $this->mongo->db->tokens->findOne($query);
+        $rs=$this->db->get_where('tokens',$query)->result_array();
+        
+        if(count($rs))
+            return $rs[0];
+        else
+            return false;
     }
 
     function get_tokens_byResourceId($resourceId, $filter = array(), $sort = array()) {
@@ -643,14 +653,14 @@ class Bpm extends CI_Model {
                 ) + $filter;
 //        var_dump(json_encode($query));
 //        exit;
-        $result = $this->mongo->db->tokens->find($query);
+        $result = $this->db->get_where('tokens',$query)->result_array;
         $rs = array();
         foreach ($result as $record) {
             //----don't add missing tokens
-            if ($this->get_case($record['case'], $record['idwf']))
+            $filter=array($record['case'], $record['idwf']);
+            if ($this->get_cases_byFilter_count($filter))
                 $rs[] = $record;
         }
-
         return $rs;
     }
 
@@ -682,17 +692,20 @@ class Bpm extends CI_Model {
     }
 
     function get_triggers() {
-        //---defines wich types will be returned
+        // ---defines wich types will be returned
         $type = array(
             'IntermediateTimerEvent',
             'StartTimerEvent',
         );
-        $query = array(
-            'status' => 'waiting',
-            'type' => array('$in' => $type),
-        );
+        // $query = array(
+        //     'status' => 'waiting',
+        //     'type' => array('$in' => $type),
+        // );
+        $this->db->where_in('type',$type);
+        $this->db->where(array('status' => 'waiting'));
         //var_dump2(json_encode($query));
-        return $this->mongo->db->tokens->find($query);
+        $this->db->debug=true;
+        return $this->db->get('tokens')->result_array();
     }
 
     function get_signal_thrower($name) {
@@ -702,7 +715,12 @@ class Bpm extends CI_Model {
             'name' => $name,
         );
         //var_dump2(json_encode($query));
-        return $this->mongo->db->tokens->findOne($query);
+         $rs=$this->db->get_where('tokens',$query)->result_array();
+        
+        if(count($rs))
+            return $rs[0];
+        else
+            return false;
     }
 
     function get_signal_catchers($name) {
@@ -893,11 +911,9 @@ class Bpm extends CI_Model {
         if (isset($case['status'])) {
             if ($case['status']) {
                 $data['token_status'] = $this->get_token_status($idwf, $idcase);
-                $query = array('$set' => (array) $data);
                 $criteria = array('idwf' => $idwf, 'id' => $idcase);
-                $options = array('upsert' => false, 'w' => true);
-                //var_dump2($query,$criteria,$options);
-                $this->mongo->db->case->update($criteria, $query, $options);
+                $this->db->where($criteria);
+                $this->db->update('case',$data);
             }
         }
     }
@@ -916,13 +932,9 @@ class Bpm extends CI_Model {
         if (!isset($case['iduser']))
             $data['iduser'] = (int) $this->session->userdata('iduser');
         //----update case with latest token status
-//      $data['token_status'] = (isset($data['token_status'])) ? $data['token_status'] : $this->get_token_status($case['idwf'], $case['id']);
         $data['token_status'] = $this->get_token_status($case['idwf'], $case['id']);
-        $query = array('$set' => (array) $data);
-        $criteria = array('idwf'=>$idwf,'id' => $id);
-        $options = array('upsert' => true, 'w' => true);
-        //var_dump2($query,$criteria,$options);
-        $this->mongo->db->case->update($criteria, $query, $options);
+        $this->db->where($criteria);
+        $this->db->update('case',$data);
     }
 
     function save_token($token) {
@@ -1037,6 +1049,7 @@ class Bpm extends CI_Model {
     }
 
     function get_tasks($iduser, $idcase = null) {
+        //@todo refactor for other db engines
         $user = $this->user->get_user((int) $iduser);
         $user_groups = $user->group;
         $query = array(
@@ -1054,8 +1067,8 @@ class Bpm extends CI_Model {
         );
         if ($idcase)
             $query['idcase'] = $idcase;
-        //var_dump(json_encode($query));
-        return $this->mongo->db->tokens->find($query);
+        $this->db->where($query);
+        return $this->db->get('tokens')->result_array();
     }
 
     /**
