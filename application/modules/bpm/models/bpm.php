@@ -205,9 +205,8 @@ class Bpm extends CI_Model {
     
     function update_folder($idwf, $folder) {
         $query = array('idwf' => $idwf);
-        $action = array('$set' => array('folder' => $folder));
-        $options = array('upsert' => false, 'w' => true);
-        $rs = $this->mongo->db->workflow->update($query, $action, $options);
+        $this->db->where($query);
+        $rs = $this->db->update($this->bpm_container,array('folder' => $folder));
         return $rs;
     }
 
@@ -660,16 +659,31 @@ class Bpm extends CI_Model {
         return $rs;
     }
 
-    function get_pending($idwf, $case, $status = 'user', $filter) {
+    function get_pending($idwf, $case, $status = 'user', $filter=array()) {
         $query = array(
             'idwf' => $idwf,
             'case' => $case,
-            'status' => array('$in' => (array) $status),
         );
+        // ----the task is assigned to the user or is for the group the user belong to
+        $user = $this->user->getuser($this->idu);
+        //@todo refactor for non mongo        
+        $filter ['$or'] [] = array(
+                'assign' => $this->idu
+            );
+            $filter ['$or'] [] = array(
+                'idgroup' => array(
+                    '$in' => $user->group
+                )
+            );
+        
         $query+=$filter;
-        toRegex($query);
+        // 'status' => array('$in' => (array) $status),
+        $this->db->where($query);
+        $this->db->where_in('status',(array) $status);
+        $this->db->order_by(array('checkdate'=>'DESC'));
         //var_dump2(json_encode($query));
-        return $this->mongo->db->tokens->find($query); //->sort(array('_id' => true));
+        $rs=$this->db->get('tokens')->result_array(); //->sort(array('_id' => true));
+        return $rs;
     }
 
     function get_triggers() {
@@ -1089,12 +1103,12 @@ class Bpm extends CI_Model {
         }
     }
 
-    function get_shape_byname($name, $wf) {
+    function get_shape_byname($name, $wf,$exclude=array()) {
         $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
-        //$debug = true;
+        // $debug = true;
         if ($debug)
             echo '<h2>' . __FUNCTION__ . '</h2>' .
-            "Called @ " . xdebug_call_file() . "<br/>Line:" . xdebug_call_line() . "<br/>from: <b>" . xdebug_call_function() . '</b><hr/>';
+            "Called @ " . xdebug_call_file() . "<br/>Line:" . xdebug_call_line() . "<br/>from: <b>" . xdebug_call_function() . '</b><br/>NAME:'.$name.'<hr/>';
         $rtnarr = array();
         //--con vert $wf to object;
         $wf = (object) $wf;
@@ -1103,14 +1117,14 @@ class Bpm extends CI_Model {
         foreach ($wf->childShapes as $obj) {
             if ($debug)
                 echo "Analizing:" . $obj->stencil->id . '<hr>';
-            if (preg_match($name, $obj->stencil->id)) {
+            if (preg_match($name, $obj->stencil->id) and !in_array($obj->resourceId,$exclude)) {
                 $rtnarr[] = $obj;
             }
             //---Search inside this objects
             if (in_array($obj->stencil->id, $this->digInto)) {
                 if ($debug)
                     echo "&nbsp;&nbsp;&nbsp;Recalling:" . $obj->stencil->id . '<hr>';
-                $shapes = $this->get_shape_byname($name, $obj);
+                $shapes = $this->get_shape_byname($name, $obj,$exclude);
                 if ($shapes)
                     $rtnarr = array_merge($shapes, $rtnarr);
             }
@@ -1120,14 +1134,14 @@ class Bpm extends CI_Model {
 
     function get_shape_byprop($parray, $wf, $exclude = array()) {
         $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
-//        $debug = true;
+        // $debug = true;
         if ($debug) {
             echo '<h2>' . __FUNCTION__ . '</h2>' .
             "Called @ " . xdebug_call_file() . "<br/>Line:" . xdebug_call_line() . "<br/>from: <b>" . xdebug_call_function() . '</b><hr/>';
             var_dump($parray);
         }
         $rtnarr = array();
-        //--con vert $wf to object;
+        //--convert $wf to object;
         $wf = (object) $wf;
         foreach ($wf->childShapes as $obj) {
             if ($debug)
@@ -1309,16 +1323,16 @@ class Bpm extends CI_Model {
     }
 
     function update_history($idwf, $idcase, $data) {
-        $query = array('id' => $idcase, 'idwf' => $idwf);
-        $options = array('w' => true, 'justOne' => true);
-        $action = array(
-            '$push' => array(
-                'history' => $data
-            )
-        );
-        $this->mongo->db->case->update($query, $action);
+        $data += array('idcase' => $idcase, 'idwf' => $idwf);
+        
+        if(!($data['type']=='SequenceFlow' and $data['status']=='pending'))        
+            $this->db->insert('tokens.history',$data);
     }
-
+    
+    function get_token_history($idwf,$idcase){
+        $query=array('idcase' => $idcase, 'idwf' => $idwf);
+        return $this->db->get_where('tokens.history',$query)->result_array();
+    }
     function movenext($shape_src, $wf, $token = array(), $process_out = true) {
         $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
         // $debug=true;
@@ -1354,6 +1368,7 @@ class Bpm extends CI_Model {
         $token = $this->token_checkin($token, $wf, $shape_src);
         //---calculate interval since case started
         $case = $this->bpm->get_case($wf->case, $wf->idwf);
+        $case['checkdate']=(isset($case['checkdate']))?$case['checkdate']:date('Y-m-d H:i:s');
         $dateIn = new DateTime($case['checkdate']);
         //---now
         $dateOut = new DateTime();
@@ -1391,6 +1406,7 @@ class Bpm extends CI_Model {
         //---process outgoing
         if ($process_out) {
             if ($shape_src->outgoing) {
+                // var_dump($shape_src->outgoing,xdebug_get_function_stack());exit;
                 foreach ($shape_src->outgoing as $pointer) {
                     //---Get Token 4 pointer
                     $token = $this->get_token($wf->idwf, $wf->case, $pointer);
@@ -1420,7 +1436,21 @@ class Bpm extends CI_Model {
                             //----------------------------------------------------------
                             //----------SAVE token--------------------------------------
                             $this->set_token($wf->idwf, $wf->case, $shape->resourceId, $shape->stencil->id, $status, $token);
-
+                            //////////////////////////////////////////////////////////////////////// 
+                            //////////////     SAVE HISTORY IN CASE          /////////////////////// 
+                            //////////////////////////////////////////////////////////////////////// 
+                            $history = array(
+                                'checkdate' => date('Y-m-d H:i:s'),
+                                'microtime' => microtime(),
+                                'resourceId' => $shape->resourceId,
+                                'iduser' => $this->idu,
+                                'type' => $shape->stencil->id,
+                                'run' => 0,
+                                'status' => $status,
+                                'name' => (isset($shape->properties->name)) ? $shape->properties->name : ''
+                            );
+                            $history['name'].=' MN->';
+                            $this->update_history($wf->idwf, $wf->case, $history);
                             //---end if($sahpe)
                         } else {
                             show_error("The shape $pointer->resourceId doesn't exists anymore");

@@ -272,10 +272,12 @@ function run_Task($shape, $wf, $CI) {
                 $CI->msg->send($msg, $to_user);
             }
             //---fires triger if everything is ok
-            if ($shape->properties->messageref)
+            if ($shape->properties->messageref){
                 run_IntermediateEventThrowing($shape, $wf, $CI);
             //---move to next shape
-            $CI->bpm->movenext($shape, $wf);
+            } else {
+                $CI->bpm->movenext($shape, $wf);
+            }
             break;
 
         case 'Receive':

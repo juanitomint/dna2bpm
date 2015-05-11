@@ -533,7 +533,7 @@ class Repository extends MX_Controller {
         $mywf = $this->bpm->load($idwf, false);
         $rtnObject = $this->bpm->update_folder($idwf, $folder);
         if (!$debug) {
-            header('Content-type: application/json;charset=UTF-8');
+            $this->output->set_content_type('json');
             echo json_encode($rtnObject);
         } else {
             var_dump($rtnObject);
