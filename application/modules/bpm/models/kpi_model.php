@@ -73,7 +73,16 @@ class Kpi_model extends CI_Model {
     }
 
     function save($kpi) {
-        return $this->db->insert('kpi',$kpi);
+        if($this->get($kpi['idkpi'])){
+            //--4mongo
+            unset($kpi['_id']);
+            $query=array('idkpi'=>$kpi['idkpi']);
+            $this->db->where($query);
+            return $this->db->update('kpi',$kpi);
+        }else {
+            return $this->db->insert('kpi',$kpi);
+            
+        }
     }
 
     function get_filter($kpi) {
