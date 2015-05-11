@@ -11,8 +11,6 @@ class User extends CI_Model {
         parent::__construct();
         $this->idu = $this->session->userdata('iduser');
         $this->config->load('user/config');
-        $this->load->library('cimongo/cimongo');
-        $this->db = $this->cimongo;
         $this->autodiscover=($this->config->item('autodiscover'))?true:false;
     }
     

@@ -9,8 +9,6 @@ class Rbac extends CI_Model {
         parent::__construct();
         $this->permRepo = 'perm.repository';
         $this->permGroups = 'perm.groups';
-        $this->load->library('cimongo/cimongo');
-        $this->db = $this->cimongo;
     }
 
     function get_repository($query = array()) {
@@ -72,6 +70,7 @@ class Rbac extends CI_Model {
     function get_group_paths($idgroup) {
         $query = array('idgroup' => $idgroup);
         $rs = $this->db->where($query)->get($this->permGroups)->result_array();
+        $rtnArr=array();
         foreach ($rs as $arr) {
             if (isset($arr['path']))
                 $rtnArr[] = $arr['path'];

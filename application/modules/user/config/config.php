@@ -11,6 +11,7 @@ $config['groupUser']=1000;
  $config['autodiscover']	= true;
 //----set if you want to use a plugin
 $config['user_plugin']=array(
+    'cimongo'
     //'ldap_auth',
     //'mysql',
     );

@@ -7,8 +7,6 @@ class Group extends CI_Model {
 
     function __construct() {
         parent::__construct();
-        $this->load->library('cimongo/cimongo');
-        $this->db = $this->cimongo;
     }
 
     function genid() {
