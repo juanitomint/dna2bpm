@@ -933,6 +933,7 @@ class Bpm extends CI_Model {
             $data['iduser'] = (int) $this->session->userdata('iduser');
         //----update case with latest token status
         $data['token_status'] = $this->get_token_status($case['idwf'], $case['id']);
+        $criteria=array('idwf'=>$idwf,'id'=>$id);
         $this->db->where($criteria);
         $this->db->update('case',$data);
     }
