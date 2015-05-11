@@ -212,7 +212,7 @@ class Bpm extends CI_Model {
 
     function get_started_cases($iduser) {
         $query = array('iduser' => $iduser);
-        $result = $this->mongo->db->find($query);
+        $result = $this->db->get_where('case',$query)->result_array();
         //var_dump2($query,json_encode($query),$result->count());
         return $result;
     }
@@ -401,15 +401,10 @@ class Bpm extends CI_Model {
     }
 
     function delete($idwf) {
-        $options = array('w' => true, 'justOne' => true);
         $criteria = array('idwf' => $idwf);
         //var_dump2($options,$criteria);
-        $result = $this->mongo->db->workflow->remove($criteria, $options);
-        if ($result['ok'] == 1) { //is OK
-            return true;
-        } else {
-            return false;
-        }
+        $this->db->where($criteria);
+        return $this->db->delete('workflow');
     }
 
     function set_token($idwf, $case, $resourceId, $type, $status = 'pending', $data = array()) {

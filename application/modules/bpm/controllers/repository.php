@@ -151,15 +151,18 @@ class Repository extends MX_Controller {
     function check_model($name) {
         $rs = $this->bpm->get_models(array('idwf' => $name));
         $result['ok'] = ($rs->count()) ? false : true;
-        header('Content-type: application/json;charset=UTF-8');
+        $this->output->set_content_type('json');
         echo json_encode($result);
     }
 
     function delete($model) {
+        $result=array();
         $idwf = $this->input->post('idwf');
         if ($this->input->post('idwf') <> '') {
-            $result = $this->bpm->delete($idwf);
+            $result['ok'] = $this->bpm->delete($idwf);
         }
+        $this->output->set_content_type('json');
+        echo json_encode($result);
     }
 
     function load($model, $idwf, $mode = '', $debug = false) {
@@ -182,10 +185,12 @@ class Repository extends MX_Controller {
             )
         );
         $data = ($mywf['data']) ? $mywf['data'] : $template;
-        if (!$debug)
+        if (!$debug){
+            $this->output->set_content_type('json');
             echo json_encode($data);
-        if ($debug)
+        } else {
             var_dump($data);
+        }
     }
 
     function edit($model = '', $idwf = '') {
