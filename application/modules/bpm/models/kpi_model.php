@@ -16,15 +16,10 @@ class Kpi_model extends CI_Model {
     }
 
     function delete($idkpi) {
-        $options = array('w' => true, 'justOne' => true);
         $criteria = array('idkpi' => $idkpi);
-        //var_dump2($options,$criteria);
-        $result = $this->mongo->db->kpi->remove($criteria, $options);
-        if ($result['ok'] == 1) { //is OK
-            return true;
-        } else {
-            return false;
-        }
+        $this->db->where($criteria);        
+        return $this->db->delete('kpi');
+        
     }
 
     function get($idkpi) {
@@ -78,8 +73,7 @@ class Kpi_model extends CI_Model {
     }
 
     function save($kpi) {
-        $options = array('w' => true);
-        $wf = $this->mongo->db->kpi->save($kpi, $options);
+        return $this->db->insert('kpi',$kpi);
     }
 
     function get_filter($kpi) {
