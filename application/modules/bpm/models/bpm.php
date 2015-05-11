@@ -940,14 +940,16 @@ class Bpm extends CI_Model {
 
     function save_token($token) {
         if (isset($token['_id'])) {
-            $_id = $token['_id'];
             unset($token['_id']);
-            $criteria = array('_id' => $_id);
-            $this->db->where($criteria)->update('tokens', $token);
+            $criteria = array(
+                'case' => $token['case'],
+                'idwf' => $token['idwf'],
+                'resourceId' => $token['resourceId'],
+                );
+           return  $this->db->where($criteria)->update('tokens', $token);
         } else {
-            $this->db->insert('tokens', $token);
+            return $this->db->insert('tokens', $token);
         }
-        return true;
     }
 
     function get_icon($type) {
