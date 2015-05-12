@@ -675,11 +675,14 @@ class Bpm extends CI_Model {
         $filter ['$or'] [] = array(
                 'assign' => $this->idu
             );
-            $filter ['$or'] [] = array(
-                'idgroup' => array(
-                    '$in' => $user->group
-                )
+        $filter ['$or'] [] = array(
+                'idu' => $this->idu
             );
+        $filter ['$or'] [] = array(
+            'idgroup' => array(
+                '$in' => $user->group
+            )
+        );
         
         $query+=$filter;
         // 'status' => array('$in' => (array) $status),
