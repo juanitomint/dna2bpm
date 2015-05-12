@@ -314,7 +314,8 @@ class Engine extends MX_Controller {
                 $shape = $this->bpm->get_shape($resourceId, $wf);
                 if ($shape) {
                     //---save postdata in case
-                    if (property_exists($shape->properties->datainputset, 'items')) {
+                    if (property_exists($shape->properties, 'datainputset')) {
+                        if (property_exists($shape->properties->datainputset, 'items')) {
                         $thisCase = $this->bpm->get_case($case);
                         $thisCase['data']['datainputset'] = (isset($thisCase['data']['datainputset'])) ? (array) $thisCase['data']['datainputset'] : array();
                         if (count($_POST)) {
@@ -324,6 +325,7 @@ class Engine extends MX_Controller {
                             }
                             $this->bpm->save_case($thisCase);
                         }
+                    }
                     }
                     //---MOVENEXT
                     $this->bpm->movenext($shape, $wf);
