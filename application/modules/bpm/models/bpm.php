@@ -653,7 +653,7 @@ class Bpm extends CI_Model {
                 ) + $filter;
 //        var_dump(json_encode($query));
 //        exit;
-        $result = $this->db->get_where('tokens',$query)->result_array;
+        $result = $this->db->get_where('tokens',$query)->result_array();
         $rs = array();
         foreach ($result as $record) {
             //----don't add missing tokens
