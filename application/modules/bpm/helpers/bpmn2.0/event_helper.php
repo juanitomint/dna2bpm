@@ -150,7 +150,7 @@ function run_IntermediateEventThrowing($shape, $wf, $CI) {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////   CATCHING GENERIC FUNCTION  /////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-function run_IntermediateEventCatching($shape, $wf, $CI) {
+function run_IntermediateEventCatching($shape, $wf, &$CI) {
 
     $debug = (isset($CI->debug[__FUNCTION__])) ? $CI->debug[__FUNCTION__] : false;
     // $debug=true;
@@ -181,6 +181,16 @@ function run_IntermediateEventCatching($shape, $wf, $CI) {
     if (strstr($shape->stencil->id, 'Catching')) {
         $trigger = str_replace('Catching', 'Throwing', $shape->stencil->id);
     }
+//----get throwers searching by same name as this shape
+    if ($trigger <> '') {
+        //---make a fake $wf much smaller to search into
+        $throwers_ref['childShapes'] = $CI->bpm->get_shape_byname("/^$trigger$/", $wf);
+        if($debug)
+            echo 'searching for:'.$trigger.'<br/>';
+        $throwers_ref = $CI->bpm->get_shape_byprop(array('name' => $event_name), $throwers_ref);
+//----clean up throwers
+        $throwers_ref = array_filter($throwers_ref);
+    }
 //---search thrower shape 4 start/end
     if (strstr($shape->stencil->id, 'Start')) {
         $trigger = str_replace('Start', 'End', $shape->stencil->id);
@@ -194,9 +204,7 @@ function run_IntermediateEventCatching($shape, $wf, $CI) {
         $throwers_name['childShapes'] = $CI->bpm->get_shape_byname("/^$trigger$/", $wf);
         if($debug)
             echo 'searching for:'.$trigger.'<br/>';
-            
         $throwers_name = $CI->bpm->get_shape_byprop(array('name' => $event_name), $throwers_name);
-
 //----clean up throwers
         $throwers_name = array_filter($throwers_name);
     }
