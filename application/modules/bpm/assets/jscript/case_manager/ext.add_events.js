@@ -18,14 +18,16 @@ var add_events=function(shapes){
                     break;
                  
             }
-            add=''
+            add=new Array();
+            add.push('<span class="resourceId">resourceId:<br>'+shape.resourceId+'</span>');
             if(shape.properties.tasktype){
                 switch(shape.properties.tasktype){
                     case 'Script':
-                        add+=(globals.idcase) ? '<a target="_blank" class="btn btn-small btn-info" href="'+globals.base_url+'bpm/test/test_task/'+globals.idwf+'/'+globals.idcase+'/'+shape.resourceId+'"><i class="fa fa-flask fa-white"></i> Test Script</button>':'';
+                        add.push((globals.idcase) ? '<a target="_blank" class="btn btn-small btn-info" href="'+globals.base_url+'bpm/test/test_task/'+globals.idwf+'/'+globals.idcase+'/'+shape.resourceId+'"><i class="fa fa-flask fa-white"></i> Test Script</button>':'');
                         break;
                     
                     case 'Send':
+                        add.push((globals.idcase) ? '<a target="_blank" class="btn btn-small btn-info" href="'+globals.base_url+'bpm/test/send/'+globals.idwf+'/'+globals.idcase+'/'+shape.resourceId+'"><i class="fa fa-envelope fa-white"></i> Test Msg</button>':'');
                         break;
                     
                 } 
@@ -53,7 +55,7 @@ var add_events=function(shapes){
                 dismissDelay: 0,
                 minWidth: 320,
                 //anchorOffset: 85, // center the anchor on the tooltip
-                html: add
+                html: add.join('<br/>')
             };
             tooltips.push(
                     Ext.create('Ext.tip.ToolTip', config)
