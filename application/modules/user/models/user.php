@@ -11,8 +11,6 @@ class User extends CI_Model {
         parent::__construct();
         $this->idu = $this->session->userdata('iduser');
         $this->config->load('user/config');
-        $this->load->library('cimongo/cimongo');
-        $this->db = $this->cimongo;
         $this->autodiscover=($this->config->item('autodiscover'))?true:false;
     }
     
@@ -20,7 +18,8 @@ class User extends CI_Model {
     function add($user_data) {
         $user = null;
         //---1st check if user exists by its idu
-        $user_data['group'] = array_map('intval', explode(',', $user_data['group']));
+        if(!is_array($user_data['group']))
+            $user_data['group'] = array_map('intval', explode(',', $user_data['group']));
         $user_data['idu'] = isset($user_data['idu']) ? $user_data['idu'] : null;
         if ($user_data['idu']) {
             //---set proper typo 4 id
@@ -205,6 +204,22 @@ class User extends CI_Model {
             return false;
         }
     }
+    function getby_token($token=null) {
+        /**
+         * returns single user with matching id
+         */
+        //var_dump(json_encode($query));
+        //$this->db->debug = true;
+        $this->db->where(array('token' =>$token));
+        $result = $this->db->get('users')->result();
+        ///----return only 1st
+        //$this->db->debug = false;
+        if ($result) {
+            return $result[0];
+        } else {
+            return false;
+        }
+    }
 
     function getbyid($iduser) {
         /**
@@ -335,22 +350,6 @@ class User extends CI_Model {
             return $user[0];
     }
 
-    function get_groups($order = null, $query_txt = null) {
-        /*
-         *  Function get_groups
-         * 
-         * @todo translate this function to ActiveRecord
-         */
-        $query = array();
-        if ($query_txt) {
-            $query = array('name' => new MongoRegex('/' . $query_txt . '/i'));
-        }
-        //var_dump('$order',$order,'$query',$query);
-        $rs = $this->mongo->db->groups->find($query);
-        if ($order)
-            $rs->sort(array($order => 1));
-        return $rs;
-    }
 
     function get_users_count($query_txt = null, $idgroup = null,$match='both') {
         if ($idgroup) {
@@ -392,9 +391,6 @@ class User extends CI_Model {
 
             //$query+=array('$where'=>"this.name.match(/$query_txt/i)");
         }
-        //var_dump('$order', $order, '$query', $query);
-        //$rs = $this->mongo->db->users->find($query)->skip($start)->limit($limit);
-        //$order = (isset($order)) ? $rs->sort($order) : $rs->sort(array('lastname' => 1, 'name' => 1));
         if ($order) {
             #@todo //--check order like
             $this->db->order_by($order);
@@ -406,7 +402,9 @@ class User extends CI_Model {
     function put_user($object) {
         //var_dump($object);
         $options = array('upsert' => true, 'w' => true);
-        return $this->mongo->db->users->save($object, $options);
+        unset($object['_id']);
+        $query=array('idu'=>$object['idu']);
+        return $this->db->where($query)->update('users',$object, $options);
     }
 
     function remove($iduser) {
@@ -418,23 +416,8 @@ class User extends CI_Model {
     }
 
     function update($user_data) {
-        $user = null;
-        //---1st check if user exists by its idu
-        if (isset($user_data['idu'])) {
-            $user = $this->getbyid($user_data['idu']);
-            //---if not found then add to db
-            if (!$user) {
-                $result = $this->save($user_data);
-                $user = $user_data;
-            } else {
-
-                $options = array('w' => true, 'upsert' => true);
-                $query = array('idu' => $user_data['idu']);
-                $result = $this->mongo->db->users->update($query, array('$set' => $user_data), $options);
-                $user = $user_data;
-            }
-            return $result;
-        }
+    return $this->save($user_data);
+         
     }
     /**
     * Get user avatar from disk
@@ -460,8 +443,10 @@ class User extends CI_Model {
 
     function save($data) {
         //var_dump($data);
+        unset($data['_id']);
         $options = array('w' => true, 'upsert' => true);
-        $result = $this->mongo->db->users->save($data, $options);
+        $this->db->where(array('idu'=>$data['idu']));
+        $result = $this->db->update('users',$data, $options);
         return $result;
     }
 
@@ -469,7 +454,7 @@ class User extends CI_Model {
     function save_token($object) {
         //var_dump($object);
         $options = array('w' => true, 'upsert' => true);
-        return $this->mongo->db->users_token->save($object, $options);
+        return $this->db->insert('users_token',$object, $options);
     }
 
     function delete_token($token) {
@@ -479,17 +464,7 @@ class User extends CI_Model {
         $result = $this->db->delete('users_token');
         return $result;
     }
-
-    function delete_group($idgroup) {
-        $options_delete = array("justOne" => true, "w" => true);
-        $options_save = array('upsert' => true, 'w' => true);
-        $criteria = array('idgroup' => (int) $idgroup);
-        //----make backup first
-        $obj = $this->group->get($idgroup);
-        $this->mongo->db->selectCollection('groups.back')->save($obj, $options_save);
-        $this->mongo->db->groups->remove($criteria, $options_delete);
-    }
-
+    
     function delete_by_id($_id) {
 
         //----make backup first
@@ -529,9 +504,9 @@ class User extends CI_Model {
 
     function genid() {
         $insert = array();
-        $id = mt_rand();
         $trys = 10;
         $i = 0;
+        $id = mt_rand();
         $container = 'users';
         //---if passed specific id
         if (func_num_args() > 0) {
@@ -542,29 +517,26 @@ class User extends CI_Model {
         $hasone = false;
 
         while (!$hasone and $i <= $trys) {//---search until found or $trys iterations
+            
             //while (!$hasone) {//---search until found or 1000 iterations
             $query = array('idu' => $id);
-            $result = $this->mongo->db->selectCollection($container)->findOne($query);
+            $result = $this->db->where($query)->count_all_results($container);
             $i++;
             if ($result) {
                 if ($passed) {
                     show_error("id:$id already Exists in $container");
-                    $hasone = true;
                     break;
-                } else {//---continue search for free id
-                    $id = mt_rand();
-                }
-            } else {//---result is null
-                $hasone = true;
+                } 
+                $hasone = false;
+                $id = mt_rand();
+                
+            } else {
+                $hasone=true;
             }
         }
         if (!$hasone) {//-----cant allocate free id
             show_error("Can't allocate an id in $container after $trys attempts");
         }
-        //-----make basic object
-        $insert['id'] = $id;
-        //----Allocate id in the collection (may result in empty docs)
-        //$this->mongo->db->selectCollection($container)->save($insert);
         return $id;
     }
 

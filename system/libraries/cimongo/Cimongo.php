@@ -451,6 +451,12 @@ class Cimongo extends Cimongo_extras {
         }
         try {
             $options = array_merge(array("w" => $this->query_safety), $options);
+             if ($this->debug){
+            var_dump('Wheres',$this->wheres,json_encode($this->wheres));
+            var_dump('Selects',$this->selects,json_encode($this->selects));
+            var_dump('Options',$options,json_encode($options));
+            
+            }
             $this->db->selectCollection($collection)->remove($this->wheres, $options);
             $this->_clear();
             return TRUE;

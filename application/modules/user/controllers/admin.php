@@ -15,7 +15,7 @@ class admin extends MX_Controller {
         $this->module_url = base_url() . $this->router->fetch_module() . '/';
         //----LOAD LANGUAGE
         $this->lang->load('library', $this->config->item('language'));
-        $this->idu = $this->user->idu;
+        $this->idu = (double) $this->session->userdata('iduser');
     }
 
     function Index() {
@@ -206,7 +206,7 @@ class admin extends MX_Controller {
     }
 
     function delete_group_db($idgroup) {
-        $this->user->delete_group($idgroup);
+        $this->group->delete($idgroup);
         echo '{"result":"ok"}';
     }
 

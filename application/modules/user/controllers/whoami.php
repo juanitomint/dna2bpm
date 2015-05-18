@@ -11,7 +11,7 @@ class Whoami extends MX_Controller {
         $this->load->model('user');
         //----LOAD LANGUAGE
         $this->lang->load('library', $this->config->item('language'));
-        $this->idu = $this->user->idu;
+        $this->idu = (double) $this->session->userdata('iduser');
         $this->load->config('config');
         
     }

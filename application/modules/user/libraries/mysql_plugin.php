@@ -1,10 +1,4 @@
 <?php
-
-/*
- * 
- * 
- */
-
 /**
  * This libray load submodules and apply bindings for replaced functions
  * ldap_user_plugin

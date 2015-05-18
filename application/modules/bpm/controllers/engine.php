@@ -2,16 +2,16 @@
 
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
+
 /**
  * This is the core BPM Engine This class has all what is needed to run a bpm model 
  * @author Juan Ignacio Borda <juanignacioborda@gmail.com> 
  * @date Feb 10, 2013
  */
-
 class Engine extends MX_Controller {
 
     public $debug = array();
-    public $run_filter=array();
+    public $run_filter = array();
     public $create_start_msg = false;
     public $run_after_stack = array();
 
@@ -41,7 +41,7 @@ class Engine extends MX_Controller {
             'Lane'
         );
         // ---Set if suprocess has to be loaded: Default=true
-        $this->expandSubProcess = false;
+        $this->expandSubProcess = true;
         // ---Debug options
         $this->debug ['Run'] = null;
         $this->debug ['run_post'] = null;
@@ -72,7 +72,6 @@ class Engine extends MX_Controller {
     function Index() {
         echo "<h1>BPM Engine</h1>";
         // var_dump($this->user->get_user_safe($this->idu));
-        
     }
 
     function assign($model, $idwf, $idcase, $src_resourceId, $resourceId, $idu) {
@@ -96,7 +95,7 @@ class Engine extends MX_Controller {
         $this->run_post($model, $idwf, $idcase, $src_resourceId);
     }
 
-    function Newcase($model, $idwf, $manual = false, $parent = null, $silent = false,$data=array()) {
+    function Newcase($model, $idwf, $manual = false, $parent = null, $silent = false, $data = array()) {
         // ---Gen new case ID
         $idcase = $this->bpm->gen_case($idwf);
         if ($manual) {
@@ -110,7 +109,7 @@ class Engine extends MX_Controller {
         if ($parent) {
             $mycase = $this->bpm->get_case($idcase, $idwf);
             $mycase ['parent'] = $parent;
-            $mycase['data']=$data;
+            $mycase['data'] = $data;
             $this->bpm->save_case($mycase);
             /*
              * UPDATE PARENT
@@ -174,7 +173,7 @@ class Engine extends MX_Controller {
         // ---Redir the browser to engine Run
         $redir = "bpm/engine/run/model/$idwf/$idcase";
         if (!$silent) {
-            header("Location:" . $this->base_url . $redir);
+            redirect( $this->base_url . $redir);
         } else {
             //echo "created:  $idwf, $idcase<hr/>";
             // $this->Run('model', $idwf, $case);
@@ -185,8 +184,11 @@ class Engine extends MX_Controller {
      * Engine core, here is where the functions for each shape get called @param string='model' @param string @param string @param string
      */
 
-    function Run($model, $idwf, $case, $run_resourceId = null,$silent=null) {
+    function Run($model, $idwf, $case, $run_resourceId = null, $silent = null) {
         $this->data = (object) null;
+        //---sanitize resourceId
+        if ($run_resourceId)
+            $run_resourceId = urldecode($run_resourceId);
         $debug = (isset($this->debug [__FUNCTION__])) ? $this->debug [__FUNCTION__] : false;
         if ($debug)
             echo "<h2>" . __FUNCTION__ . " $idwf -> $case </h2>";
@@ -226,19 +228,20 @@ class Engine extends MX_Controller {
             // $open = $this->bpm->get_tokens($idwf, $case, 'pending');
             $status = 'pending';
             $wf->prevent_run = array();
-            $filter =(count($this->run_filter))?$this->run_filter: array(
+            $filter = (count($this->run_filter)) ? $this->run_filter : array(
                 'idwf' => $idwf,
                 'case' => $case,
                 'status' => 'pending'
             );
-            
-            // var_dump(json_encode($filter));exit;
+
+            //  var_dump(json_encode($filter));exit;
             // ----filter specific shape to run
             if ($run_resourceId)
                 $filter ['resourceId'] = $run_resourceId;
 
             while ($i <= 100 and $open = $this->bpm->get_tokens_byFilter($filter)) {
-            if($debug) echo "<h1>Step:$i</h1>";
+                if ($debug)
+                    echo "<h1>Step:$i</h1>";
                 $i ++;
                 foreach ($open as $token) {
                     // ---only call tokens that correspond to user.
@@ -247,6 +250,9 @@ class Engine extends MX_Controller {
 
                     if (!in_array($resourceId, $wf->prevent_run)) {
                         $shape = $this->bpm->get_shape($resourceId, $wf);
+                        if (!$shape) {
+                            show_error("Can't find $resourceId in model: engine line " . __LINE__);
+                        }
                         $callfunc = 'run_' . $shape->stencil->id;
                         if ($debug) {
                             $name = (property_exists($shape->properties, 'name')) ? $shape->properties->name : '';
@@ -269,7 +275,8 @@ class Engine extends MX_Controller {
 //                redirect($this->base_url . $this->config->item('default_controller'));
 //            }
             //----return if silent
-            if($silent) return;
+            if ($silent)
+                return;
             $this->get_pending('model', $idwf, $case, $run_resourceId);
             $this->run_after();
             $run_resourceId = null;
@@ -293,6 +300,8 @@ class Engine extends MX_Controller {
         $debug = (isset($this->debug [__FUNCTION__])) ? $this->debug [__FUNCTION__] : false;
         if ($debug)
             echo "<h2>" . __FUNCTION__ . '</h2>';
+        //---sanitize resourceId
+        $resourceId = urldecode($resourceId);
         $mywf = $this->bpm->load($idwf, $this->expandSubProcess);
         $mywf ['data'] ['idwf'] = $idwf;
         $mywf ['data'] ['case'] = $case;
@@ -305,7 +314,8 @@ class Engine extends MX_Controller {
                 $shape = $this->bpm->get_shape($resourceId, $wf);
                 if ($shape) {
                     //---save postdata in case
-                    if (property_exists($shape->properties->datainputset, 'items')) {
+                    if (property_exists($shape->properties, 'datainputset')) {
+                        if (property_exists($shape->properties->datainputset, 'items')) {
                         $thisCase = $this->bpm->get_case($case);
                         $thisCase['data']['datainputset'] = (isset($thisCase['data']['datainputset'])) ? (array) $thisCase['data']['datainputset'] : array();
                         if (count($_POST)) {
@@ -316,6 +326,7 @@ class Engine extends MX_Controller {
                             $this->bpm->save_case($thisCase);
                         }
                     }
+                    }
                     //---MOVENEXT
                     $this->bpm->movenext($shape, $wf);
                 } else {
@@ -323,16 +334,16 @@ class Engine extends MX_Controller {
                 }
             }
             // ----if its a subprocess try to run all other subprocesses
-            $subproc = $this->bpm->get_tokens($idwf, $case, $status = 'waiting', 'CollapsedSubprocess');
-            foreach ($subproc as $token) {
-                $this->bpm->set_token($idwf, $case, $token ['resourceId'], $token ['type'], 'pending');
-            }
+//            $subproc = $this->bpm->get_tokens($idwf, $case, $status = 'waiting', 'CollapsedSubprocess');
+//            foreach ($subproc as $token) {
+//                $this->bpm->set_token($idwf, $case, $token ['resourceId'], $token ['type'], 'pending');
+//            }
         }
         // ---Redir the browser to engine Run
 
         $redir = "bpm/engine/run/model/$idwf/$case";
         if (!$debug) {
-            header("Location:" . $this->base_url . $redir);
+            redirect($this->base_url . $redir);
         } else {
             echo 'Location:<a href="' . $this->base_url . $redir . '"> >>> Click here to continue <<< </a>';
         }
@@ -342,8 +353,13 @@ class Engine extends MX_Controller {
         $debug = (isset($this->debug [__FUNCTION__])) ? $this->debug [__FUNCTION__] : false;
         if ($debug)
             echo "<h2>" . __FUNCTION__ . '</h2>';
+
+        //---sanitize resourceId
+        $resourceId = urldecode($resourceId);
+        $flowId = urldecode($flowId);
+
         $data = array();
-        $mywf = $this->bpm->load($idwf, $this->expandSubProcess);
+        $mywf = $this->bpm->load($idwf);
         $mywf ['data'] ['idwf'] = $idwf;
         $mywf ['data'] ['case'] = $case;
         $wf = bindArrayToObject($mywf ['data']);
@@ -382,7 +398,7 @@ class Engine extends MX_Controller {
         }
         // ---Redir the browser to engine Run
         $redir = "bpm/engine/run/model/$idwf/$case";
-        header("Location:" . $this->base_url . $redir);
+        redirect($this->base_url . $redir);
     }
 
     function task_locked($model, $idwf, $idcase, $resourceId) {
@@ -415,6 +431,8 @@ class Engine extends MX_Controller {
 
     function manual_task($model, $idwf, $idcase, $resourceId) {
         $this->load->library('ui');
+        //---sanitize resourceId
+        $resourceId = urldecode($resourceId);
         $debug = (isset($this->debug [__FUNCTION__])) ? $this->debug [__FUNCTION__] : false;
         // $debug=true;
         // ----prepare renderData
@@ -445,6 +463,11 @@ class Engine extends MX_Controller {
         if (!isset($this->data))
             $this->load_data($wf, $idcase);
         $renderData ['task_name'] = $shape->properties->name;
+        $add = '';
+            if (property_exists($shape->properties, 'subproc_parent')) {
+                $parent = $this->bpm->get_shape($shape->properties->subproc_parent, $wf);
+                $renderData ['task_name']=$parent->properties->name.'/'.$renderData ['task_name'];
+            }
         if (isset($case ['parent'])) {
             $renderData ['task_name'] = $case ['parent'] ['token'] ['title'] . '<br/>' . $shape->properties->name;
         }
@@ -488,11 +511,11 @@ class Engine extends MX_Controller {
             $renderData ['wf'] = $mywf ['data'] ['properties'];
             // $renderData+=$mywf['data']['properties'];
             $renderData ['token'] = $token;
-            
+
             //---map users assigned
-            if(isset($renderData['token']['assign'])){
+            if (isset($renderData['token']['assign'])) {
                 $renderData ['assign'] = array_map(
-                    function($iduser) {
+                        function($iduser) {
                     return (array) $this->user->get_user_safe($iduser);
                 }, $renderData['token']['assign']);
             }
@@ -506,11 +529,10 @@ class Engine extends MX_Controller {
             // ---prepare UI
             $renderData ['title'] = 'Manual Task';
             //----Skip javascript if no modal asked
-            if(!$this->debug['show_modal']){
-            $renderData ['js'] = array(
-                $this->module_url . 'assets/jscript/manual_task.js' => 'Manual task JS'
-            );
-                
+            if (!$this->debug['show_modal']) {
+                $renderData ['js'] = array(
+                    $this->module_url . 'assets/jscript/manual_task.js' => 'Manual task JS'
+                );
             }
             // ---prepare globals 4 js
             $renderData ['global_js'] = array(
@@ -528,6 +550,8 @@ class Engine extends MX_Controller {
 
     function manual_gate($model, $idwf, $idcase, $resourceId) {
         $this->load->library('ui');
+        //---sanitize resourceId
+        $resourceId = urldecode($resourceId);
         $debug = (isset($this->debug [__FUNCTION__])) ? $this->debug [__FUNCTION__] : false;
         // ----prepare renderData
         $renderData = array();
@@ -572,7 +596,13 @@ class Engine extends MX_Controller {
             }
             // var_dump(__FUNCTION__,'$renderData',$renderData);
             // ---prepare UI
+            $add = '';
+            if (property_exists($shape->properties, 'subproc_parent')) {
+                $parent = $this->bpm->get_shape($shape->properties->subproc_parent, $wf);
+                $add = $parent->properties->name.'/';
+            }
             $renderData ['title'] = 'Manual Gate';
+            $renderData ['name'] = $add.$renderData ['name'] ;
             $renderData ['js'] = array(
                 $this->module_url . 'assets/jscript/manual_gate.js' => 'Manual Gate JS'
             );
@@ -756,7 +786,7 @@ class Engine extends MX_Controller {
             //
 			// ---now run child processes
             if (isset($token ['child'])) {
-                foreach ($token['child'] as $child_idwf=>$childs) {
+                foreach ($token['child'] as $child_idwf => $childs) {
                     foreach ($childs as $child_idcase) {
                         $this->Run('model', $child_idwf, $child_idcase);
                     }
@@ -843,17 +873,7 @@ class Engine extends MX_Controller {
         $renderData ['case'] = $idcase;
         $user = $this->user->getuser($this->idu);
 
-        // ----the task is assignet to the user or is for the group the user belong to
-        if (!isset($filter)) {
-            $filter ['$or'] [] = array(
-                'assign' => $this->idu
-            );
-            $filter ['$or'] [] = array(
-                'idgroup' => array(
-                    '$in' => $user->group
-                )
-            );
-        }
+        
         // ----if specific token has been passed then run this token
         if ($run_resourceId) {
             $filter ['resourceId'] = $run_resourceId;
@@ -868,10 +888,10 @@ class Engine extends MX_Controller {
             $myTasks = $this->bpm->get_pending($idwf, $idcase, array(
                 'user',
                 'manual'
-                    ), $filter);
+                    ));
             // var_dump(json_encode($filter),$myTasks);exit;
             // ---search for a suitable task to execute
-            while ($first = $myTasks->getNext()) {
+            while ($first = array_pop($myTasks)) {
                 $is_allowed = $this->bpm->is_allowed($first, $user);
 
                 if ($is_allowed)

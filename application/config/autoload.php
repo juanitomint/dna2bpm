@@ -53,10 +53,10 @@ $autoload['packages'] = array();
 */
 
 $autoload['libraries'] = array(
-    'mongo',
+    // 'mongo',
     'session',      
     //-----if you need full layer support with plugin loader load the user/userlayer library
-    //'user/userlayer'
+    'user/userlayer'
     );
 
 

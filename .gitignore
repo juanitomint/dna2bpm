@@ -11,3 +11,4 @@
 .settings
 /API/
 /application/modules/qr/cache/
+/application/config
