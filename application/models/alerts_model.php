@@ -11,21 +11,30 @@ class Alerts_model extends CI_Model {
 //        $this->config->load('user/config');
         $this->load->library('cimongo/cimongo');
         $this->db = $this->cimongo;
+        $this->bpm_container='alerts';
     }
 
 
     
     // ===== Get Alerts using a filter
-    function get_alerts_by_filter($filter = array()) {
-    	return $this->mongo->db->alerts->find($filter);
+    function get_alerts_by_filter($target = array()) {
+
+        $this->db->where_in('target',$target);
+        $this->db->where('read !=',$this->idu);
+        //return $this->db->get($this->bpm_container)->result_array();
+$this->dismiss();
+
     }
     
     // ===== dismiss alert
     function dismiss($id) {
-    	$mongoid = new MongoId($id);
-    	$query = array('$addToSet'=>array('read' => $this->idu));
-    	$criteria = array('_id' => $mongoid);
-    	$rs = $this->mongo->db->alerts->update($criteria, $query);
+        
+        $query = array(
+            '_id' => new MongoId($id),
+        );
+        $this->db->where($query)->addtoset('read', array($this->idu))->update($this->bpm_container);
+        
+    
     }
  
 

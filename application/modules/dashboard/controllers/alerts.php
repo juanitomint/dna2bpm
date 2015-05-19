@@ -29,19 +29,15 @@ class Alerts extends MX_Controller {
     }
 
     function get_my_alerts() { 	
+//        
     	$dashboard=$this->session->userdata('json');
     	$user = $this->user->get_user($this->idu);
     	$target=$user->group;
     	$target[]=$dashboard;
     	$customData['lang'] = $this->lang->language;
-
-     	$query=array('target'=>array('$in'=>$target),'read'=>array('$ne'=>$this->idu));
-      	$alerts=$this->alerts_model->get_alerts_by_filter($query);
-      	$customdata['my_alerts']=iterator_to_array($alerts);
+      	$customdata['my_alerts']=$this->alerts_model->get_alerts_by_filter($target);
       	$customdata['Nick']="test";
-//       	var_dump(iterator_to_array($alerts));
-//       	exit();
-      	$q=$alerts->count();
+        $q=count($customdata['my_alerts']);
        	return ($q>0)?( $this->parser->parse('dashboard/widgets/alerts', $customdata, true, false)):('');
 
     }
