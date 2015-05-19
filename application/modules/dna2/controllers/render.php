@@ -11,16 +11,22 @@ class Render extends MX_Controller {
         //----LOAD LANGUAGE
         $this->lang->load('library', $this->config->item('language'));
         //---LOAD CORE Functions
-        $this->load->helper('types/text/render');
-        $this->load->helper('types/textarea/render');
-        $this->load->helper('types/radio/render');
-        $this->load->helper('types/combo/render');
-        $this->load->helper('types/combodb/render');
-        $this->load->helper('types/checklist/render');
-        $this->load->helper('types/subform/render');
-        $this->load->helper('types/subformparent/render');
-        $this->load->helper('types/date/render');
-        $this->load->helper('types/datetime/render');
+        $core=array(
+            'text',
+            'textarea',
+            'radio',
+            'combo',
+            'combodb',
+            'checklist',
+            'subform',
+            'subformparent',
+            'date',
+            'datetime'
+            );
+        
+        foreach($core as $helper)
+        include("application/modules/form/assets/types/$helper/render_helper.php");
+        
         $this->load->helper('dna');
         //----prepare some globals
         $this->uri_assoc = $this->uri->uri_to_assoc();
