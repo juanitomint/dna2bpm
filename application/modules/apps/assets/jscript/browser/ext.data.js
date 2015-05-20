@@ -85,12 +85,12 @@ var dgstore = Ext.create('Ext.data.Store', {
     proxy: {
         type: 'ajax',
         api: {
-            read    : globals.module_url+'apps/read/',
-            create  : globals.module_url+'apps/create/',
-            update  : globals.module_url+'apps/update/',
-            destroy : globals.module_url+'apps/destroy/'        
+            read    : globals.module_url+'action/read/',
+            create  : globals.module_url+'action/create/',
+            update  : globals.module_url+'action/update/',
+            destroy : globals.module_url+'action/destroy/'        
         },
-        url:globals.module_url+'apps/read/'+globals.idapp,
+        url:globals.module_url+'action/read/'+globals.idapp,
         noCache: false,
         reader: {
             type: 'json',

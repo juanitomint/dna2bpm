@@ -1,6 +1,6 @@
 <?php
 
-class Application extends MX_Controller {
+class Apps extends MX_Controller {
 
     function __construct() {
         parent::__construct();
@@ -20,8 +20,8 @@ class Application extends MX_Controller {
         //----LOAD LANGUAGE
         $this->lang->load('library', $this->config->item('language'));
         $this->idu = $this->user->idu;
-        $this->types_path = 'application/modules/application/assets/types/';
-        $this->module_path = 'application/modules/application/';
+        $this->types_path = 'application/modules/apps/assets/types/';
+        $this->module_path = 'application/modules/apps/';
         //----Variables
         $this->base_url = base_url();
         $this->module_url = base_url() . $this->router->fetch_module().'/';
@@ -31,7 +31,7 @@ class Application extends MX_Controller {
         return "'" . $st . "'";
     }
 
-    function Apps($action) {
+    function Action($action) {
         $segments = $this->uri->segment_array();
         $debug = (in_array('debug', $segments)) ? true : false;
         $apps = array();
@@ -204,7 +204,7 @@ class Application extends MX_Controller {
     }
 
     function Index() {
-        
+      echo '<h1>'. $this->router->fetch_module().'/'.get_class ($this).'</h1>';
     }
 
     function Forms($action, $idapp) {
