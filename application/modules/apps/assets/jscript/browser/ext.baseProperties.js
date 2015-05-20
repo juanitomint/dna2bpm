@@ -184,7 +184,7 @@ try{
                 icon:globals.base_url+'css/ext_icons/edit.png',
                 handler:function(me){
                     var ref=Ext.getCmp('propsGrid').store.data.get('idapp').data.value;
-                    window.open(globals.base_url+'application/editor/'+ref);
+                    window.open(globals.module_url+'editor/'+ref);
             
                 }
             },                   
