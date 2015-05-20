@@ -105,7 +105,7 @@ class Apps extends MX_Controller {
         }
     }
 
-    function Browser() {
+    function Admin() {
         $this->load->library('ui');
         $level = $this->user->getlevel($this->idu);
         $cpData = $this->lang->language;
