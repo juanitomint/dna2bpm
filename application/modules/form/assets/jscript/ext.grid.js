@@ -92,12 +92,13 @@ var GridEditPHP=Ext.create('Ext.Action',
     id:'ObjCodeBtnPHP',
     tooltip:'Server Side Hooks',
     handler: function(){
+        
         createCodeWindow('Server Side Script Hooks for:'+globals.idobj,{
             'edit':'php',
             'view':'php',
             'process':'php',
             'print':'php'
-        },this.id,module_url+'code',idobj);
+        },this.id,globals.module_url+'code',globals.idobj);
     }
 });
     
