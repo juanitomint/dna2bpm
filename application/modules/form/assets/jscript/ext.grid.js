@@ -81,7 +81,7 @@ var GridPreview=Ext.create('Ext.Action',
     icon:globals.base_url+'css/ext_icons/preview.gif',
     tooltip:'Preview Form',
     handler:function(){
-        url=base_url+'dna2/render/go/'+globals.idobj;
+        url=globals.base_url+'dna2/render/go/'+globals.idobj;
         window.open(url);
     }
 });
