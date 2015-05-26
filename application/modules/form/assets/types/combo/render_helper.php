@@ -8,13 +8,28 @@ function edit_combo($frame, $value) {
     $required='';
     //---ensure array----
     $value = (array) $value;
-
+    //var_dump($frame);
+    if(isset($frame['locked']) && $frame['locked'] === true)
+        $locked = "disabled";
+    else $locked ='';
+    
+    ///Campo Hidden
+    if(isset($frame['hidden']) && $frame['hidden'] === true)
+        $disabled = "style='visibility:hidden'";
+    else $disabled ='';
+    
+    ///Campo requerido
+    if(isset($frame['required']) && $frame['required'] === true)
+        $required = "required";
+    else $required =''; 
+    
+    /*  
     if (isset($frame['disabled']))
         $disabled = ($frame['disabled']) ? getDisabledStr($frame['type']) : null;
 
     if (isset($frame['required']))
         $required = ($frame['required']) ? getRequiredStr($frame['type']) : null;
-
+    */    
     $option = $CI->mongo->db->options->findOne(array('idop' =>(int) $frame['idop']));
     
 //prepare options array
@@ -37,13 +52,14 @@ function edit_combo($frame, $value) {
 
 
 
-    $retstr = "<select  $required name='" . $frame['cname'] . "' id='" . $frame['cname'] . "' $disabled>\n";
+    $retstr = "<select  $locked $required name='" . $frame['cname'] . "' id='" . $frame['cname'] . "' $disabled>\n";
     $retstr.="<option value=''>Seleccione una opci&oacute;n</option>\n";
     foreach ($ops as $key => $text) {
         $sel = (in_array($key, $value)) ? "selected='selected'" : '';
         $retstr.="<option value='$key' $sel>$text</option>\n";
     }
     $retstr.="</select>\n";
+    //echo $retstr.'</br>';
     return $retstr;
 }
 
