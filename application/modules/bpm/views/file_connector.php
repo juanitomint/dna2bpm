@@ -1,18 +1,35 @@
-<div class="data-header">    
+<div style="padding-top: 30px;" class="data-header">    
 <h4>
-    <i class='fa fa-arrow-right'></i> 
-    <i class='fa fa-files'></i> 
+    <i class="fa fa-caret-right"></i> 
+    <i class="fa fa-files"></i> 
     {properties name}
 </h4>
-    <div class="well pull-right dropfile {dropClass} ">
-        <i class="fa fa-2x fa-cloud-upload"></i>
-    </div>
+    
 </div>
 <p>{properties documentation}</p>
-{files}
-<div>
-    <i class="glyphicon glyphicon-file fileinput-exists"></i> <span class="fileinput-filename">
-        <a href="{base_url}{relative_path_encoded}/{name_encoded}">{name}</a>
+<!-- Files Block -->
+<!--<h5>{lang drop_here}</h5>-->
+  <div style=" height: 115px; border-width: 2px; margin-bottom: 20px; color: #aaa; border-style: dashed;
+      border-color: #ccc; line-height: 15px; text-align: center" class="dropfile {dropClass}" id="drop-zone">
+    <span>
+        <br/>
+        <br/>
+        <i class="fa fa-2x fa-cloud-upload"></i>
+        <br/>
+        {lang drop_here}
     </span>
-</div>
+  </div>
+<div>
+       <div class="list-group">
+{files}
+           <div class="alert alert-success alert-dismissible" role="alert">
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <a style="border-radius: 0px;" href="{base_url}{relative_path_encoded}/{name_encoded}">{name}</a>
+            </div>      
 {/files}
+        </div>
+    
+        
+   
+</div>
+<!-- END Files Block -->

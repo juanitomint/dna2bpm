@@ -33,3 +33,5 @@ $lang["closedCases"] = "Closed Cases";
 /* --WF-conditions----- */
 $lang['true'] = 'Si';
 $lang['false'] = 'No';
+/* --File ---*/
+$lang['drop_here']="Drop your files here";
