@@ -42,7 +42,7 @@ function createCodeWindow(title,hooks,caller,url,ref) {
         
         tabs.push(
             Ext.create('Ext.panel.Panel',{
-                mode:mode.toUpperCase(),
+                mode:mode,
                 title: name,
                 layout:'fit',
                 caller:caller,
@@ -65,20 +65,26 @@ function createCodeWindow(title,hooks,caller,url,ref) {
                                 'context':me.title,
                                 'lang':lang
                             };
-                            //console.log('initiating editor:'+obj.id) ;
+                            console.log('initiating editor:'+obj.id) ;
                             
-                            editAreaLoader.init({
-                                id :obj.id,
-                                syntax: options.mode,
-                                start_highlight: true
-                            });
+                            // editAreaLoader.init({
+                            //     id :obj.id,
+                            //     syntax: options.mode,
+                            //     start_highlight: true
+                            // });
+                            /* ACE */
+                             $('#'+obj.id).ace({
+                             lang:options.mode
+                             });
                             me.setLoading('Loading...');
                             postAjax(url,params,
                                 function(response, options){
                                     var result=Ext.JSON.decode(response.responseText);
                                     //---check 4 error
                                     if (result.ok){
-                                        editAreaLoader.setValue(obj.id,result.code);
+                                        var editor=$('#'+obj.id).data('ace').editor.ace;
+                                        editor.setValue(result.code,1);
+                                        
                                     
                                     }else{
                                     
@@ -216,11 +222,16 @@ function createCodeWindow(title,hooks,caller,url,ref) {
         //initialize Activetab code editor
         var tab=this.child('tabpanel').getActiveTab();
         var obj=tab.getEl().select('textarea').elements[0];
-        editAreaLoader.init({
-            id :obj.id,
-            syntax: tab.initialConfig.mode,
-            start_highlight: true
-        });
+        /* ACE */
+        // $('#'+obj.id).ace({
+        //     lang:tab.initialConfig.mode
+        // });
+        /* EditArea */
+        // editAreaLoader.init({
+        //     id :obj.id,
+        //     syntax: tab.initialConfig.mode,
+        //     start_highlight: true
+        // });
     });
 ///-----end window
 ////---end if

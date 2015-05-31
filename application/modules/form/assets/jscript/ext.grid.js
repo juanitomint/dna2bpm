@@ -109,7 +109,7 @@ var GridEditJS=Ext.create('Ext.Action',
     id:'ObjCodeBtnJS',
     tooltip:'Client Side Hooks',
     handler: function(){
-        createCodeWindow('Client Side Scripts Hooks for:'+globals.idobj,hooksJS,this.id,module_url+'code',idobj);
+        createCodeWindow('Client Side Scripts Hooks for:'+globals.idobj,hooksJS,this.id,globals.module_url+'code',globals.idobj);
     }
 });
 
