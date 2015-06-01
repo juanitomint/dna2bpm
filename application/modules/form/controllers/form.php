@@ -79,7 +79,7 @@ class Form extends MX_Controller {
         $lang = $this->input->post('lang');
         $debug = (in_array('debug', $segments)) ? true : false;
         $template['php'] = "<?php\n/* new PHP script Write your code here */\n";
-        $template['js'] = "// new JS script Write your code here\n";
+        $template['javascript'] = "// new JS script Write your code here\n";
         $rtn = array(
             'action' => $action,
             'id' => $id,
