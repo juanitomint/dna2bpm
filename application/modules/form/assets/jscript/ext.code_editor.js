@@ -68,13 +68,8 @@ function createCodeWindow(title, hooks, caller, url, ref) {
                                 'context': me.title,
                                 'lang': lang
                             };
-                            console.log('initiating editor:' + obj.id);
+                            //console.log('initiating editor:' + obj.id);
 
-                            // editAreaLoader.init({
-                            //     id :obj.id,
-                            //     syntax: options.mode,
-                            //     start_highlight: true
-                            // });
                             /* ACE */
                             $('#' + obj.id).ace(
                             $.extend(ace_config,    {
