@@ -9,6 +9,7 @@ class Menu_model extends CI_Model {
         parent::__construct();
         $this->container = 'container.menu';
         $this->load->library('cimongo/cimongo');
+        $this->load->library('mongo');
         $this->db = $this->cimongo;
         $this->idu =$this->user->idu;
     }
