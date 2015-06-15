@@ -11,7 +11,7 @@ class Msg extends CI_Model {
     function __construct() {
         parent::__construct();
         $this->idu = $this->session->userdata('iduser');
-//        $this->config->load('user/config');
+        $this->load->library('mongo');
         $this->load->library('cimongo/cimongo');
         $this->db = $this->cimongo;
     }
