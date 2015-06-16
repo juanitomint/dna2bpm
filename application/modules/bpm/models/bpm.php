@@ -1962,7 +1962,7 @@ class Bpm extends CI_Model {
             $case_to['iduser'] = $case['iduser'];
             $case_to = $this->save_case($case_to);
             //---return true if cloned successfully
-            return true;
+            return $case_to;
         } else {
             //---return false if already exists
             return false;

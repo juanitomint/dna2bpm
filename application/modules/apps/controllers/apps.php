@@ -186,7 +186,7 @@ class Apps extends MX_Controller {
             $this->module_url . 'assets/jscript/editor/ext.data.js' => 'data Components',
             $this->module_url . 'assets/jscript/editor/ext.grid.js' => 'Grid',
             $this->base_url . 'jscript/editarea/edit_area/edit_area_full.js' => 'Edit Area',
-            $this->module_url . 'assets/jscript/ext.code_editor.js' => 'Code Editor',
+            $this->base_url . 'form/assets/jscript/ext.code_editor.js' => 'Code Editor',
             $this->module_url . 'assets/jscript/editor/ext.load_props.js' => 'Form Porperty loader',
             $this->module_url . 'assets/jscript/editor/ext.viewport.js' => 'viewport',
             $this->module_url . 'assets/jscript/editor/ext.baseProperties.js' => 'Property Grid',

@@ -81,7 +81,7 @@ var GridPreview=Ext.create('Ext.Action',
     icon:globals.base_url+'css/ext_icons/preview.gif',
     tooltip:'Preview Form',
     handler:function(){
-        url=base_url+'dna2/render/go/'+globals.idobj;
+        url=globals.base_url+'dna2/render/go/'+globals.idobj;
         window.open(url);
     }
 });
@@ -92,12 +92,13 @@ var GridEditPHP=Ext.create('Ext.Action',
     id:'ObjCodeBtnPHP',
     tooltip:'Server Side Hooks',
     handler: function(){
+        
         createCodeWindow('Server Side Script Hooks for:'+globals.idobj,{
             'edit':'php',
             'view':'php',
             'process':'php',
             'print':'php'
-        },this.id,module_url+'code',idobj);
+        },this.id,globals.module_url+'code',globals.idobj);
     }
 });
     
@@ -108,7 +109,7 @@ var GridEditJS=Ext.create('Ext.Action',
     id:'ObjCodeBtnJS',
     tooltip:'Client Side Hooks',
     handler: function(){
-        createCodeWindow('Client Side Scripts Hooks for:'+globals.idobj,hooksJS,this.id,module_url+'code',idobj);
+        createCodeWindow('Client Side Scripts Hooks for:'+globals.idobj,hooksJS,this.id,globals.module_url+'code',globals.idobj);
     }
 });
 

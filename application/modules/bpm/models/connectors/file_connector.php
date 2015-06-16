@@ -3,9 +3,9 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-class file_connector extends CI_Model {
+class File_connector extends CI_Model {
 
-    function File_connector() {
+    function __construct() {
         parent::__construct();
         $this->load->helper('file');
     }
@@ -35,7 +35,11 @@ class file_connector extends CI_Model {
         $str = $this->parser->parse('bpm/file_connector', $dirinfo, true);
         return $str;
     }
-
+    
+    function delete_file($resource, $shape, $wf){
+        $path = 'images/user_files/' . $wf->idwf . '/' . $wf->case . '/' . str_replace("\n",'_', $shape->properties->name);
+        
+    } 
 }
 /*
 ok

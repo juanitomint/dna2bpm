@@ -12,12 +12,30 @@ function edit_checklist($frame, $value) {
     $height = (!isset($frame['cols'])) ? 10 : $frame['cols'];
 //---check if is non zero
     $height = ($height == 0) ? 10 : $height;
+    //var_dump($frame);
+    
+    if(isset($frame['locked']) && $frame['locked'] === true)
+        $locked = "disabled";
+    else $locked ='';
+    
+    ///Campo Hidden
+    if(isset($frame['hidden']) && $frame['hidden'] === true)
+        $disabled = "hidden";
+    else $disabled ='';
+    
+    ///Campo requerido
+    if(isset($frame['required']) && $frame['required'] === true)
+        $required = "required";
+    else $required =''; 
+    
+    
+    /*
     if (isset($frame['disabled']))
         $disabled = ($frame['disabled']) ? getDisabledStr($frame['type']) : null;
 
     if (isset($frame['required']))
         $required = ($frame['required']) ? getRequiredStr($frame['type']) : null;
-
+    */    
     $option = $CI->mongo->db->options->findOne(array('idop' => $frame['idop']));
     //prepare options array
     if (isset($option['fromContainer'])) { // if gets data from internal db
@@ -48,11 +66,19 @@ function edit_checklist($frame, $value) {
     if (count($ops)) {
         $i = 1;
         if ($required <> '')
-            $retstr.="<label for=\"" . $frame['cname'] . "\" class=\"error\" style=\"display:none\">* Seleccione uno</label>";
+            $retstr.="<label for=\"" .$frame['cname']. "\" class=\"error\" style=\"display:none\">* Seleccione uno</label>";
         $retstr.="<div style='display:table'><div style='display:table-row'><div style='display:table-cell'>";
         foreach ($ops as $key => $text) {
             $sel = (in_array((string) $key, $value)) ? "checked='checked'" : '';
-            $retstr.="<label><input type='checkbox' $required $disabled name='" . $frame['cname'] . "[]' value='$key' $sel>$text</label><br>\r";
+            if($disabled !='hidden') 
+                $retstr.="<label >";
+            
+            $retstr.="<input type=checkbox ".$required." ".$disabled." name='" . $frame['cname'] . "' value='".$key."' ".$locked."  $sel>";
+            
+                     
+            if($disabled !='hidden')    
+                $retstr.=$text."</label><br>\r";
+            
             if ($i++ == $height) {
                 $retstr.="</div><div style='display:table-cell'>";
                 $i = 1;
@@ -77,7 +103,7 @@ function edit_checklist($frame, $value) {
              */
         }
     }
-
+    //echo $retstr.'</br>';
     return $retstr;
 }
 

@@ -242,6 +242,8 @@ function run_EndTerminateEvent($shape, $wf, $CI) {
     $active_tokens = $CI->bpm->get_pending($wf->idwf, $wf->case, array('user', 'waiting', 'pending'), array());
     foreach($active_tokens as $token){
         $token['status']='canceled';
+        $data = array('canceledBy' => $shape->resourceId, 'canceledName' => $shape->properties->name);
+        $token+=$data;
         $CI->bpm->save_token($token);
                  
     }

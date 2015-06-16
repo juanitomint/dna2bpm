@@ -3,7 +3,7 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-class Task extends MX_Controller {
+class File_connector extends MX_Controller {
 
     function Task() {
         parent::__construct();

@@ -4,43 +4,97 @@ function edit_combodb($frame, $value) {
     $CI = & get_instance();
     $retstr = '';
     $ops = array();
-    $required = (@$frame['required']) ? getRequiredStr($frame['type']) : null;
+    
+    //$required = (@$frame['required']) ? getRequiredStr($frame['type']) : null;
     $value = array_map('floatval', (array) $value);
     $fields = array();
+    $query = array();
+    
+    if(isset($frame['locked']) && $frame['locked'] === true)
+        $locked = "disabled";
+    else $locked ='';
+    
+    ///Campo Hidden
+    if(isset($frame['hidden']) && $frame['hidden'] === true)
+        $disabled = "style='visibility:hidden'";
+    else $disabled ='';
+    
+    ///Campo requerido
+    if(isset($frame['required']) && $frame['required'] === true)
+        $required = "required";
+    else $required ='';     
 
-
-    $query = $frame['query'];
-    //----Ensure Fields are strings 4 result
+    
+    $fields[] = $frame['fieldValue']; //'id'
+    
     foreach ($frame['fields'] as $field)
         $fields[] = (string) $field;
-    $fields[] = $frame['fieldValue'];
-    //$fields[]='status';
-    //var_dump($frame['dataFrom'], json_encode($query), $fields, $frame['sort']);
-
+     
+    
+    
+    
+    
+    //var_dump($opcion);
+     if(isset($frame['query'])){
+        $opcion1 = $frame['query'];
+        //$opcion = '{"status":"activa"}';
+        $opcion = str_replace("'", "\"",$opcion1); 
+        if($frame['query']<> ''){
+            $query = (array)json_decode($opcion,true);
+        } else $query = (array)json_decode('{}');
+     }else $query = (array)json_decode('{}');
+    
+    //var_dump($query);
+    
     $rsop = $CI->mongo->db->selectCollection($frame['dataFrom'])->find($query, $fields);
-    //---4 sorting order
-    $rsop->sort((array) $frame['sort']);
+    $result = array();
+    $i=0;
+    foreach($rsop as $search){
+        $result[$i] = $search;
+        $i++;
+    }
+    //var_dump($result);    
+    //exit();    
+   
     //------------------------------------
     //var_dump($frame[dataFrom],$query,$fields,$rsop->getNext());
-
-    $retstr = "<select  $required name='" . $frame['cname'] . "' id='" . $frame['cname'] . "' class='combodb' $disabled>\n";
+    //var_dump($rsop);
+    $retstr = "<select $locked $required name='" . $frame['cname'] . "' id='" . $frame['cname'] . "' class='combodb' $disabled>\n";
     $retstr.="<option value=''>Seleccione una opci&oacute;n</option>\n";
-    while ($arr = $rsop->getNext()) {
+    $arr = array();
+    //while ($arr = $rsop->getNext()) {
+    
+    $j =0;
+    while ($j < $i && $j < 100) {
         $text = array();
+        //var_dump($arr);
         //-----make a string with all the fields 4 text
-        foreach ($frame['fields'] as $field) {
-            $thisframe=$CI->app->get_frame($field);
-            $callfunc = 'view_' . $thisframe['type'];
-            //var_dump($callfunc,function_exists($callfunc));
-            $text[] = (function_exists($callfunc)) ? $callfunc($thisframe, $arr[$field]) : null;
+    
+        $showtext ='';
+        foreach ($fields as $campos){
+            //echo 'Campos:'.$campos;
+            if(isset($result[$j][$campos])){
+                if(is_array($result[$j][$campos])){
+                    //echo ' valor:'.$result[$j][$campos][0];
+                    $text[] = $result[$j][$campos][0];
+                }else
+                    { 
+                    //echo ' valor:'.$result[$j][$campos];
+                    $text[] = $result[$j][$campos];
+                }
+            
+            } else $text[] ='';
         }
-        //var_dump($text);
+        
         $showtext = implode(' | ', $text);
-        //----------------------------------------------------------
-        $sel = (in_array($arr[$frame['fieldValue']], $value)) ? "selected='selected'" : '';
+        
         if (trim($showtext)<>'') {
-            $retstr.="<option value='" . $arr[$frame['fieldValue']] . "' $sel>$showtext</option>\n";
+            
+            $retstr.="<option value='" . $text[0] . "' >$showtext</option>\n";
+            
         }
+          
+        $j++;
     }
     $retstr.="</select>\n";
     return $retstr;
