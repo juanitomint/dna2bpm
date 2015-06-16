@@ -45,20 +45,20 @@ class Msg extends CI_Model {
             }
         }
 
-// Query build
-        $pipe = $this->mongo->db->msg->find($query);
-        if (!is_null($skip))
-            $pipe = $pipe->skip($skip);
-        if (!is_null($limit))
-            $pipe = $pipe->limit($limit);
-        $pipe = $pipe->sort(array('checkdate' => -1));
+    $this->db->where($query);
+    $this->db->order_by(array('checkdate' => -1));
+    $rs = $this->db->get('msg',$limit,$skip)->result_array();
+    return $rs;
 
-        return $pipe;
     }
     
     // ===== Get MSGs using a filter
     function get_msgs_by_filter($filter = array()) {
-    	return $this->mongo->db->msg->find((array)$filter);
+        $this->db->where($filter);
+        //$this->db->select($fields);
+        //$this->db->order_by($sort);
+        $rs = $this->db->get('msg');
+        return $rs->result_array();
     }
 
     function count_msgs($iduser, $folder='inbox') {
@@ -67,7 +67,9 @@ class Msg extends CI_Model {
             'folder' => $folder
         );
         //if(!is_null($read))$query['read']=$read;
-        return $this->mongo->db->msg->find($query)->count();
+        $this->db->where($query);
+        $rs = $this->db->get('msg');
+        return count($rs->result_array());      
     }
 
 //---send msg multiple users
@@ -85,7 +87,7 @@ class Msg extends CI_Model {
 
 //---TODO : Check if user want's to recive email copies
         if (isset($msg['to']) and isset($msg['from'])) {
-            $this->save($msg);
+            $this->db->insert('msg', $msg); 
             $sendEmail = false;
             if (!property_exists($user,"notification_by_email")) {
                 $sendEmail = true;
@@ -135,58 +137,64 @@ class Msg extends CI_Model {
 
     function remove($mongoid) {
         $mongoid = (is_object($mongoid)) ? $mongoid : new MongoId($mongoid);
-        $options = array('w' => true, 'justOne' => true);
-        $criteria = array('_id' => $mongoid);
-        return $this->mongo->db->msg->remove($criteria, $options);
+        $this->db->where(array('_id' => $mongoid));
+        $rs= $this->db->delete('msg' )->result_array(); 
     }
 
     function move($id, $folder = 'trash') {
         $mongoid = new MongoId($id);
-        $query = array('$set' => array('folder' => $folder));
-        $criteria = array('_id' => $mongoid);
-        $rs = $this->mongo->db->msg->update($criteria, $query);
+        $data = array('folder' => $folder);
+        $query = array('_id' => $mongoid);
+        $this->db->where($query);
+        $rs = $this->db->update('msg',$data);
     }
 
 // Save a msg
-    function save($msg) {
-        $options = array('upsert' => true, 'w' => true);
-        return $this->mongo->db->msg->save($msg, $options);
-    }
+    // function save($msg) {
+    //     $options = array('upsert' => true, 'w' => true);
+    //     return $this->mongo->db->msg->save($msg, $options);
+    // }
 
 // Get msg by id
     function get_msg($id) {
         $mongoid = new MongoId($id);
         $query = array('_id' => $mongoid);
-        $result = $this->mongo->db->msg->findOne($query);
-        return $result;
+        $this->db->where($query);
+        $rs = $this->db->get('msg');
+        return $rs->result_array();
+
+        
     }
 
 // Set or unset star
     function set_star($status, $id) {
         $mongoid = new MongoId($id);
         $status = ($status == 'on') ? (true) : (false);
-        $query = array('$set' => array('star' => $status));
-        $criteria = array('_id' => $mongoid);
+        $query = array('_id' => $mongoid);
+        $data=array('star' => $status);
+        $this->db->where($query);
+        $rs = $this->db->update('msg',$data);
 
-        $rs = $this->mongo->db->msg->update($criteria, $query);
     }
 
 // Was message read?
     function set_read($status, $id) {
         $mongoid = new MongoId($id);
         $status = ($status == 'read') ? (true) : (false);
-        $query = array('$set' => array('read' => $status));
-        $criteria = array('_id' => $mongoid);
-        $rs = $this->mongo->db->msg->update($criteria, $query);
+        $query = array('_id' => $mongoid);
+        $data=array('read' => $status);
+        $this->db->where($query);
+        $rs = $this->db->update('msg',$data);
     }
 
 // Set Tag?
     function set_tag($tag, $id) {
         $mongoid = new MongoId($id);
-        $query = array('$set' => array('tag' => $tag));
-        $criteria = array('_id' => $mongoid);
+        $data = array('tag' => $tag);
+        $query = array('_id' => $mongoid);
+        $this->db->where($query);
+        $rs = $this->db->update('msg',$data);
 
-        $rs = $this->mongo->db->msg->update($criteria, $query);
     }
 
 }
