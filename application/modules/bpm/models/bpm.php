@@ -518,14 +518,16 @@ class Bpm extends CI_Model {
         }
         $token['data'] = (isset($token['data'])) ? $token['data'] : array();
         foreach ($data as $entity => $values) {
-            unset($values['_id']);
-            unset($values['id']);
-            unset($values['owner']);
-            unset($values['parent']);
-            try {
-                $token['data'] = (array) $values + $token['data'];
-            } catch (Exception $e) {
-                echo $e->getMessage();
+            if(is_array($values)){
+                unset($values['_id']);
+                unset($values['id']);
+                unset($values['owner']);
+                unset($values['parent']);
+                try {
+                    $token['data'] = (array) $values + $token['data'];
+                } catch (Exception $e) {
+                    echo $e->getMessage();
+                }
             }
         }
 //            var_dump($token);
