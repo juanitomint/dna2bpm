@@ -435,6 +435,9 @@ class Engine extends MX_Controller {
         $resourceId = urldecode($resourceId);
         $debug = (isset($this->debug [__FUNCTION__])) ? $this->debug [__FUNCTION__] : false;
         // $debug=true;
+        //---prepare additions arrays
+        $this->add_js=array();
+        $this->add_css=array();
         // ----prepare renderData
         $renderData = array();
         $renderData ['lang'] = $this->lang->language;
@@ -444,7 +447,7 @@ class Engine extends MX_Controller {
         $renderData ['idcase'] = $idcase;
         $renderData ['resourceId'] = $resourceId;
         $renderData['date'] = date($this->lang->line('dateFmt'));
-
+        
         // -----load bpm
         $mywf = $this->bpm->load($idwf, $this->expandSubProcess);
         $mywf ['data'] ['idwf'] = $idwf;
@@ -483,7 +486,7 @@ class Engine extends MX_Controller {
                     $conn = $dataShape->properties->connector . '_connector';
                     $resource ['source'] = (isset($dataShape->properties->source)) ? $dataShape->properties->source : null;
                     if (method_exists($this->$conn, 'get_ui')) {
-                        $do['ui'] = $this->$conn->get_ui($resource, $dataShape, $wf);
+                        $do['ui'] = $this->$conn->get_ui($resource, $dataShape, $wf, $this);
                     }
 
                     $renderData['DataObject_Input'][] = $do;
@@ -530,9 +533,15 @@ class Engine extends MX_Controller {
             $renderData ['title'] = 'Manual Task';
             //----Skip javascript if no modal asked
             if (!$this->debug['show_modal']) {
-                $renderData ['js'] = array(
+                $renderData ['js'] =array_merge( 
+                    $this->add_js,
+                    array(
                     $this->module_url . 'assets/jscript/manual_task.js' => 'Manual task JS'
+                )
                 );
+                
+                $renderData ['css'] =$this->add_css;
+                
             }
             // ---prepare globals 4 js
             $renderData ['global_js'] = array(
@@ -542,6 +551,7 @@ class Engine extends MX_Controller {
                 'idcase' => $idcase,
                 'resourceId' => $resourceId
             );
+            // var_dump($renderData);exit;
             $this->ui->compose('bpm/manual_task', 'bpm/bootstrap.ui.php', $renderData);
         }
         $this->output->_display();

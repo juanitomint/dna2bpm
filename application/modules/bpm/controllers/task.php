@@ -3,9 +3,9 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-class File_connector extends MX_Controller {
+class Task extends MX_Controller {
 
-    function Task() {
+    function __construct() {
         parent::__construct();
         $this->debug = false;
         $this->debug_manual = true;
@@ -18,7 +18,9 @@ class File_connector extends MX_Controller {
         //----LOAD LANGUAGE
         $this->lang->load('library', $this->config->item('language'));
     }
-
+    function Index(){
+        echo "<h1>BPM/TASK</h1>";
+    }
     function claim($idwf, $case, $resourceId) {
         $iduser = (int) $this->session->userdata('iduser');
         //---get the user
@@ -96,7 +98,26 @@ class File_connector extends MX_Controller {
             var_dump($out);
         }
     }
-
+    function connector($connector,$method,$idwf,$idcase,$resourceId){
+        //----load model
+        $mywf = $this->bpm->load($idwf, true);
+        if (!$mywf) {
+            show_error("Model referenced:$idwf does not exists");
+        }
+        $wf = $this->bpm->bindArrayToObject($mywf ['data']);
+        $shape = $this->bpm->get_shape($resourceId, $wf);
+        
+        $modelname = 'bpm/connectors/' .$connector . '_connector';
+        $this->load->model($modelname);
+        $conn = $connector . '_connector';
+        $result=false;
+        if (method_exists($this->$conn, $method)) {
+            $result = $this->$conn->$method($idwf,$idcase,$resourceId,$this->input->post());
+        }
+        $rtnObject['result']=$result;
+        $this->output->set_content_type('json');
+        echo json_encode($rtnObject);               
+    }
 }
 
 ?>
