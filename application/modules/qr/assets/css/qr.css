@@ -5,10 +5,7 @@
     Description:
         Purpose of the stylesheet follows.
 */
-body {
-    background: url("../images/imagedoc-darknoise.png") repeat scroll 0 0 #595959;
-    color: #EEEEEE;
-}
+
 
 #reader {
     width:300px;
