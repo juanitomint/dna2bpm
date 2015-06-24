@@ -1,0 +1,19 @@
+/* 
+    Document   : fileman
+    Created on : May 15, 2013, 5:03:42 PM
+    Author     : Juan Ignacio Borda <juanignacioborda@gmail.com>
+    Description:
+        Purpose of the stylesheet follows.
+*/
+body {
+    background: url("../images/imagedoc-darknoise.png") repeat scroll 0 0 #595959;
+    color: #EEEEEE;
+}
+
+#reader {
+    width:300px;
+    height:250px;
+    margin:0 auto;
+    float:none;
+
+}
