@@ -100,7 +100,7 @@ function add_lock(resourceId, data, style) {
         style = 'default';
     div = Ext.get('overlay' + resourceId);
     if (div) {
-        div.update('<span class="extras bpm_lock badge badge-' + style + '"><i class="icon icon-lock"></i>' + data + '</span>');
+        div.update(div.dom.innerHTML+'<span class="extras bpm_lock badge badge-' + style + '"><i class="icon icon-lock"></i>' + data + '</span>');
     }
 }
 function add_badge(resourceId, data, style) {
