@@ -4,8 +4,8 @@ if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
 /**
- * This is the core BPM Engine This class has all what is needed to run a bpm model 
- * @author Juan Ignacio Borda <juanignacioborda@gmail.com> 
+ * This is the core BPM Engine This class has all what is needed to run a bpm model
+ * @author Juan Ignacio Borda <juanignacioborda@gmail.com>
  * @date Feb 10, 2013
  */
 class Engine extends MX_Controller {
@@ -293,7 +293,7 @@ class Engine extends MX_Controller {
     }
 
     function run_task($model, $idwf, $case, $resourceId) {
-        
+
     }
 
     function run_post($model, $idwf, $case, $resourceId) {
@@ -447,7 +447,7 @@ class Engine extends MX_Controller {
         $renderData ['idcase'] = $idcase;
         $renderData ['resourceId'] = $resourceId;
         $renderData['date'] = date($this->lang->line('dateFmt'));
-        
+
         // -----load bpm
         $mywf = $this->bpm->load($idwf, $this->expandSubProcess);
         $mywf ['data'] ['idwf'] = $idwf;
@@ -533,15 +533,15 @@ class Engine extends MX_Controller {
             $renderData ['title'] = 'Manual Task';
             //----Skip javascript if no modal asked
             if (!$this->debug['show_modal']) {
-                $renderData ['js'] =array_merge( 
+                $renderData ['js'] =array_merge(
                     $this->add_js,
                     array(
                     $this->module_url . 'assets/jscript/manual_task.js' => 'Manual task JS'
                 )
                 );
-                
+
                 $renderData ['css'] =$this->add_css;
-                
+
             }
             // ---prepare globals 4 js
             $renderData ['global_js'] = array(
@@ -883,7 +883,7 @@ class Engine extends MX_Controller {
         $renderData ['case'] = $idcase;
         $user = $this->user->getuser($this->idu);
 
-        
+
         // ----if specific token has been passed then run this token
         if ($run_resourceId) {
             $filter ['resourceId'] = $run_resourceId;
@@ -899,9 +899,14 @@ class Engine extends MX_Controller {
                 'user',
                 'manual'
                     ));
+            // foreach($myTasks as $task){
+            //     echo $task['title'].'<br/>';
+            //     echo '<hr/>';
+
+            // }
             // var_dump(json_encode($filter),$myTasks);exit;
             // ---search for a suitable task to execute
-            while ($first = array_pop($myTasks)) {
+            while ($first = array_shift($myTasks)) {
                 $is_allowed = $this->bpm->is_allowed($first, $user);
 
                 if ($is_allowed)
@@ -911,7 +916,7 @@ class Engine extends MX_Controller {
                 // -----get id from token---------
                 $token = $first;
 
-                // var_dump('loaded token', $token);
+                // var_dump('loaded token', $token);exit;
                 switch ($token ['type']) {
                     case 'Exclusive_Databased_Gateway' :
                         $this->manual_gate($model, $idwf, $idcase, $first ['resourceId']);
