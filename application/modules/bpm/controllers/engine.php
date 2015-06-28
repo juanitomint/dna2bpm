@@ -479,8 +479,7 @@ class Engine extends MX_Controller {
         //-Prepare Documents
         foreach ($previous as $dataShape) {
             if ($dataShape->stencil->id == 'DataObject') {
-                if ($dataShape->properties->input_output == 'Input') {
-                    //var_dump($dataShape);
+                
                     $do = $this->bindObjectToArray($dataShape);
                     $strStor = $dataShape->properties->name;
                     $conn = $dataShape->properties->connector . '_connector';
@@ -490,7 +489,7 @@ class Engine extends MX_Controller {
                     }
 
                     $renderData['DataObject_Input'][] = $do;
-                }
+                
             }
         }
         //  var_dump($shape->properties->datainputset);

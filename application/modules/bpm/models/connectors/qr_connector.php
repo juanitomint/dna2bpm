@@ -10,28 +10,62 @@ class Qr_connector extends CI_Model {
     }
 
     function get_data($resource, $shape, $wf) {
-        $dirinfo = array();
-        return $dirinfo;
+        return array();
     }
 
     function get_ui($resource, $shape, $wf,& $CI) {
-        $this->load->library('parser');
         
-        $str = $this->parser->parse('bpm/qr_connector', array(), true);
-
+        $this->load->library('parser');
+        $data=(array)$shape->properties;
+        $data['resourceId']=$shape->resourceId;
+        $data['input_output']==$shape->properties->input_output;
         $CI->add_css[$this->base_url . "qr/assets/css/qr.css"] = 'QR css';
         
-        $CI->add_js[ $this->base_url . "qr/assets/jscript/html5-qrcode.min.js"] ='HTML5 qrcode';
-        $CI->add_js[ $this->base_url . "qr/assets/jscript/jquery.animate-colors-min.js"] = 'Color Animation';
-        $CI->add_js[ $this->base_url . "bpm/assets/jscript/qr.js"] = 'Main functions';
-             
+        if($shape->properties->input_output=='Input'){
+            $CI->add_js[ $this->base_url . "qr/assets/jscript/html5-qrcode.min.js"] ='HTML5 qrcode';
+            $CI->add_js[ $this->base_url . "qr/assets/jscript/jquery.animate-colors-min.js"] = 'Color Animation';
+            $CI->add_js[ $this->base_url . "bpm/assets/jscript/qr_input.js"] = 'Main functions';
+        } else {
+            $name=str_replace("\n",'_', $shape->properties->name);
+            $qrdata='QRCode';
+            //----read from data store
+            if($CI->data->$name<>'')
+                $qrdata=$CI->data->$name;
+            //---read from explicit source defined
+            if($shape->properties->source<>'')
+                $qrdata=$shape->properties->source;
+                
+        $data['qr_text']=$qrdata;    
+        $data['qr_data']=urlencode(base64_encode($qrdata));    
+        
+        //---if not defined is output    
+            
+        }    
+        $str = $this->parser->parse('bpm/qr_connector', $data, true);
+        
         return $str;
     }
+    
     function save_data($idwf,$idcase,$resourceId, $post){
-    $token = $this->bpm->get_token($idwf, $idcase, $resourceId);
-    $token['data'] = (isset($token['data'])) ? $token['data'] : array();
-    $token['data']['qr']=$post['data'];
-    $this->bpm->save_token($token);
+        $token = $this->bpm->get_token($idwf, $idcase, $resourceId);
+        $case = $this->bpm->get_case($idcase, $idwf);
+        $do_resourceId=$post['resourceId'];
+        // -----load bpm
+        $mywf = $this->bpm->load($idwf, false);
+        $mywf ['data'] ['idwf'] = $idwf;
+        $mywf ['data'] ['case'] = $idcase;
+        $wf = $this->bpm->bindArrayToObject($mywf ['data']);
+        // --get shape
+        $shape = $this->bpm->get_shape($post['resourceId'], $wf);
+        $name=str_replace("\n",'_', $shape->properties->name);
+        //----Save Data in token
+        $token['data'] = (isset($token['data'])) ? $token['data'] : array();
+        $token['data'][$name]=$post['data'];
+        $this->bpm->save_token($token);
+        //----Save data into case
+        $case['data'] = (isset($case['data'])) ? $case['data'] : array();
+        $case['data'][$name]=$post['data'];
+        $this->bpm->save_case($case);
     return true;
     }
     

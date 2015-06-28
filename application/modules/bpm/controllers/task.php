@@ -100,13 +100,6 @@ class Task extends MX_Controller {
     }
     function connector($connector,$method,$idwf,$idcase,$resourceId){
         //----load model
-        $mywf = $this->bpm->load($idwf, true);
-        if (!$mywf) {
-            show_error("Model referenced:$idwf does not exists");
-        }
-        $wf = $this->bpm->bindArrayToObject($mywf ['data']);
-        $shape = $this->bpm->get_shape($resourceId, $wf);
-        
         $modelname = 'bpm/connectors/' .$connector . '_connector';
         $this->load->model($modelname);
         $conn = $connector . '_connector';

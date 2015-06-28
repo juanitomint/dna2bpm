@@ -1,4 +1,5 @@
 $(document).ready(function() {
+    $('#finishTask-1').remove();
     $('#reader').html5_qrcode(
         function(data) {
             $('#read').html(data).addClass('alert alert-success');
@@ -11,7 +12,8 @@ $(document).ready(function() {
 
             url = globals.module_url+'task/connector/qr/save_data/'+globals.idwf+'/'+globals.idcase+'/'+globals.resourceId;
             $.post(url, {
-                'data': data
+                'data': data,
+                'resourceId':$('#qr_resourceId').val()
             }, function(res) {
                 //---submit task
                 result=$.parseJSON(res);
