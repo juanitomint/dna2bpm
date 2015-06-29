@@ -8,11 +8,11 @@ class Qr_connector extends CI_Model {
         parent::__construct();
         $this->base_url=base_url();
     }
-
+   
     function get_data($resource, $shape, $wf) {
-        return array();
+        return '';
     }
-
+   
     function get_ui($resource, $shape, $wf,& $CI) {
         
         $this->load->library('parser');
@@ -29,12 +29,13 @@ class Qr_connector extends CI_Model {
             $name=str_replace("\n",'_', $shape->properties->name);
             $qrdata='QRCode';
             //----read from data store
-            if($CI->data->$name<>'')
-                $qrdata=$CI->data->$name;
+            if(property_exists($CI->data,$name)){
+                if($CI->data->$name<>'')
+                    $qrdata=$CI->data->$name;
+            }
             //---read from explicit source defined
             if($shape->properties->source<>'')
                 $qrdata=$shape->properties->source;
-                
         $data['qr_text']=$qrdata;    
         $data['qr_data']=urlencode(base64_encode($qrdata));    
         
