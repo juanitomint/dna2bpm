@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    $('#finishTask-1').remove();
+    $('#finishTask-1').hide();
     $('#reader').html5_qrcode(
         function(data) {
             $('#read').html(data).addClass('alert alert-success');
