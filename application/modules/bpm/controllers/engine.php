@@ -494,7 +494,8 @@ class Engine extends MX_Controller {
         }
         //  var_dump($shape->properties->datainputset);
         //----prepare manual input
-        if (property_exists($shape->properties->datainputset, 'items')) {
+        if (property_exists($shape->properties,'datainputset')) {
+            if (property_exists($shape->properties->datainputset, 'items')) {
             foreach ($shape->properties->datainputset->items as $item) {
                 if (!strstr('.', $item->name) and $item->whileexecuting == 'true') {
                     $renderData['DataInputSet'][] = array(
@@ -503,6 +504,7 @@ class Engine extends MX_Controller {
                     );
                 }
             }
+        }
         }
         // var_dump($renderData['DataInputSet']);
 // 		exit;
@@ -656,8 +658,11 @@ class Engine extends MX_Controller {
                 echo '<hr/>';
             }
             // $this->$strStor= bindArrayToObject($this->app->getall($item,$container));
-            $this->data->$strStor = json_decode(json_encode($this->$conn->get_data($resource, $shape, $this->wf)));
-
+            //----check if get_data exists before call, if not leave as is
+            if(method_exists($this->$conn,'get_data')){
+                $this->data->$strStor = json_decode(json_encode($this->$conn->get_data($resource, $shape, $this->wf)));
+            }
+            
             // ----4 debug
             if ($debug) {
                 echo "<h3>Data Store:$strStor</h3>";
@@ -684,8 +689,9 @@ class Engine extends MX_Controller {
                     echo '<hr/>';
                 }
                 // $this->$strStor= bindArrayToObject($this->app->getall($item,$container));
-                $this->data->$strStor = $this->$conn->get_data($resource, $shape, $this->wf);
-
+                if(method_exists($this->$conn,'get_data')){
+                    $this->data->$strStor = $this->$conn->get_data($resource, $shape, $this->wf);
+                }
                 // ----4 debug
                 if ($debug) {
                     echo "<h3>Data Store:$strStor</h3>";
