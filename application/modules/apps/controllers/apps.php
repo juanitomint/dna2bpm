@@ -501,7 +501,7 @@ class Apps extends MX_Controller {
         $models = $this->bpm->get_models();
         foreach ($models as $thisModel) {
             $model = new dbframe($thisModel, $common);
-            $model->title = $thisModel->data['properties']['name'];
+            $model->title = (isset($thisModel->data['properties']['name'])) ? $thisModel->data['properties']['name']:'???';
             $model->idobj = 'M' . $thisModel->idwf;
             $model->type = 'M';
             $model->idform = $thisModel->idwf;
