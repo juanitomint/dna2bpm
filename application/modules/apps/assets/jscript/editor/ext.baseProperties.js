@@ -47,7 +47,7 @@ Ext.override(Ext.grid.PropertyGrid, {
     config={
         id:'propsGrid',
         source: {},
-        sortableColumns:true,
+        sortableColumns:false,
         disabled:true,
         propertyNames: {
             'title':'Title',

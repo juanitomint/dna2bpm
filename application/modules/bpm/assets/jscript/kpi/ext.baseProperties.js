@@ -164,7 +164,7 @@ try {
     config = {
         id: 'propsGrid',
         source: {},
-        sortableColumns: true,
+        sortableColumns: false,
         disabled: true,
         sourceConfig: {
             resourceId: {

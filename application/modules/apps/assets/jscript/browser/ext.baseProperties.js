@@ -71,7 +71,7 @@ try{
         id:'propsGrid',
         layout:'fit',
         source: {},
-        sortableColumns:true,
+        sortableColumns:false,
         disabled:true,
         propertyNames: {
             'required': 'Required',
