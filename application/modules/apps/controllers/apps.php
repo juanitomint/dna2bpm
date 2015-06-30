@@ -926,7 +926,7 @@ class Apps extends MX_Controller {
         $debug = (in_array('debug', $segments)) ? true : false;
         $types_path = $this->types_path;
 
-        $postform = $_POST;
+        $postform = $this->input->post();
         $idform = $postform['idform'];
         $type = $postform['type'];
 
@@ -945,8 +945,9 @@ class Apps extends MX_Controller {
         }
         $properties_template = $common + $type_props;
 //----load the data from post
-        $form->load($postform, $properties_template);
 
+        $form->load($postform, $properties_template);
+        
         if ($idform) {
             //---wht 2 do? uh? ...nothing?
             $dbform = $this->app->get_object($idobj);
@@ -956,7 +957,8 @@ class Apps extends MX_Controller {
             $form->idobj = $form->type . $form->idform;
             $dbform = array();
         }
-
+        //---Fix idobj
+        $form->idobj=$form->type.$form->idform;
         $this->app->put_form($form->idform, $dbform + $form->toSave());
         //---setting id 4 propsGrid
         $form->template['id'] = 'integer';

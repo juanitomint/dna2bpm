@@ -75,7 +75,7 @@ class Repository extends MX_Controller {
                 $result['ok'] = false;
                 $result['msg']="error";   
             }
-        $this->output->set_content_type('json');
+        $this->output->set_content_type('json','utf8');
         echo json_encode($result);
     }
     
@@ -144,14 +144,14 @@ class Repository extends MX_Controller {
             $result['msg']="id: $idwf already exists, choose a unique id please";
             
         }
-        $this->output->set_content_type('json');
+        $this->output->set_content_type('json','utf8');
         echo json_encode($result);
     }
 
     function check_model($name) {
         $rs = $this->bpm->get_models(array('idwf' => $name));
         $result['ok'] = ($rs->count()) ? false : true;
-        $this->output->set_content_type('json');
+        $this->output->set_content_type('json','utf8');
         echo json_encode($result);
     }
 
@@ -161,7 +161,7 @@ class Repository extends MX_Controller {
         if ($this->input->post('idwf') <> '') {
             $result['ok'] = $this->bpm->delete($idwf);
         }
-        $this->output->set_content_type('json');
+        $this->output->set_content_type('json','utf8');
         echo json_encode($result);
     }
 
@@ -186,7 +186,7 @@ class Repository extends MX_Controller {
         );
         $data = ($mywf['data']) ? $mywf['data'] : $template;
         if (!$debug){
-            $this->output->set_content_type('json');
+            $this->output->set_content_type('json','utf8');
             echo json_encode($data);
         } else {
             var_dump($data);
@@ -538,7 +538,7 @@ class Repository extends MX_Controller {
         $mywf = $this->bpm->load($idwf, false);
         $rtnObject = $this->bpm->update_folder($idwf, $folder);
         if (!$debug) {
-            $this->output->set_content_type('json');
+            $this->output->set_content_type('json','utf8');
             echo json_encode($rtnObject);
         } else {
             var_dump($rtnObject);

@@ -108,7 +108,7 @@ class Task extends MX_Controller {
             $result = $this->$conn->$method($idwf,$idcase,$resourceId,$this->input->post());
         }
         $rtnObject['result']=$result;
-        $this->output->set_content_type('json');
+        $this->output->set_content_type('json','utf8');
         echo json_encode($rtnObject);               
     }
 }
