@@ -104,7 +104,7 @@ class admin extends MX_Controller {
         }
         //var_dump($cpData);
         if (!$debug) {
-            header('Content-type: application/json;charset=UTF-8');
+            $this->output->set_content_type('json','utf8');
             echo json_encode($groups);
         } else {
             var_dump($groups);
@@ -158,7 +158,7 @@ class admin extends MX_Controller {
         }
         //var_dump($cpData);
         if (!$debug) {
-            header('Content-type: application/json;charset=UTF-8');
+            $this->output->set_content_type('json','utf8');
             echo json_encode($rtnArr);
         } else {
             var_dump($rtnArr);

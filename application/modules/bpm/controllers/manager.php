@@ -276,7 +276,7 @@ class Manager extends MX_Controller {
                     $task['tasks'] = $tasks;
                     $rtnArr[] = $task;
                 }
-                header('Content-type: application/json;charset=UTF-8');
+                $this->output->set_content_type('json','utf8');
                 echo json_encode($rtnArr);
                 break;
 
@@ -336,7 +336,7 @@ class Manager extends MX_Controller {
              */
             case 'json':
 
-                header('Content-type: application/json;charset=UTF-8');
+                $this->output->set_content_type('json','utf8');
                 echo json_encode($tokens);
                 break;
 

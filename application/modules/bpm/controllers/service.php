@@ -87,7 +87,7 @@ class Service extends MX_Controller {
         //---un-register if it has logged is
         $this->session->set_userdata('loggedin', false);
         if (!$debug) {
-            header('Content-type: application/json;charset=UTF-8');
+            $this->output->set_content_type('json','utf8');
             echo json_encode($out);
         } else {
             var_dump($out);

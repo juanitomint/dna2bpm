@@ -52,7 +52,7 @@ class File extends MX_Controller {
         move_uploaded_file($tmp_name, "$uploads_dir/$name");
 
         if (!$debug) {
-            header('Content-type: application/json;charset=UTF-8');
+            $this->output->set_content_type('json','utf8');
             echo json_encode($out);
         } else {
             var_dump($out);

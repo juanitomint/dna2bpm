@@ -86,7 +86,7 @@ class Menu extends MX_Controller {
         $rtnArr['paths'] = $this->menu_model->get_paths();
 
         if (!$debug) {
-            header('Content-type: application/json;charset=UTF-8');
+            $this->output->set_content_type('json','utf8');
             echo json_encode($rtnArr);
         } else {
             var_dump($rtnArr);
@@ -105,7 +105,7 @@ class Menu extends MX_Controller {
         //$properties=(isset($data['properties'])) ? $data['properties'] : array();
         $menu_item->load(array(), $this->template);
         if (!$debug) {
-            header('Content-type: application/json;charset=UTF-8');
+            $this->output->set_content_type('json','utf8');
             echo json_encode($menu_item->toShow());
         } else {
             var_dump('Obj', $menu_item, 'Save:', $menu_item->toSave(), 'Show', $menu_item->toShow());
@@ -180,7 +180,7 @@ class Menu extends MX_Controller {
                 break;
         }
         if (!$debug) {
-            header('Content-type: application/json;charset=UTF-8');
+            $this->output->set_content_type('json','utf8');
             echo json_encode($rtnArr);
         } else {
             var_dump($rtnArr);
@@ -210,7 +210,7 @@ class Menu extends MX_Controller {
 
 
         if (!$debug) {
-            header('Content-type: application/json;charset=UTF-8');
+            $this->output->set_content_type('json','utf8');
             echo json_encode($menu_item->toShow());
         } else {
             var_dump($menu_item->toShow());

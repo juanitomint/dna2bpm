@@ -78,7 +78,7 @@ class Case_manager extends MX_Controller {
         $this->bpm->update_case_token_status($idwf, $idcase);
         $out = array('status' => 'ok');
         if (!$debug) {
-            header('Content-type: application/json;charset=UTF-8');
+            $this->output->set_content_type('json','utf8');
             echo json_encode($out);
         } else {
             var_dump($out);
@@ -214,7 +214,7 @@ class Case_manager extends MX_Controller {
             }
         }
         if (!$debug) {
-            header('Content-type: application/json;charset=UTF-8');
+            $this->output->set_content_type('json','utf8');
             echo json_encode($out);
         } else {
             var_dump($out);
@@ -277,7 +277,7 @@ class Case_manager extends MX_Controller {
         switch ($output) {
             case 'json':
                 if (!$debug) {
-                    header('Content-type: application/json;charset=UTF-8');
+                    $this->output->set_content_type('json','utf8');
                     echo json_encode($out);
                 } else {
                     var_dump($out);
@@ -316,7 +316,7 @@ class Case_manager extends MX_Controller {
             $data['tokens'][] = $token;
         }
         if (!$debug) {
-            header('Content-type: application/json;charset=UTF-8');
+            $this->output->set_content_type('json','utf8');
             echo json_encode($data);
         } else {
             var_dump($data);
