@@ -92,7 +92,7 @@ class Task extends MX_Controller {
         move_uploaded_file($tmp_name, "$uploads_dir/$name");
 
         if (!$debug) {
-            $this->output->set_content_type('json','utf8');
+            $this->output->set_content_type('json','utf-8');
             echo json_encode($out);
         } else {
             var_dump($out);

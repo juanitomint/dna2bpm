@@ -95,7 +95,7 @@ class Apps extends MX_Controller {
             }
             //----end switch
             if (!$debug) {
-                $this->output->set_content_type('json','utf8');
+                $this->output->set_content_type('json','utf-8');
                 echo json_encode($out);
             } else {
                 var_dump($out);
@@ -161,7 +161,7 @@ class Apps extends MX_Controller {
         }
 
         if (!$debug) {
-            $this->output->set_content_type('json','utf8');
+            $this->output->set_content_type('json','utf-8');
             echo json_encode($rtn);
         } else {
             var_dump($rtn);
@@ -299,7 +299,7 @@ class Apps extends MX_Controller {
             }
             //----end switch
             if (!$debug) {
-                $this->output->set_content_type('json','utf8');
+                $this->output->set_content_type('json','utf-8');
                 echo json_encode($out);
             } else {
                 var_dump($out);
@@ -342,7 +342,7 @@ class Apps extends MX_Controller {
         $form = new dbframe($thisForm, $properties_template);
 
         if (!$debug) {
-            $this->output->set_content_type('json','utf8');
+            $this->output->set_content_type('json','utf-8');
             echo json_encode($form->toShow());
         } else {
             var_dump('Obj', $form, 'Save:', $form->toSave(), 'Show', $form->toShow());
@@ -432,7 +432,7 @@ class Apps extends MX_Controller {
             );
         }
         if (!$debug) {
-            $this->output->set_content_type('json','utf8');
+            $this->output->set_content_type('json','utf-8');
             echo json_encode($rtn);
         } else {
             var_dump($rtn);
@@ -512,7 +512,7 @@ class Apps extends MX_Controller {
         }
         $forms['totalcount'] = count($forms['rows']);
         if (!$debug) {
-            $this->output->set_content_type('json','utf8');
+            $this->output->set_content_type('json','utf-8');
             echo json_encode($forms);
         } else {
             var_dump($forms);
@@ -552,7 +552,7 @@ class Apps extends MX_Controller {
                 }
             }
             if (!$debug) {
-                $this->output->set_content_type('json','utf8');
+                $this->output->set_content_type('json','utf-8');
                 echo json_encode($frames);
             } else {
                 var_dump($frames);
@@ -617,7 +617,7 @@ class Apps extends MX_Controller {
             }
             //----end switch
             if (!$debug) {
-                $this->output->set_content_type('json','utf8');
+                $this->output->set_content_type('json','utf-8');
                 echo json_encode($out);
             } else {
                 var_dump($out);
@@ -695,7 +695,7 @@ class Apps extends MX_Controller {
         }
         $this->get_properties($frame->type, $idobj, $frame->idframe);
 //        if (!$debug) {
-//            $this->output->set_content_type('json','utf8');
+//            $this->output->set_content_type('json','utf-8');
 //            echo json_encode($frame->toArray());
 //        } else {
 //            var_dump($frame);
@@ -717,7 +717,7 @@ class Apps extends MX_Controller {
             );
         }
         if (!$debug) {
-            $this->output->set_content_type('json','utf8');
+            $this->output->set_content_type('json','utf-8');
             echo json_encode($rtn);
         } else {
             var_dump($rtn);
@@ -737,7 +737,7 @@ class Apps extends MX_Controller {
             );
         }
         if (!$debug) {
-            $this->output->set_content_type('json','utf8');
+            $this->output->set_content_type('json','utf-8');
             echo json_encode($rtn);
         } else {
             var_dump($rtn);
@@ -771,7 +771,7 @@ class Apps extends MX_Controller {
 
 
         if (!$debug) {
-            $this->output->set_content_type('json','utf8');
+            $this->output->set_content_type('json','utf-8');
             echo json_encode($frame->toShow());
         } else {
             var_dump('Obj', $frame, 'Save:', $frame->toSave(), 'Show', $frame->toShow());
@@ -805,7 +805,7 @@ class Apps extends MX_Controller {
         $app->groups = implode(',', $app->groups);
         $app->template['groups'] = 'string';
         if (!$debug) {
-            $this->output->set_content_type('json','utf8');
+            $this->output->set_content_type('json','utf-8');
             echo json_encode($app->toShow());
         } else {
             var_dump('Obj', $app, 'Save:', $app->toSave(), 'Show', $app->toShow());
@@ -824,7 +824,7 @@ class Apps extends MX_Controller {
             $frame['cname'] = 'C' . $frame['idframe'];
         }
         $this->app->put_frame($idframe, $frame);
-        $this->output->set_content_type('json','utf8');
+        $this->output->set_content_type('json','utf-8');
         echo json_encode($frame);
     }
 
@@ -963,7 +963,7 @@ class Apps extends MX_Controller {
         $form->id = $form->idform;
         //----dump results
         if (!$debug) {
-            $this->output->set_content_type('json','utf8');
+            $this->output->set_content_type('json','utf-8');
             echo json_encode($form->toShow());
         } else {
             var_dump($form->toShow());
@@ -1026,7 +1026,7 @@ class Apps extends MX_Controller {
         $app->id = $app->idapp;
         //----dump results
         if (!$debug) {
-            $this->output->set_content_type('json','utf8');
+            $this->output->set_content_type('json','utf-8');
             echo json_encode($app->toSave());
         } else {
             var_dump($app->toShow());

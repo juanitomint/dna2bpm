@@ -42,7 +42,7 @@ class test extends MX_Controller {
         $wf = $this->bpm->bindArrayToObject($mywf['data']);
         $startMessage = $this->bpm->get_shape_byname("/^StartMessageEvent$/", $wf);
         $startMessage['count'] = count($startMessage);
-//$this->output->set_content_type('json','utf8');
+//$this->output->set_content_type('json','utf-8');
         var_dump($startMessage);
     }
 
@@ -307,7 +307,7 @@ function run_test($idwf,$idcase,$resourceId){
         $wf->idwf=$idwf;
         $shape = $this->bpm->get_shape($resourceId, $wf);
         $shape->properties->script=$script;
-        //$this->output->set_content_type('json','utf8');
+        //$this->output->set_content_type('json','utf-8');
         $this->bpm->save($idwf, $wf, $mywf['svg']);
         echo "Saved!";
         

@@ -120,7 +120,7 @@ class Admin extends MX_Controller {
         );
 
         if (!$debug) {
-            $this->output->set_content_type('json','utf8');
+            $this->output->set_content_type('json','utf-8');
             echo json_encode($full_tree);
         } else {
             var_dump($full_tree);
@@ -155,7 +155,7 @@ class Admin extends MX_Controller {
                 break;
         }
         if (!$debug) {
-            $this->output->set_content_type('json','utf8');
+            $this->output->set_content_type('json','utf-8');
             echo json_encode($msg);
         } else {
             var_dump(json_encode($msg));
@@ -317,7 +317,7 @@ class Admin extends MX_Controller {
         $case = $this->bpm->get_case($idcase, $idwf);
         $data = $this->bpm->load_case_data($case);
         if (!$debug) {
-            $this->output->set_content_type('json','utf8');
+            $this->output->set_content_type('json','utf-8');
             echo json_encode($data);
         } else {
             var_dump($data);
@@ -338,7 +338,7 @@ class Admin extends MX_Controller {
         $cpData['base_url'] = base_url();
         switch ($mode) {
             case 'json':
-                $this->output->set_content_type('json','utf8');
+                $this->output->set_content_type('json','utf-8');
                 echo json_encode($cpData);
                 break;
 
@@ -376,7 +376,7 @@ class Admin extends MX_Controller {
                 'documentation' => (property_exists($wf, 'data')) ? $wf->data['properties']['documentation'] : '',
             );
         }
-        $this->output->set_content_type('json','utf8');
+        $this->output->set_content_type('json','utf-8');
         echo json_encode($result);
     }
     /**

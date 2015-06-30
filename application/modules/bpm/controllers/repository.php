@@ -170,7 +170,7 @@ class Repository extends MX_Controller {
         $idwf = urldecode($idwf);
         $mywf = $this->bpm->load($idwf,false);
         if (!$debug)
-            $this->output->set_content_type('json','utf8');
+            $this->output->set_content_type('json','utf-8');
         $template = array(
             'resourceId' => $idwf,
             'stencilset' =>
@@ -215,7 +215,7 @@ class Repository extends MX_Controller {
         ini_set('xdebug.var_display_max_depth', -1);
 
 //$this->parser->parse('bpm/json_editor', $wfData);
-        $this->output->set_content_type('json','utf8');
+        $this->output->set_content_type('json','utf-8');
         echo json_encode($wfData);
     }
     function json_view($model,$idwf,$expand=false){
@@ -272,7 +272,7 @@ class Repository extends MX_Controller {
         
         
         
-        //$this->output->set_content_type('json','utf8');
+        //$this->output->set_content_type('json','utf-8');
         //$this->bpm->save($idwf, $wf, $mywf['svg']);
         echo date($this->lang->line('dateFmt'))." Saved!";
         
@@ -317,7 +317,7 @@ class Repository extends MX_Controller {
             $data['shapes'][$shape->resourceId] = $shape;
         }
         if (!$debug) {
-            $this->output->set_content_type('json','utf8');
+            $this->output->set_content_type('json','utf-8');
             echo json_encode($data);
         } else {
             var_dump($data);
@@ -521,7 +521,7 @@ class Repository extends MX_Controller {
             $rtnObject['success'] = false;
         }
         if (!$debug) {
-            $this->output->set_content_type('json','utf8');
+            $this->output->set_content_type('json','utf-8');
             echo json_encode($rtnObject);
         } else {
             var_dump($rtnObject);
@@ -556,7 +556,7 @@ class Repository extends MX_Controller {
 
       case 'jsonp':
       $mywf = $this->bpm->load($idwf, false);
-      $this->output->set_content_type('json','utf8');
+      $this->output->set_content_type('json','utf-8');
       echo 'MOVI.widget.ModelViewer.getInstance(0).loadModelCallback(' . json_encode($mywf['data']) . ')';
       //echo 'MOVI.widget.ModelViewer.getInstance(0).loadModelCallback({"resourceId":"oryx-canvas123","properties":{"id":"","name":"","documentation":"","version":"","author":"","language":"English","expressionlanguage":"","querylanguage":"","creationdate":"","modificationdate":"","pools":""},"stencil":{"id":"BPMNDiagram"},"childShapes":[{"resourceId":"oryx_2023B13C-9A9A-446D-B4D8-C23A5E169CAB","properties":{"id":"","name":"pay invoice","categories":"","documentation":"","assignments":"","pool":"","lanes":"","activitytype":"Task","status":"None","performers":"","properties":"","inputsets":"","inputs":"","outputsets":"","outputs":"","iorules":"","startquantity":"1","completionquantity":"1","looptype":"None","loopcondition":"","loopcounter":"1","loopmaximum":"1","testtime":"After","mi_condition":"","mi_ordering":"Sequential","mi_flowcondition":"All","complexmi_condition":"","iscompensation":"","tasktype":"None","inmessage":"","outmessage":"","implementation":"Webservice","messageref":"","instantiate":"","script":"","taskref":"","bgcolor":"#ffffcc"},"stencil":{"id":"Task"},"childShapes":[],"outgoing":[],"bounds":{"lowerRight":{"x":309,"y":255},"upperLeft":{"x":209,"y":175}},"dockers":[]}],"bounds":{"lowerRight":{"x":1485,"y":1050},"upperLeft":{"x":0,"y":0}},"stencilset":{"url":"http://oryx.bpmn-community.org:80/oryx/stencilsets/bpmn1.1/bpmn1.1.json","namespace":"http://b3mn.org/stencilset/bpmn1.1#"},"ssextensions":[]});';
       break;
@@ -577,7 +577,7 @@ class Repository extends MX_Controller {
       //$file = str_replace($this->base_url, '', $mywf['data']['stencilset']['url']);
       $file = 'jscript/bpm-dna2/stencilsets/bpmn2.0/movi.json';
       //var_dump($file);
-      $this->output->set_content_type('json','utf8');
+      $this->output->set_content_type('json','utf-8');
       echo 'MOVI.widget.ModelViewer.getInstance(0).loadStencilSetCallback(';
       echo read_file($file);
       echo ')';

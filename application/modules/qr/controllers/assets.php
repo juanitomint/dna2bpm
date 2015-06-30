@@ -37,7 +37,7 @@ class assets extends CI_Controller {
                     break;
                 
                 case 'json':
-                    $this->output->set_content_type('json','utf8');
+                    $this->output->set_content_type('json','utf-8');
                     break;
                 
                 case 'xml':

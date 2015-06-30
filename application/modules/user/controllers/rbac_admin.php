@@ -89,7 +89,7 @@ class rbac_admin extends MX_Controller {
         }
         //var_dump($cpData);
         if (!$debug) {
-            $this->output->set_content_type('json','utf8');
+            $this->output->set_content_type('json','utf-8');
             echo json_encode($rtnArr);
         } else {
             var_dump($rtnArr);
@@ -105,7 +105,7 @@ class rbac_admin extends MX_Controller {
         $rtnArr['paths'] = $this->rbac->get_group_paths($idgroup);
 
         if (!$debug) {
-            $this->output->set_content_type('json','utf8');
+            $this->output->set_content_type('json','utf-8');
             echo json_encode($rtnArr);
         } else {
             var_dump($rtnArr);
