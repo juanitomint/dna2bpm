@@ -2,11 +2,12 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>{title}</title>
-        <link rel="stylesheet" type="text/css" href="{base_url}jscript/bootstrap/css/bootstrap.min.css" />
+        <!--<link rel="stylesheet" type="text/css" href="{base_url}jscript/bootstrap/css/bootstrap.min.css" />-->
         <link rel="stylesheet" type="text/css" href="{base_url}jscript/fontawesome/css/font-awesome.min.css" />
-        <link rel="stylesheet" type="text/css" href="{base_url}jscript/ext/resources/css/ext-all-neptune-debug.css" />
+        <link rel="stylesheet" type="text/css" href="{base_url}jscript/ext/resources/css/ext-all-neptune.css" />
         <link rel="stylesheet" type="text/css" href="{base_url}css/load_mask.css" />
         <link rel="stylesheet" type="text/css" href="{base_url}jscript/ext/src/ux/statusbar/css/statusbar.css" />
+        <link rel="stylesheet" type="text/css" href="{base_url}jscript/ext/src/ux/css/CheckHeader.css" />
         <link rel="stylesheet" type="text/css" href="{base_url}jscript/ext/src/ux/css/CheckHeader.css" />
         {css}
         <script type="text/javascript">

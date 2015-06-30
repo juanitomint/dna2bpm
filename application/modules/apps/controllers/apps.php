@@ -276,13 +276,14 @@ class Apps extends MX_Controller {
                             'idu' => $this->idu
                         );
                     }
+                    
                     $this->app->put_app($idapp, $app);
                     $out = array('status' => 'ok');
                     break;
 
                 case 'create':
                     include($types_path . 'base/form.base.php');
-                    $thisForm = $_POST;
+                    $thisForm = $this->input->post();
                     //---Create new id for generated form
                     $thisForm['idform'] = $this->app->gen_inc('forms', 'idform');
                     //---Set idobj with propper string id ie: V1317 , D59 etc.
@@ -336,6 +337,8 @@ class Apps extends MX_Controller {
 
         //---now define the properties template
         $properties_template = $common + $type_props;
+        $properties_template =  array_merge(array_flip(array_keys($common)), $properties_template);
+        
         $form = new dbframe($thisForm, $properties_template);
 
         if (!$debug) {
@@ -1006,7 +1009,7 @@ class Apps extends MX_Controller {
             $app->idapp = (int) $this->app->gen_inc('apps', 'idapp');
             $dbapp = array();
         }
-
+        
         $this->app->put_app($app->idapp, $app->toSave() + $dbapp);
         //----register app in RBAC-REPOSIROTY
         $path = 'modules/application/' . $app->idapp;

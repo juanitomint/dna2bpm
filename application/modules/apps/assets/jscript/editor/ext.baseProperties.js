@@ -6,7 +6,7 @@ Ext.override(Ext.grid.PropertyGrid, {
         return propsGrid.store.getProperty(prop).data.value;
     }
 });
-try{
+// try{
 
 
     //---PROPERTY GRID
@@ -50,19 +50,19 @@ try{
         sortableColumns:true,
         disabled:true,
         propertyNames: {
+            'title':'Title',
             'required': 'Required',
             'container': 'Container',
             'hidden': 'Hidden',
             'locked':'Locked',
             'type':'Type',
-            'title':'Title',
             'desc':'Description',
             'help':'Help Text',
             'ident':'Entity',
             'idu':'Owner'
         },
+        customEditors: {},
         /*
-        customEditors: {
             'type': Ext.create('Ext.form.ComboBox', {
                 store: Ext.getStore('typeStore'),
                 queryMode: 'local',
@@ -238,11 +238,11 @@ try{
     var propsGrid = Ext.create('Ext.grid.property.Grid', config);
 //var propsGrid = Ext.create('Ext.ux.propertyGrid', config);
 
-}
-catch(e)
-{
-    txt="There was an error on this page: ext.form.baseProperties.js\n\n";
-    txt+=e.name + "\n" + e.message+"\n\n";
-    txt+="Click OK to continue.\n\n";
-    alert(txt);
-}
+// }
+// catch(e)
+// {
+//     txt="There was an error on this page: ext.form.baseProperties.js\n\n";
+//     txt+=e.name + "\n" + e.message+"\n\n";
+//     txt+="Click OK to continue.\n\n";
+//     alert(txt);
+// }

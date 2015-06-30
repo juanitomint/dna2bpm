@@ -36,7 +36,7 @@ Ext.create('Ext.data.Store', {
 
     {
         "ftype":"L",
-        "name":"Print Out"
+        "name":"List View"
     },
 
     {
@@ -47,6 +47,18 @@ Ext.create('Ext.data.Store', {
     {
         "ftype":"P",
         "name":"Printable Form"
+    },
+    {
+        "ftype":"H",
+        "name":"Header View (deprecated)"
+    },
+    {
+        "ftype":"E",
+        "name":"Statistics (deprecated)"
+    },
+    {
+        "ftype":"X",
+        "name":"Export View"
     }
     ]
 });
