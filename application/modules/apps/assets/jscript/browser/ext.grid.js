@@ -8,85 +8,10 @@ function gridClick (view,record,item,index,e,options ){
     load_props(url,internalId);
 }
 
-var newObject=function(){
-    Ext.create('Ext.window.Window', {
-        title: "New Object",
-        id:'newObjWindow',
-        height: 200,
-        width: 400,
-        layout:'fit',
-        items:{
-            xtype:'form',
-            bodyPadding: 8,
-            url: globals.module_url+'forms/'+globals.idapp+'/create',
-            items: [{
-                xtype: 'textfield',
-                name: 'title',
-                fieldLabel: 'Title',
-                allowBlank: false 
-            }
-            ,//---4 types
-            {
-                xtype: 'fieldset',
-                flex: 1,
-                title: 'Type',
-                defaultType: 'radio', // each item will be a radio button
-                layout: 'anchor',
-                defaults: {
-                    anchor: '100%',
-                    hideEmptyLabel: false
-                }
-                ,
-                items: [{
-                    xtype: 'radiofield',
-                    name: 'type',
-                    inputValue: 'D',
-                    fieldLabel: '',                      
-                    boxLabel: 'Object Definition'
-                }
-                ,{
-                    xtype: 'radiofield',
-                    name: 'type',
-                    inputValue: 'V',
-                    fieldLabel: '',                      
-                    boxLabel: 'Data View'
-                }
-                ,{
-                    xtype: 'radiofield',
-                    name: 'type',
-                    inputValue: 'Q',
-                    fieldLabel: '',                      
-                    boxLabel: 'Search Form'
-                }]
-            }
-            ],
-            buttons: [{
-                text: 'Submit',
-                handler: function() {
-                    // The getForm() method returns the Ext.form.Basic instance:
-                    var form = this.up('form').getForm();
-                    if (form.isValid()) {
-                        // Submit the Ajax request and handle the response
-                        form.submit({
-                            success: function(form, action) {
-                                //Ext.Msg.alert('Success', action.result.msg);
-                                //---refresh grid view.
-                                mygrid.store.read();
-                                //---select recently created
-                                                    
-                                //---close window.
-                                Ext.getCmp('newObjWindow').close();
-                            },
-                            failure: function(form, action) {
-                                Ext.Msg.alert('Failed', action.result.msg);
-                            }
-                        });
-                    }
-                }
-            }]
-
-        }
-    }).show();
+var newObject = function() {
+    var internalId=null;
+    var url=globals.module_url+'get_app_properties/';
+    load_props(url,internalId);
 }
 
 

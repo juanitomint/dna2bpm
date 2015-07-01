@@ -778,7 +778,7 @@ class Apps extends MX_Controller {
         }
     }
 
-    function Get_app_properties($idapp) {
+    function Get_app_properties($idapp=null) {
         $segments = $this->uri->segment_array();
         $debug = (in_array('debug', $segments)) ? true : false;
         $cpData = array();
@@ -970,23 +970,23 @@ class Apps extends MX_Controller {
         }
     }
 
-    function Save_app_properties($idapp) {
+    function Save_app_properties($idapp=null) {
         $this->load->model('user/rbac');
         $segments = $this->uri->segment_array();
         $debug = (in_array('debug', $segments)) ? true : false;
         $types_path = $this->types_path;
-        $dbapp = $this->app->get_app($idapp);
-        $postform = $_POST;
-        //---make groups
-        $postform['groups'] = (isset($postform['groups'])) ? explode(',', $postform['groups']) : array();
-        $idapp = $postform['idapp'];
-        //---uncoment when apps have type
-        //                $type = $postform['type'];
+        $postform = $this->input->post();
+        
         //----create empty frame according to the template
         $app = new dbframe();
+        $idapp = $postform['idapp'];
+        $postform['groups'] = (isset($postform['groups'])) ? explode(',', $postform['groups']) : array();
+        include($types_path . 'base/app.base.php');
+        //---make groups
+        //---uncoment when apps have type
+        //                $type = $postform['type'];
         //---load base properties from helpers/types/base
         //---defines $common
-        include($types_path . 'base/app.base.php');
         //---load custom properties from specific type
         $type_props = array();
         if (isset($type)) {
@@ -1000,17 +1000,19 @@ class Apps extends MX_Controller {
         $properties_template = $common + $type_props;
         //----load the data from post
         $app->load($postform, $properties_template);
-
         if ($idapp) {
-            //---wht 2 do? uh? ...nothing?
             $dbapp = $this->app->get_app($idapp);
         } else {
-            //---create new ID for the frame
-            $app->idapp = (int) $this->app->gen_inc('apps', 'idapp');
-            $dbapp = array();
+            $app->idapp= (int) $this->app->gen_inc('apps', 'idapp');
+            $dbapp=array();
         }
+        $app->groups = implode(',', $app->groups);
+        $app->template['id'] = 'integer';
+        $app->id = $app->idapp;
+        // var_dump($app->toSave());exit;
         
         $this->app->put_app($app->idapp, $app->toSave() + $dbapp);
+        
         //----register app in RBAC-REPOSIROTY
         $path = 'modules/application/' . $app->idapp;
         $properties = array(
@@ -1021,9 +1023,6 @@ class Apps extends MX_Controller {
         $this->rbac->put_path($path, $properties);
 
 
-        $app->groups = implode(',', $app->groups);
-        $app->template['id'] = 'integer';
-        $app->id = $app->idapp;
         //----dump results
         if (!$debug) {
             $this->output->set_content_type('json','utf-8');

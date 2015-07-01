@@ -2,7 +2,7 @@
 //---order of properties should be respected
 $common = array(
             'title' => 'string',
-            'idapp' => 'string',
+            'idapp' => 'integer',
             'desc' => 'string',
             'help' => 'string',
             'idu' => 'double',
