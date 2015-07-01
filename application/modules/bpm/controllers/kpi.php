@@ -251,7 +251,7 @@ class Kpi extends MX_Controller {
 		// ----render the code
 		echo $props;
 	}
-	function Test_render($idwf, $idkpi) {
+	function Test_render($idwf, $idkpi=null) {
 		$this->load->model ( 'bpm' );
 		$debug = (isset ( $this->debug [__FUNCTION__] )) ? $this->debug [__FUNCTION__] : false;
 		if ($debug)
@@ -273,7 +273,9 @@ class Kpi extends MX_Controller {
 		$kpi_show = array ();
 		foreach ( $kpis as $kpi ) {
 			// echo $kpi['type'].'<hr/>';
-			$kpi_show [] = $this->render ( $kpi );
+			$kpi_type = 'kpi_' . $kpi ['type'];
+			$this->load->library ( $kpi_type );
+			$kpi_show [] = $this->$kpi_type->tile ( $kpi );
 		}
 		$cpData ['content'] = implode ( $kpi_show );
 		// ----define Globals

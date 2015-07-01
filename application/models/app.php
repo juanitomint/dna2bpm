@@ -292,8 +292,13 @@ class App extends CI_Model {
 
     function put_app($idapp, $new_app) {
         $options = array('upsert' => true, 'w' => true);
-        $new_app['idapp'] = (int) $new_app['idapp'];
-        return $this->mongo->db->apps->save($new_app, $options);
+        $idapp = (int) $idapp;
+        $new_app['idapp']=$idapp;
+        //--1st get old frame if exists;
+        //--overwrites values with newones
+        $app=$this->get_app($idapp);
+        $app = array_merge($app,$new_app);
+        return $this->mongo->db->apps->save($app, $options);
     }
 
     function put_form($idform, $new_form) {
