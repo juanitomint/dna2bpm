@@ -10,14 +10,16 @@ $(document).ready(function() {
                 backgroundColor: color
             }, 100);
 
-            url = globals.module_url+'task/connector/qr/save_data/'+globals.idwf+'/'+globals.idcase+'/'+globals.resourceId;
+            url = globals.module_url + 'task/connector/qr/save_data/' + globals.idwf + '/' + globals.idcase + '/' + globals.resourceId;
             $.post(url, {
                 'data': data,
-                'resourceId':$('#qr_resourceId').val()
+                'resourceId': $('#qr_resourceId').val()
             }, function(res) {
                 //---submit task
-                result=$.parseJSON(res);
-                if(result.result==true){
+                if (typeof(res) == 'string')
+                    res = $.parseJSON(res);
+                    
+                if (res.result == true) {
                     $('form').submit();
                 }
             });
