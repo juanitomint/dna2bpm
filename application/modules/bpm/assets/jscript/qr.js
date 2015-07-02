@@ -1,5 +1,4 @@
 $(document).ready(function() {
-    $('#finishTask-1').hide();
     $('#reader').html5_qrcode(
         function(data) {
             $('#read').html(data).addClass('alert alert-success');
@@ -10,16 +9,13 @@ $(document).ready(function() {
                 backgroundColor: color
             }, 100);
 
-            url = globals.module_url + 'task/connector/qr/save_data/' + globals.idwf + '/' + globals.idcase + '/' + globals.resourceId;
+            url = globals.module_url+'task/connector/qr/save_data/'+globals.idwf+'/'+globals.idcase+'/'+globals.resourceId;
             $.post(url, {
-                'data': data,
-                'resourceId': $('#qr_resourceId').val()
+                'data': data
             }, function(res) {
                 //---submit task
-                if (typeof(res) == 'string')
-                    res = $.parseJSON(res);
-                    
-                if (res.result == true) {
+                result=$.parseJSON(res);
+                if(result.result==true){
                     $('form').submit();
                 }
             });
