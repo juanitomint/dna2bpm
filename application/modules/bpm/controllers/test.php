@@ -244,7 +244,7 @@ function run_test($idwf,$idcase,$resourceId){
     $mywf = $this->bpm->load($idwf);
     $wf = $this->bpm->bindArrayToObject($mywf ['data']);
     $wf->idwf=$idwf;
-    
+    $wf->case=$idcase;
     $shape = $this->bpm->get_shape($resourceId, $wf);
     //---Synthesize objects
     $this->engine->load_data($wf,$idcase);
