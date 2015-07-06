@@ -9,6 +9,7 @@
 <p>{properties documentation}</p>
 <!-- Files Block -->
 <!--<h5>{lang drop_here}</h5>-->
+{if {input_output} == 'Input' }
   <div style=" height: 115px; border-width: 2px; margin-bottom: 20px; color: #aaa; border-style: dashed;
       border-color: #ccc; line-height: 15px; text-align: center" class="dropfile {dropClass}" id="drop-zone">
     <span>
@@ -19,6 +20,7 @@
         {lang drop_here}
     </span>
   </div>
+{/if}    
 <div>
        <div class="list-group">
 {files}
