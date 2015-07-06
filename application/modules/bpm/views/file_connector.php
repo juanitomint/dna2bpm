@@ -26,7 +26,7 @@
 {files}
            <div class="alert alert-success alert-dismissible" role="alert">
               <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-              <a style="border-radius: 0px;" href="{base_url}{relative_path_encoded}/{name_encoded}">{name}</a>
+              <a style="border-radius: 0px;" href="{base_url}{relative_path_encoded}/{name_encoded}" target="_blank">{name}</a>
             </div>      
 {/files}
         </div>
