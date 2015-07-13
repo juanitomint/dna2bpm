@@ -180,11 +180,12 @@ class App extends CI_Model {
         return $rtnVal;
     }
 
-    function get_result($container,$query,$fields=array()) {
+    function get_result($container, $query, $fields = array()) {
         $result = $this->mongo->db->selectCollection($container)->find($query, $fields);
         return $result;
     }
-    function getall($id, $container) {
+
+    function getall($id, $container,$fields=array()) {
         $debug = false;
         if ($debug)
             echo '<h2>' . __FUNCTION__ . '</h2>' .
@@ -193,12 +194,6 @@ class App extends CI_Model {
         $rtnVal = null;
         $result = null;
         $id = (double) $id;
-        $fields = array();
-        if (func_num_args() > 2) {
-            foreach ((array) func_get_arg(2) as $key)
-                $fields[] = (string) $key;
-            $fields[] = 'id';
-        }
         //----Fetch Database
         $query = array('id' => $id);
         $result = $this->mongo->db->selectCollection($container)->findOne($query, $fields);
