@@ -9,6 +9,7 @@
 <p>{properties documentation}</p>
 <!-- Files Block -->
 <!--<h5>{lang drop_here}</h5>-->
+{if {input_output} == 'Input' }
   <div style=" height: 115px; border-width: 2px; margin-bottom: 20px; color: #aaa; border-style: dashed;
       border-color: #ccc; line-height: 15px; text-align: center" class="dropfile {dropClass}" id="drop-zone">
     <span>
@@ -19,12 +20,13 @@
         {lang drop_here}
     </span>
   </div>
+{/if}    
 <div>
        <div class="list-group">
 {files}
            <div class="alert alert-success alert-dismissible" role="alert">
               <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-              <a style="border-radius: 0px;" href="{base_url}{relative_path_encoded}/{name_encoded}">{name}</a>
+              <a style="border-radius: 0px;" href="{base_url}{relative_path_encoded}/{name_encoded}" target="_blank">{name}</a>
             </div>      
 {/files}
         </div>

@@ -18,7 +18,7 @@ class Qr_connector extends CI_Model {
         $this->load->library('parser');
         $data=(array)$shape->properties;
         $data['resourceId']=$shape->resourceId;
-        $data['input_output']==$shape->properties->input_output;
+        $data['input_output']=$shape->properties->input_output;
         $CI->add_css[$this->base_url . "qr/assets/css/qr.css"] = 'QR css';
         
         if($shape->properties->input_output=='Input'){

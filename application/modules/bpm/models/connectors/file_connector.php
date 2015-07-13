@@ -20,6 +20,7 @@ class File_connector extends CI_Model {
         $this->load->library('parser');
         $path = 'images/user_files/' . $wf->idwf . '/' . $wf->case . '/' . str_replace("\n",'_', $shape->properties->name);
         $dirinfo = array();
+        $dirinfo['input_output']=$shape->properties->input_output;
         $info = get_dir_file_info($path);
         if ($info) {
             array_map(function($arr) use (&$dirinfo) {
@@ -29,9 +30,16 @@ class File_connector extends CI_Model {
                 $dirinfo['files'][] = $arr;
             }, $info);
         }
-        $collection = $shape->properties->iscollection;
         $dirinfo['properties']=(array)$shape->properties;
-        $dirinfo['dropClass'] = ($collection) ? 'multipleDrop' : 'singleDrop';
+        if($shape->properties->input_output=='Input'){
+            $collection = $shape->properties->iscollection;
+            $dirinfo['dropClass'] = ($collection) ? 'multipleDrop' : 'singleDrop';
+         
+             
+        } else{
+             
+             
+        }
         $str = $this->parser->parse('bpm/file_connector', $dirinfo, true);
         return $str;
     }
