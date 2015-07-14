@@ -135,7 +135,7 @@ class Be extends MX_Controller {
 
     function get_container($ident) {
 
-        $rs = $this->mongo->db->entities->findOne(array('ident' => (int) $ident));
+        $rs = $this->mongowrapper->db->entities->findOne(array('ident' => (int) $ident));
         echo json_encode(array('container' => utf8_decode($rs['container'])));
     }
 

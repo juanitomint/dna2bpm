@@ -624,7 +624,7 @@ class Form extends MX_Controller {
         $criteria = array('idobj' => $idform);
         $newobj = array('$set' => array('frames' => $frames));
         $options = array('fsync' => true, 'upsert' => true);
-        $result = $this->mongo->db->forms->update($criteria, $newobj, $options);
+        $result = $this->mongowrapper->db->forms->update($criteria, $newobj, $options);
         echo "
         <p>
 		<span class='ui-icon ui-icon-circle-check' style='float:left;margin:0 7px 0px 0;'>

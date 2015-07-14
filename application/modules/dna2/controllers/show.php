@@ -74,7 +74,7 @@ class Show extends MX_Controller {
         $fields = array_map('toString', $form['frames']);
         $fields[] = 'id';
         //var_dump('container',$form['container'],'$query',json_encode( $query), '$fields', $fields, '$sort', $sort);
-        $subforms = $this->mongo->db->selectCollection($form['container'])->find($query, $fields);
+        $subforms = $this->mongowrapper->db->selectCollection($form['container'])->find($query, $fields);
         $totalRecords = $subforms->count();
         $subforms->sort($sort);
         $subforms->limit($pagesize);
@@ -192,7 +192,7 @@ class Show extends MX_Controller {
         $fields = $form['frames'];
         $fields[] = 'id';
 
-        $subforms = $this->mongo->db->selectCollection($form['container'])->find($query, $fields);
+        $subforms = $this->mongowrapper->db->selectCollection($form['container'])->find($query, $fields);
         $totalRecords = $subforms->count();
         $subforms->sort($sort);
         $subforms->limit($pagesize);
@@ -252,7 +252,7 @@ class Show extends MX_Controller {
         $query = array('idframe' => array('$in' => $form['frames']), 'type' => array('$ne' => 'label'));
         $fields = array('idframe', 'desc', 'type', 'idop');
         $fields = array();
-        $selframes = $this->mongo->db->frames->find($query, $fields);
+        $selframes = $this->mongowrapper->db->frames->find($query, $fields);
         $desc = array();
         //var_dump('frames',json_encode($query),$fields);
 

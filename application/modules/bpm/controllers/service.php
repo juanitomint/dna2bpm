@@ -81,7 +81,7 @@ class Service extends MX_Controller {
             //----Log timer
             $options = array('w' => true);
             if(!$debug)
-                $wf = $this->mongo->db->log_timers->save($tlog, $options);
+                $wf = $this->mongowrapper->db->log_timers->save($tlog, $options);
              $out['timers'][]=$tlog;
          }
         //---un-register if it has logged is

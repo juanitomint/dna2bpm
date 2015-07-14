@@ -58,7 +58,7 @@ class Test extends MX_Controller {
     }
     
     function testint(){
-        $users=$this->mongo->db->users->find();
+        $users=$this->mongowrapper->db->users->find();
         while ($user=$users->getNext()){
             if(isset($user['idu'])){
                 if(gettype($user['idu']*1)<>'integer'){

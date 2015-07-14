@@ -6,7 +6,7 @@ function edit_radio($frame, $value) {
     $ops = array();
     $disabled='';
      $required='';
-//$CI->load->library('mongo');
+//$CI->load->library('mongowrapper');
 //---ensure array----
      //var_dump($frame);
     $value = (array) $value;

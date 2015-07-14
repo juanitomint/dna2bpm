@@ -11,7 +11,7 @@ class Msg extends CI_Model {
     function __construct() {
         parent::__construct();
         $this->idu = $this->session->userdata('iduser');
-        $this->load->library('mongo');
+        $this->load->library('mongowrapper');
         $this->load->library('cimongo/cimongo');
         $this->db = $this->cimongo;
     }
@@ -152,7 +152,7 @@ class Msg extends CI_Model {
 // Save a msg
     // function save($msg) {
     //     $options = array('upsert' => true, 'w' => true);
-    //     return $this->mongo->db->msg->save($msg, $options);
+    //     return $this->mongowrapper->db->msg->save($msg, $options);
     // }
 
 // Get msg by id
