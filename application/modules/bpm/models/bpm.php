@@ -236,7 +236,6 @@ class Bpm extends CI_Model {
     }
 
     function get_cases_byFilter_count($filter) {
-        //$this->db->debug=true;
         $this->db->where($filter);
         return $this->db->count_all_results('case');
     }
@@ -659,7 +658,7 @@ class Bpm extends CI_Model {
         $rs = array();
         foreach ($result as $record) {
             //----don't add missing tokens
-            $filter=array($record['case'], $record['idwf']);
+            $filter=array('id'=>$record['case'],'idwf'=>$record['idwf']);
             if ($this->get_cases_byFilter_count($filter))
                 $rs[] = $record;
         }
