@@ -269,7 +269,17 @@ function run_Task($shape, $wf, $CI) {
             foreach ($to as $to_user) {
                 if ($debug)
                     echo "Sending msg to user:$to_user<br/>";
-                $CI->msg->send($msg, $to_user);
+                var_dump($shape->properties->rendering);exit;
+                switch($shape->properties->rendering){
+                    
+                    default:
+                     case 'alert':
+                         //---route msg to alert subsystem
+                         
+                         break;
+                     $CI->msg->send($msg, $to_user);
+                     break;
+                }
             }
             //---fires triger if everything is ok
             if ($shape->properties->messageref){
