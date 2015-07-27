@@ -30,7 +30,8 @@ class ui {
         $this->register_script('sparkline', $data['module_url'] . 'assets/bootstrap-wysihtml5/js/plugins/sparkline/jquery.sparkline.min.js', array('jquery'));
         $this->register_script('jvectormap', $data['module_url'] . 'assets/bootstrap-wysihtml5/js/plugins/jvectormap/jquery-jvectormap-1.2.2.min.js', array('jquery'));
         $this->register_script('jvectormap.world.mill', $data['module_url'] . 'assets/bootstrap-wysihtml5/js/plugins/jvectormap/jquery-jvectormap-world-mill-en.js', array('jquery', 'jvectormap'));
-        $this->register_script('fullcalendar', $data['module_url'] . 'assets/bootstrap-wysihtml5/js/plugins/fullcalendar/fullcalendar.min.js');
+        $this->register_script('fullcalendar-moment', $data['module_url'] . 'assets/bootstrap-wysihtml5/js/plugins/fullcalendar-2.3.1/lib/moment.min.js');
+        $this->register_script('fullcalendar', $data['module_url'] . 'assets/bootstrap-wysihtml5/js/plugins/fullcalendar-2.3.1/fullcalendar.min.js');
         $this->register_script('knob', $data['module_url'] . 'assets/bootstrap-wysihtml5/js/plugins/jqueryKnob/jquery.knob.js', array('jquery'));
         $this->register_script('daterangerpicker', $data['module_url'] . 'assets/bootstrap-wysihtml5/js/plugins/daterangepicker/daterangepicker.js');
         $this->register_script('WYSIHTML5', $data['module_url'] . 'assets/bootstrap-wysihtml5/js/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js');
