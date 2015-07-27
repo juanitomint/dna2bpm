@@ -30,7 +30,7 @@ class calendar_model extends CI_Model {
                 
          
         $fields=array('title','start','end','tags','allDay','idu','color');
-        //$query=array('start'=>array('$gte'=>'2015-06-08','$lte'=>'2015-06-20'));
+        //$query=array('start'=>array('$gte'=>'2015-06-08','$lte'=>'2015-09-20'));
 
         //$this->db->debug=true;
         $this->db->where($query,true);
