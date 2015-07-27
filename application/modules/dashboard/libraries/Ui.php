@@ -50,7 +50,7 @@ class ui {
         //===== CSS loaded only when same JS  handle is loaded
         $this->styles['morris'][] = $data['base_url'] . "dashboard/assets/bootstrap-wysihtml5/css/morris/morris.css";
         $this->styles['jvectormap'][] = $data['base_url'] . "dashboard/assets/bootstrap-wysihtml5/css/jvectormap/jquery-jvectormap-1.2.2.css";
-        $this->styles['fullcalendar'][] = $data['base_url'] . "dashboard/assets/bootstrap-wysihtml5/css/fullcalendar/fullcalendar.css";
+        $this->styles['fullcalendar'][] = $data['base_url'] . "dashboard/assets/bootstrap-wysihtml5/js/plugins/fullcalendar-2.3.1/fullcalendar.css";
         $this->styles['selectJS'][] = $data['base_url'] . "jscript/select2-3.4.5/select2.css";
         $this->styles['selectJS'][] = $data['base_url'] . "jscript/select2-3.4.5/select2-bootstrap.css";
         $this->styles['inboxJS'][] = $data['base_url'] . "inbox/assets/css/inbox.css";
