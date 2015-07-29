@@ -6,88 +6,75 @@
 
 jQuery(document).ready(function($) {
     var base_url=globals['base_url'];
+    var lang={'english':'eng','spanish':'es'};
 
 
 
+ /* ----------- initialize the calendar --------*/
 
+    $('#calendar').fullCalendar({
+        header: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'month,agendaWeek,agendaDay'
+        },
+        editable: true,
+        lang:lang[globals.lang],
+        droppable: true, // this allows things to be dropped onto the calendar !!!
+        eventDrop: function( event, delta, revertFunc, jsEvent, ui, view ){
+            //==== drag event
+           // console.log(event);
+            var myevent={
+                start: event.start._d.toISOString(),
+                end: event.end._d.toISOString(),
+                _id:event._id
+            }        
+            $.post(base_url+'calendar/update_event',{'event':myevent},function(resp){
+                console.log(resp);
+            });
 
- /* initialize the calendar
-                 -----------------------------------------------------------------*/
-                //Date for the calendar events (dummy data)
-                // var date = new Date();
-                // var d = date.getDate(),
-                // m = date.getMonth(),
-                // y = date.getFullYear();
-                        
-
-    
-                $('#calendar').fullCalendar({
-                    header: {
-                        left: 'prev,next today',
-                        center: 'title',
-                        right: 'month,agendaWeek,agendaDay'
-                    },
-                    buttonText: {//This is to add icons to the visible buttons
-                        today: 'Hoy',
-                        month: 'Mes',
-                        week: 'Semana',
-                        day: 'Día'
-                    },
-                    editable: true,
-                    droppable: true, // this allows things to be dropped onto the calendar !!!
-                    eventDrop: function( event, delta, revertFunc, jsEvent, ui, view ){
-                        //==== drag event
-                       // console.log(event);
-                        var myevent={
-                            start: event.start._d.toISOString(),
-                            end: event.end._d.toISOString(),
-                            _id:event._id
-                        }        
-                        $.post(base_url+'calendar/update_event',{'event':myevent},function(resp){
-                            console.log(resp);
-                        });
-
-                    },
-                    eventClick: function(calEvent, jsEvent, view) {
-                        // alert('Coordinates: ' + jsEvent.pageX + ',' + jsEvent.pageY);
-                        // alert('View: ' + view.name);
-                            var myid=calEvent._id;
-                        
-                            $.post(base_url+'calendar/get_event_by_id',{'id':myid},function(resp){
-                                $event=JSON.parse(resp);
-                                 $('#myModal .modal-body').html($event.body);
-                                 $('#myModal .modal-title').html($event.title);
-                                 init_range();
-                                 $('#myModal').modal();
-                            });
-
-                            
-                    },
-                    eventResize: function(event, delta, revertFunc) {
-                        var myevent={
-                            start: event._start._d.toISOString(),
-                            end: event._end._d.toISOString(),
-                            _id:event._id
-                        }    
-                        $.post(base_url+'calendar/update_event',{'event':myevent},function(resp){
-                            console.log(resp);
-                        });
-                    },
-        			events: {
-        				url:  base_url+'calendar/get_events',
-        				type: 'GET',
-        				error: function() {
-        					console.log('error');
-        				},
-        				success: function(e) {
-        					//console.log(e);
-        				}
-        			},
-					loading: function(bool) {
-			        console.log('loading');
-		        	}
+        },
+        eventClick: function(calEvent, jsEvent, view) {
+            // alert('Coordinates: ' + jsEvent.pageX + ',' + jsEvent.pageY);
+            // alert('View: ' + view.name);
+                var myid=calEvent._id;
+            
+                $.post(base_url+'calendar/get_event_by_id',{'id':myid},function(resp){
+                    $event=JSON.parse(resp);
+                     $('#myModal .modal-body').html($event.body);
+                     $('#myModal .modal-title').html($event.title);
+                     init_range();
+                     $('#myModal').modal();
                 });
+
                 
+        },
+        eventResize: function(event, delta, revertFunc) {
+            var myevent={
+                start: event._start._d.toISOString(),
+                end: event._end._d.toISOString(),
+                _id:event._id
+            }    
+            $.post(base_url+'calendar/update_event',{'event':myevent},function(resp){
+                console.log(resp);
+            });
+        },
+		events: {
+			url:  base_url+'calendar/get_events',
+			type: 'GET',
+			error: function() {
+				console.log('error');
+			},
+			success: function(e) {
+				//console.log(e);
+			}
+		},
+		loading: function(bool) {
+        console.log('loading');
+    	}
+    });
+
+
 
 //========= Date range picker
 
@@ -179,13 +166,15 @@ $('#myModal').on('click','#modal_save',function(e){
     var allDay=$(this).parents('#myModal').find('#modal_allDay').prop('checked');
     var intervalraw = $("#modal-event-interval").val(); 
     var color = $('#modal-color-picker #modal-color').val();
+    var title = $('#modal-color-picker #modal-title').val();
     var myevent={
         body: body,
         _id:myid,
         allDay:allDay,
         intervalraw:intervalraw,
         group:group,
-        color:color
+        color:color,
+        title:title
     }
 
     $.post(base_url+'calendar/update_event',{'event':myevent},function(resp){

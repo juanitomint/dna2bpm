@@ -182,7 +182,8 @@ class Dashboard extends MX_Controller {
         $customData['global_js'] = array(
             'base_url' => $this->base_url,
             'module_url' => $this->module_url,
-            'myidu' => $this->idu
+            'myidu' => $this->idu,
+            'lang'=>$this->config->item('language')
         );
 
 

@@ -30,18 +30,20 @@ class calendar extends MX_Controller {
 
         $this->load->config('calendar/config');
         $this->load->model('calendar/calendar_model');
+        //Lang
+        $this->lang->load('calendar', $this->config->item('language'));
         //---Output Profiler
         //$this->output->enable_profiler(TRUE);
     }
     
    
     function Index(){
-
       if($this->user_can_create){
           Modules::run('dashboard/dashboard', 'calendar/json/dashboard_edit.json');
       }else{
           Modules::run('dashboard/dashboard', 'calendar/json/dashboard_view.json');
       }
+
     }
     
     function panel_calendar(){
@@ -57,9 +59,10 @@ class calendar extends MX_Controller {
         //colores
         $colors=$this->get_colors_ul();
         $data+=$colors;
-        
-        $data['user_can_create_group_events']=$this->current_user_can('create_group_events',$this->idu);
-        echo $this->parser->parse('create',$data,true);
+        $data['lang']= $this->lang->language;
+
+         $data['user_can_create_group_events']=$this->current_user_can('create_group_events',$this->idu);
+         echo $this->parser->parse('create',$data,true);
 
     } 
     
@@ -88,6 +91,7 @@ class calendar extends MX_Controller {
         //Color Picker
         $colors=$this->get_colors_ul();
         $data+=$colors;
+        $data['lang']= $this->lang->language;
         $event['body']=$this->parser->parse('calendar/modal',$data,true,true);
 
         echo json_encode($event);

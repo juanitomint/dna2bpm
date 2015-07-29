@@ -81,34 +81,29 @@ class calendar_model extends CI_Model {
     function update_event($event){
         $mongoID=new MongoID($event['_id']);
         $query=array('_id'=>$mongoID,'idu'=>$this->idu);
-          
+        unset($event['_id']);
+        // Fechas
+        if(isset($event['intervalraw'])){
+            $fechas=explode('-',$event['intervalraw']);
+            $start=date_create_from_format("d/m/Y H:i", trim($fechas[0]));
+            $end=date_create_from_format( "d/m/Y H:i", trim($fechas[1]));
+            $event['start']=date_format($start,'Y-m-d').'T'.date_format($start,'H:i').':00.000Z'; 
+            $event['end']=date_format($end,'Y-m-d').'T'.date_format($end,'H:i').':00.000Z';  
+        }
 
-        if(!empty($event['start']))$data['start']=$event['start'];
-        if(!empty($event['end']))$data['end']=$event['end'];
-        if(!empty($event['body']))$data['body']=$event['body'];
-        if(!empty($event['group']))$data['group']=$event['group'];
-        if(!empty($event['color']))$data['color']=$event['color'];
-        $data['allDay']=$event['allDay'];
-        
-        $fechas=explode('-',$event['intervalraw']);
-        $start=date_create_from_format("d/m/Y H:i", trim($fechas[0]));
-        $end=date_create_from_format( "d/m/Y H:i", trim($fechas[1]));
-        $event['start']=date_format($start,'Y-m-d').'T'.date_format($start,'H:i').':00.000Z'; 
-        $event['end']=date_format($end,'Y-m-d').'T'.date_format($end,'H:i').':00.000Z';  
-
-
-         $this->db->where($query);
-         echo $this->db->update($this->container,$data);
+        $this->db->where($query);
+        echo $this->db->update($this->container,$event);
     }      
 
    //=== Creacion evento
    
     function create_event($event){
         if(empty($event))return false;
+        if(empty($event['intervalraw']))return false;
+        // Fechas
         $fechas=explode('-',$event['intervalraw']);
         $start=date_create_from_format("d/m/Y H:i", trim($fechas[0]));
         $end=date_create_from_format( "d/m/Y H:i", trim($fechas[1]));
-        
         $event['start']=date_format($start,'Y-m-d').'T'.date_format($start,'H:i').':00.000Z'; 
         $event['end']=date_format($end,'Y-m-d').'T'.date_format($end,'H:i').':00.000Z';  
 

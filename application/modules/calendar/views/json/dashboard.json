@@ -6,7 +6,8 @@
     "js": [{"{base_url}calendar/assets/jscript/app.js": "calendar-JS"},
     {"0": "fullcalendar-moment"},
     {"1": "fullcalendar"},
-    {"2": "daterangerpicker"}
+    {"2": "fullcalendar-lang"},
+    {"3": "daterangerpicker"}
     ],
     "css": [{
         }
