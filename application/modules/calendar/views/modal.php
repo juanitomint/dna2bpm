@@ -4,11 +4,11 @@
 <!-- Titulo && color-->
  <div class="form-group" id="modal-color-picker">
     <div class="input-group">
-     <input id="modal-title" type="text" name="modal-title" class="form-control" placeholder="{lang calendartitle}" value="{title}">
+     <input id="modal-title" type="text" name="modal-title" class="form-control" placeholder="{lang calendar_title}" value="{title}">
       <div class="input-group-btn">
         <!-- Color -->
         <div class="btn-group" style="width: 100%; margin-bottom: 10px;">
-            <button type="button"  class="btn btn-default color-picker dropdown-toggle" data-toggle="dropdown"><i class="fa fa-square" style="color:{color}"></i> <span class="caret"></span></button>
+            <button type="button"  class="btn btn-default color-picker dropdown-toggle" data-toggle="dropdown"><i class="fa fa-square " id='modal-color-box' style="color:{color}"></i> <span class="caret"></span></button>
             <ul class="dropdown-menu" id="color-chooser">
                {ul}
             </ul>

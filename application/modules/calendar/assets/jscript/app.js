@@ -106,6 +106,8 @@ $(document).on('click','#modal-color-picker a',function(e){
       e.preventDefault();
        var mycolor=$(this).attr('data-color');
        $('#modal-color-picker #modal-color').val(mycolor);
+
+       $('#modal-color-picker #modal-color-box').css('color',mycolor);
 });
 
 
