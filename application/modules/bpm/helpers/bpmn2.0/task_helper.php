@@ -269,14 +269,19 @@ function run_Task($shape, $wf, $CI) {
             foreach ($to as $to_user) {
                 if ($debug)
                     echo "Sending msg to user:$to_user<br/>";
-                var_dump($shape->properties->rendering);exit;
                 switch($shape->properties->rendering){
                     
-                    default:
+                     
+                     case 'ui':
+                         //---route msg to user interface subsystem
+                          $CI->bpm->movenext($shape, $wf);
+                         $CI->show_modal($msg['subject'],$msg['body'],false);
+                         break;
                      case 'alert':
                          //---route msg to alert subsystem
                          
                          break;
+                    default:
                      $CI->msg->send($msg, $to_user);
                      break;
                 }

@@ -1038,7 +1038,7 @@ class Engine extends MX_Controller {
         }
     }
 
-    function show_modal($name, $text) {
+    function show_modal($name, $text,$exit=true) {
         $debug = (isset($this->debug [__FUNCTION__])) ? $this->debug [__FUNCTION__] : false;
         if ($debug) {
             echo '<h1>' . __FUNCTION__ . '</h1>';
@@ -1062,7 +1062,7 @@ class Engine extends MX_Controller {
         );
         $this->ui->compose('bpm/modal_msg', 'bpm/bootstrap.ui.php', $renderData);
         $this->output->_display();
-        exit();
+        if($exit) exit();
     }
 
 }
