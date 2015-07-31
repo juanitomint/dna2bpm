@@ -26,6 +26,7 @@ class Kpi extends MX_Controller {
 		$this->base_url = base_url ();
 		$this->module_url = base_url () . $this->router->fetch_module () . '/';
 		$this->modules_path = APPPATH . 'modules/';
+		$this->debug=array();
 	}
 	function Index() {
 	}
