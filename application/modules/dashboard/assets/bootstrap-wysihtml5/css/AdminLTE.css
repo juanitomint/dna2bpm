@@ -1943,6 +1943,11 @@ Component: timeline
   background-color: #f0f7fd;
   border-color: #d0e3f0;
 }
+.callout.callout-success {
+  background-color: #DFF0D8;
+  border-color: #D6E9C6;
+}
+
 .callout.callout-danger h4 {
   color: #B94A48;
 }
@@ -1952,6 +1957,12 @@ Component: timeline
 .callout.callout-info h4 {
   color: #3A87AD;
 }
+
+.callout.callout-success h4 {
+  color: #3C763D;
+}
+
+
 /* 
     Component: alert
 ------------------------

@@ -36,13 +36,13 @@ class Alerts_model extends CI_Model {
     
     function create_alert($alert){
 
-       if(empty($alert))return false;
-       if (!array_key_exists('subject', $alert)) return false;
-       if (!array_key_exists('body', $alert)) return false;
-       // target ie.
-       // array("fondyf/json/fondyf_proyectos.json",1,2) 
-       // json path or idgroup
-       
+      if(empty($alert))return false;
+      if (!array_key_exists('subject', $alert)) return false;
+      if (!array_key_exists('body', $alert)) return false;
+      // target ie.
+      // array("fondyf/json/fondyf_proyectos.json",1,2) 
+      // json path or idgroup
+
         $default=array(
         'subject'=>'Untitled',
         'body'=>'My body',
@@ -56,7 +56,7 @@ class Alerts_model extends CI_Model {
         $fecha=date('Y-m-d H:i:s');
         $alert['author']=$this->idu;
         $alert['start_date']=$fecha;
-        
+
         return $this->db->insert($this->container, $alert); 
     }
     

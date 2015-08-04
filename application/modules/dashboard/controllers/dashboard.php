@@ -392,7 +392,7 @@ class Dashboard extends MX_Controller {
                     $customData['body_style']='display:none';
                 }
                         
-                $mycontent=$this->parser->parse('widgets/box', $customData, true, true);
+                $mycontent=$this->parser->parse('dashboard/widgets/box', $customData, true, true);
             }    
                 if (!$empty_spans)
                 	$content.=$mycontent;

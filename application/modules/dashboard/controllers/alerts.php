@@ -24,7 +24,7 @@ class Alerts extends MX_Controller {
         $this->module_url = base_url() . $this->router->fetch_module() . '/';
         $this->user->authorize();
         //----LOAD LANGUAGE
-        $this->lang->load('library', $this->config->item('language'));
+        $this->lang->load('alerts', $this->config->item('language'));
         $this->idu = $this->user->idu;
     }
 
@@ -52,12 +52,21 @@ class Alerts extends MX_Controller {
     function create_alert($alert=array()){
         if(empty($alert)){
             // Ajax call ?
-            $alert=$this->input->post('alert');
-            $alert=(is_null($alert))?:($this->input->get('alert'));
-            if(is_null($alert))
+            $alert=$this->input->post('myalert');
+            if(empty($alert))$alert=$this->input->get('myalert');
+            if(is_null($alert)){
                 return false;
-            else
-                 $this->alerts_model->create_alert($alert);
+            }else{
+                if(isset($alert['target']) && !is_array($alert['target'])){
+                    $groups=explode(',',$alert['target']);
+                    $new_group=array();
+                    foreach($groups as $k=>$g){
+                        $new_group[]=(is_numeric($g))?((int)$g):($g);
+                    }
+                    $alert['target']=$new_group;
+                    echo $this->alerts_model->create_alert($alert);
+                }
+            }
         }else{
              // Function call 
             $this->alerts_model->create_alert($alert);
@@ -65,8 +74,15 @@ class Alerts extends MX_Controller {
 
     }
     
+    function create_alert_box(){
+        $customdata=array();
+        $customdata['lang']= $this->lang->language;
 
-    
+        return $this->parser->parse('dashboard/alert_create_box', $customdata,true, false);
+        
+    }
+
+
 
  
  

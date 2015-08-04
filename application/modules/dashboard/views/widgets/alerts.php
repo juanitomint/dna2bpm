@@ -7,7 +7,7 @@
 		<!-- /.box-header -->
 		<div class="box-body">
 			{my_alerts}
-			<div class="callout callout-{class} alert alert-info alert-dismissable widget_alert"  data-id="{_id}">
+			<div class="callout callout-{class} alert alert-dismissable widget_alert"  data-id="{_id}">
 			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
 				<h4>{subject}</h4>
 				<p>{body}</p>
