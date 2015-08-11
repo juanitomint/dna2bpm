@@ -10,6 +10,7 @@ jQuery(document).ready(function($) {
 
 
 
+
  /* ----------- initialize the calendar --------*/
 
     $('#calendar').fullCalendar({
@@ -43,7 +44,7 @@ jQuery(document).ready(function($) {
                     $event=JSON.parse(resp);
                      $('#myModal .modal-body').html($event.body);
                      $('#myModal .modal-title').html($event.title);
-                     init_range();
+                     init_range2();
                      $('#myModal').modal();
                 });
 
@@ -76,19 +77,76 @@ jQuery(document).ready(function($) {
 
 
 
-//========= Date range picker
+//========= Date range picker 
 
+var options={
+    "timePicker": true,
+    "timePicker24Hour": true,
+    "timePickerIncrement": 1,
+    "locale": {
+        "format": "DD/MM/YYYY HH:mm",
+        "separator": " - ",
+        "applyLabel": "Apply",
+        "cancelLabel": "Cancel",
+        "fromLabel": "From",
+        "toLabel": "To",
+        "customRangeLabel": "Custom",
+        "daysOfWeek": [
+            "Do",
+            "Lu",
+            "Ma",
+            "Mi",
+            "Ju",
+            "Vi",
+            "Sa"
+        ],
+        "monthNames": [
+            "Enero",
+            "Febrero",
+            "Marzo",
+            "Abril",
+            "Mayo",
+            "Junio",
+            "Julio",
+            "Agosto",
+            "Septiembre",
+            "Octubre",
+            "Noviembre",
+            "Diciembre"
+        ],
+        "firstDay": 1
+    },
+    "opens": "center",
+    "drops": "down",
+    "buttonClasses": "btn btn-sm",
+    "applyClass": "btn-success",
+    "cancelClass": "btn-default"
+};
+
+//==== dateRange create
 init_range();
 function init_range(){
-        $('.range').daterangepicker({
-        opens:'right',
-        timePicker: true,
-        format: 'DD/MM/YYYY HH:mm',
-        timePickerIncrement: 30,
-        timePicker12Hour: false,
-        timePickerSeconds: false
-    });
+var start = moment();
+var end = moment().add(30,'minutes');
+
+$('.range').daterangepicker(options, function(start, end, label) {});
+var drp = $('.range').data('daterangepicker');
+$('.range').data('daterangepicker').setStartDate(start);
+$('.range').data('daterangepicker').setEndDate(end);
+
 }
+
+//==== dateRange Modal
+var options2=options;
+options2.parentEl='#myModal';
+init_range2();
+function init_range2(){
+ $('.modal_range').daterangepicker(options2, function(start, end, label) {
+});
+
+
+}
+
 
 //========= Color picker eventos
 

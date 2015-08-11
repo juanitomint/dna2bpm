@@ -1,7 +1,7 @@
 <?php
 
-$lang['alert_title']="Título";
-$lang['alert_body']="Cuerpo";
+$lang['alert_title']="Title";
+$lang['alert_body']="Body";
 $lang['alert_groups']='Groups';
 $lang['alert_create_event']='Create events';
 

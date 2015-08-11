@@ -8,4 +8,4 @@ $lang['alert_create_event']='Crear eventos';
 
 
 /* End of file alerts_lang.php */
-/* Location: ./system/language/english/alerts_lang.php */
+/* Location: ./system/language/spanish/alerts_lang.php */

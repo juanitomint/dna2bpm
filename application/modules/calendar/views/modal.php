@@ -41,7 +41,7 @@
                 <div class="input-group-addon">
                     <i class="fa fa-calendar"></i>
                 </div>
-                <input class="form-control pull-right range" name="event-interval" id="modal-event-interval" type="text" placeholder="{lang calendar_interval}" value="{intervalo}">
+                <input class="form-control pull-right modal_range" name="event-interval" id="modal-event-interval" type="text" placeholder="{lang calendar_interval}" value="{intervalo}">
             </div><!-- /.input group -->
         </div>
 </div>

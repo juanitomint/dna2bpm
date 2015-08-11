@@ -18,6 +18,7 @@ class calendar extends MX_Controller {
         parent::__construct();
 
         $this->user->authorize();
+        date_default_timezone_set('UTC');
         //---base variables
         $this->base_url = base_url();
         $this->module_url = base_url() . $this->router->fetch_module() . '/';
@@ -61,8 +62,11 @@ class calendar extends MX_Controller {
         $data+=$colors;
         $data['lang']= $this->lang->language;
 
-         $data['user_can_create_group_events']=$this->current_user_can('create_group_events',$this->idu);
-         echo $this->parser->parse('create',$data,true);
+        $data['user_can_create_group_events']=$this->current_user_can('create_group_events',$this->idu);
+     
+
+     
+        echo $this->parser->parse('create',$data,true);
 
     } 
     
@@ -78,6 +82,7 @@ class calendar extends MX_Controller {
     }
     
     function get_event_by_id(){
+        
         $myid=$this->input->post('id');
         $data=$this->calendar_model->get_event_by_id($myid);
         $event['title']=$data['title'];
@@ -93,6 +98,7 @@ class calendar extends MX_Controller {
         $data+=$colors;
         $data['lang']= $this->lang->language;
         $event['body']=$this->parser->parse('calendar/modal',$data,true,true);
+        
 
         echo json_encode($event);
     }
