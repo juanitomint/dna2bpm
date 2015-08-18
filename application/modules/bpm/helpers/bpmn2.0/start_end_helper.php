@@ -98,30 +98,34 @@ function run_StartParallelMultipleEvent($shape, $wf, $CI) {
 function run_EndNoneEvent($shape, $wf, $CI, $moveForward = true) {
 
     $debug = (isset($CI->debug[__FUNCTION__])) ? true : false;
-    // $debug=true;
+    $debug = true;
     if ($debug)
         echo "<h2>" . __FUNCTION__ . '</h2>';
 //----don't forward tokens if has events
     if ($moveForward)
         $CI->bpm->movenext($shape, $wf);
     //---check if parent is present
-    //$parent_resourceId = property_exists($shape->properties,'subproc_parent')? $shape->properties->subproc_parent:null;
-    // $parent=isset($parent_resourceId)? $CI->bpm->get_shape($parent_resourceId, $wf):null;
-    $parent=$CI->bpm->get_shape_parent($shape->resourceId, $wf);
+    $parent_resourceId = property_exists($shape->properties, 'subproc_parent') ? $shape->properties->subproc_parent : null;
+    if ($parent_resourceId) {
+        $parent = isset($parent_resourceId) ? $CI->bpm->get_shape($parent_resourceId, $wf) : null;
+    } else {
+        $parent = $CI->bpm->get_shape_parent($shape->resourceId, $wf);
+    }
+
     if ($debug)
         var_dump('parent', $parent);
     if ($parent) {
         switch ($parent->stencil->id) {
             case 'Subprocess':
                 if ($debug)
-                echo '<h3>Finish Expanded Subprocess</h3>';
+                    echo '<h3>Finish Expanded Subprocess</h3>';
                 //---Finish the process
                 $CI->bpm->movenext($parent, $wf);
                 break;
             //----embedded subproces only
             case 'CollapsedSubprocess':
                 if ($debug)
-                echo '<h3>Finish CollapsedSubprocess</h3>';
+                    echo '<h3>Finish CollapsedSubprocess</h3>';
                 //---Finish the process
                 $CI->bpm->movenext($parent, $wf);
                 break;
@@ -136,7 +140,7 @@ function run_EndNoneEvent($shape, $wf, $CI, $moveForward = true) {
     if (count($active_tokens) == 0) {
         $CI->bpm->update_case($wf->idwf, $wf->case, array(
             'status' => 'closed',
-            'closer'=>$shape->resourceId,
+            'closer' => $shape->resourceId,
             'checkoutdate' => date('Y-m-d H:i:s')
                 )
         );
@@ -193,8 +197,7 @@ function run_EndCancelEvent($shape, $wf, $CI) {
     //---Update case Status
     // $CI->bpm->update_case($wf->idwf, $wf->case, array('status' => 'canceled'));
     $CI->bpm->movenext($shape, $wf);
-    $CI->break_on_next=true;
-
+    $CI->break_on_next = true;
 }
 
 function run_EndCompensationEvent($shape, $wf, $CI) {
@@ -226,6 +229,7 @@ function run_EndMultipleEvent($shape, $wf, $CI) {
     //then finish like none
     run_EndNoneEvent($shape, $wf, $CI);
 }
+
 /**
  * Terminate BPMN2.0 flow
  * @param type $shape
@@ -241,12 +245,11 @@ function run_EndTerminateEvent($shape, $wf, $CI) {
      * @todo Cancel all pending tasks and close
      */
     $active_tokens = $CI->bpm->get_pending($wf->idwf, $wf->case, array('user', 'waiting', 'pending'), array());
-    foreach($active_tokens as $token){
-        $token['status']='canceled';
+    foreach ($active_tokens as $token) {
+        $token['status'] = 'canceled';
         $data = array('canceledBy' => $shape->resourceId, 'canceledName' => $shape->properties->name);
         $token+=$data;
         $CI->bpm->save_token($token);
-
     }
     run_EndNoneEvent($shape, $wf, $CI);
 }
