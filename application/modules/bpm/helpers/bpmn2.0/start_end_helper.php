@@ -98,7 +98,7 @@ function run_StartParallelMultipleEvent($shape, $wf, $CI) {
 function run_EndNoneEvent($shape, $wf, $CI, $moveForward = true) {
 
     $debug = (isset($CI->debug[__FUNCTION__])) ? true : false;
-    $debug = true;
+//    $debug = true;
     if ($debug)
         echo "<h2>" . __FUNCTION__ . '</h2>';
 //----don't forward tokens if has events
