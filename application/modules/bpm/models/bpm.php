@@ -1132,7 +1132,7 @@ class Bpm extends CI_Model {
         foreach ($wf->childShapes as $obj) {
             if ($debug)
                 echo "Analizing:" . $obj->stencil->id . '<hr>';
-            if (preg_match($name, $obj->stencil->id) and !in_array($obj->resourceId,$exclude)) {
+            if (preg_match($name, $obj->stencil->id) and !in_array($obj->stencil->id,$exclude)) {
                 $rtnarr[] = $obj;
             }
             //---Search inside this objects
