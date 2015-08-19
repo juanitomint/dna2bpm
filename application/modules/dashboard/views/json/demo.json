@@ -81,7 +81,7 @@
             "module": "dashboard",
             "controller": "alerts",
             "function": "create_alert_box",
-            "js": [{"{base_url}dashboard/assets/jscript/alerts.js": "alert-JS"}],
+            "js": [{"{base_url}dashboard/assets/jscript/alerts.js": "alert-JS"},{"0": "fullcalendar-moment"},{"1": "daterangerpicker"}],
             "box_icon":"fa-bullhorn",
             "box_class":["box box-primary"],
             "box_buttons":["remove","collapse"],

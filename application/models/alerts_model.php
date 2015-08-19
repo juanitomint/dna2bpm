@@ -19,9 +19,10 @@ class Alerts_model extends CI_Model {
     // ===== Get Alerts using a filter
     function get_alerts_by_filter($target = array()) {
         $this->db->where_in('target',$target);
-        //$this->db->where('read !=',$this->idu);
+        //$this->db->where('start_date >=',$this->idu);
         $this->db->where_not_in('read',array($this->idu));
         $res=$this->db->get($this->container)->result_array();
+
         return $res;
     }
     
@@ -53,9 +54,10 @@ class Alerts_model extends CI_Model {
         );
         $alert+=$default;
         // info de creacion
-        $fecha=date('Y-m-d H:i:s');
+        //$fecha=date('Y-m-d H:i:s');
         $alert['author']=$this->idu;
-        $alert['start_date']=$fecha;
+        // $alert['start_date']=$fecha;
+        // $alert['end_date']=$fecha;
 
         return $this->db->insert($this->container, $alert); 
     }

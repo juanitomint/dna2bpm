@@ -136,6 +136,8 @@ function paint(resourceId, color, stroke_width) {
                 case "Exclusive_Databased_Gateway":
                     $('#' + shape.resourceId + ' .stencils .me [id*="_frame"]').attr('style', '').attr('stroke-width', stroke_with).attr('stroke', color);
                     break;
+                case "Subprocess":
+                    $($('#' + shape.resourceId + ' .stencils .me [id*="_frame"]')[1]).attr('stroke-width', stroke_with).attr('stroke', color);
                 case "SequenceFlow":
                 case "MessageFlow":
                     $('#' + shape.resourceId + ' .stencils .me path').attr('stroke-width', stroke_with).attr('stroke', color);

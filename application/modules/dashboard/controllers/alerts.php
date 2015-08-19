@@ -34,13 +34,33 @@ class Alerts extends MX_Controller {
     	$user = $this->user->get_user($this->idu);
     	$target=$user->group;
     	$target[]=$dashboard;
-    	$customData['lang'] = $this->lang->language;
+    	$customdata['lang'] = $this->lang->language;
 
-      	$customdata['my_alerts']=$this->alerts_model->get_alerts_by_filter($target);
+      //	$customdata['my_alerts']=$this->alerts_model->get_alerts_by_filter($target);
+        $alerts_raw=$this->alerts_model->get_alerts_by_filter($target);
+        $alerts=array();
+        // Check publish and unpublish
+         $now=date('Y-m-d H:i:s');
 
-      	$customdata['Nick']="test";
-        $q=count($customdata['my_alerts']);
-       	return ($q>0)?( $this->parser->parse('dashboard/widgets/alerts', $customdata, true, false)):('');
+        if(count($alerts_raw)>0){
+          foreach($alerts_raw as $alert){
+               if(isset($alert['start_date']) && $alert['start_date']<$now && $alert['end_date']>$now)
+                   $alerts[]=$alert;
+          }
+          $customdata['my_alerts']=$alerts;
+
+          if(count($alerts)>0)
+           return $this->parser->parse('dashboard/widgets/alerts', $customdata, true, false);
+             else
+           return array();
+        }else{
+           return array();
+        }
+
+
+         //return ($q>0)?( ):('');
+
+       	
 
     }
     

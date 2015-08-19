@@ -28,13 +28,39 @@
 <!-- Groups && panels -->
 <div class="form-group">
     <label>{lang alert_groups}</label>
-    <input id="event-groups" type="text" name="target" class="form-control" placeholder="{lang alert_groups}">
+    <input  type="text" name="target" class="form-control" placeholder="{lang alert_groups}">
 </div>
 
+        
+<!-- Dates -->
+<div class="row">
+    <div class="form-group col-md-6">
+        <div class="">
+          <label>{lang calendar_publish_date}:</label>
+            <div class="input-group">
+                <div class="input-group-addon">
+                    <i class="fa fa-calendar"></i>
+                </div>
+                <input class="form-control pull-right range" name="start_date"  type="text" placeholder="{lang calendar_publish_date}" value="">
+            </div><!-- /.input group -->      
+        </div>
+    </div>
+    <div class="form-group col-md-6">
+        <div class="">
+          <label>{lang calendar_unpublish_date}:</label>
+            <div class="input-group">
+                <div class="input-group-addon">
+                    <i class="fa fa-calendar"></i>
+                </div>
+                <input class="form-control pull-right range" name="end_date"  type="text" placeholder="{lang calendar_unpublish_date}" value="">
+            </div><!-- /.input group -->     
+        </div>
+    </div>
+</div>
 
+<!-- Send -->  
 
-<!-- Send -->                    
-<div class="input-group-btn">
     <button id="add-new-alert" type="submit" class="btn btn-default btn-flat btn-block">{lang alert_create_event}</button>
-</div>       
+
+      
 </form>
