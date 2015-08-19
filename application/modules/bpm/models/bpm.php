@@ -1317,7 +1317,8 @@ class Bpm extends CI_Model {
         foreach ($wf->childShapes as $obj) {
             // find childs
             //if (preg_match('/^Start/', $obj->stencil->id)) {
-            if ($obj->stencil->id == 'StartNoneEvent') {
+            //----don't look in subprocess
+            if ($obj->stencil->id == 'StartNoneEvent' and !in_array($obj->stencil->id,array('CollapsedSubprocess','Subprocess'))) {
                 $start_shapes[] = $obj;
                 if ($debug) {
                     echo '<h2>$start_shapes</h2>';
@@ -1325,7 +1326,6 @@ class Bpm extends CI_Model {
                     echo '<hr>';
                 }
             }
-            //----don't look in subprocess
             if (in_array($obj->stencil->id, array('Pool', 'Lane'))) {
                 if ($debug)
                     echo "&nbsp;&nbsp;&nbsp;Recalling:" . $obj->stencil->id . '<hr>';
