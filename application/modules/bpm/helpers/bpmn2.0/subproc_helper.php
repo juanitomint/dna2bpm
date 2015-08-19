@@ -107,7 +107,7 @@ function run_Subprocess($shape, $wf, $CI) {
         default:
             //---SAME AS STARTING A CASE
             //---Get start shape
-            $start_shapes = $CI->bpm->get_shape_byname('StartNoneEvent', $shape);
+            $start_shapes = $CI->bpm->get_shape_byname('StartNoneEvent', $shape,array('CollapsedSubprocess','Subprocess'));
             if (count($start_shapes)) {
                 $start_shape = $start_shapes[0];
                 if ($debug) {
