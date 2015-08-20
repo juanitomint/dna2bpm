@@ -60,7 +60,7 @@ class Repository extends MX_Controller {
                 if($exists){
                     $result['ok'] = false;
                     $result['msg']="id: $newidwf already exists, choose a unique id please";
-                    
+
                 } else {
                 $data= $this->bpm->load($idwf,false);
                 unset($data['_id']);
@@ -69,16 +69,16 @@ class Repository extends MX_Controller {
                 $this->bpm->save_raw($data);
                         $result['ok'] = true;
                         $result['msg']="created id: $newidwf";
-                    
+
                 }
             } else {
                 $result['ok'] = false;
-                $result['msg']="error";   
+                $result['msg']="error";
             }
         $this->output->set_content_type('json','utf8');
         echo json_encode($result);
     }
-    
+
     function save_as() {
         $data = json_decode($this->input->post('data'));
         //@todo fix svg displacement
@@ -96,7 +96,7 @@ class Repository extends MX_Controller {
             $this->bpm->save($idwf, $data, $svg);
         }
     }
-    
+
     function add($new_idwf=null) {
 //---check if has post
         if (!($this->input->post('idwf')or $new_idwf)) {
@@ -142,7 +142,7 @@ class Repository extends MX_Controller {
         } else {
             $result['ok']=false;
             $result['msg']="id: $idwf already exists, choose a unique id please";
-            
+
         }
         $this->output->set_content_type('json','utf8');
         echo json_encode($result);
@@ -216,7 +216,8 @@ class Repository extends MX_Controller {
 
 //$this->parser->parse('bpm/json_editor', $wfData);
         $this->output->set_content_type('json','utf-8');
-        echo json_encode($wfData);
+        $this->output->set_output(json_encode($wfData));
+        // echo json_encode($wfData);
     }
     function json_view($model,$idwf,$expand=false){
         $this->load->library('ui');
@@ -235,14 +236,14 @@ class Repository extends MX_Controller {
             'base_url' => $this->base_url,
             'module_url' => $this->module_url,
             'idwf' => $idwf,
-            
+
         );
-        
+
         $renderData['css'] = array(
             $this->module_url . 'assets/css/jsoneditor.min.css' => 'JSON-Editor CSS',
             $this->module_url . 'assets/css/json_view.css' => 'JSON-Editor CSS',
         );
-        
+
         $renderData['js'] = array(
             $this->module_url . 'assets/jscript/jsoneditor.min.js' => 'JSON-Editor',
             $this->module_url . 'assets/jscript/repository/json_view.js' => 'JSON-View Init',
@@ -252,7 +253,7 @@ class Repository extends MX_Controller {
         /*
         * Save edited script
         */
-        
+
     function save_script($idwf,$resourceId){
         $this->user->authorize();
         $debug=false;
@@ -269,14 +270,14 @@ class Repository extends MX_Controller {
         $mywf = $this->bpm->load($idwf);
         // $wf = $script;
         $wf = $mywf['data'];
-        
-        
-        
+
+
+
         //$this->output->set_content_type('json','utf-8');
         //$this->bpm->save($idwf, $wf, $mywf['svg']);
         echo date($this->lang->line('dateFmt'))." Saved!";
-        
-    
+
+
     }
     function thumbnail($idwf, $width, $heigth) {
         $svg = $this->bpm->svg($idwf);
