@@ -40,16 +40,28 @@ $(document).on('submit','#alertform',function(e){
         console.log(resp);
     });
 });
-    
-    
+
+
+//== Locale
+if(globals['lang']=='spanish'){
+   var locale= {
+    format: 'DD/MM/YYYY HH:mm ',
+    "daysOfWeek": ["Do","Lu","Ma","Mi","Ju","Vi","Sa" ],
+    "monthNames": ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"]
+   }
+}else{
+  var locale= {
+    format: 'DD/MM/YYYY HH:mm '
+   } 
+}
+
+// daterange    
 init_range();
 function init_range(){
     $('.range').daterangepicker({
     singleDatePicker: true,
     timePicker: true,
-    locale: {
-            format: 'DD/MM/YYYY HH:mm '
-    },
+    locale: locale,
     timePickerIncrement: 30,
     timePicker24Hour: true,
     opens: "right",
@@ -58,16 +70,47 @@ function init_range(){
     applyClass: "btn-success",
     cancelClass: "btn-default"
 }, function(start, end, label) {
-
 });
-
-
 }
 
+//=== delete alerts
 
-    
-    
-
+$(document).on('click','.bt_alert_delete',function(e){
+e.preventDefault();
+var id=$(this).attr('data-id');
+console.log(id);
 });
+
+//=== show/hide alerts
+
+$(document).on('click','.bt_alert_visible',function(e){
+e.preventDefault();
+var myid=$(this).parents('tr').attr('data-id');
+$.post(base_url+'dashboard/alerts/alert_onoff',{myid:myid},function(resp){
+    refresh();
+});
+});
+
+$(document).on('click','.bt_alert_delete',function(e){
+e.preventDefault();
+var myid=$(this).parents('tr').attr('data-id');
+$.post(base_url+'dashboard/alerts/alert_delete',{myid:myid},function(resp){
+    refresh();
+    console.log(resp);
+});
+});
+    
+    
+
+//=== refresh    
+function refresh(){
+    $.post(base_url+'dashboard/alerts/wrapper_alert_list_box',{},function(resp){
+    $('.alert_list_box').html(resp);
+    });
+
+}    
+    
+
+});//== /ready
 
 

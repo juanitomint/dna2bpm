@@ -36,23 +36,23 @@
 <div class="row">
     <div class="form-group col-md-6">
         <div class="">
-          <label>{lang calendar_publish_date}:</label>
+          <label>{lang alert_publish_date}</label>
             <div class="input-group">
                 <div class="input-group-addon">
                     <i class="fa fa-calendar"></i>
                 </div>
-                <input class="form-control pull-right range" name="start_date"  type="text" placeholder="{lang calendar_publish_date}" value="">
+                <input class="form-control pull-right range" name="start_date"  type="text" placeholder="{lang alert_publish_date}" value="">
             </div><!-- /.input group -->      
         </div>
     </div>
     <div class="form-group col-md-6">
         <div class="">
-          <label>{lang calendar_unpublish_date}:</label>
+          <label>{lang alert_unpublish_date}</label>
             <div class="input-group">
                 <div class="input-group-addon">
                     <i class="fa fa-calendar"></i>
                 </div>
-                <input class="form-control pull-right range" name="end_date"  type="text" placeholder="{lang calendar_unpublish_date}" value="">
+                <input class="form-control pull-right range" name="end_date"  type="text" placeholder="{lang alert_unpublish_date}" value="">
             </div><!-- /.input group -->     
         </div>
     </div>
