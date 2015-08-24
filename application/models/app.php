@@ -164,7 +164,7 @@ class App extends CI_Model {
     function getvalue($id, $idframe) {
         $rtnVal = null;
         $result = null;
-        $id = (double) $id;
+        $id = new MongoInt64($id);
         $idframe = (int) $idframe;
         //----Get container
         $frame = $this->mongowrapper->db->frames->findOne(array('idframe' => $idframe), array('container'));
@@ -193,7 +193,7 @@ class App extends CI_Model {
         $rtnarr = array();
         $rtnVal = null;
         $result = null;
-        $id = (double) $id;
+        $id = new MongoInt64($id);
         //----Fetch Database
         $query = array('id' => $id);
         $result = $this->mongowrapper->db->selectCollection($container)->findOne($query, $fields);
