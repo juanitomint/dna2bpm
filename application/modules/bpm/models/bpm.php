@@ -677,7 +677,7 @@ class Bpm extends CI_Model {
                 'assign' => $this->idu
             );
         $filter ['$or'] [] = array(
-                'idu' => $this->idu
+                'iduser' => $this->idu
             );
         $filter ['$or'] [] = array(
             'idgroup' => array(
@@ -1503,7 +1503,7 @@ class Bpm extends CI_Model {
         $token['type'] = $shape->stencil->id;
         $token['idwf'] = $wf->idwf;
         $token['case'] = $wf->case;
-        $token['idu'] = $this->idu;
+        $token['iduser'] = $this->idu;
         $token['microtime'] = microtime();
         return $token;
     }
