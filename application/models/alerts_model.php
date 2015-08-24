@@ -18,9 +18,12 @@ class Alerts_model extends CI_Model {
     
     // ===== Get Alerts using a filter
     function get_alerts_by_filter($target = array()) {
-        $this->db->where_in('target',$target);
-        //$this->db->where('start_date >=',$this->idu);
-        $this->db->where_not_in('read',array($this->idu));
+
+        // $this->db->where_in('target',$target);
+        // $this->db->where_not_in('read',array($this->idu));
+        //$query=array();
+        $query=array('read'=>array('$ne'=>$this->idu),'target'=>array('$in'=>$target),'show'=>1);
+        $this->db->where($query);
         $res=$this->db->get($this->container)->result_array();
 
         return $res;
@@ -58,10 +61,43 @@ class Alerts_model extends CI_Model {
         $alert['author']=$this->idu;
         // $alert['start_date']=$fecha;
         // $alert['end_date']=$fecha;
-
+        
         return $this->db->insert($this->container, $alert); 
     }
+
+
+//=== List box
+    function alert_list_box(){
+        $customdata=array();
+        $customdata['lang']= $this->lang->language;
+        return $this->db->get($this->container)->result_array();
+
+    }
     
+//=== Toggle on/off
+function alert_onoff($myid){
+$mongoID= new MongoId($myid);
+$query=array('_id'=>$mongoID);
+$this->db->where($query);
+$row=$this->db->get($this->container)->result_array();
+if(!empty($row)){
+    $show=($row[0]['show']==1)?(0):(1);
+    $this->db->where($query);
+    $alert=array('show'=>$show);
+    return $this->db->update($this->container,$alert);
+
+}
+// $this->db->delete($this->container);
+}
+    
+//=== Toggle on/off
+function alert_delete($myid){
+$mongoID= new MongoId($myid);
+$query=array('_id'=>$mongoID);
+$this->db->where($query);
+$this->db->delete($this->container);
+}
+  
 
 
 }
