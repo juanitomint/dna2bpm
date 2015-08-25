@@ -136,8 +136,8 @@ class Inbox extends MX_Controller {
     		$msg['body']=nl2br($msg['body']);
     		$userdata = $this->user->get_user($msg['from']);
     	    $url_avatar=Modules::run('user/profile/get_avatar',$msg['from']); //Avatar URL
-    	    $avatar="<img style='width:24px;height:24px;margin-right:5px' src='$url_avatar' />";
-    		$msg['from_name']=(empty($userdata))?('No user'):($avatar.$userdata->nick);
+    	    $msg['avatar']="<img style='width:24px;height:24px;margin-right:5px' src='$url_avatar' />";
+    		$msg['from_name']=(empty($userdata))?('No user'):($userdata->nick);
     		$userdata = $this->user->get_user($msg['to']);
     		$msg['to_name']=(empty($userdata))?('No user'):($userdata->nick);
     
