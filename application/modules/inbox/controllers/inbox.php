@@ -107,7 +107,9 @@ class Inbox extends MX_Controller {
 
 		//== 
 		
+		
     	foreach ($mymgs as $msg) {
+
     		$msg['msgid'] = $msg['_id'];
     		$msg['subject']=(strlen($msg['subject'])!=0)?($msg['subject']):("No Subject");
 
@@ -133,7 +135,9 @@ class Inbox extends MX_Controller {
     		$msg['read'] = (isset($msg['read'])&&$msg['read']==true) ? ('read') : ('unread');
     		$msg['body']=nl2br($msg['body']);
     		$userdata = $this->user->get_user($msg['from']);
-    		$msg['from_name']=(empty($userdata))?('No user'):($userdata->nick);
+    	    $url_avatar=Modules::run('user/profile/get_avatar',$msg['from']); //Avatar URL
+    	    $avatar="<img style='width:24px;height:24px;margin-right:5px' src='$url_avatar' />";
+    		$msg['from_name']=(empty($userdata))?('No user'):($avatar.$userdata->nick);
     		$userdata = $this->user->get_user($msg['to']);
     		$msg['to_name']=(empty($userdata))?('No user'):($userdata->nick);
     

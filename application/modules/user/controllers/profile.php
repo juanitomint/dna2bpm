@@ -179,15 +179,18 @@ class Profile extends MX_Controller {
         //header('Location:');
     }
     
-    function get_avatar(){
-        $current_user=(array) $this->user->get_user((int) $this->idu);
+    function get_avatar($userID=null){
+
+        $current_user=(is_null($userID))?((int)$this->idu):((int)$userID);
+
+      //  $current_user=(array) $this->user->get_user((int)$userID);
         $genero = isset($current_user['gender']) ? ($current_user['gender']) : ("male");
 
         // Chequeo avatar
-        if ( is_file("images/avatar/".$this->idu.".jpg")){
-        	return base_url()."images/avatar/".$this->idu.".jpg";
-        }elseif(is_file("images/avatar/".$this->idu.".png")){
-        	return base_url()."images/avatar/".$this->idu.".png";
+        if ( is_file(FCPATH."images/avatar/".$userID.".jpg")){
+        	return base_url()."images/avatar/".$userID.".jpg";
+        }elseif(is_file(FCPATH."images/avatar/".$userID.".png")){
+        	return base_url()."images/avatar/".$userID.".png";
         }else{
         
         	return ($genero == "male")?(base_url()."images/avatar/male.jpg"):(base_url()."images/avatar/female.jpg");    	
