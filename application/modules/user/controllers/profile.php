@@ -182,10 +182,8 @@ class Profile extends MX_Controller {
     function get_avatar($userID){
 
         $current_user=(empty($userID))?((int)$this->idu):((int)$userID);
-
-
-      //  $current_user=(array) $this->user->get_user((int)$userID);
         $genero = isset($current_user['gender']) ? ($current_user['gender']) : ("male");
+        $userdata=(array) $this->user->get_user($current_user);
 
         // Chequeo avatar
         if ( is_file(FCPATH."images/avatar/".$current_user.".jpg")){
@@ -193,7 +191,14 @@ class Profile extends MX_Controller {
         }elseif(is_file(FCPATH."images/avatar/".$current_user.".png")){
         	return base_url()."images/avatar/".$current_user.".png";
         }else{
-        
+            //=== gravatar test
+            if($this->config->item('gravatar')){
+                $hash=md5( strtolower( trim( $userdata['email'] ) ) );
+                $gravatar="http://www.gravatar.com/avatar/$hash";
+                return $gravatar;
+            }
+            //
+            
         	return ($genero == "male")?(base_url()."images/avatar/male.jpg"):(base_url()."images/avatar/female.jpg");    	
         }
     }
