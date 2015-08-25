@@ -234,11 +234,15 @@ class Engine extends MX_Controller {
                 'status' => 'pending'
             );
 
-            //  var_dump(json_encode($filter));exit;
             // ----filter specific shape to run
             if ($run_resourceId)
                 $filter ['resourceId'] = $run_resourceId;
-
+            // var_dump(json_encode($filter));exit;
+            
+            /**
+             * Start procesing pending tokens
+             */ 
+            
             while ($i <= 100 and $open = $this->bpm->get_tokens_byFilter($filter)) {
                 if ($debug)
                     echo "<h1>Step:$i</h1>";
@@ -887,7 +891,7 @@ class Engine extends MX_Controller {
         $renderData ['idwf'] = $idwf;
         $renderData ['case'] = $idcase;
         $user = $this->user->getuser($this->idu);
-
+        $filter=array();
 
         // ----if specific token has been passed then run this token
         if ($run_resourceId) {
@@ -900,10 +904,10 @@ class Engine extends MX_Controller {
         // var_dump('case',$case,'run_manual',$run_manual);
         if ($case ['status'] == 'open') {
             // ----load WF data
-            $myTasks = $this->bpm->get_pending($idwf, $idcase, array(
-                'user',
-                'manual'
-                    ));
+            $myTasks = $this->bpm->get_pending(
+                $idwf, 
+                $idcase, array('user','manual'),//---status
+                    $filter);
             // foreach($myTasks as $task){
             //     echo $task['title'].'<br/>';
             //     echo '<hr/>';

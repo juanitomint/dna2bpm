@@ -56,7 +56,7 @@ class Case_manager extends MX_Controller {
             echo '<h2>' . __FUNCTION__ . '</h2>';
         //---sanitize resourceId
         $resourceId = urldecode($resourceId);
-        $case = $this->bpm->get_case($idcase);
+        $case = $this->bpm->get_case($idcase,$idwf);
         $token = $this->bpm->get_token($idwf, $idcase, $resourceId);
         $filter = array(
             'idwf' => $idwf,
