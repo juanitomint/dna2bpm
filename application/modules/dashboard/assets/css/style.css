@@ -78,3 +78,11 @@ color: #ddd;
     padding: 14px 8px;
     border-radius: 8px;
 }   
+
+.sidebar-menu ul li{
+  list-style:none;  
+}
+
+.sidebar-menu ul li i{
+  width:20px;
+}
