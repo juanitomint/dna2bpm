@@ -415,7 +415,7 @@ class Kpi extends MX_Controller {
 		// ----PROCESS KPIS
 		$this->parser->parse ( 'bpm/widgets/list.kpi.ui.php', $cpData,false,true );
 	}
-	function list_cases($idkpi, $page = 1, $pagesize = 3) {
+	function list_cases($idkpi, $page = 1, $pagesize = 5) {
 		$page=(int)$page;
 		$pagesize=(int)$pagesize;
 		
@@ -493,7 +493,7 @@ class Kpi extends MX_Controller {
 		
 		// $cpData ['start'] = $offset + 1;
 		// $cpData ['top'] = $top;
-		// $cpData ['qtty'] = $total;
+		 $cpData ['qtty'] = $total;
 		// ----make content
 		
 		for($i = $offset; $i < $top; $i ++) {

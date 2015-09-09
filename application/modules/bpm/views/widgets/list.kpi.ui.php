@@ -16,7 +16,7 @@
 
 
 	<div class="box-body">
-			<p>{kpi desc}></p>
+			<p>{kpi desc}</p>
 		{content}
 	</div>
 	<!-- /.box-body -->
