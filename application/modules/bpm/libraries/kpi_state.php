@@ -29,6 +29,7 @@ class kpi_state {
     }
 
     function list_cases($kpi) {
+
         $filter = $this->CI->kpi_model->get_filter($kpi); 
         $status = (isset($kpi['status'])) ? $kpi['status'] : 'user';
         $filter['$and'] = array(
@@ -36,6 +37,7 @@ class kpi_state {
             array('token_status.' . $kpi['resourceId'] => $status),
         );
         $cases_filtered = $this->CI->bpm->get_cases_byFilter($filter);
+
         $cases = array_map(function ($case) {
             return $case['id'];
         }, $cases_filtered);

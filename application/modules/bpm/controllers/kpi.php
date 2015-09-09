@@ -15,6 +15,7 @@ class Kpi extends MX_Controller {
 		parent::__construct ();
 		$this->load->model ( 'kpi_model' );
 		$this->load->library ( 'parser' );
+		$this->load->library('pagination');
 		$this->load->model ( 'user' );
 		$this->load->model ( 'user/group' );
 		$this->user->authorize ();
@@ -414,7 +415,10 @@ class Kpi extends MX_Controller {
 		// ----PROCESS KPIS
 		$this->parser->parse ( 'bpm/widgets/list.kpi.ui.php', $cpData,false,true );
 	}
-	function list_cases($idkpi, $page = 1, $pagesize = 5) {
+	function list_cases($idkpi, $page = 1, $pagesize = 3) {
+		$page=(int)$page;
+		$pagesize=(int)$pagesize;
+		
 		$debug = (isset ( $this->debug [__FUNCTION__] )) ? $this->debug [__FUNCTION__] : false;
 		if ($debug)
 			echo '<h2>' . __FUNCTION__ . '</h2>';
@@ -426,6 +430,8 @@ class Kpi extends MX_Controller {
 		$cpData ['module_url'] = $this->module_url;
 		$cpData ['showPager'] = false;
 		$kpi = $this->kpi_model->get ( $idkpi );
+		
+
 		// var_dump($kpi);exit;
 		// ----if specified pagesize comes from KPI
 		$kpi ['list_records'] = (isset ( $kpi ['list_records'] )) ? $kpi ['list_records'] : $pagesize;
@@ -440,6 +446,8 @@ class Kpi extends MX_Controller {
 		}
 		$cpData ['kpi'] = $kpi;
 		$cases = $this->Get_cases ( $kpi );
+
+
 		$parseArr = array ();
 		// -----prepare pagination;
 		$total = count ( $cases );
@@ -450,19 +458,42 @@ class Kpi extends MX_Controller {
 				$offset + $pagesize,
 				$total 
 		) );
-		// ---prepare pages
-		$cpData ['showPager'] = ($pages > 1) ? true : false;
-		for($i = 1; $i <= $pages; $i ++) {
-			$cpData ['pages'] [] = array (
-					'title' => $i,
-					'url' => $this->base_url . 'bpm/kpi/list_cases/' . $idkpi . '/' . $i . '/' . $pagesize,
-					'class' => ($i == $page) ? 'bg-blue' : '' 
-			);
-		}
 		
-		$cpData ['start'] = $offset + 1;
-		$cpData ['top'] = $top;
-		$cpData ['qtty'] = $total;
+
+		
+    	//==== Pagination
+    	define("PAGINATION_WIDTH",6);
+    	define("PAGINATION_ALWAYS_VISIBLE",true);
+    	define("PAGINATION_ITEMS_X_PAGE",$pagesize);
+    	
+    	$config=array('url'=>$this->base_url . 'bpm/kpi/list_cases/' . $idkpi,
+    			'current_page'=>$page,
+    			'items_total'=>$total, // Total items 
+    			'items_x_page'=>PAGINATION_ITEMS_X_PAGE,
+    			'pagination_width'=>PAGINATION_WIDTH,
+    			'class_ul'=>"pagination-sm",
+    			'class_a'=>"reload_widget",
+    			'pagination_always_visible'=>PAGINATION_ALWAYS_VISIBLE
+    	);
+    	$cpData['pagination']=$this->pagination->index($config);
+    	$cpData['items_total']=$total;
+    	
+
+    	//==
+    	
+		//---prepare pages
+		// $cpData ['showPager'] = ($pages > 1) ? true : false;
+		// for($i = 1; $i <= $pages; $i ++) {
+		// 	$cpData ['pages'] [] = array (
+		// 			'title' => $i,
+		// 			'url' => $this->base_url . 'bpm/kpi/list_cases/' . $idkpi . '/' . $i . '/' . $pagesize,
+		// 			'class' => ($i == $page) ? 'bg-blue' : '' 
+		// 	);
+		// }
+		
+		// $cpData ['start'] = $offset + 1;
+		// $cpData ['top'] = $top;
+		// $cpData ['qtty'] = $total;
 		// ----make content
 		
 		for($i = $offset; $i < $top; $i ++) {
@@ -485,6 +516,8 @@ class Kpi extends MX_Controller {
 					'user' => ( array ) $this->user->get_user_safe ( $case ['iduser'] ) 
 			), $case ['data'] );
 		}
+		
+		
 		if ($kpi ['list_template'] != '') {
 			$template = $kpi ['list_template'];
 		} else {
@@ -523,8 +556,14 @@ class Kpi extends MX_Controller {
 				'cases' => $parseArr 
 		), true, true );
 		// ----PROCESS KPIS
-		$this->parser->parse ( 'bpm/widgets/list.kpi.ui.php', $cpData );
+		
+
+
+	$this->parser->parse ( 'bpm/widgets/list.kpi.ui.php', $cpData );
 	}
+	
+	
+	
 	function widget($model, $idkpi, $widget = 'box_info') {
 		$debug = (isset ( $this->debug [__FUNCTION__] )) ? $this->debug [__FUNCTION__] : false;
 		if ($debug)
