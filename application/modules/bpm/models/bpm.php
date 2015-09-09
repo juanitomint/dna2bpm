@@ -449,7 +449,7 @@ class Bpm extends CI_Model {
     }
 
     function clear_case($idwf, $idcase) {
-        $case = $this->get_case($idcase);
+        $case = $this->get_case($idcase,$idwf);
         $_id = $case['_id'];
         return $this->save_case(
                         array(
@@ -503,7 +503,7 @@ class Bpm extends CI_Model {
      */
 
     function consolidate_data($idwf, $idcase, $resourceId) {
-        $case = $this->get_case($idcase);
+        $case = $this->get_case($idcase,$idwf);
         $data = $this->load_case_data($case, $idwf);
         $token = $this->get_token($idwf, $idcase, $resourceId);
         if (!$token) {
@@ -926,7 +926,7 @@ class Bpm extends CI_Model {
 
         $data['idwf'] = $idwf;
         $data['id'] = $id;
-        $case = $this->get_case($id);
+        $case = $this->get_case($id,$idwf);
         //---calculate interval since case started
         $dateIn = (isset($case['checkdate'])) ? new DateTime($case['checkdate']) : new DateTime();
         //---now
@@ -1538,7 +1538,7 @@ class Bpm extends CI_Model {
         $token = $this->get_token($wf->idwf, $wf->case, $shape->resourceId);
         //---set special status "user"
         //---Get Case
-        $case = $this->get_case($wf->case);
+        $case = $this->get_case($wf->case,$wf->idwf);
 
 
         //---Set Initiator same as case creator
