@@ -2,7 +2,7 @@ var second = null;
 var third = null;
 var gridIndex = 0;
 var HSPEED = 1300;
-
+var activeLane = null;    
 function revertTo(result) {
     if (result == 'yes') {
         resourceId = this.get('resourceId');
@@ -147,6 +147,7 @@ function play() {
         tokenGrid.selModel.select(gridIndex);
         record = store.getAt(gridIndex);
         highlightToken(null, record);
+        highlightLane(record);
         gridIndex++;
     }
 
@@ -159,13 +160,32 @@ function tokens_paint_all() {
         highlightToken(null, record);
     });
 }
-
+function highlightLane(record){
+    //---try to paint active lane
+    var excluded=new Array("MessageFlow","SequenceFlow","Lane");
+            if(excluded.indexOf(record.data.type)!=-1) 
+            return;
+            var me = $('#' + record.data.resourceId);
+            var lane = me.parent().parent().find('[title=Lane]');
+            var laneId = lane.attr('id');
+            if (activeLane != laneId) {
+                //----Dim actual Lane
+                    
+                //$('[title=Lane]').find('rect').attr('fill', '#FFF7C9');
+                if (activeLane)
+                    $('#' + activeLane).find('rect').attr('fill', '#FFF7C9');
+                //----Highlight active
+                lane.find('rect').attr('fill', '#d1e0ff');
+                activeLane=laneId;
+            }
+}
 function step_forward() {
     store = tokenGrid.store;
     if (gridIndex < store.count()) {
         record = store.getAt(gridIndex);
         tokenGrid.selModel.select(gridIndex);
         highlightToken(null, record);
+        highlightLane(record);
         gridIndex++;
     }
 
@@ -178,6 +198,7 @@ function step_backward() {
         record = store.getAt(gridIndex);
         tokenGrid.selModel.select(gridIndex);
         highlightToken(null, record);
+        highlightLane(record);
     }
 
 }
