@@ -274,7 +274,7 @@ var tokenGrid = Ext.create('Ext.grid.Panel', {
     //store:dgstore,    
     store: Ext.getStore('tokenStore'),
     columns: [
-        Ext.create('Ext.grid.RowNumberer'), {
+        Ext.create('Ext.grid.RowNumberer',{width:40}), {
             menuDisabled: true,
             sortable: false,
             xtype: 'actioncolumn',
