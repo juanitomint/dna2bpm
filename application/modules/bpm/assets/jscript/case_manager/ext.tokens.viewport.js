@@ -81,9 +81,8 @@ Ext.application({
                 },
                 afterRender: function(){
                     remove_loaders();
-                    load_data_callback=tokens_paint_all;
-                    load_model(globals.idwf);
-                    tokens_load_status(globals.idwf,globals.idcase);
+                    // load_model(globals.idwf);
+                    tokens_load_status(globals.idwf,globals.idcase,tokens_paint_all);
                 }
                     
             }

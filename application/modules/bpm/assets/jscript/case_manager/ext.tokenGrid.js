@@ -2,7 +2,8 @@ var second = null;
 var third = null;
 var gridIndex = 0;
 var HSPEED = 1300;
-var activeLane = null;    
+var activeLane = null;
+
 function revertTo(result) {
     if (result == 'yes') {
         resourceId = this.get('resourceId');
@@ -16,7 +17,7 @@ function revertTo(result) {
             // define a handler for request success
             success: function(response, options) {
                 gridClick(null, mygrid.selModel.selected.items[0])
-                //Ext.Msg.alert('Status', 'Changes saved successfully.');
+                    //Ext.Msg.alert('Status', 'Changes saved successfully.');
             },
             // NO errors ! ;)
             failure: function(response, options) {
@@ -45,11 +46,11 @@ function highlightToken(view, record, item, index, e, options) {
     //      stroke_width = 2;
     //     //paint(third,color,stroke_width)
     // }
-      if (second) {
-        
-         last=tokenGrid.store.getAt(tokenGrid.store.find('resourceId',second))
-        
-         switch (last.get('status')) {
+    if (second) {
+
+        last = tokenGrid.store.getAt(tokenGrid.store.find('resourceId', second))
+
+        switch (last.get('status')) {
             case "canceled":
                 color = 'FireBrick';
                 break;
@@ -60,11 +61,11 @@ function highlightToken(view, record, item, index, e, options) {
                 color = 'green';
                 break;
         }
-         stroke_width = 3;
-         paint(second, color, stroke_width)
-         third = second;
-     }
-    
+        stroke_width = 3;
+        paint(second, color, stroke_width)
+        third = second;
+    }
+
     color = 'orange';
     resourceId = record.data.resourceId;
     lockedBy = record.data.lockedBy;
@@ -160,25 +161,27 @@ function tokens_paint_all() {
         highlightToken(null, record);
     });
 }
-function highlightLane(record){
+
+function highlightLane(record) {
     //---try to paint active lane
-    var excluded=new Array("MessageFlow","SequenceFlow","Lane");
-            if(excluded.indexOf(record.data.type)!=-1) 
-            return;
-            var me = $('#' + record.data.resourceId);
-            var lane = me.parent().parent().find('[title=Lane]');
-            var laneId = lane.attr('id');
-            if (activeLane != laneId) {
-                //----Dim actual Lane
-                    
-                //$('[title=Lane]').find('rect').attr('fill', '#FFF7C9');
-                if (activeLane)
-                    $('#' + activeLane).find('rect').attr('fill', '#FFF7C9');
-                //----Highlight active
-                lane.find('rect').attr('fill', '#d1e0ff');
-                activeLane=laneId;
-            }
+    var excluded = new Array("MessageFlow", "SequenceFlow", "Lane");
+    if (excluded.indexOf(record.data.type) != -1)
+        return;
+    var me = $('#' + record.data.resourceId);
+    var lane = me.parent().parent().find('[title=Lane]');
+    var laneId = lane.attr('id');
+    if (activeLane != laneId) {
+        //----Dim actual Lane
+
+        //$('[title=Lane]').find('rect').attr('fill', '#FFF7C9');
+        if (activeLane)
+            $('#' + activeLane).find('rect').attr('fill', '#FFF7C9');
+        //----Highlight active
+        lane.find('rect').attr('fill', '#d1e0ff');
+        activeLane = laneId;
+    }
 }
+
 function step_forward() {
     store = tokenGrid.store;
     if (gridIndex < store.count()) {
@@ -210,7 +213,7 @@ function tokens_reload() {
 }
 
 
-function tokens_load_history(idwf, idcase) {
+function tokens_load_history(idwf, idcase,callback) {
     idwf = (idwf) ? idwf : globals.idwf;
     idcase = (idcase) ? idcase : globals.idcase;
     TokensFolow.setValue(1);
@@ -218,7 +221,7 @@ function tokens_load_history(idwf, idcase) {
     url = globals.module_url + 'case_manager/tokens/history/' + idwf + '/' + idcase;
     tokenStore = Ext.getStore('tokenStore')
     tokenStore.proxy.url = url;
-    tokenStore.load();
+    tokenStore.load(callback);
     //---set callback function fro load_model->load_data
     load_data_callback = start_play;
     load_model(idwf);
@@ -226,14 +229,14 @@ function tokens_load_history(idwf, idcase) {
     gridIndex = 0;
 }
 
-function tokens_load_status(idwf, idcase) {
+function tokens_load_status(idwf, idcase, callback) {
     idwf = (idwf) ? idwf : globals.idwf;
     idcase = (idcase) ? idcase : globals.idcase;
     //----set url for tokens proxy
     url = globals.module_url + 'case_manager/tokens/status/' + idwf + '/' + idcase;
     tokenStore = Ext.getStore('tokenStore')
     tokenStore.proxy.url = url;
-    tokenStore.load();
+    tokenStore.load(callback);
     //---set callback function fro load_model->load_data
     load_data_callback = tokens_paint_all;
     load_model(idwf);
@@ -295,7 +298,9 @@ var tokenGrid = Ext.create('Ext.grid.Panel', {
     //store:dgstore,    
     store: Ext.getStore('tokenStore'),
     columns: [
-        Ext.create('Ext.grid.RowNumberer',{width:40}), {
+        Ext.create('Ext.grid.RowNumberer', {
+            width: 40
+        }), {
             menuDisabled: true,
             sortable: false,
             xtype: 'actioncolumn',
