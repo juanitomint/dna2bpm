@@ -55,7 +55,7 @@ var ModelAdd = Ext.create('Ext.Action', {
                         tree.setLoading('saving...');
                         Ext.Ajax.request({
                             // the url to the remote source\/test-call-activity
-                            url: globals.module_url+'/repository/add/model',
+                            url: globals.module_url+'repository/add/',
                             method: 'POST',
                             params:{
                             
@@ -65,7 +65,59 @@ var ModelAdd = Ext.create('Ext.Action', {
                             // define a handler for request success
                             success: function(response, options){
                                 tree.setLoading(false);
-                                n.appendChild(node);                 
+                                var o=JSON.parse(response.responseText);
+                                if(o.ok)
+                                    n.appendChild(node);
+                                Ext.Msg.alert('Status',o.msg);
+                            },
+                            // NO errors ! ;)
+                            failure: function(response,options){
+                                alert('Error Loading:'+response.err);
+                                tree.setLoading(false);
+                
+                            }
+                        });
+                    }
+                });
+            } else {
+                //---show message
+                Ext.MessageBox.alert('Error!', "'Can't add a model here");
+            }
+        } else {
+            Ext.MessageBox.alert('Error!', "'Nothing selected");
+        }
+    }
+});
+/**
+ * Duplicate model from context menu
+ * 
+ */
+var ModelDuplicate = Ext.create('Ext.Action', {
+    iconCls: 'fa fa-files-o',
+    text: 'Duplicate Model',
+    handler: function(widget, event) {
+        var n = tree.getSelectionModel().getSelection()[0];
+        if(n){
+            
+            if (n.isLeaf()) {
+                Ext.MessageBox.prompt('<i class="fa fa-files-o"></i> Duplicate Model', 'Please enter a new Model id:', function(btn,text){
+                    if(btn=='ok' && text){
+                        tree.setLoading('saving...');
+                        Ext.Ajax.request({
+                            // the url to the remote source\/test-call-activity
+                            url: globals.module_url+'repository/duplicate',
+                            method: 'POST',
+                            params:{
+                            
+                                'newidwf':text,
+                                'idwf':n.data.id
+                            },
+                            // define a handler for request success
+                            success: function(response, options){
+                                var o=JSON.parse(response.responseText);
+                                Ext.Msg.alert('Status',o.msg);
+                                tree.store.reload()
+                                tree.setLoading(false);
                             },
                             // NO errors ! ;)
                             failure: function(response,options){
@@ -147,7 +199,7 @@ var reloadTree = Ext.create('Ext.Action', {
 var contextMenu = Ext.create('Ext.menu.Menu', {
     title:'Path Menu',
     items: [
-    FolderAdd,ModelAdd,ModelRemove
+    FolderAdd,ModelAdd,ModelRemove,ModelDuplicate
     ]
 });
     

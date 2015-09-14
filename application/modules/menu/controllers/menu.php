@@ -86,7 +86,7 @@ class Menu extends MX_Controller {
         $rtnArr['paths'] = $this->menu_model->get_paths();
 
         if (!$debug) {
-            header('Content-type: application/json;charset=UTF-8');
+            $this->output->set_content_type('json','utf-8');
             echo json_encode($rtnArr);
         } else {
             var_dump($rtnArr);
@@ -105,7 +105,7 @@ class Menu extends MX_Controller {
         //$properties=(isset($data['properties'])) ? $data['properties'] : array();
         $menu_item->load(array(), $this->template);
         if (!$debug) {
-            header('Content-type: application/json;charset=UTF-8');
+            $this->output->set_content_type('json','utf-8');
             echo json_encode($menu_item->toShow());
         } else {
             var_dump('Obj', $menu_item, 'Save:', $menu_item->toSave(), 'Show', $menu_item->toShow());
@@ -180,7 +180,7 @@ class Menu extends MX_Controller {
                 break;
         }
         if (!$debug) {
-            header('Content-type: application/json;charset=UTF-8');
+            $this->output->set_content_type('json','utf-8');
             echo json_encode($rtnArr);
         } else {
             var_dump($rtnArr);
@@ -210,7 +210,7 @@ class Menu extends MX_Controller {
 
 
         if (!$debug) {
-            header('Content-type: application/json;charset=UTF-8');
+            $this->output->set_content_type('json','utf-8');
             echo json_encode($menu_item->toShow());
         } else {
             var_dump($menu_item->toShow());
@@ -320,68 +320,34 @@ class Menu extends MX_Controller {
         echo $this->get_menu($repoId);
     }
 
-    function get_ul($menu, $ulClass = '') {
+    
+   function get_ul($menu, $ulClass = '') {
 
-        $returnStr = '';
-        $returnStr.='<ul class="' . $ulClass . '">';
-        foreach ($menu as $path => $node) {
-            $returnStr.='<li>';
+         $returnStr = '';
+         $returnStr.='<ul class="' . $ulClass . ' ">';
+         foreach ($menu as $path => $node) {
 
-            $returnStr.='<a href="' . $node->target . '" title="' . $node->title . '"';
-            if ($node->cls)
-                $returnStr.='class="' . $node->cls . '"';
-            $returnStr.='>';
-
-
-
-            if (isset($node->iconCls)) {
-                if ($node->iconCls <> '')
-                    $returnStr.='<i class="ion ' . $node->iconCls . '"></i>';
-            }
-
-            $returnStr.=$node->text;
-            ;
-            $returnStr.='</a>';
-            if (!$node->leaf) {
-                if (count($node->children))
-                    $returnStr.=$this->get_ul($node->children, 'dropdown');
-            }
-            $returnStr.='</li>';
-        }
+             $icon= "<i class='ion $node->iconCls'></i>";
+             $anchor="<a href='$node->target' title='$node->title' class='$node->cls' >";
+            
+            if(!$node->leaf && count($node->children)){
+                 //submenu
+                 $returnStr.="<li class='treeview'><a href='#'> $icon <span>$node->text</span><i class='fa fa-angle-left pull-right'></i>";
+                 $returnStr.=$this->get_ul($node->children, 'treeview-menu');
+                 $returnStr.="</a></li>";
+            }else{
+                // li 
+                 $returnStr.="<li>$anchor  $icon $node->text";
+                 $returnStr.="</a></li>";
+            } 
+            
+         }
         $returnStr.='</ul>';
         return $returnStr;
+
     }
 
-    function get_ul_submenu($menu, $ulAdd = '') {
+    
 
-        $returnStr = '';
-        $returnStr.='<ul ' . $ulAdd . '>';
-        foreach ($menu as $path => $node) {
-            $liAdd = 'class="dropdown"';
-            $aAdd = 'data-toggle="dropdown" class="dropdown-toggle" role="button"';
-            $aCaret = '';
-            if (count($node->children)) {
-                $ulAdd = 'class="dropdown-menu" aria-labelledby="' . $node->id . '"';
-                $aCaret = '<b class="caret"></b>';
-            }
-            $returnStr.="<li $liAdd>";
-
-            $returnStr.='<a id="' . $node->id . '" href="' . $node->target . '" title="' . $node->title . '" ' . $aAdd . '>' . $node->text . $aCaret;
-            if (isset($node->iconCls)) {
-                if ($node->iconCls <> '')
-                    $returnStr.='<i class="icon ' . $node->iconCls . '"></i>';
-            }
-
-            $returnStr.='</a>';
-
-            if (count($node->children)) {
-                $returnStr.=$this->get_ul_submenu($node->children, $ulAdd);
-            }
-
-            $returnStr.='</li>';
-        }
-        $returnStr.='</ul>';
-        return $returnStr;
-    }
 
 }

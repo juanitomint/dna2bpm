@@ -8,7 +8,7 @@ class Backend extends CI_Model {
     function get_app($idapp) {
         $query = array('idapp' => (int) $idapp);
         $fields = array();
-        $thisObj = $this->mongo->db->apps->findOne($query, $fields);
+        $thisObj = $this->mongowrapper->db->apps->findOne($query, $fields);
         if ($thisObj) {
             return $thisObj;
         } else {
@@ -20,13 +20,13 @@ class Backend extends CI_Model {
         $query = array('idobj' => $idobj);
         $fields = (isset($fields)) ? $fields : array();
         //var_dump(json_encode($query));
-        $thisObj = $this->mongo->db->forms->findOne($query, $fields);
+        $thisObj = $this->mongowrapper->db->forms->findOne($query, $fields);
         return $thisObj;
     }
 //@todo change this function to form model
     function getFormsByEntity($entity) {
         $query = array('ident' => $entity,'type'=>'D');
-        $rs = $this->mongo->db->forms->find($query);
+        $rs = $this->mongowrapper->db->forms->find($query);
         return $rs;
     }
 
@@ -43,7 +43,7 @@ class Backend extends CI_Model {
             'idobj' => $idobj,
             'idu' => $this->session->userdata('iduser')
         );
-        $result = $this->mongo->db->apps->save($app, $options);
+        $result = $this->mongowrapper->db->apps->save($app, $options);
     }
 
     function delete_object($idobj) {
@@ -52,8 +52,8 @@ class Backend extends CI_Model {
         $criteria = array('idobj' => $idobj);
         //----make backup first
         $obj = $this->app->get_object($idobj);
-        $this->mongo->db->selectCollection('forms.back')->save($obj, $options_save);
-        $this->mongo->db->forms->remove($criteria, $options_delete);
+        $this->mongowrapper->db->selectCollection('forms.back')->save($obj, $options_save);
+        $this->mongowrapper->db->forms->remove($criteria, $options_delete);
     }
 
     function remove_from_app($idobj, $idapp) {
@@ -67,14 +67,14 @@ class Backend extends CI_Model {
 
         $app['objs'] = array_filter((array) $app['objs']);
 
-        $result = $this->mongo->db->apps->save($app, $options);
+        $result = $this->mongowrapper->db->apps->save($app, $options);
     }
 
     function get_frame_hooks($idframe) {
 
         $query = array('idframe' => $idframe);
         $fields = array();
-        $thisObj = $this->mongo->db->hooks->findOne($query, $fields);
+        $thisObj = $this->mongowrapper->db->hooks->findOne($query, $fields);
         if ($thisObj) {
             return $thisObj;
         } else {
@@ -86,7 +86,7 @@ class Backend extends CI_Model {
 
         $query = array('idapp' => (int) $idapp);
         $fields = array();
-        $thisObj = $this->mongo->db->apps->findOne($query, $fields);
+        $thisObj = $this->mongowrapper->db->apps->findOne($query, $fields);
         if ($thisObj) {
             return $thisObj;
         } else {

@@ -18,12 +18,12 @@ class mongo_connector extends CI_Model {
             $query = (is_array($query)) ? $query : json_decode($query);
             //---select the database
             if ($resource['datastoreref']) {
-                $this->mongo->db = $this->mongo->selectDB($resource['datastoreref']);
+                $this->mongowrapper->db = $this->mongowrapper->selectDB($resource['datastoreref']);
             }
             if (isset($fields)) {
-                $rs = $this->mongo->db->selectCollection($resource['itemsubjectref'])->find($query, $fields);
+                $rs = $this->mongowrapper->db->selectCollection($resource['itemsubjectref'])->find($query, $fields);
             } else {
-                $rs = $this->mongo->db->selectCollection($resource['itemsubjectref'])->find($query);
+                $rs = $this->mongowrapper->db->selectCollection($resource['itemsubjectref'])->find($query);
             }
          
             if (isset($resource['sort']))

@@ -25,7 +25,7 @@ class isloggedin extends CI_Controller {
     function __construct() {
         parent::__construct();
         $result = ($this->session->userdata('loggedin')) ? array('isloggedin' => true) : array('isloggedin' => false);
-        header('Content-type: application/json;charset=UTF-8');
+        $this->output->set_content_type('json','utf-8');
         echo json_encode($result);
         exit;
     }

@@ -1,0 +1,139 @@
+@page  
+{ 
+    size: auto;   
+    margin: 0mm 0mm 0mm 0mm;  
+} 
+
+/*==============   @SCREEN   ============== */
+@media screen{
+    
+legend{
+    font-weight: bold;
+    font-size: 30px;
+    color: #778FA5;
+    opacity: 0.2;
+    top:10px;
+    left:10px;
+    position: absolute;
+    
+  }
+}
+
+/*==============   @PRINT   ============== */
+@media print{
+    legend{display:none;}
+     span{border: none !important;}
+  
+  
+}
+
+
+/*==============   @EVERYBODY!!   ============== */
+  body  
+{ 
+    /* this affects the margin on the content before sending to printer */ 
+    margin: 0px;  
+} 
+
+  #wrapper_legal{
+    width:217mm;
+/*    height:355mm;*/
+    position: relative;
+    font-family: monospace;
+    font-size: 8pt;
+  }
+  
+
+ #talon{
+    width:166mm;
+    height:69mm;
+    top:22mm;
+    left:25mm;
+    position: absolute;
+
+  }/*
+  
+*/  #cabezal{
+    width:166mm;
+    height:38mm;
+    top:117mm;
+    left:25mm;
+    position: absolute;
+  }/*
+
+*/  #cuerpo{
+    width:188mm;
+    height:158mm;
+    top:165mm;
+    left:19mm;
+    position: absolute;
+    padding-bottom: 35mm;
+    font-size: 10pt;
+  }/*
+  
+
+*/  span{
+      position: absolute;
+      word-wrap: break-word;
+  }
+  
+  /*============== TALON REMITENTE============*/
+  
+  .remitente_nombre{
+  width:83mm;  height:14mm;
+  top:10mm;
+  }
+  
+  .remitente_domicilio{
+  width:83mm;  height:8mm;
+  top:24mm;
+  text-indent:16mm;
+  }
+  
+  .remitente_cpa{
+  width:25mm;  height:5mm;
+  top:35mm;  left:0mm;
+  }
+  
+  .remitente_localidad{
+  width:30mm;  height:9mm;
+  top:31mm;  left:25mm;
+  text-indent:16mm;
+  }
+  
+  .remitente_provincia{
+  width:28mm;  height:9mm;
+  top:31mm;  left:55mm;
+  text-indent:16mm;
+  }
+  
+  /*============== TALON DESTINATARIO============*/
+  
+  .destinatario_nombre{
+  width:83mm;  height:14mm;
+  top:10mm;
+  left:85mm;
+  }
+  
+  .destinatario_domicilio{
+  width:83mm;  height:8mm;
+  top:24mm;  left:85mm;
+  text-indent:16mm;
+  }
+  
+  .destinatario_cpa{
+  width:23mm;  height:5mm;
+  top:34mm;   left:85mm;
+  }
+  
+  .destinatario_localidad{
+  width:30mm;  height:9mm;
+  top:31mm;  left:110mm;
+  text-indent:16mm;
+  }
+  
+  .destinatario_provincia{
+  width:28mm;  height:9mm;
+  top:31mm;  left:140mm;
+  text-indent:16mm;
+  }

@@ -53,12 +53,13 @@ class Inbox extends MX_Controller {
    			$customData[$class]=$i;
    		}  	
 
-     	
+     
      	$customData['my_msgs']=$this->get_folder();
-     	
+
     	$customData['content']=$this->parser->parse('inbox/inbox', $customData, true, true);
-    	
+
 	    return $customData;
+
     }
     
     //====== wrapper
@@ -90,9 +91,10 @@ class Inbox extends MX_Controller {
     	$mymgs = $this->msg->get_msgs($this->idu,$folder,$skip,PAGINATION_ITEMS_X_PAGE,$filter);
 
     	//==== Pagination
+    	$Qmsgs=count($mymgs);
     	$config=array('url'=>$this->base_url."inbox/print_folder/".$folder,
     			'current_page'=>$current_page,
-    			'items_total'=>$mymgs->count(), // Total items 
+    			'items_total'=>$Qmsgs, // Total items 
     			'items_x_page'=>PAGINATION_ITEMS_X_PAGE,
     			'pagination_width'=>PAGINATION_WIDTH,
     			//'class_ul'=>""
@@ -100,12 +102,14 @@ class Inbox extends MX_Controller {
     			'pagination_always_visible'=>PAGINATION_ALWAYS_VISIBLE
     	);
     	$customData['pagination']=$this->pagination->index($config);
-    	$customData['items_total']=$mymgs->count();
+    	$customData['items_total']=$Qmsgs;
 
 
 		//== 
 		
+		
     	foreach ($mymgs as $msg) {
+
     		$msg['msgid'] = $msg['_id'];
     		$msg['subject']=(strlen($msg['subject'])!=0)?($msg['subject']):("No Subject");
 
@@ -131,6 +135,8 @@ class Inbox extends MX_Controller {
     		$msg['read'] = (isset($msg['read'])&&$msg['read']==true) ? ('read') : ('unread');
     		$msg['body']=nl2br($msg['body']);
     		$userdata = $this->user->get_user($msg['from']);
+    	    $url_avatar=Modules::run('user/profile/get_avatar',$msg['from']); //Avatar URL
+    	    $msg['avatar']="<img style='width:24px;height:24px;margin-right:5px' src='$url_avatar' />";
     		$msg['from_name']=(empty($userdata))?('No user'):($userdata->nick);
     		$userdata = $this->user->get_user($msg['to']);
     		$msg['to_name']=(empty($userdata))?('No user'):($userdata->nick);
@@ -143,11 +149,11 @@ class Inbox extends MX_Controller {
     
     //====  get the count of msgs in folders
     function count_msgs(){
-		$customData['inbox_count']=$this->msg->get_msgs_by_filter(array('to'=>$this->idu,'folder'=>'inbox'))->count(); 
-     	$customData['sent_count']=$this->msg->get_msgs_by_filter(array('from'=>$this->idu))->count();
-     	$customData['star_count']=$this->msg->get_msgs_by_filter(array('to'=>$this->idu,'star'=>true))->count();
-     	$customData['trash_count']=$this->msg->get_msgs_by_filter(array('to'=>$this->idu,'folder'=>'trash'))->count();
-     	$customData['unread_count']=$this->msg->get_msgs_by_filter(array('to'=>$this->idu,'folder'=>'inbox','read'=>false))->count();
+		$customData['inbox_count']=count($this->msg->get_msgs_by_filter(array('to'=>$this->idu,'folder'=>'inbox'))); 
+     	$customData['sent_count']=count($this->msg->get_msgs_by_filter(array('from'=>$this->idu)));
+     	$customData['star_count']=count($this->msg->get_msgs_by_filter(array('to'=>$this->idu,'star'=>true)));
+     	$customData['trash_count']=count($this->msg->get_msgs_by_filter(array('to'=>$this->idu,'folder'=>'trash')));
+     	$customData['unread_count']=count($this->msg->get_msgs_by_filter(array('to'=>$this->idu,'folder'=>'inbox','read'=>false)));
 
      	return json_encode($customData);
     }
@@ -162,7 +168,7 @@ class Inbox extends MX_Controller {
         $customData['lang']= $this->lang->language;
     	$customData['base_url'] = $this->base_url;
     	$customData['module_url'] = $this->module_url;
-    	$customData['unread_count']=$this->msg->get_msgs_by_filter(array('to'=>$this->idu,'folder'=>'inbox','read'=>false))->count();
+    	$customData['unread_count']=count($this->msg->get_msgs_by_filter(array('to'=>$this->idu,'folder'=>'inbox','read'=>false)));
     	 
     	$mymgs = $this->msg->get_msgs($this->idu,'inbox',null,4);
     	foreach ($mymgs as $msg) {
@@ -205,7 +211,8 @@ class Inbox extends MX_Controller {
     	$customData['module_url'] = $this->module_url;
 
     	$mymgs = $this->msg->get_msgs_by_filter($filter);
-    	$customData['qtty']=$mymgs->count();
+
+    	$customData['qtty']=count($mymgs);
 
     	foreach ($mymgs as $msg) {
     		$msg['msgid'] = $msg['_id'];
@@ -241,11 +248,11 @@ class Inbox extends MX_Controller {
     $msgid=$this->input->post('id');
 
     $mymgs = $this->msg->get_msg($msgid);
-    $mymgs['debug']=$this->input->post('whereiam');
+    //$mymgs['debug']=$this->input->post('whereiam');
 	   if($this->input->post('whereiam')!='outbox')
 	    	$this->msg->set_read("read",$msgid); // Marco leido
-    
-    echo json_encode($mymgs);
+
+    echo json_encode($mymgs[0]);
     }
     
 
@@ -368,7 +375,7 @@ class Inbox extends MX_Controller {
         foreach($msgid as $msg){
         	 $this->msg->remove($msg);
         }
-       
+
     }
     
 

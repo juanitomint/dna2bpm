@@ -197,7 +197,7 @@ $(document).ready(function() {
     	var url = globals['base_url']+"dashboard/alerts/dismiss";
     	var id=$(this).parent().attr('data-id');
     	$.post(url,{id:id},function(resp){
-    		//alert(resp);
+    		console.log(resp);
     	});
     });
     
@@ -226,6 +226,13 @@ $(document).ready(function() {
         }
 
     });
+    
+    
+    // $(document).on('click', ".widget_alert button", function(e) {
+    //     var id=$(this).parent().attr('data-id');
+    //     $.get('');
+    // });
+    
     
 
 });

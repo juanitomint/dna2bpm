@@ -4,8 +4,8 @@ if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
 /**
- * This is the core BPM Engine This class has all what is needed to run a bpm model 
- * @author Juan Ignacio Borda <juanignacioborda@gmail.com> 
+ * This is the core BPM Engine This class has all what is needed to run a bpm model
+ * @author Juan Ignacio Borda <juanignacioborda@gmail.com>
  * @date Feb 10, 2013
  */
 class Engine extends MX_Controller {
@@ -234,11 +234,15 @@ class Engine extends MX_Controller {
                 'status' => 'pending'
             );
 
-            //  var_dump(json_encode($filter));exit;
             // ----filter specific shape to run
             if ($run_resourceId)
                 $filter ['resourceId'] = $run_resourceId;
-
+            // var_dump(json_encode($filter));exit;
+            
+            /**
+             * Start procesing pending tokens
+             */ 
+            
             while ($i <= 100 and $open = $this->bpm->get_tokens_byFilter($filter)) {
                 if ($debug)
                     echo "<h1>Step:$i</h1>";
@@ -293,7 +297,7 @@ class Engine extends MX_Controller {
     }
 
     function run_task($model, $idwf, $case, $resourceId) {
-        
+
     }
 
     function run_post($model, $idwf, $case, $resourceId) {
@@ -314,7 +318,8 @@ class Engine extends MX_Controller {
                 $shape = $this->bpm->get_shape($resourceId, $wf);
                 if ($shape) {
                     //---save postdata in case
-                    if (property_exists($shape->properties->datainputset, 'items')) {
+                    if (property_exists($shape->properties, 'datainputset')) {
+                        if (property_exists($shape->properties->datainputset, 'items')) {
                         $thisCase = $this->bpm->get_case($case);
                         $thisCase['data']['datainputset'] = (isset($thisCase['data']['datainputset'])) ? (array) $thisCase['data']['datainputset'] : array();
                         if (count($_POST)) {
@@ -324,6 +329,7 @@ class Engine extends MX_Controller {
                             }
                             $this->bpm->save_case($thisCase);
                         }
+                    }
                     }
                     //---MOVENEXT
                     $this->bpm->movenext($shape, $wf);
@@ -433,6 +439,9 @@ class Engine extends MX_Controller {
         $resourceId = urldecode($resourceId);
         $debug = (isset($this->debug [__FUNCTION__])) ? $this->debug [__FUNCTION__] : false;
         // $debug=true;
+        //---prepare additions arrays
+        $this->add_js=array();
+        $this->add_css=array();
         // ----prepare renderData
         $renderData = array();
         $renderData ['lang'] = $this->lang->language;
@@ -474,23 +483,23 @@ class Engine extends MX_Controller {
         //-Prepare Documents
         foreach ($previous as $dataShape) {
             if ($dataShape->stencil->id == 'DataObject') {
-                if ($dataShape->properties->input_output == 'Input') {
-                    //var_dump($dataShape);
+                
                     $do = $this->bindObjectToArray($dataShape);
                     $strStor = $dataShape->properties->name;
                     $conn = $dataShape->properties->connector . '_connector';
                     $resource ['source'] = (isset($dataShape->properties->source)) ? $dataShape->properties->source : null;
                     if (method_exists($this->$conn, 'get_ui')) {
-                        $do['ui'] = $this->$conn->get_ui($resource, $dataShape, $wf);
+                        $do['ui'] = $this->$conn->get_ui($resource, $dataShape, $wf, $this);
                     }
 
                     $renderData['DataObject_Input'][] = $do;
-                }
+                
             }
         }
         //  var_dump($shape->properties->datainputset);
         //----prepare manual input
-        if (property_exists($shape->properties->datainputset, 'items')) {
+        if (property_exists($shape->properties,'datainputset')) {
+            if (property_exists($shape->properties->datainputset, 'items')) {
             foreach ($shape->properties->datainputset->items as $item) {
                 if (!strstr('.', $item->name) and $item->whileexecuting == 'true') {
                     $renderData['DataInputSet'][] = array(
@@ -499,6 +508,7 @@ class Engine extends MX_Controller {
                     );
                 }
             }
+        }
         }
         // var_dump($renderData['DataInputSet']);
 // 		exit;
@@ -528,9 +538,15 @@ class Engine extends MX_Controller {
             $renderData ['title'] = 'Manual Task';
             //----Skip javascript if no modal asked
             if (!$this->debug['show_modal']) {
-                $renderData ['js'] = array(
+                $renderData ['js'] =array_merge(
+                    $this->add_js,
+                    array(
                     $this->module_url . 'assets/jscript/manual_task.js' => 'Manual task JS'
+                )
                 );
+
+                $renderData ['css'] =$this->add_css;
+
             }
             // ---prepare globals 4 js
             $renderData ['global_js'] = array(
@@ -540,6 +556,7 @@ class Engine extends MX_Controller {
                 'idcase' => $idcase,
                 'resourceId' => $resourceId
             );
+            // var_dump($renderData);exit;
             $this->ui->compose('bpm/manual_task', 'bpm/bootstrap.ui.php', $renderData);
         }
         $this->output->_display();
@@ -645,8 +662,11 @@ class Engine extends MX_Controller {
                 echo '<hr/>';
             }
             // $this->$strStor= bindArrayToObject($this->app->getall($item,$container));
-            $this->data->$strStor = json_decode(json_encode($this->$conn->get_data($resource, $shape, $this->wf)));
-
+            //----check if get_data exists before call, if not leave as is
+            if(method_exists($this->$conn,'get_data')){
+                $this->data->$strStor = json_decode(json_encode($this->$conn->get_data($resource, $shape, $this->wf)));
+            }
+            
             // ----4 debug
             if ($debug) {
                 echo "<h3>Data Store:$strStor</h3>";
@@ -673,8 +693,9 @@ class Engine extends MX_Controller {
                     echo '<hr/>';
                 }
                 // $this->$strStor= bindArrayToObject($this->app->getall($item,$container));
-                $this->data->$strStor = $this->$conn->get_data($resource, $shape, $this->wf);
-
+                if(method_exists($this->$conn,'get_data')){
+                    $this->data->$strStor = $this->$conn->get_data($resource, $shape, $this->wf);
+                }
                 // ----4 debug
                 if ($debug) {
                     echo "<h3>Data Store:$strStor</h3>";
@@ -870,18 +891,8 @@ class Engine extends MX_Controller {
         $renderData ['idwf'] = $idwf;
         $renderData ['case'] = $idcase;
         $user = $this->user->getuser($this->idu);
+        $filter=array();
 
-        // ----the task is assignet to the user or is for the group the user belong to
-        if (!isset($filter)) {
-            $filter ['$or'] [] = array(
-                'assign' => $this->idu
-            );
-            $filter ['$or'] [] = array(
-                'idgroup' => array(
-                    '$in' => $user->group
-                )
-            );
-        }
         // ----if specific token has been passed then run this token
         if ($run_resourceId) {
             $filter ['resourceId'] = $run_resourceId;
@@ -893,13 +904,18 @@ class Engine extends MX_Controller {
         // var_dump('case',$case,'run_manual',$run_manual);
         if ($case ['status'] == 'open') {
             // ----load WF data
-            $myTasks = $this->bpm->get_pending($idwf, $idcase, array(
-                'user',
-                'manual'
-                    ), $filter);
+            $myTasks = $this->bpm->get_pending(
+                $idwf, 
+                $idcase, array('user','manual'),//---status
+                    $filter);
+            // foreach($myTasks as $task){
+            //     echo $task['title'].'<br/>';
+            //     echo '<hr/>';
+
+            // }
             // var_dump(json_encode($filter),$myTasks);exit;
             // ---search for a suitable task to execute
-            while ($first = $myTasks->getNext()) {
+            while ($first = array_shift($myTasks)) {
                 $is_allowed = $this->bpm->is_allowed($first, $user);
 
                 if ($is_allowed)
@@ -909,7 +925,7 @@ class Engine extends MX_Controller {
                 // -----get id from token---------
                 $token = $first;
 
-                // var_dump('loaded token', $token);
+                // var_dump('loaded token', $token);exit;
                 switch ($token ['type']) {
                     case 'Exclusive_Databased_Gateway' :
                         $this->manual_gate($model, $idwf, $idcase, $first ['resourceId']);
@@ -1026,7 +1042,7 @@ class Engine extends MX_Controller {
         }
     }
 
-    function show_modal($name, $text) {
+    function show_modal($name, $text,$exit=true) {
         $debug = (isset($this->debug [__FUNCTION__])) ? $this->debug [__FUNCTION__] : false;
         if ($debug) {
             echo '<h1>' . __FUNCTION__ . '</h1>';
@@ -1050,7 +1066,7 @@ class Engine extends MX_Controller {
         );
         $this->ui->compose('bpm/modal_msg', 'bpm/bootstrap.ui.php', $renderData);
         $this->output->_display();
-        exit();
+        if($exit) exit();
     }
 
 }

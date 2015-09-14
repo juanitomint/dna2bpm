@@ -27,16 +27,24 @@ class rbac_admin extends MX_Controller {
         switch ($action) {
             case 'update'://----Path added
                 $post = json_decode(file_get_contents('php://input'));
-                //----remove root from path
-                $path_arr = explode('/', $post->id);
-                array_shift($path_arr);
-                $path = implode('/', $path_arr);
-                $properties = array(
-                    "source" => "User",
-                    "checkdate" => date('Y-m-d H:i:s'),
-                    "idu" => $this->idu
-                );
-                $result = $this->rbac->put_path($path, $properties);
+                if(count($post)>1){
+                    $p=$post;
+                } else {
+                    $p[]=$post;
+                }   
+                    foreach($p as $post){
+                        //----remove root from path
+                        $path_arr = explode('/', $post->id);
+                        array_shift($path_arr);
+                        $path = implode('/', $path_arr);
+                        $properties = array(
+                            "source" => "User",
+                            "checkdate" => date('Y-m-d H:i:s'),
+                            "idu" => $this->idu
+                        );
+                        $result = $this->rbac->put_path($path, $properties);
+                    
+                    }
                 $rtnArr['success'] = true;
                 break;
             case 'read':
@@ -89,7 +97,7 @@ class rbac_admin extends MX_Controller {
         }
         //var_dump($cpData);
         if (!$debug) {
-            header('Content-type: application/json;charset=UTF-8');
+            $this->output->set_content_type('json','utf-8');
             echo json_encode($rtnArr);
         } else {
             var_dump($rtnArr);
@@ -105,7 +113,7 @@ class rbac_admin extends MX_Controller {
         $rtnArr['paths'] = $this->rbac->get_group_paths($idgroup);
 
         if (!$debug) {
-            header('Content-type: application/json;charset=UTF-8');
+            $this->output->set_content_type('json','utf-8');
             echo json_encode($rtnArr);
         } else {
             var_dump($rtnArr);

@@ -28,6 +28,8 @@ class Service extends MX_Controller {
         $this->debug['run_IntermediateLinkEventThrowing']=true;
 
         //$this->debug['get_shape_byname']=false;
+        $this->base_url = base_url();
+        $this->module_url = base_url() . $this->router->fetch_module() . '/';
     }
     /**
      * Process timer tokens
@@ -79,16 +81,53 @@ class Service extends MX_Controller {
             //----Log timer
             $options = array('w' => true);
             if(!$debug)
-                $wf = $this->mongo->db->log_timers->save($tlog, $options);
+                $wf = $this->mongowrapper->db->log_timers->save($tlog, $options);
              $out['timers'][]=$tlog;
          }
         //---un-register if it has logged is
         $this->session->set_userdata('loggedin', false);
         if (!$debug) {
-            header('Content-type: application/json;charset=UTF-8');
+            $this->output->set_content_type('json','utf-8');
             echo json_encode($out);
         } else {
             var_dump($out);
         }
      }
+     
+    function rss($token=null){
+        if($token){
+        /**
+         * Impersonates as 666=daemon
+         */ 
+        $this->user->idu=666;
+        // $this->user->idu=1;
+        //---register if it has logged is
+        $this->session->set_userdata('loggedin', true);
+            $this->load->model('bpm/bpm');
+            $user=$this->user->getby_token($token);
+            if($user){
+                $query = array(
+                    'assign' => $user->idu,
+                    'status' => 'user'
+                );
+                //var_dump(json_encode($query));exit;
+                $tasks = $this->bpm->get_tasks_byFilter($query, array(), array('checkdate' => 'desc'));
+                $tasks=Modules::run('bpm/bpmui/prepare_tasks',$tasks,1,5);
+                $this->load->module('rss');
+                // var_dump($tasks['mytasks']);exit; 
+                foreach($tasks['mytasks'] as $task){
+                    $this->rss->items[]=
+                        array(
+                             'title' => $task['title'],
+                             'author' => $user->name,
+                             'link' => $this->base_url.'bpm/engine/run/model/'.$task['idwf'].'/'.$task['case'].'/'.$task['resourceId'],
+                             'pubdate' => strtotime($task['checkdate']),
+                             'description' => $task['type']
+                            );
+                        
+                }
+                $this->rss->render();
+            }    
+        }
+    }
 }

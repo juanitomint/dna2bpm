@@ -5,7 +5,7 @@ if (!defined('BASEPATH'))
 
 class Task extends MX_Controller {
 
-    function Task() {
+    function __construct() {
         parent::__construct();
         $this->debug = false;
         $this->debug_manual = true;
@@ -18,7 +18,9 @@ class Task extends MX_Controller {
         //----LOAD LANGUAGE
         $this->lang->load('library', $this->config->item('language'));
     }
-
+    function Index(){
+        echo "<h1>BPM/TASK</h1>";
+    }
     function claim($idwf, $case, $resourceId) {
         $iduser = (int) $this->session->userdata('iduser');
         //---get the user
@@ -90,13 +92,25 @@ class Task extends MX_Controller {
         move_uploaded_file($tmp_name, "$uploads_dir/$name");
 
         if (!$debug) {
-            header('Content-type: application/json;charset=UTF-8');
+            $this->output->set_content_type('json','utf-8');
             echo json_encode($out);
         } else {
             var_dump($out);
         }
     }
-
+    function connector($connector,$method,$idwf,$idcase,$resourceId){
+        //----load model
+        $modelname = 'bpm/connectors/' .$connector . '_connector';
+        $this->load->model($modelname);
+        $conn = $connector . '_connector';
+        $result=false;
+        if (method_exists($this->$conn, $method)) {
+            $result = $this->$conn->$method($idwf,$idcase,$resourceId,$this->input->post());
+        }
+        $rtnObject['result']=$result;
+        $this->output->set_content_type('json','utf8');
+        echo json_encode($rtnObject);               
+    }
 }
 
 ?>

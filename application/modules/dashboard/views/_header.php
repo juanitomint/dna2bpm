@@ -8,7 +8,7 @@
         <!-- bootstrap 3.0.2 -->
         <link href="{module_url}assets/bootstrap-wysihtml5/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
         <!-- font Awesome -->
-        <link href="{module_url}assets/bootstrap-wysihtml5/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+        <link href="{module_url}assets/bootstrap-wysihtml5/css/font-awesome-4.4.0/css/font-awesome.css" rel="stylesheet" type="text/css" />
        	<!-- Ionicons -->
         <link href="{module_url}assets/bootstrap-wysihtml5/css/ionicons.min.css" rel="stylesheet" type="text/css" />
         <!-- Daterange picker -->
@@ -66,13 +66,13 @@
                      
                         {toolbar_inbox}
                     
-
+                        
 
                         <!-- ========== USER PROFILE  ==========-->
                         <li class="dropdown user user-menu">
                             
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                <img src="{avatar}" class="avatar" alt="User Image" style="float:left;height:28px;width:28px;margin-right:8px;"/>
+                                
               
                                 <span>{name} <i class="caret"></i></span>
                             </a>
@@ -95,6 +95,7 @@
                                 </li>
                             </ul>
                         </li>
+                        <li><img src="{avatar}" class="avatar" alt="User Image" style="float:right;height:50px;width:50px;margin-left:8px;"/></li>
                         <!-- ++++ USER PROFILE -->
                     </ul>
                 </div>

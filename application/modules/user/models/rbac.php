@@ -9,8 +9,6 @@ class Rbac extends CI_Model {
         parent::__construct();
         $this->permRepo = 'perm.repository';
         $this->permGroups = 'perm.groups';
-        $this->load->library('cimongo/cimongo');
-        $this->db = $this->cimongo;
     }
 
     function get_repository($query = array()) {
@@ -35,30 +33,26 @@ class Rbac extends CI_Model {
     function put_path($path = null, $properties = null) {
         if ($path) {
             $criteria = array_filter(array('path' => $path));
-
-            $query = array('$set' => array('path' => $path, 'properties' => $properties));
+            $data=  array('path' => $path, 'properties' => $properties);
             $options = array('upsert' => true, 'w'=>true);
-
-            return $this->mongo->db->selectCollection($this->permRepo)->update($criteria, $query, $options);
+            return $this->db->where($criteria)->update($this->permRepo, $data, $options);
         }
     }
 
     //---add a path to repository
     function remove_path($path = null) {
         if ($path) {
-            $regex=new MongoRegex("/^$path*/i");
-            $criteria = array('path' =>$regex);
-            $this->db->where($criteria);
-            $this->db->delete($this->permRepo);
-            return true;
+            $this->db->like('path',$path,'i',false);
+            return $this->db->delete($this->permRepo);
+
         }
     }
 
     function clear_paths($idgroup) {
         if ($idgroup) {
-            $options = array("justOne" => false, "safe" => true);
+            $options = array("justOne" => false, "w" => true);
             $criteria = array('idgroup' => (int) $idgroup);
-            return $this->mongo->db->selectCollection($this->permGroups)->remove($criteria, $options);
+            return $this->db->where($criteria)->delete($this->permGroups, $options);
         } else {
             return false;
         }
@@ -69,18 +63,15 @@ class Rbac extends CI_Model {
         $obj = array('idgroup' => $idgroup, 'path' => $path);
         $options = array('upsert' => true, 'w'=>true);
         $criteria = array_filter($obj);
-
-        $query = array('$set' => $obj);
-        $options = array('upsert' => true, 'w'=>true);
-
-        return $this->mongo->db->selectCollection($this->permGroups)->update($criteria, $query, $options);
+        $this->db->where($criteria);
+        return $this->db->update($this->permGroups, $obj, $options);
     }
 
     function get_group_paths($idgroup) {
         $query = array('idgroup' => $idgroup);
-        $rs = $this->mongo->db->selectCollection($this->permGroups)->find($query);
-        $rtnArr = array();
-        while ($arr = $rs->getNext()) {
+        $rs = $this->db->where($query)->get($this->permGroups)->result_array();
+        $rtnArr=array();
+        foreach ($rs as $arr) {
             if (isset($arr['path']))
                 $rtnArr[] = $arr['path'];
         }

@@ -1,0 +1,61 @@
+
+#images-view .x-panel-body {
+    background: none repeat scroll 0 0 white;
+    font: 11px Arial,Helvetica,sans-serif;
+}
+#images-view .thumb {
+    background: none repeat scroll 0 0 #DDDDDD;
+    padding: 3px 3px 0;
+}
+.x-quirks #images-view .thumb {
+    padding-bottom: 3px;
+}
+#images-view .thumb img {
+    height: 60px;
+    width: 80px;
+}
+#images-view .thumb-wrap {
+    float: left;
+    margin: 4px 0 4px 4px;
+    padding: 5px;
+}
+#images-view .thumb-wrap span {
+    display: block;
+    overflow: hidden;
+    text-align: center;
+    width: 86px;
+}
+#images-view .x-item-over {
+    background: url("over.gif") repeat-x scroll left top #EFEFEF;
+    border: 1px solid #DDDDDD;
+    padding: 4px;
+}
+#images-view .x-item-selected {
+    background: url("selected.gif") no-repeat scroll right bottom #EFF5FB;
+    border: 1px solid #99BBE8;
+    padding: 4px;
+}
+#images-view .x-item-selected .thumb {
+    background: none repeat scroll 0 0 transparent;
+}
+#images-view .loading-indicator {
+    background-image: url("../../resources/themes/images/default/grid/loading.gif");
+    background-position: left center;
+    background-repeat: no-repeat;
+    font-size: 11px;
+    margin: 10px;
+    padding-left: 20px;
+}
+.x-view-selector {
+    background-color: #C3DAF9;
+    border: 1px dotted #3399BB;
+    left: 0;
+    opacity: 0.5;
+    position: absolute;
+    top: 0;
+    width: 0;
+}
+.ext-strict .ext-ie .x-tree .x-panel-bwrap {
+    overflow: hidden;
+    position: relative;
+}

@@ -23,7 +23,7 @@ class App extends CI_Model {
             $fields[] = 'idform';
         }
         //var_dump(json_encode($query),$fields);
-        $thisObj = $this->mongo->db->forms->find($query, $fields);
+        $thisObj = $this->mongowrapper->db->forms->find($query, $fields);
         //var_dump($thisObj);
         return $thisObj;
     }
@@ -39,7 +39,7 @@ class App extends CI_Model {
 
         $query = array('idform' => (int) $idform);
         //var_dump(json_encode($query),$fields);
-        $thisObj = $this->mongo->db->forms->findOne($query, $fields);
+        $thisObj = $this->mongowrapper->db->forms->findOne($query, $fields);
         //var_dump($thisObj);
         return $thisObj;
     }
@@ -48,7 +48,7 @@ class App extends CI_Model {
         $thisObj = array();
         $query = array('idobj' => $idobj);
         $fields = array();
-        $thisObj = $this->mongo->db->forms->findOne($query, $fields);
+        $thisObj = $this->mongowrapper->db->forms->findOne($query, $fields);
         if ($thisObj) {
             return $thisObj;
         } else {
@@ -59,7 +59,7 @@ class App extends CI_Model {
 
     function put_object($object) {        
         $options = array('upsert' => true, 'w' => true);        
-        $result = $this->mongo->db->forms->save($object, $options);    
+        $result = $this->mongowrapper->db->forms->save($object, $options);    
         return $result;
          
         
@@ -69,7 +69,7 @@ class App extends CI_Model {
         $fields = array();
         $query = array();
         //var_dump(json_encode($query),$fields);
-        $thisObj = $this->mongo->db->apps->find($query, $fields)->sort(array('title' => 1));
+        $thisObj = $this->mongowrapper->db->apps->find($query, $fields)->sort(array('title' => 1));
         //var_dump($thisObj);
         return $thisObj;
     }
@@ -78,7 +78,7 @@ class App extends CI_Model {
         $fields = array();
         $query = array('idapp' => (int) $idapp);
         //var_dump(json_encode($query),$fields);
-        $thisObj = $this->mongo->db->apps->findOne($query, $fields);
+        $thisObj = $this->mongowrapper->db->apps->findOne($query, $fields);
         //var_dump($thisObj);
         return $thisObj;
     }
@@ -93,7 +93,7 @@ class App extends CI_Model {
 
         $query = array('idframe' => (int) $idframe);
         //var_dump(json_encode($query),$fields);
-        $thisObj = $this->mongo->db->frames->findOne($query, $fields);
+        $thisObj = $this->mongowrapper->db->frames->findOne($query, $fields);
         //var_dump($thisObj);
         return $thisObj;
     }
@@ -104,7 +104,7 @@ class App extends CI_Model {
         $frame = array();
         if (isset($form['frames'])) {
             $query = array('idframe' => (int) $idframe);
-            $frameFromDB = $this->mongo->db->frames->findOne($query);
+            $frameFromDB = $this->mongowrapper->db->frames->findOne($query);
             $frame = array_merge((array) $frameFromDB, (isset($form['frames'][$idframe])) ? (array) $form['frames'][$idframe] : array());
             //echo json_encode(array_merge((array) $frameFromDB, (array) $form['frames'][$idframe])).'<hr/>';
         }
@@ -118,7 +118,7 @@ class App extends CI_Model {
             foreach ($form['frames'] as $idframe => $frameExtra) {
 
                 $query = array('idframe' => (int) $idframe);
-                $frameFromDB = $this->mongo->db->frames->findOne($query);
+                $frameFromDB = $this->mongowrapper->db->frames->findOne($query);
                 //$frameExtra = (isset($form['frames'][$idframe])) ? (array) $form['frames'][$idframe] : array();
                 //---Extra values take precedence over default-ones
                 if ($frameFromDB)
@@ -141,7 +141,7 @@ class App extends CI_Model {
             $column = (isset($form['frames'][(int) $col])) ? (array) $form['frames'][(int) $col] : null;
             foreach ((array) $column as $idframe) {
                 $query = array('idframe' => (int) $idframe);
-                $frameFromDB = $this->mongo->db->frames->findOne($query);
+                $frameFromDB = $this->mongowrapper->db->frames->findOne($query);
                 $frameExtra = (isset($form['frames'][$idframe])) ? (array) $form['frames'][$idframe] : array();
                 if ($frameFromDB)
                     $frames[] = array_merge((array) $frameFromDB, $frameExtra);
@@ -164,14 +164,14 @@ class App extends CI_Model {
     function getvalue($id, $idframe) {
         $rtnVal = null;
         $result = null;
-        $id = (double) $id;
+        $id = new MongoInt64($id);
         $idframe = (int) $idframe;
         //----Get container
-        $frame = $this->mongo->db->frames->findOne(array('idframe' => $idframe), array('container'));
+        $frame = $this->mongowrapper->db->frames->findOne(array('idframe' => $idframe), array('container'));
         $query = array('id' => $id);
         $fields = array((string) $idframe);
         if ($frame['container']) {
-            $result = $this->mongo->db->selectCollection($frame['container'])->findOne($query, $fields);
+            $result = $this->mongowrapper->db->selectCollection($frame['container'])->findOne($query, $fields);
         } else {
             trigger_error("container property missing for: $idframe");
         }
@@ -180,11 +180,12 @@ class App extends CI_Model {
         return $rtnVal;
     }
 
-    function get_result($container,$query,$fields=array()) {
-        $result = $this->mongo->db->selectCollection($container)->find($query, $fields);
+    function get_result($container, $query, $fields = array()) {
+        $result = $this->mongowrapper->db->selectCollection($container)->find($query, $fields);
         return $result;
     }
-    function getall($id, $container) {
+
+    function getall($id, $container,$fields=array()) {
         $debug = false;
         if ($debug)
             echo '<h2>' . __FUNCTION__ . '</h2>' .
@@ -192,16 +193,10 @@ class App extends CI_Model {
         $rtnarr = array();
         $rtnVal = null;
         $result = null;
-        $id = (double) $id;
-        $fields = array();
-        if (func_num_args() > 2) {
-            foreach ((array) func_get_arg(2) as $key)
-                $fields[] = (string) $key;
-            $fields[] = 'id';
-        }
+        $id = new MongoInt64($id);
         //----Fetch Database
         $query = array('id' => $id);
-        $result = $this->mongo->db->selectCollection($container)->findOne($query, $fields);
+        $result = $this->mongowrapper->db->selectCollection($container)->findOne($query, $fields);
         $rtnVal = ($result) ? $result : null;
         return $rtnVal;
     }
@@ -213,7 +208,7 @@ class App extends CI_Model {
             'language' => $language
         );
         //echo json_encode($query);
-        return $this->mongo->db->procs->findOne($query);
+        return $this->mongowrapper->db->procs->findOne($query);
     }
 
     function remove_code($object, $context, $language) {
@@ -224,7 +219,7 @@ class App extends CI_Model {
         );
         $options = array("justOne" => true, "safe" => true);
         //echo json_encode($query);
-        return $this->mongo->db->procs->remove($criteria, $options);
+        return $this->mongowrapper->db->procs->remove($criteria, $options);
     }
 
     function put_code($object, $context, $language, $code) {
@@ -239,7 +234,7 @@ class App extends CI_Model {
         $data['checkdate'] = date('Y-m-d H:i:s');
         $data['idu'] = $this->session->userdata('iduser');
 
-        return $this->mongo->db->procs->save($data, $options);
+        return $this->mongowrapper->db->procs->save($data, $options);
     }
 
     function put_value($id, $idframe, $value) {
@@ -254,7 +249,7 @@ class App extends CI_Model {
         $criteria = array('id' => $id);
         $update = array('$set' => array($idframe => $value));
         //var_dump($thisFrame['container'], json_encode($criteria), json_encode($update));
-        $result = $this->mongo->db->selectCollection($thisFrame['container'])->update($criteria, $update);
+        $result = $this->mongowrapper->db->selectCollection($thisFrame['container'])->update($criteria, $update);
         return $result;
     }
 
@@ -263,7 +258,7 @@ class App extends CI_Model {
         $options = array('upsert' => true, 'w' => true);
         $form = $this->app->get_object($idform);
         $form['frames'][$idframe] = $extra;
-        return $this->mongo->db->forms->save($form, $options);
+        return $this->mongowrapper->db->forms->save($form, $options);
     }
 
     function put_frame($idframe, $new_frame) {
@@ -277,7 +272,7 @@ class App extends CI_Model {
         if ($frame) {
             $new_frame['_id'] = $frame['_id'];
         }
-        return $this->mongo->db->frames->save($new_frame, $options);
+        return $this->mongowrapper->db->frames->save($new_frame, $options);
     }
 
     function put_form_data($idform, $form_data) {
@@ -287,13 +282,18 @@ class App extends CI_Model {
         //--overwrites values with newones
         $form = $this->get_form($idform);
         $form = array_merge($form, $form_data);
-        return $this->mongo->db->forms->save($form, $options);
+        return $this->mongowrapper->db->forms->save($form, $options);
     }
 
     function put_app($idapp, $new_app) {
         $options = array('upsert' => true, 'w' => true);
-        $new_app['idapp'] = (int) $new_app['idapp'];
-        return $this->mongo->db->apps->save($new_app, $options);
+        $idapp = (int) $idapp;
+        $new_app['idapp']=$idapp;
+        //--1st get old frame if exists;
+        //--overwrites values with newones
+        $app=$this->get_app($idapp);
+        $app = array_merge($app,$new_app);
+        return $this->mongowrapper->db->apps->save($app, $options);
     }
 
     function put_form($idform, $new_form) {
@@ -310,7 +310,7 @@ class App extends CI_Model {
             if (isset($form['frames']))
                 $new_form['frames'] = $form['frames'];
         }
-        return $this->mongo->db->forms->save($new_form, $options);
+        return $this->mongowrapper->db->forms->save($new_form, $options);
     }
 
     function put_array($id, $container, $val_arr = array()) {        
@@ -332,7 +332,7 @@ class App extends CI_Model {
         $options = array('upsert' => true, 'w' => true);
         
         //var_dump($container, json_encode($criteria), json_encode($update));
-        $result = $this->mongo->db->selectCollection($container)->update($criteria, $update, $options);
+        $result = $this->mongowrapper->db->selectCollection($container)->update($criteria, $update, $options);
         $thisArr['id'] = $id;
         return $thisArr;
     }
@@ -425,7 +425,7 @@ class App extends CI_Model {
         while (!$hasone and $i <= $trys) {//---search until found or $trys iterations
             //while (!$hasone) {//---search until found or 1000 iterations
             $query = array('id' => $id);
-            $result = $this->mongo->db->selectCollection($container)->findOne($query);
+            $result = $this->mongowrapper->db->selectCollection($container)->findOne($query);
             $i++;
             if ($result) {
                 if ($passed) {
@@ -445,7 +445,7 @@ class App extends CI_Model {
         //-----make basic object
         $insert['id'] = $id;
         //----Allocate id in the collection (may result in empty docs)
-        $this->mongo->db->selectCollection($container)->save($insert);
+        $this->mongowrapper->db->selectCollection($container)->save($insert);
         return $id;
     }
 
@@ -465,7 +465,7 @@ class App extends CI_Model {
         while (!$hasone and $i <= $trys) {//---search until found or $trys iterations
             $query = array($fieldname => $id);
             //var_dump(json_encode($query));
-            $result = $this->mongo->db->selectCollection($container)->findOne($query);
+            $result = $this->mongowrapper->db->selectCollection($container)->findOne($query);
             $i++;
             if ($result) {
                 if ($passed) {
@@ -485,21 +485,21 @@ class App extends CI_Model {
         //-----make basic object
         $insert[$fieldname] = $id;
         //----Allocate id in the collection (may result in empty docs)
-        $this->mongo->db->selectCollection($container)->save($insert);
+        $this->mongowrapper->db->selectCollection($container)->save($insert);
         return $id;
     }
 
     function dumpid($id, $container) {
         $criteria = array('id' => (int) $id);
         $options = array("justOne" => true, "safe" => true);
-        $result = $this->mongo->db->selectCollection($container)->remove($criteria, $options);
+        $result = $this->mongowrapper->db->selectCollection($container)->remove($criteria, $options);
         return $result;
     }
 
     function check_id($id, $container) {
         $query = array('id' => (double) $id);
         $fields = array('id');
-        $result = $this->mongo->db->selectCollection($container)->find($query, $fields)->count();
+        $result = $this->mongowrapper->db->selectCollection($container)->find($query, $fields)->count();
         if ($result) {
             return true;
         } else {
@@ -513,17 +513,17 @@ class App extends CI_Model {
         $fields = array($fieldname);
         $sort = array($fieldname => -1);
         //var_dump($query);
-        $result = $this->mongo->db->selectCollection($container)->find($query, $fields)->sort($sort)->getNext();
+        $result = $this->mongowrapper->db->selectCollection($container)->find($query, $fields)->sort($sort)->getNext();
         //var_dump($result);
         $inc_id = 1 * $result[$fieldname] + 1;
-        $this->mongo->db->selectCollection($container)->save(array($fieldname => $inc_id), $options);
+        $this->mongowrapper->db->selectCollection($container)->save(array($fieldname => $inc_id), $options);
         return $inc_id;
     }
 
 //    function get_workflow($idwf) {
 //        $query = array('idwf' => (double) $idwf);
 //        $fields = array($id);
-//        $result = $this->mongo->db->workflow->find($query, $fields)->count();
+//        $result = $this->mongowrapper->db->workflow->find($query, $fields)->count();
 //        return $result;
 //    }
 //
@@ -533,7 +533,7 @@ class App extends CI_Model {
 //        $insert['idwf'] = ($idwf == 'new') ? $this->genid_general('workflow', 'idwf') : $idwf;
 //        $insert['idobj'] = 'WF' . $insert['idwf'];
 //        $insert['lastupd'] = date('Y-m-d H:i:s');
-//        $this->mongo->db->workflow->save($insert);
+//        $this->mongowrapper->db->workflow->save($insert);
 //    }
     function get_ops_from_container($option) {
 //uses: query fields fieldRel optionFromcontainer
@@ -549,7 +549,7 @@ class App extends CI_Model {
             $fields = array_filter($fields);
             //echo '<hr>'. $option['idop'];
             //var_dump($option['container'],$query,$fields);
-            $rsop = $this->mongo->db->selectCollection($option['container'])->find($query, $fields);
+            $rsop = $this->mongowrapper->db->selectCollection($option['container'])->find($query, $fields);
             while ($arr = $rsop->getNext()) {
                 $text = array();
                 foreach ($option['fieldText'] as $field)
@@ -572,13 +572,13 @@ class App extends CI_Model {
 
     function get_entities() {
         $sort = array('name' => 1);
-        $entities = $this->mongo->db->entities->find()->sort($sort);
+        $entities = $this->mongowrapper->db->entities->find()->sort($sort);
         return $entities;
     }
 
     function get_ops($idop, $idrel = null) {
         $ops = array();
-        $option = $this->mongo->db->options->findOne(array('idop' => (int) $idop));
+        $option = $this->mongowrapper->db->options->findOne(array('idop' => (int) $idop));
         //prepare options array
         //var_dump($option);
         $option['data'] = (isset($option['data'])) ? $option['data'] : array();
@@ -599,14 +599,14 @@ class App extends CI_Model {
     }
 
     function get_option($idop) {
-        $option = $this->mongo->db->options->findOne(array('idop' => (int) $idop));
+        $option = $this->mongowrapper->db->options->findOne(array('idop' => (int) $idop));
         $option['data'] = (isset($option['fromContainer'])) ? $this->get_ops_from_container($option) : $option['data'];
         return $option;
     }
 
     function get_all_options() {
         $sort = array('title' => 1);
-        $options = $this->mongo->db->options->find()->sort($sort);
+        $options = $this->mongowrapper->db->options->find()->sort($sort);
         return $options;
     }
 

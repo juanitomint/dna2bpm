@@ -259,7 +259,7 @@ var propsGrid = Ext.create('Ext.grid.property.Grid', {
             tooltip:'Server Side Hooks',
             handler: function(){
                 var ref=Ext.getCmp('propsGrid').store.data.get('cname').data.value;
-                createCodeWindow('Server Side Script Hooks for:'+ref,hooksPHP,this.id,module_url+'code',ref);
+                createCodeWindow('Server Side Script Hooks for:'+ref,hooksPHP,this.id,globals.module_url+'code',ref);
             }
         },
         {
@@ -270,7 +270,7 @@ var propsGrid = Ext.create('Ext.grid.property.Grid', {
             tooltip:'Client Side Hooks',
             handler: function(){
                 var ref=propsGrid.store.data.get('cname').data.value;
-                createCodeWindow('Client Side Scripts Hooks for:'+ref,hooksJS,this.id,module_url+'code', ref);
+                createCodeWindow('Client Side Scripts Hooks for:'+ref,hooksJS,this.id,globals.module_url+'code', ref);
             }
         }
         ]

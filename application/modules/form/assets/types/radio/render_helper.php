@@ -6,18 +6,34 @@ function edit_radio($frame, $value) {
     $ops = array();
     $disabled='';
      $required='';
-//$CI->load->library('mongo');
+//$CI->load->library('mongowrapper');
 //---ensure array----
+     //var_dump($frame);
     $value = (array) $value;
 
     $height = (isset($frame['cols'])) ? $frame['cols'] : 10;
-
+    
+    if(isset($frame['locked']) && $frame['locked'] === true)
+        $locked = "readonly";
+    else $locked ='';
+    
+    ///Campo Hidden
+    if(isset($frame['hidden']) && $frame['hidden'] === true)
+        $disabled = "hidden";
+    else $disabled ='';
+    
+    ///Campo requerido
+    if(isset($frame['required']) && $frame['required'] === true)
+        $required = "required";
+    else $required ='';  
+     
+    /*
     if (isset($frame['disabled']))
         $disabled = ($frame['disabled']) ? getDisabledStr($frame['type']) : null;
 
     if (isset($frame['required']))
         $required = (isset($frame['required'])) ? getRequiredStr($frame['type']) : null;
-
+    */    
     $option = $CI->mongo->db->options->findOne(array('idop' => (int)$frame['idop']));
 //prepare options array
     if (isset($option['fromContainer'])) { // if gets data from internal db
@@ -54,7 +70,14 @@ function edit_radio($frame, $value) {
 
         foreach ($ops as $key => $text) {
             $sel = (in_array((string) $key, $value)) ? "checked='checked'" : '';
-            $retstr.="<label><input type='radio' $required $disabled name='" . $frame['cname'] . "' value='$key' $sel>$text</label><br>\r";
+            $retstr.="<label><input type='radio' $required $disabled name='" . $frame['cname'] . "' value='$key' $sel>";
+            
+            if($disabled != 'hidden')
+            $retstr.=$text;
+            
+            $retstr.="</label><br>\r";
+            
+            
             if ($i++==$height) {
                 $retstr.="</div><div style='display:table-cell'>";
                 $i = 1;
@@ -79,7 +102,7 @@ function edit_radio($frame, $value) {
              */
         }
     }
-
+    //echo $retstr.'</br>';
     return $retstr;
 }
 

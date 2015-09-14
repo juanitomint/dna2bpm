@@ -104,7 +104,7 @@ class admin extends MX_Controller {
         }
         //var_dump($cpData);
         if (!$debug) {
-            header('Content-type: application/json;charset=UTF-8');
+            $this->output->set_content_type('json','utf-8');
             echo json_encode($groups);
         } else {
             var_dump($groups);
@@ -158,7 +158,7 @@ class admin extends MX_Controller {
         }
         //var_dump($cpData);
         if (!$debug) {
-            header('Content-type: application/json;charset=UTF-8');
+            $this->output->set_content_type('json','utf-8');
             echo json_encode($rtnArr);
         } else {
             var_dump($rtnArr);
@@ -206,7 +206,7 @@ class admin extends MX_Controller {
     }
 
     function delete_group_db($idgroup) {
-        $this->user->delete_group($idgroup);
+        $this->group->delete($idgroup);
         echo '{"result":"ok"}';
     }
 

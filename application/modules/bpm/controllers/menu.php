@@ -42,7 +42,7 @@ class Menu extends MX_Controller {
     }
 
     function Get_json() {
-        header('Content-type: application/json;charset=UTF-8');
+        $this->output->set_content_type('json','utf-8');
         echo json_encode($this->tree);
     }
 

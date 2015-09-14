@@ -9,6 +9,7 @@ class Menu_model extends CI_Model {
         parent::__construct();
         $this->container = 'container.menu';
         $this->load->library('cimongo/cimongo');
+        $this->load->library('mongowrapper');
         $this->db = $this->cimongo;
         $this->idu =$this->user->idu;
     }
@@ -28,7 +29,7 @@ class Menu_model extends CI_Model {
             $rbac_path = "Menu/" . $repoId . $path;
             $this->rbac->put_path($rbac_path);
 
-            return $this->mongo->db->selectCollection($this->container)->update($criteria, $query, $options);
+            return $this->mongowrapper->db->selectCollection($this->container)->update($criteria, $query, $options);
         }
     }
 
@@ -52,7 +53,7 @@ class Menu_model extends CI_Model {
         if ($idgroup) {
             $options = array("justOne" => false, "safe" => true);
             $criteria = array('idgroup' => (int) $idgroup);
-            return $this->mongo->db->selectCollection($this->container)->remove($criteria, $options);
+            return $this->mongowrapper->db->selectCollection($this->container)->remove($criteria, $options);
         } else {
             return false;
         }
@@ -61,7 +62,7 @@ class Menu_model extends CI_Model {
     function get_path($repoId, $id) {
         if ($id) {
             $query = array('repoId' => $repoId, 'properties.id' => $id);
-            $rs = $this->mongo->db->selectCollection($this->container)->findOne($query);
+            $rs = $this->mongowrapper->db->selectCollection($this->container)->findOne($query);
             $rs['id'] = $id;
             return $rs;
         } else {
@@ -71,7 +72,7 @@ class Menu_model extends CI_Model {
 
     function get_paths($repoId) {
         $query = array('repoId' => $repoId);
-        $rs = $this->mongo->db->selectCollection($this->container)->find($query);
+        $rs = $this->mongowrapper->db->selectCollection($this->container)->find($query);
         $rs->sort(array('path' => 1));
         $rtnArr = array();
         while ($arr = $rs->getNext()) {
@@ -83,7 +84,7 @@ class Menu_model extends CI_Model {
 
     function get_repository($query = array('repoId' => '0'), $check = true) {
         //returns a mongo cursor with matching id's
-        $rs = $this->mongo->db->selectCollection($this->container)->find($query);
+        $rs = $this->mongowrapper->db->selectCollection($this->container)->find($query);
         $rs->sort(array('properties.priority' => 1));
         $repo = array();
         $user = $this->user->get_user($this->idu);

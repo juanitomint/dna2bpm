@@ -46,6 +46,7 @@ var ModelImport= Ext.create('Ext.Action', {
                                 waitMsg: 'Uploading your file...',
                                 success: function(fp, o) {
                                     Ext.Msg.alert('Status',o.result.msg);
+                                    tree.store.reload();
                                 }
                                 ,
                                 failure: function(form, action) {

@@ -78,8 +78,8 @@ class Form extends MX_Controller {
         $code = $this->input->post('code');
         $lang = $this->input->post('lang');
         $debug = (in_array('debug', $segments)) ? true : false;
-        $template['PHP'] = "<?php\n/* new PHP script Write your code here */\n";
-        $template['JS'] = "// new JS script Write your code here\n";
+        $template['php'] = "<?php\n/* new PHP script Write your code here */\n";
+        $template['javascript'] = "// new JS script Write your code here\n";
         $rtn = array(
             'action' => $action,
             'id' => $id,
@@ -96,7 +96,7 @@ class Form extends MX_Controller {
         }
 
         if (!$debug) {
-            header('Content-type: application/json;charset=UTF-8');
+            $this->output->set_content_type('json','utf-8');
             echo json_encode($rtn);
         } else {
             var_dump($rtn);
@@ -147,11 +147,21 @@ class Form extends MX_Controller {
             $this->module_url . 'assets/jscript/ext.data.js' => 'data Components',
             $this->module_url . 'assets/jscript/ext.components.grid.js' => 'Component Grid',
             $this->module_url . 'assets/jscript/ext.grid.js' => 'Grid',
+            $this->base_url . 'jscript/editarea/edit_area/edit_area_loader.js' => 'EditAreaLoader',
             $this->module_url . 'assets/jscript/ext.code_editor.js' => 'Code Editor',
             $this->module_url . 'assets/jscript/ext.load_props.js' => 'Porperty loader',
             $this->module_url . 'assets/jscript/ext.baseProperties.js' => 'Property Grid',
             $this->module_url . 'assets/jscript/ext.viewport.js' => 'viewport',
-        );
+            ///-----ACE 
+            $this->base_url .'jscript/jquery/jquery.min.js'=>"JQuery",
+            $this->base_url .'code/assets/jscript/jquery-ace.min.js'=>"JQuery-ACE",
+            $this->base_url .'code/assets/jscript/src-min/ace.js'=> 'ACE',
+            $this->base_url .'code/assets/jscript/src-min/mode-php.js'=> "ACE-PHP",
+            $this->base_url .'code/assets/jscript/src-min/mode-html.js'=> "ACE-HTML",
+            $this->base_url .'code/assets/jscript/src-min/mode-javascript.js'=>"ACE-JS",
+            $this->base_url .'code/assets/jscript/src-min/mode-json.js'=>"ACE-JSON",
+            );
+
 
         $cpData['global_js'] = array(
             'base_url' => $this->base_url,
@@ -259,7 +269,7 @@ class Form extends MX_Controller {
             }
             //----end switch
             if (!$debug) {
-                header('Content-type: application/json;charset=UTF-8');
+                $this->output->set_content_type('json','utf-8');
                 echo json_encode($out);
             } else {
                 var_dump($out);
@@ -333,7 +343,7 @@ class Form extends MX_Controller {
             }
             //----end switch
             if (!$debug) {
-                header('Content-type: application/json;charset=UTF-8');
+                $this->output->set_content_type('json','utf-8');
                 echo json_encode($out);
             } else {
                 var_dump($out, $form);
@@ -378,7 +388,7 @@ class Form extends MX_Controller {
                 }
             }
             if (!$debug) {
-                header('Content-type: application/json;charset=UTF-8');
+                $this->output->set_content_type('json','utf-8');
                 echo json_encode($frames);
             } else {
                 var_dump($frames);
@@ -428,7 +438,7 @@ class Form extends MX_Controller {
             );
         }
         if (!$debug) {
-            header('Content-type: application/json;charset=UTF-8');
+            $this->output->set_content_type('json','utf-8');
             echo json_encode($rtn);
         } else {
             var_dump($rtn);
@@ -448,7 +458,7 @@ class Form extends MX_Controller {
             );
         }
         if (!$debug) {
-            header('Content-type: application/json;charset=UTF-8');
+            $this->output->set_content_type('json','utf-8');
             echo json_encode($rtn);
         } else {
             var_dump($rtn);
@@ -482,7 +492,7 @@ class Form extends MX_Controller {
 
 
         if (!$debug) {
-            header('Content-type: application/json;charset=UTF-8');
+            $this->output->set_content_type('json','utf-8');
             echo json_encode($frame->toShow());
         } else {
             var_dump('Obj', $frame, 'Save:', $frame->toSave(), 'Show', $frame->toShow());
@@ -614,7 +624,7 @@ class Form extends MX_Controller {
         $criteria = array('idobj' => $idform);
         $newobj = array('$set' => array('frames' => $frames));
         $options = array('fsync' => true, 'upsert' => true);
-        $result = $this->mongo->db->forms->update($criteria, $newobj, $options);
+        $result = $this->mongowrapper->db->forms->update($criteria, $newobj, $options);
         echo "
         <p>
 		<span class='ui-icon ui-icon-circle-check' style='float:left;margin:0 7px 0px 0;'>

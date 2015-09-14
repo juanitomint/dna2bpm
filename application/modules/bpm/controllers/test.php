@@ -42,7 +42,7 @@ class test extends MX_Controller {
         $wf = $this->bpm->bindArrayToObject($mywf['data']);
         $startMessage = $this->bpm->get_shape_byname("/^StartMessageEvent$/", $wf);
         $startMessage['count'] = count($startMessage);
-//header('Content-type: application/json;charset=UTF-8');
+//$this->output->set_content_type('json','utf-8');
         var_dump($startMessage);
     }
 
@@ -184,7 +184,7 @@ class test extends MX_Controller {
 //---tomo el template de la tarea
         $renderData['name'] = 'Test TASK->SEND: ' . $wf->properties->name;
         $renderData['shapes'] = $this->bpm->bindObjectToArray($this->bpm->get_shape_byprop(array('tasktype' => 'Send'), $wf));
-        var_dump($renderData);
+        // var_dump($renderData);
 //        exit;
         $this->ui->compose('bpm/modal_task_send', 'bpm/bootstrap.ui.php', $renderData);
     }
@@ -214,7 +214,7 @@ function test_task($idwf, $idcase,$resourceId=null) {
         );
 //        $this->bpm->debug['load_case_data'] = true;
 //---saco título para el resultado
-        $mywf = $this->bpm->load($idwf);
+        $mywf = $this->bpm->load($idwf,false);
         $wf = $this->bpm->bindArrayToObject($mywf ['data']);
         
         if($resourceId){
@@ -244,8 +244,9 @@ function run_test($idwf,$idcase,$resourceId){
     $mywf = $this->bpm->load($idwf);
     $wf = $this->bpm->bindArrayToObject($mywf ['data']);
     $wf->idwf=$idwf;
-    
+    $wf->case=$idcase;
     $shape = $this->bpm->get_shape($resourceId, $wf);
+    $this->engine->wf=$wf;
     //---Synthesize objects
     $this->engine->load_data($wf,$idcase);
     $DS=$this->engine->data;
@@ -302,12 +303,12 @@ function run_test($idwf,$idcase,$resourceId){
         $user = $this->user->getuser((int) $this->session->userdata('iduser'));
         $renderData = array();
         //---get Shape
-        $mywf = $this->bpm->load($idwf);
+        $mywf = $this->bpm->load($idwf,false);
         $wf = $this->bpm->bindArrayToObject($mywf ['data']);
         $wf->idwf=$idwf;
         $shape = $this->bpm->get_shape($resourceId, $wf);
         $shape->properties->script=$script;
-        //header('Content-type: application/json;charset=UTF-8');
+        //$this->output->set_content_type('json','utf-8');
         $this->bpm->save($idwf, $wf, $mywf['svg']);
         echo "Saved!";
         

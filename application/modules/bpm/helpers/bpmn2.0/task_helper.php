@@ -269,13 +269,30 @@ function run_Task($shape, $wf, $CI) {
             foreach ($to as $to_user) {
                 if ($debug)
                     echo "Sending msg to user:$to_user<br/>";
-                $CI->msg->send($msg, $to_user);
+                switch($shape->properties->rendering){
+                    
+                     
+                     case 'ui':
+                         //---route msg to user interface subsystem
+                          $CI->bpm->movenext($shape, $wf);
+                         $CI->show_modal($msg['subject'],$msg['body'],false);
+                         break;
+                     case 'alert':
+                         //---route msg to alert subsystem
+                         
+                         break;
+                    default:
+                     $CI->msg->send($msg, $to_user);
+                     break;
+                }
             }
             //---fires triger if everything is ok
-            if ($shape->properties->messageref)
+            if ($shape->properties->messageref){
                 run_IntermediateEventThrowing($shape, $wf, $CI);
             //---move to next shape
-            $CI->bpm->movenext($shape, $wf);
+            } else {
+                $CI->bpm->movenext($shape, $wf);
+            }
             break;
 
         case 'Receive':

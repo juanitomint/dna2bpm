@@ -68,7 +68,9 @@ Ext.application({
                     TokensFolow,
                     TokensShowExtras,
                     TokensReload,
-                    TokensPaintAll
+                    TokensPaintAll,
+                    TokensStatus,
+                    TokensHistory,
                     ]
                 }
             }

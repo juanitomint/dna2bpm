@@ -40,38 +40,6 @@ class Gitmod extends MX_Controller {
         $this->user->authorize();
         Modules::run('dashboard/dashboard', 'gitmod/json/dashboard.json');
     }
-    function update() {
-        $this->user->authorize();
-        echo "<h1>Update from GIT server V1.15.log</h1>";
-
-//----log to file
-        $logtofile = true;
-//----whether to include payload or not into logfile for debuging prouposes
-        $include_payload = false;
-//---get raw input
-        //$request = file_get_contents('php://input');
-        //$request_body = json_decode($request);
-        $request_body = json_decode($this->input->post('payload'));
-        $who = 'nobody';
-        $result = 'Unauthorized access';
-        if ($this->input->post('payload')|| true) {
-            $who = $request_body->pushed_by;
-            if ($who) {
-                $result = shell_exec('git pull 2>&1');
-            } else {
-                $result = "Error can't process update request";
-            }
-        }
-        if ($logtofile) {
-            if ($fp = @fopen('update-git.log', 'a')) {
-                if ($include_payload)
-                    fwrite($fp, date('Y-m-d H:i:s') . ' ' . urldecode($request) . "\n");
-                fwrite($fp, date('Y-m-d H:i:s') . ' Pushed by:' . $who . "\n");
-                fwrite($fp, date('Y-m-d H:i:s') . ' Result: ' . $result . "\n\n");
-                fclose($fp);
-            }
-        }
-    }
 
     function viewlog() {
         $this->user->authorize();
@@ -299,7 +267,7 @@ class Gitmod extends MX_Controller {
         $out['ok']=false;
             
         }
-        header('Content-type: application/json;charset=UTF-8');
+        $this->output->set_content_type('json','utf-8');
         echo json_encode($out);
     }
     
@@ -316,7 +284,7 @@ class Gitmod extends MX_Controller {
         $out['status']="<span class='text-danger'>$date <i class='fa fa-thumbs-down'></i>".$e->getMessage()."</span><hr/>";
             
         }
-        header('Content-type: application/json;charset=UTF-8');
+        $this->output->set_content_type('json','utf-8');
         echo json_encode($out);
     }
     

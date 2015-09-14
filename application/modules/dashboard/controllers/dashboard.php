@@ -182,7 +182,8 @@ class Dashboard extends MX_Controller {
         $customData['global_js'] = array(
             'base_url' => $this->base_url,
             'module_url' => $this->module_url,
-            'myidu' => $this->idu
+            'myidu' => $this->idu,
+            'lang'=>$this->config->item('language')
         );
 
 
@@ -391,7 +392,7 @@ class Dashboard extends MX_Controller {
                     $customData['body_style']='display:none';
                 }
                         
-                $mycontent=$this->parser->parse('widgets/box', $customData, true, true);
+                $mycontent=$this->parser->parse('dashboard/widgets/box', $customData, true, true);
             }    
                 if (!$empty_spans)
                 	$content.=$mycontent;

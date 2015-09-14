@@ -1,0 +1,36 @@
+{
+    "createdBy": "Gabriel Fojo <trialvd@gmail.com>",
+    "title": "Calendar",
+    "view": "layout_2cols",
+    "icon": "fa-calendar",
+    "js": [{"{base_url}calendar/assets/jscript/app.js": "calendar-JS"},
+    {"0": "fullcalendar-moment"},
+    {"1": "fullcalendar"},
+    {"2": "fullcalendar-lang"},
+    {"3": "daterangerpicker"}
+    ],
+    "css": [{
+        }
+    ],
+    "zones": [{
+       "tiles": [
+           {
+            "title": "Full Table",
+            "module": "calendar",
+            "controller": "calendar",
+            "function": "panel_create",
+            "span":3
+             },{
+            "title": "Full Table",
+            "module": "calendar",
+            "controller": "calendar",
+            "function": "panel_calendar",
+            "span":9
+             }]
+    },    
+    {
+        "2cols_after": [
+            
+            ]
+    }]
+}

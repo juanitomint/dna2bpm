@@ -55,15 +55,15 @@ $(document).on("click",".msg",function(e){
 	var whereiam=$('#whereiam').val();
     var url = globals.base_url+'inbox/inbox/get_msg';    
     $.post(url,{id:msgid,whereiam:whereiam},function(data){
-    	var msg=JSON.parse(data);
-    	var mybody=msg.body.replace(/(?:\r\n|\r|\n)/g, '<br />');
+
+    	 var msg=JSON.parse(data);
+    	 var mybody=msg.body.replace(/(?:\r\n|\r|\n)/g, '<br />');
 
         $('.modal-title').html('<i class="fa fa-envelope"></i> '+msg.subject);
         $('.modal-body').html(mybody);
         $('#myModal').modal('show');     
         $('#printboard').html('<h1>'+msg.subject+'</h1>'+mybody);// printzone
        
-
         this_msg.removeClass('unread');
         this_msg.addClass('read');  
         update_counters();	
@@ -98,6 +98,7 @@ $(document).on('submit','#new_msg',function(e){
                	var whereiam=$('#whereiam').val();
                 var url = globals['base_url']+"inbox/print_folder/"+whereiam;
                 reload(url,target,whereiam);
+                $('#myModal').modal('hide');
          });
 
 
@@ -163,6 +164,7 @@ $(document).on("click","#msg_action a,#msg_tag a",function(){
 		case "delete":
 		    var url = globals.base_url+'inbox/inbox/remove';    
 		    $.post(url,{'msgid':msgid},function(data){
+		    	
 		    	msgid.forEach(function(id){
 		    		$("[data-msgid='"+id+"']").hide('500');
 	    		});

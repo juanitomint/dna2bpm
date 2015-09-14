@@ -130,7 +130,7 @@ Ext.create('Ext.data.Store', {
  */
 
 function onTreeStoreLoad() {
-    tree.load_checked();
+    // tree.load_checked();
 }
 Ext.create('Ext.data.TreeStore', {
     id: "TreeStore",

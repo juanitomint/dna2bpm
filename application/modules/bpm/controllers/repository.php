@@ -52,77 +52,117 @@ class Repository extends MX_Controller {
         }
     }
 
+    function duplicate() {
+            $idwf = $this->input->post('idwf');
+            $newidwf = $this->input->post('newidwf');
+            $exists=$this->bpm->model_exists($newidwf);
+            if($idwf && $newidwf){
+                if($exists){
+                    $result['ok'] = false;
+                    $result['msg']="id: $newidwf already exists, choose a unique id please";
+
+                } else {
+                $data= $this->bpm->load($idwf,false);
+                unset($data['_id']);
+                $data['data']['resourceId'] = $newidwf;
+                $data['idwf']=$newidwf;
+                $this->bpm->save_raw($data);
+                        $result['ok'] = true;
+                        $result['msg']="created id: $newidwf";
+
+                }
+            } else {
+                $result['ok'] = false;
+                $result['msg']="error";
+            }
+        $this->output->set_content_type('json','utf8');
+        echo json_encode($result);
+    }
+
     function save_as() {
         $data = json_decode($this->input->post('data'));
+        //@todo fix svg displacement
         $svg = $this->input->post('svg');
         $title = "title";
 //$idwf = $this->input->post('edit_model_title');
         $idwf = $this->input->post('title');
         $data->resourceId = $idwf;
         $query = array('idwf' => $idwf);
-        $mywf = (array) $this->mongo->db->workflow->findOne($query);
+        $mywf = $this->bpm->load($idwf,false);
         if ($mywf) {
             show_error('Name Already Exists', 404);
         } else {
-            $new=$this->add($idwf);
+            //$new=$this->add($idwf);
             $this->bpm->save($idwf, $data, $svg);
         }
     }
-    
+
     function add($new_idwf=null) {
 //---check if has post
         if (!($this->input->post('idwf')or $new_idwf)) {
             show_error("Can't access this page directly");
         }
         $idwf =($new_idwf)? $new_idwf:$this->input->post('idwf');
-        $folder = $this->input->post('folder');
-        $name = ($this->input->post('name')) ? $this->input->post('name') : $this->lang->line('New_Model');
-        $user = $this->user->get_user($this->idu);
-        $author = $user->name . ' ' . $user->lastname;
-        $wf['idwf'] = $idwf;
-        $wf['folder'] = $folder;
-        $wf['version'] = 0;
-        $wf['svg'] = '';
-        $wf['data'] = array(
-            'stencilset' =>
-            array(
-#'url' => $this->base_url . 'jscript/bpm-dna2/stencilsets/bpmn2.0/bpmn2.0_2.json',
-                'url' => '../../jscript/bpm-dna2/stencilsets/bpmn2.0/bpmn2.0_2.json',
-                'namespace' => 'http://b3mn.org/stencilset/bpmn2.0#'
-            ),
-            'resourceId' => $idwf,
-            'properties' => array(
-                'name' => $name,
-                'documentation' => '',
-                'auditing' => '',
-                'monitoring' => '',
-                'version' => 1,
-                'author' => $author,
-                'language' => $this->config->item('language'),
-                'namespaces' => '',
-                'targetnamespace' => 'http://www.omg.org/bpmn20',
-                'expressionlanguage' => 'http://www.w3.org/1999/XPath',
-                'typelanguage' => 'http://www.w3.org/2001/XMLSchema',
-                'creationdate' => date('Y-m-d') . 'T00:00:00',
-                'modificationdate' => ''),
-            'stencil' => array('id' => 'BPMNDiagram')
-        );
-        $arr = $this->bpm->save_raw($wf);
-        $result['ok'] = (count($arr)) ? false : true;
+        if(!$this->bpm->model_exists($idwf)){
+            $folder = $this->input->post('folder');
+            $name = ($this->input->post('name')) ? $this->input->post('name') : $this->lang->line('New_Model');
+            $user = $this->user->get_user($this->idu);
+            $author = $user->name . ' ' . $user->lastname;
+            $wf['idwf'] = $idwf;
+            $wf['folder'] = $folder;
+            $wf['version'] = 0;
+            $wf['svg'] = '';
+            $wf['data'] = array(
+                'stencilset' =>
+                array(
+    #'url' => $this->base_url . 'jscript/bpm-dna2/stencilsets/bpmn2.0/bpmn2.0_2.json',
+                    'url' => '../../jscript/bpm-dna2/stencilsets/bpmn2.0/bpmn2.0_2.json',
+                    'namespace' => 'http://b3mn.org/stencilset/bpmn2.0#'
+                ),
+                'resourceId' => $idwf,
+                'properties' => array(
+                    'name' => $name,
+                    'documentation' => '',
+                    'auditing' => '',
+                    'monitoring' => '',
+                    'version' => 1,
+                    'author' => $author,
+                    'language' => $this->config->item('language'),
+                    'namespaces' => '',
+                    'targetnamespace' => 'http://www.omg.org/bpmn20',
+                    'expressionlanguage' => 'http://www.w3.org/1999/XPath',
+                    'typelanguage' => 'http://www.w3.org/2001/XMLSchema',
+                    'creationdate' => date('Y-m-d') . 'T00:00:00',
+                    'modificationdate' => ''),
+                'stencil' => array('id' => 'BPMNDiagram')
+            );
+            $arr = $this->bpm->save_raw($wf);
+            $result['ok'] = $arr;
+            $result['msg']="created id: $idwf";
+        } else {
+            $result['ok']=false;
+            $result['msg']="id: $idwf already exists, choose a unique id please";
+
+        }
+        $this->output->set_content_type('json','utf8');
+        echo json_encode($result);
     }
 
     function check_model($name) {
         $rs = $this->bpm->get_models(array('idwf' => $name));
         $result['ok'] = ($rs->count()) ? false : true;
-        header('Content-type: application/json;charset=UTF-8');
+        $this->output->set_content_type('json','utf8');
         echo json_encode($result);
     }
 
     function delete($model) {
+        $result=array();
         $idwf = $this->input->post('idwf');
         if ($this->input->post('idwf') <> '') {
-            $result = $this->bpm->delete($idwf);
+            $result['ok'] = $this->bpm->delete($idwf);
         }
+        $this->output->set_content_type('json','utf8');
+        echo json_encode($result);
     }
 
     function load($model, $idwf, $mode = '', $debug = false) {
@@ -130,7 +170,7 @@ class Repository extends MX_Controller {
         $idwf = urldecode($idwf);
         $mywf = $this->bpm->load($idwf,false);
         if (!$debug)
-            header('Content-type: application/json;charset=UTF-8');
+            $this->output->set_content_type('json','utf-8');
         $template = array(
             'resourceId' => $idwf,
             'stencilset' =>
@@ -145,10 +185,12 @@ class Repository extends MX_Controller {
             )
         );
         $data = ($mywf['data']) ? $mywf['data'] : $template;
-        if (!$debug)
+        if (!$debug){
+            $this->output->set_content_type('json','utf8');
             echo json_encode($data);
-        if ($debug)
+        } else {
             var_dump($data);
+        }
     }
 
     function edit($model = '', $idwf = '') {
@@ -173,8 +215,9 @@ class Repository extends MX_Controller {
         ini_set('xdebug.var_display_max_depth', -1);
 
 //$this->parser->parse('bpm/json_editor', $wfData);
-        header('Content-type: application/json;charset=UTF-8');
-        echo json_encode($wfData);
+        $this->output->set_content_type('json','utf-8');
+        $this->output->set_output(json_encode($wfData));
+        // echo json_encode($wfData);
     }
     function json_view($model,$idwf,$expand=false){
         $this->load->library('ui');
@@ -193,14 +236,14 @@ class Repository extends MX_Controller {
             'base_url' => $this->base_url,
             'module_url' => $this->module_url,
             'idwf' => $idwf,
-            
+
         );
-        
+
         $renderData['css'] = array(
             $this->module_url . 'assets/css/jsoneditor.min.css' => 'JSON-Editor CSS',
             $this->module_url . 'assets/css/json_view.css' => 'JSON-Editor CSS',
         );
-        
+
         $renderData['js'] = array(
             $this->module_url . 'assets/jscript/jsoneditor.min.js' => 'JSON-Editor',
             $this->module_url . 'assets/jscript/repository/json_view.js' => 'JSON-View Init',
@@ -210,7 +253,7 @@ class Repository extends MX_Controller {
         /*
         * Save edited script
         */
-        
+
     function save_script($idwf,$resourceId){
         $this->user->authorize();
         $debug=false;
@@ -227,14 +270,14 @@ class Repository extends MX_Controller {
         $mywf = $this->bpm->load($idwf);
         // $wf = $script;
         $wf = $mywf['data'];
-        
-        
-        
-        //header('Content-type: application/json;charset=UTF-8');
+
+
+
+        //$this->output->set_content_type('json','utf-8');
         //$this->bpm->save($idwf, $wf, $mywf['svg']);
         echo date($this->lang->line('dateFmt'))." Saved!";
-        
-    
+
+
     }
     function thumbnail($idwf, $width, $heigth) {
         $svg = $this->bpm->svg($idwf);
@@ -275,7 +318,7 @@ class Repository extends MX_Controller {
             $data['shapes'][$shape->resourceId] = $shape;
         }
         if (!$debug) {
-            header('Content-type: application/json;charset=UTF-8');
+            $this->output->set_content_type('json','utf-8');
             echo json_encode($data);
         } else {
             var_dump($data);
@@ -479,7 +522,7 @@ class Repository extends MX_Controller {
             $rtnObject['success'] = false;
         }
         if (!$debug) {
-            header('Content-type: application/json;charset=UTF-8');
+            $this->output->set_content_type('json','utf-8');
             echo json_encode($rtnObject);
         } else {
             var_dump($rtnObject);
@@ -496,7 +539,7 @@ class Repository extends MX_Controller {
         $mywf = $this->bpm->load($idwf, false);
         $rtnObject = $this->bpm->update_folder($idwf, $folder);
         if (!$debug) {
-            header('Content-type: application/json;charset=UTF-8');
+            $this->output->set_content_type('json','utf8');
             echo json_encode($rtnObject);
         } else {
             var_dump($rtnObject);
@@ -514,7 +557,7 @@ class Repository extends MX_Controller {
 
       case 'jsonp':
       $mywf = $this->bpm->load($idwf, false);
-      header('Content-type: application/json;charset=UTF-8');
+      $this->output->set_content_type('json','utf-8');
       echo 'MOVI.widget.ModelViewer.getInstance(0).loadModelCallback(' . json_encode($mywf['data']) . ')';
       //echo 'MOVI.widget.ModelViewer.getInstance(0).loadModelCallback({"resourceId":"oryx-canvas123","properties":{"id":"","name":"","documentation":"","version":"","author":"","language":"English","expressionlanguage":"","querylanguage":"","creationdate":"","modificationdate":"","pools":""},"stencil":{"id":"BPMNDiagram"},"childShapes":[{"resourceId":"oryx_2023B13C-9A9A-446D-B4D8-C23A5E169CAB","properties":{"id":"","name":"pay invoice","categories":"","documentation":"","assignments":"","pool":"","lanes":"","activitytype":"Task","status":"None","performers":"","properties":"","inputsets":"","inputs":"","outputsets":"","outputs":"","iorules":"","startquantity":"1","completionquantity":"1","looptype":"None","loopcondition":"","loopcounter":"1","loopmaximum":"1","testtime":"After","mi_condition":"","mi_ordering":"Sequential","mi_flowcondition":"All","complexmi_condition":"","iscompensation":"","tasktype":"None","inmessage":"","outmessage":"","implementation":"Webservice","messageref":"","instantiate":"","script":"","taskref":"","bgcolor":"#ffffcc"},"stencil":{"id":"Task"},"childShapes":[],"outgoing":[],"bounds":{"lowerRight":{"x":309,"y":255},"upperLeft":{"x":209,"y":175}},"dockers":[]}],"bounds":{"lowerRight":{"x":1485,"y":1050},"upperLeft":{"x":0,"y":0}},"stencilset":{"url":"http://oryx.bpmn-community.org:80/oryx/stencilsets/bpmn1.1/bpmn1.1.json","namespace":"http://b3mn.org/stencilset/bpmn1.1#"},"ssextensions":[]});';
       break;
@@ -535,7 +578,7 @@ class Repository extends MX_Controller {
       //$file = str_replace($this->base_url, '', $mywf['data']['stencilset']['url']);
       $file = 'jscript/bpm-dna2/stencilsets/bpmn2.0/movi.json';
       //var_dump($file);
-      header('Content-type: application/json;charset=UTF-8');
+      $this->output->set_content_type('json','utf-8');
       echo 'MOVI.widget.ModelViewer.getInstance(0).loadStencilSetCallback(';
       echo read_file($file);
       echo ')';
