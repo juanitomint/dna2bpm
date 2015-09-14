@@ -16,8 +16,6 @@ DNA²BPM is an Open Source BPM Suite based on BPMN2.0 standard, it has all the m
 DNA2BPM is a full blown, ready to use,BPMS build on open source software made to evolve.
 
 
-This text you see here is *actually* written in Markdown! To get a feel for Markdown's syntax, type some text into the left window and watch the results in the right.
-
 ### Version 
 Beta 0.7.2
 
