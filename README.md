@@ -10,16 +10,11 @@ DNA²BPM is an Open Source BPM Suite based on BPMN2.0 standard, it has all the m
   - Diagram Browser
   - Integrated Inbox (send/recive from/to BPM processes)
   - Key Process Indicator editor (KPI)
+  - Integrated RBAC (Role Based Access Control)
+  - Multiple connectors (file, Mongo, MySQL,QR-output, etc)
 
 DNA2BPM is a full blown, ready to use,BPMS build on open source software made to evolve.
 
-> The overriding design goal for Markdown's
-> formatting syntax is to make it as readable
-> as possible. The idea is that a
-> Markdown-formatted document should be
-> publishable as-is, as plain text, without
-> looking like it's been marked up with tags
-> or formatting instructions.
 
 This text you see here is *actually* written in Markdown! To get a feel for Markdown's syntax, type some text into the left window and watch the results in the right.
 
