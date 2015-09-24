@@ -29,7 +29,7 @@ Ext.application({
                 layout:'fit',
                 title:'<i class="icon icon-time" ></i> Token History',
                 collapsible: true,
-                collapsed:true,
+                collapsed:false,
                 resizable:true,
                 height:300,
                 items:[tokenGrid]
@@ -81,7 +81,7 @@ Ext.application({
                 },
                 afterRender: function(){
                     remove_loaders();
-                    // load_model(globals.idwf);
+                    // load_data_callback=function(){center.setLoading(false);}
                     tokens_load_status(globals.idwf,globals.idcase,tokens_paint_all);
                 }
                     
