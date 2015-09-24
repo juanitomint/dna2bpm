@@ -7,6 +7,7 @@ class mongo_connector extends CI_Model {
 
     function Mongo_connector() {
         parent::__construct();
+        $this->load->library('mongowrapper');
     }
 
     function get_data($resource) {

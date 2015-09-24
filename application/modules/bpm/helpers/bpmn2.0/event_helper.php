@@ -360,16 +360,20 @@ function run_IntermediateTimerEvent($shape, $wf, $CI) {
     if ($debug)
         echo "<h2>" . __FUNCTION__ . '</h2>';
     $token = $CI->bpm->get_token($wf->idwf, $wf->case, $shape->resourceId);
-//var_dump2($token);
+    $data=$CI->bindObjectToArray($CI->data);
+    // var_dump($data);
 //---1st arrive to this timer set the trigger condition
     if ($token['status'] == 'pending') {
-        if (($timestamp = strtotime($shape->properties->name)) === false) {
+        $date_str=$CI->parser->parse_string($shape->properties->name, $data, true, true);
+        if($debug)
+            echo "Parsed str: ".$date_str.'<hr/>';
+        if (($timestamp = strtotime($date_str)) === false) {
 //----Raise Error
-            show_error("cannot convert". $shape->properties->name." to a valid time \n");
+            show_error("cannot convert". $date_str." to a valid time (". $shape->properties->name.")");
         } else {
-            $trigger = date('Y-m-d H:i:s', strtotime($shape->properties->name));
+            $trigger = date('Y-m-d H:i:s', strtotime($date_str));
             if ($debug) 
-            echo 'trigger:'.$shape->properties->name.' -> '.date('Y-m-d H:i:s',time()).' -> '.$trigger.'</br>';
+            echo 'trigger:'.$shape->properties->name.' -> '.date('Y-m-d H:i:s',time()).' -> '.$date_str.' -> '.$trigger.'</br>';
             
         }
         $CI->bpm->set_token($wf->idwf, $wf->case, $shape->resourceId, $shape->stencil->id, 'waiting', array('trigger' => $trigger));
@@ -387,6 +391,7 @@ function run_IntermediateTimerEvent($shape, $wf, $CI) {
             }
             break;
     }
+
 }
 
 function run_IntermediateMessageEventCatching($shape, $wf, $CI) {
