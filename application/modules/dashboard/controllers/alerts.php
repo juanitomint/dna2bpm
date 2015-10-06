@@ -38,6 +38,8 @@ class Alerts extends MX_Controller {
 
       //	$customdata['my_alerts']=$this->alerts_model->get_alerts_by_filter($target);
         $alerts_raw=$this->alerts_model->get_alerts_by_filter($target);
+        // var_dump($alerts_raw);
+        // exit();
         $alerts=array();
         // Check publish and unpublish
          $now=date('Y-m-d H:i:s');
@@ -101,9 +103,70 @@ class Alerts extends MX_Controller {
         return $this->parser->parse('dashboard/alert_create_box', $customdata,true, false);
         
     }
+    
+    function alert_list_box(){
+        $customdata=array();
+        $customdata['lang']= $this->lang->language;
+        $list=$this->alerts_model->alert_list_box();
+        $customdata['rows']='';
+        foreach($list as $k=>$v){
+            
+            
+        if(empty($v['show'])){
+           $class='callout callout-danger'; 
+           $eye="fa-eye";
+           $eye_title="Show";
+           $visible="false";
+        }else{
+            $class='callout callout-info';
+            $eye="fa-eye-slash";
+            $eye_title="Hide";
+            $visible="false";
+        }
+        
+        $now=date('Y-m-d H:i:s');
+        $date_class=($v['start_date']<$now && $v['end_date']>$now)?(''):('text-danger');
+        // var_dump($v['start_date'],$now,$v['start_date']>$now);
+        // exit();
+           $customdata['rows'].=<<<_EOF_
+               <tr class="$class $date_class" data-id="{$v['_id']}" data-visible="$visible">
+                    <td>
+                    <button type="button" class="btn btn-default bt_alert_visible"  title="$eye_title"><i class="fa $eye"></i></button>
+                    <button type="button" class="btn btn-default bt_alert_delete" title="del" data-id="{$v['_id']}"><i class="fa fa-trash-o"></i></button>
+                    </td>
+                    <td>{$v['start_date']}</td>
+                    <td>{$v['end_date']}</td>
+                    <td>{$v['subject']}</td>
+                </tr>
+_EOF_;
+        }
 
+       return $this->parser->parse('dashboard/alert_list_box', $customdata,true, false);
+        
+    }
+    
+    function wrapper_alert_list_box(){
+        echo $this->alert_list_box();
+        
+    }
+    
+    //== Ono/off
+    function alert_onoff(){
+        $customdata=array();
+        $customdata['lang']= $this->lang->language;
+        $myid=$this->input->post('myid');
 
+        echo $this->alerts_model->alert_onoff($myid);
+    }
 
+    //== Delete
+    function alert_delete(){
+        $customdata=array();
+        $customdata['lang']= $this->lang->language;
+        $myid=$this->input->post('myid');
+
+        echo $this->alerts_model->alert_delete($myid);
+    }
  
  
  

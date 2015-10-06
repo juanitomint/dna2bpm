@@ -244,7 +244,7 @@ function run_EndTerminateEvent($shape, $wf, $CI) {
     /**
      * @todo Cancel all pending tasks and close
      */
-    $active_tokens = $CI->bpm->get_pending($wf->idwf, $wf->case, array('user', 'waiting', 'pending'), array());
+    $active_tokens = $CI->bpm->get_pending($wf->idwf, $wf->case, array('user', 'waiting', 'pending','open'));
     foreach ($active_tokens as $token) {
         $token['status'] = 'canceled';
         $data = array('canceledBy' => $shape->resourceId, 'canceledName' => $shape->properties->name);

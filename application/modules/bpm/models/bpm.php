@@ -449,7 +449,7 @@ class Bpm extends CI_Model {
     }
 
     function clear_case($idwf, $idcase) {
-        $case = $this->get_case($idcase);
+        $case = $this->get_case($idcase,$idwf);
         $_id = $case['_id'];
         return $this->save_case(
                         array(
@@ -503,7 +503,7 @@ class Bpm extends CI_Model {
      */
 
     function consolidate_data($idwf, $idcase, $resourceId) {
-        $case = $this->get_case($idcase);
+        $case = $this->get_case($idcase,$idwf);
         $data = $this->load_case_data($case, $idwf);
         $token = $this->get_token($idwf, $idcase, $resourceId);
         if (!$token) {
@@ -677,7 +677,7 @@ class Bpm extends CI_Model {
                 'assign' => $this->idu
             );
         $filter ['$or'] [] = array(
-                'idu' => $this->idu
+                'iduser' => $this->idu
             );
         $filter ['$or'] [] = array(
             'idgroup' => array(
@@ -926,7 +926,7 @@ class Bpm extends CI_Model {
 
         $data['idwf'] = $idwf;
         $data['id'] = $id;
-        $case = $this->get_case($id);
+        $case = $this->get_case($id,$idwf);
         //---calculate interval since case started
         $dateIn = (isset($case['checkdate'])) ? new DateTime($case['checkdate']) : new DateTime();
         //---now
@@ -1132,7 +1132,7 @@ class Bpm extends CI_Model {
         foreach ($wf->childShapes as $obj) {
             if ($debug)
                 echo "Analizing:" . $obj->stencil->id . '<hr>';
-            if (preg_match($name, $obj->stencil->id) and !in_array($obj->resourceId,$exclude)) {
+            if (preg_match($name, $obj->stencil->id) and !in_array($obj->stencil->id,$exclude)) {
                 $rtnarr[] = $obj;
             }
             //---Search inside this objects
@@ -1317,7 +1317,8 @@ class Bpm extends CI_Model {
         foreach ($wf->childShapes as $obj) {
             // find childs
             //if (preg_match('/^Start/', $obj->stencil->id)) {
-            if ($obj->stencil->id == 'StartNoneEvent') {
+            //----don't look in subprocess
+            if ($obj->stencil->id == 'StartNoneEvent' and !in_array($obj->stencil->id,array('CollapsedSubprocess','Subprocess'))) {
                 $start_shapes[] = $obj;
                 if ($debug) {
                     echo '<h2>$start_shapes</h2>';
@@ -1325,7 +1326,6 @@ class Bpm extends CI_Model {
                     echo '<hr>';
                 }
             }
-            //----don't look in subprocess
             if (in_array($obj->stencil->id, array('Pool', 'Lane'))) {
                 if ($debug)
                     echo "&nbsp;&nbsp;&nbsp;Recalling:" . $obj->stencil->id . '<hr>';
@@ -1503,7 +1503,7 @@ class Bpm extends CI_Model {
         $token['type'] = $shape->stencil->id;
         $token['idwf'] = $wf->idwf;
         $token['case'] = $wf->case;
-        $token['idu'] = $this->idu;
+        $token['iduser'] = $this->idu;
         $token['microtime'] = microtime();
         return $token;
     }
@@ -1538,7 +1538,7 @@ class Bpm extends CI_Model {
         $token = $this->get_token($wf->idwf, $wf->case, $shape->resourceId);
         //---set special status "user"
         //---Get Case
-        $case = $this->get_case($wf->case);
+        $case = $this->get_case($wf->case,$wf->idwf);
 
 
         //---Set Initiator same as case creator

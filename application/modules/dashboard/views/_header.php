@@ -8,7 +8,7 @@
         <!-- bootstrap 3.0.2 -->
         <link href="{module_url}assets/bootstrap-wysihtml5/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
         <!-- font Awesome -->
-        <link href="{module_url}assets/bootstrap-wysihtml5/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+        <link href="{module_url}assets/bootstrap-wysihtml5/css/font-awesome-4.4.0/css/font-awesome.css" rel="stylesheet" type="text/css" />
        	<!-- Ionicons -->
         <link href="{module_url}assets/bootstrap-wysihtml5/css/ionicons.min.css" rel="stylesheet" type="text/css" />
         <!-- Daterange picker -->

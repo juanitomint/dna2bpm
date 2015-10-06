@@ -82,6 +82,7 @@ function run_CollapsedSubprocess($shape, $wf, $CI) {
 function run_Subprocess($shape, $wf, $CI) {
     $CI = & get_instance();
     $debug = (isset($CI->debug[__FUNCTION__])) ? $CI->debug[__FUNCTION__] : false;
+    // $debug=true;
     if ($debug)
         echo '<H1>SUBPROCESS:' . $shape->properties->name . '</H1>';
     $token = $CI->bpm->get_token($wf->idwf, $wf->case, $shape->resourceId);
@@ -107,7 +108,7 @@ function run_Subprocess($shape, $wf, $CI) {
         default:
             //---SAME AS STARTING A CASE
             //---Get start shape
-            $start_shapes = $CI->bpm->get_shape_byname('StartNoneEvent', $shape);
+            $start_shapes = $CI->bpm->get_start_shapes($shape);
             if (count($start_shapes)) {
                 $start_shape = $start_shapes[0];
                 if ($debug) {
