@@ -208,7 +208,7 @@ class Dashboard extends MX_Controller {
          */
 
         if($extraData){
-         $customData+=$extraData;   
+         $customData=$extraData+$customData;  
         }
 
         $this->ui->compose($layout, $customData);
