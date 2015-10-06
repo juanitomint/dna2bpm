@@ -2006,4 +2006,49 @@ class Bpm extends CI_Model {
         return $rs->result_array();
     }
 
+    /**
+     * Saves a case and tokens into freezer
+     *
+     */
+    function freeze($idwf,$idcase) {
+        $data['checkdate'] =  date('Y-m-d H:i:s');
+        $data['idwf'] = $idwf;
+        $data['idcase'] = $idcase;
+        $data['iduser'] = $this->idu;
+        $data['microtime'] = microtime();
+        $data['case']=$this->get_case($idcase,$idwf);
+        $data['tokens']=$this->get_tokens_byFilter(array('case'=>$idcase,'idwf'=>$idwf));
+        $this->db->where(array('idwf'=>$idwf,'idcase'=>$idcase));
+        $this->db->delete('case.freezer');
+        return $this->db->insert('case.freezer',$data);
+    }
+    /**
+     * retrives a case and tokens into freezer
+     *
+     */
+    function unfreeze($idwf,$idcase) {
+        $this->db->where(array('idwf'=>$idwf,'idcase'=>$idcase));
+        $rs=$this->db->get('case.freezer')->row();
+        if($rs){
+            //---delete case
+            $this->db->where(array('idwf'=>$idwf,'id'=>$idcase));
+            $this->db->delete('case');
+            //---restore case
+            $this->db->insert('case',$rs->case);
+            //---delete tokens
+            $this->db->where(array('idwf'=>$idwf,'case'=>$idcase));
+            $this->db->delete('tokens');
+            //---restore tokens
+            foreach($rs->tokens as $token){
+                $this->db->insert('tokens',$token);
+            }
+            $result=true;
+
+        } else {
+            $result=false;
+        }
+        return $result;
+    }
+
+
 }

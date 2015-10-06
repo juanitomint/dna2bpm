@@ -5,9 +5,9 @@ if (!defined('BASEPATH'))
 
 /**
  * kpi
- * 
+ *
  * Description of the class kpi
- * 
+ *
  * @author Juan Ignacio Borda <juanignacioborda@gmail.com>
  * @date   Mar 30, 2013
  */
@@ -251,7 +251,7 @@ class Case_manager extends MX_Controller {
                             unset($token['history']);
                             unset($token['_id']);
                             $out['rows'][] = $token;
-                            
+
                         }
                         break;
                     case 'status':
@@ -261,7 +261,7 @@ class Case_manager extends MX_Controller {
                         foreach ($tokens as $token) {
                             //--set user
                             $token['iduser'] = (isset($token['iduser'])) ? isset($token['iduser']) : isset($token['idu']);
-            
+
                             unset($token['history']);
                             unset($token['_id']);
                             //---get the user who locked
@@ -277,7 +277,7 @@ class Case_manager extends MX_Controller {
                         break;
                 }
             }
-            
+
         }
         $out['totalcount'] = count($tokens);
         switch ($output) {
@@ -328,7 +328,46 @@ class Case_manager extends MX_Controller {
             var_dump($data);
         }
     }
+ function freeze(){
+     $debug=false;
+     $idwf=$this->input->post('idwf');
+     $idcase=$this->input->post('idcase');
+     if($this->bpm->freeze($idwf,$idcase)){
+         $data['ok']=true;
+         $data['msg']='Case status + tokens freezed';
+     }else{
+         $data['ok']=false;
+         $data['msg']='Cannot freeze';
+     }
 
+     if (!$debug) {
+            $this->output->set_content_type('json','utf-8');
+            echo json_encode($data);
+        } else {
+            var_dump($data);
+        }
+
+ }
+ function unfreeze(){
+     $debug=false;
+     $idwf=$this->input->post('idwf');
+     $idcase=$this->input->post('idcase');
+     if($this->bpm->unfreeze($idwf,$idcase)){
+         $data['ok']=true;
+         $data['msg']="Case $idwf::$idcase restored" ;
+     }else{
+         $data['ok']=false;
+         $data['msg']="Case $idwf::$idcase not restored" ;
+
+     }
+     if (!$debug) {
+            $this->output->set_content_type('json','utf-8');
+            echo json_encode($data);
+        } else {
+            var_dump($data);
+        }
+
+ }
 }
 
 /* End of file kpi */
