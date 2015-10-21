@@ -44,7 +44,47 @@ class util extends MX_Controller {
         $rtn=array('rows'=>$rtnU);
         if (!$debug) {
             $this->output->set_content_type('json','utf-8');
-            echo json_encode($rtn);
+            $this->output->set_output(json_encode($rtn));
+        } else {
+            var_dump($rtn);
+        }
+    
+        
+    }
+    function get_active_user() {
+        $debug=false;
+        //---check login
+        if(!$this->session->userdata('loggedin')){
+            show_error('Session Expired<br>', 500);
+            exit;
+        }
+        $iduser = $this->user->idu;
+        $user = $this->user->get_user($iduser);
+        //---Available
+        /* {"_id":{"$id":"4e82d4263ad5e0956f00004f"},
+         * "idu"
+         * "idgroup"
+         * "nick"
+         * "passw"
+         * "name"
+         * "lastname"
+         * "idnumber"
+         * "birthDate"
+         * "perm"
+         * "checkdate"
+         * "lastacc"
+         * "id"
+         * "group"
+         * 
+         */
+        $rtnU['idu']=$user->idu;
+        $rtnU['nick']=$user->nick;
+        $rtnU['name']=$user->name;
+        $rtnU['lastname']=$user->lastname;
+        $rtn=$rtnU;
+        if (!$debug) {
+            $this->output->set_content_type('json','utf-8');
+            $this->output->set_output(json_encode($rtn));
         } else {
             var_dump($rtn);
         }
