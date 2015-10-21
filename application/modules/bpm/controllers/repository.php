@@ -42,16 +42,15 @@ class Repository extends MX_Controller {
 
     function save() {
         $data = json_decode($this->input->post('data'));
+//---if has name then save it
+        if ($data) {
 //---fresh modification date
         $data->properties->modificationdate = date('Y-m-d') . 'T00:00:00';
         $svg = $this->input->post('svg');
-//
-//---if has name then save it
-        if ($data) {
             $idwf = $data->resourceId;
-            header('Content-Type:text/plain');
-//---check Existing revision.
+            //---check Existing revision.
             $this->bpm->save($idwf, $data, $svg);
+            
         } else {
             show_error('No name defined<br>', 500);
         }
