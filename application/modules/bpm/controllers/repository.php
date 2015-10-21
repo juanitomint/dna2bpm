@@ -11,7 +11,12 @@ class Repository extends MX_Controller {
         $this->load->model('user');
         $this->load->model('bpm');
         $this->load->helper('bpm');
-//---TODO set propper roles 4 access
+        //---check login
+        if(!$this->session->userdata('loggedin')){
+            show_error('Session Expired<br>', 500);
+            exit;
+        }
+        //---TODO set propper roles 4 access
         $this->user->authorize();
 //----LOAD LANGUAGE
         $this->lang->load('library', $this->config->item('language'));
