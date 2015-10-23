@@ -10541,28 +10541,44 @@ ORYX.Editor = {
 		var fn = function(val){
 			
 			var publicText = ORYX.I18N.Oryx.notLoggedOn;
-			var user = val && val.identifier && val.identifier != "public" ? decodeURI(val.identifier.gsub('"', "")).replace(/\+/g," ") : "";
-			
-			if( user.length <= 0 ){
-				user 	= 	publicText;
-			}
-			
-			var content = 	"<div id='oryx_editor_header'>" +
-								"<a href=\""+ORYX.CONFIG.WEB_URL+"\" target=\"_blank\">" +
-									"<img src='"+ORYX.PATH+"images/oryx.small.gif' border=\"0\" />" + 
-								"</a>" + 
-								"<span class='openid " + (publicText == user ? "not" : "") + "'>" + 
-									user + 
-									maModelAuthI + 
-								"</span>" + 
-								"<div style='clear: both;'/>" + 
-							"</div>";
-			
-			if( headerPanel.body ){
-				headerPanel.body.dom.innerHTML = content;
-			} else {
-				headerPanel.html = content
-			}
+						url = '../../user/util/get_active_user'
+			Ext.Ajax.request({
+				// the url to the remote source
+				url: url,
+				disableCaching: false,
+				method: 'GET',
+				failure: function(response, options) {
+					alert('Error checking active user');
+				},
+				success: function(response, options) {
+					var userdata = Ext.decode(response.responseText);
+					var user=userdata.nick;
+					if (user.length <= 0) {
+						user = publicText;
+					}
+
+					var content = "<div id='oryx_editor_header'>" +
+						"<a href=\"" + ORYX.CONFIG.WEB_URL + "\" target=\"_blank\">" +
+						"<img src='" + ORYX.PATH + "images/oryx.small.gif' border=\"0\" />" +
+						"</a>" +
+						"<span class='openid " + (publicText == user ? "not" : "") + "'>" +
+						user +
+						maModelAuthI +
+						"</span>" +
+						"<div style='clear: both;'/>" +
+						"</div>";
+
+					if (headerPanel.body) {
+						headerPanel.body.dom.innerHTML = content;
+					}
+					else {
+						headerPanel.html = content
+					}
+					//set timeout to 5 minutes
+					window.setTimeout(fn,5*60*1000);
+				}
+				
+			});
 		};	
 		
 		ORYX.Editor.Cookie.onChange(fn);

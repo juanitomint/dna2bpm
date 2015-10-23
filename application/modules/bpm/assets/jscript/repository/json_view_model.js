@@ -3,7 +3,7 @@
           url: globals.module_url + "repository/dump/model/" + globals.idwf,
           success: function(json) {
               var options = {
-                  mode: 'form',
+                  mode: 'view',
                   indentation: 4,
                   modes: ['code', 'form', 'text', 'tree', 'view'], // allowed modes
                   error: function(err) {
@@ -18,8 +18,8 @@
   });
   $('#saveTask').click(function() {
       url = globals.base_url + 'bpm/repository/save_model/' + globals.idwf;
-      var data = {
-          data:  JSON.stringify(globals.jsonEd.get())
+      data = {
+          data: JSON.stringify(globals.jsonEd.get())
       }
       $.ajax({
           url: url,

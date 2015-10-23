@@ -48,7 +48,9 @@ var add_events = function(shapes) {
                 dismissDelay: 0,
                 minWidth: 320,
                 //anchorOffset: 85, // center the anchor on the tooltip
-                html: "<span class='resourceId'>resourceId:<br>" + shape.resourceId + "</span><p style='word-wrap:break-word;'>Doc:" + documentation + "</p><p style='word-wrap:break-word;'>" + rendering + "</p>"
+                html: "<span class='resourceId'>resourceId:<br>" + shape.resourceId + "</span>" +
+                    "<p style='word-wrap:break-word;'>Doc:" + documentation + "</p>" +
+                    "<p style='word-wrap:break-word;'>" + rendering + "</p>"
             };
 
             tooltips.push(
@@ -75,8 +77,8 @@ var add_events = function(shapes) {
 
         }
         if (shape.childShapes.length) {
-            offset_x_orig = offset_x;
-            offset_y_orig = offset_y;
+            var offset_x_orig = offset_x;
+            var offset_y_orig = offset_y;
             offset_x = xBound;
             offset_y = yBound;
 
