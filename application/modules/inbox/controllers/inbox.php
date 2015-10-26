@@ -85,13 +85,14 @@ class Inbox extends MX_Controller {
 		}else{
 			$customData['folder']=$folder;
 		}
-   	
+
     	//==== Bring me my MSGs!!!
     	$skip=($current_page-1)*PAGINATION_ITEMS_X_PAGE;
     	$mymgs = $this->msg->get_msgs($this->idu,$folder,$skip,PAGINATION_ITEMS_X_PAGE,$filter);
+        $Qmsgs=count($this->msg->get_msgs_by_filter(array('to'=>$this->idu,'folder'=>'inbox'))); 
 
     	//==== Pagination
-    	$Qmsgs=count($mymgs);
+   	
     	$config=array('url'=>$this->base_url."inbox/print_folder/".$folder,
     			'current_page'=>$current_page,
     			'items_total'=>$Qmsgs, // Total items 
