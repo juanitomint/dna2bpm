@@ -30,7 +30,7 @@ function edit_combo($frame, $value) {
     if (isset($frame['required']))
         $required = ($frame['required']) ? getRequiredStr($frame['type']) : null;
     */    
-    $option = $CI->mongo->db->options->findOne(array('idop' =>(int) $frame['idop']));
+    $option = $CI->mongowrapper->db->options->findOne(array('idop' =>(int) $frame['idop']));
     
 //prepare options array
     if (isset($option['fromContainer'])) { // if gets data from internal db
@@ -70,7 +70,7 @@ function view_combo($frame, $value) {
     $ops=array();
     $value=(array)$value;
 
-    $option = $CI->mongo->db->options->findOne(array('idop' => $frame['idop']));
+    $option = $CI->mongowrapper->db->options->findOne(array('idop' => $frame['idop']));
     //prepare options array
     if (isset($option['fromContainer'])) { // if gets data from internal db
         $option['data'] = getOpsFromContainer($option);

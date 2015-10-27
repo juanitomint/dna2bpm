@@ -46,7 +46,7 @@ function edit_combodb($frame, $value) {
     
     //var_dump($query);
     
-    $rsop = $CI->mongo->db->selectCollection($frame['dataFrom'])->find($query, $fields);
+    $rsop = $CI->mongowrapper->db->selectCollection($frame['dataFrom'])->find($query, $fields);
     $result = array();
     $i=0;
     foreach($rsop as $search){
@@ -108,7 +108,7 @@ function view_combodb($frame, $value) {
     $value = array_map('floatval', (array) $value);
     //---retrive frame from DB
     $query = array('idframe' => $frame['idframe']);
-    $frame = $CI->mongo->db->frames->findOne($query);
+    $frame = $CI->mongowrapper->db->frames->findOne($query);
 
     $fields = $frame['fields'];
     $query = $frame['query'];
@@ -119,7 +119,7 @@ function view_combodb($frame, $value) {
     $fields[] = $frame['fieldValue'];
     $fields = array_filter($fields);
     //var_dump($query,$fields,$frame[sort]);
-    $rsop = $CI->mongo->db->selectCollection($frame['dataFrom'])->find($query, $fields);
+    $rsop = $CI->mongowrapper->db->selectCollection($frame['dataFrom'])->find($query, $fields);
     $rsop->sort((array) $frame['sort']);
     //var_dump($query,$fields,$rsop->getNext());
 
