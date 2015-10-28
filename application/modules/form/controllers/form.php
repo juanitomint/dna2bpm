@@ -97,7 +97,7 @@ class Form extends MX_Controller {
 
         if (!$debug) {
             $this->output->set_content_type('json','utf-8');
-            echo json_encode($rtn);
+            $this->output->set_output(json_encode($rtn));
         } else {
             var_dump($rtn);
         }
@@ -270,7 +270,7 @@ class Form extends MX_Controller {
             //----end switch
             if (!$debug) {
                 $this->output->set_content_type('json','utf-8');
-                echo json_encode($out);
+                $this->output->set_output(json_encode($out));
             } else {
                 var_dump($out);
             }
@@ -344,7 +344,7 @@ class Form extends MX_Controller {
             //----end switch
             if (!$debug) {
                 $this->output->set_content_type('json','utf-8');
-                echo json_encode($out);
+                $this->output->set_output(json_encode($out));
             } else {
                 var_dump($out, $form);
             }
@@ -389,7 +389,7 @@ class Form extends MX_Controller {
             }
             if (!$debug) {
                 $this->output->set_content_type('json','utf-8');
-                echo json_encode($frames);
+                $this->output->set_output(json_encode($frames));
             } else {
                 var_dump($frames);
             }
@@ -439,7 +439,7 @@ class Form extends MX_Controller {
         }
         if (!$debug) {
             $this->output->set_content_type('json','utf-8');
-            echo json_encode($rtn);
+            $this->output->set_output(json_encode($rtn));
         } else {
             var_dump($rtn);
         }
@@ -451,6 +451,7 @@ class Form extends MX_Controller {
         $rtn = array();
         $options = $this->app->get_all_options();
         $rtn['totalcount'] = $options->count();
+        
         foreach ($options as $thisop) {
             $rtn['rows'][] = array(                
                 'idop' => $thisop['idop'],
@@ -459,7 +460,7 @@ class Form extends MX_Controller {
         }
         if (!$debug) {
             $this->output->set_content_type('json','utf-8');
-            echo json_encode($rtn);
+            $this->output->set_output(json_encode($rtn));
         } else {
             var_dump($rtn);
         }
@@ -493,7 +494,7 @@ class Form extends MX_Controller {
 
         if (!$debug) {
             $this->output->set_content_type('json','utf-8');
-            echo json_encode($frame->toShow());
+            $this->output->set_output(json_encode($frame->toShow()));
         } else {
             var_dump('Obj', $frame, 'Save:', $frame->toSave(), 'Show', $frame->toShow());
         }
@@ -531,7 +532,7 @@ class Form extends MX_Controller {
 
         if (!$debug) {
             header('Content-type: application/json');
-            echo json_encode($form->toShow());
+            $this->output->set_output(json_encode($form->toShow()));
         } else {
             var_dump('Obj', $form, 'Save:', $form->toSave(), 'Show', $form->toShow());
         }
@@ -657,7 +658,7 @@ class Form extends MX_Controller {
 
     function Json_getoption($idop) {
         $option = $this->app->get_option($idop);
-        echo json_encode($option);
+        $this->output->set_output(json_encode($option));
     }
 
     function Get_form_template($type) {
