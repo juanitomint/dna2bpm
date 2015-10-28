@@ -2,6 +2,7 @@
 
 function edit_subform($frame, $value) {
     $CI = & get_instance();
+    
     $retstr = '';
     $required = '';
     $disabled = '';
