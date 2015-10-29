@@ -46,7 +46,7 @@ var ModelAdd = Ext.create('Ext.Action', {
                     if(btn=='ok' && text){
                     
                         node={
-                            id: n.data.id+'/'+text,
+                            id: text,
                             text    : text +' <span class="text-new">[new]</span>',
                             leaf    : true,
                             iconCls : 'dot-gray',
