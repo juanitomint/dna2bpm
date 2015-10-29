@@ -40,47 +40,41 @@ function edit_radio($frame, $value) {
      */
 
 
-
     if (count($ops)) {
-        $i = 1;
+        $i = 0;
             // if (empty($required))
             // $retstr.="<label for=\"" . $frame['cname'] . "\" class=\"error\" style=\"display:none\">* Seleccione uno</label>";
-            // $retstr.="<div style='display:table'><div style='display:table-row'><div style='display:table-cell'>";       
-        
-            // $retstr=<<<_EOF_
-            // <label class="radio-inline">
-            //   <input type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1"> {$frame['cname']}
-            // </label>
-            // _EOF_;
+
     
     
-    
+ $retstr.="<table  >"; 
  foreach ($ops as $key => $text) {
-     $retstr.=$text."//";
- }
+    $i++; 
+    $sel = (in_array((string) $key, $value)) ? "checked='checked'" : '';
+    if($i>$height)$retstr.="<tr>";
+    if($disabled == 'hidden')$text='';
+     $retstr.=<<<_EOF_
+<td style='padding-right:5px'><div class="radio">
+  <label>
+    <input type="radio" $required $disabled name="{$frame['cname']}"  value="$key" $sel>
+    $text
+  </label>
+</div></td>
+_EOF_;
+ 
+ 
+    if($i>$height){
+        $retstr.="</tr>";
+        $i=0;
+    }
+     
+ }//foreach
+$retstr.="</table>"; 
+ 
         
-        
-
-        // foreach ($ops as $key => $text) {
-        //     $sel = (in_array((string) $key, $value)) ? "checked='checked'" : '';
-        //     $retstr.="<label>$height<input type='radio' $required $disabled name='" . $frame['cname'] . "' value='$key' $sel>";
-            
-        //     if($disabled != 'hidden')
-        //     $retstr.=$text;
-            
-        //     $retstr.="</label><br>\r";
-            
-            
-        //     if ($i++==$height) {
-        //         $retstr.="</div><div style='display:table-cell'>";
-        //         $i = 1;
-        //     }
-        // }
-        // $retstr.="</div></div></div>\r";
-
 
     }
-    //echo $retstr.'</br>';
+
     return $retstr;
 }
 
