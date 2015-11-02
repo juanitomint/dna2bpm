@@ -4,14 +4,21 @@ function edit_date($frame, $value) {
     //$CI =& get_instance();
     //var_dump($frame);
     
-    $value=($value<>'')?explode('-',$value):array(0=>'',1=>'' ,2=>'');
-    $retstr = '';
-    /*
-    $value[0] = '2015';
-    $value[1] = '06';
-    $value[2] = '22';
     
-    */
+//     return <<<_EOF_
+//                     <div class='input-group date datepicke'>
+//                     <input type='text' class="form-control" />
+//                     <span class="input-group-addon">
+//                         <span class="glyphicon glyphicon-calendar"></span>
+//                     </span>
+//                 </div>
+                
+// _EOF_;
+
+    // $value=($value<>'')?explode('-',$value):array(0=>'',1=>'' ,2=>'');
+    // $retstr = '';
+
+    
     if(isset($frame['locked']) && $frame['locked'] === true)
         $locked = "readonly";
     else $locked ='';
