@@ -50,7 +50,6 @@ class Alerts extends MX_Controller {
                    $alerts[]=$alert;
           }
           $customdata['my_alerts']=$alerts;
-
           if(count($alerts)>0)
            return $this->parser->parse('dashboard/widgets/alerts', $customdata, true, false);
              else
