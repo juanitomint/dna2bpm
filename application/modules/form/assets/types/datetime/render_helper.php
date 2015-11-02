@@ -3,6 +3,7 @@
 function edit_datetime($frame, $value) {
     //$CI =& get_instance();
     //var_dump($frame);
+
     if($value==''){
         $value=array(0=>'',1=>'' ,2=>'',3=>'',4=>'');
     } else {
