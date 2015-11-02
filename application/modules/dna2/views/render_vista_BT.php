@@ -15,7 +15,8 @@ $this->load->helper('url');
         <link  href="{base_url}dashboard/assets/bootstrap-wysihtml5/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
         <link  href="{base_url}dashboard/assets/bootstrap-wysihtml5/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
         <script src="{base_url}dashboard/assets/bootstrap-wysihtml5/js/bootstrap.min.js" type="text/javascript"></script>
-        <script src="{base_url}jscript/bootstrap-datetimepicker/js/moment.min.js" type="text/javascript"></script> 
+        <script src="{base_url}jscript/bootstrap-datetimepicker/js/moment.min.js" type="text/javascript"></script>
+        <script src="{base_url}jscript/bootstrap-datetimepicker/js/es.js" type="text/javascript"></script> 
         <script src="{base_url}jscript/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>     
         <link  href="{base_url}jscript/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" type="text/css" rel="stylesheet" />
         
@@ -54,7 +55,8 @@ $this->load->helper('url');
 
      <script type="text/javascript">
            $(document).ready(function(){
-                $('#datetimepicker1').datetimepicker();
+                var ops={locale:'es'};
+                $('.datepicker').datetimepicker(ops);
                 console.log('---- date');
             });
         </script>
@@ -65,7 +67,7 @@ $this->load->helper('url');
         {header}
 
         <div class="container">
-                    <div class='input-group date' id='datetimepicker1'>
+                    <div class='input-group date datepicker' id='datetimepicker1'>
                     <input type='text' class="form-control" />
                     <span class="input-group-addon">
                         <span class="glyphicon glyphicon-calendar"></span>

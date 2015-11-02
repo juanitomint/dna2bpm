@@ -5,20 +5,21 @@ function edit_date($frame, $value) {
     //var_dump($frame);
     
     
-    return <<<_EOF_
-                    <div class='input-group date datetimepicker1'>
-                    <input type='text' class="form-control" />
-                    <span class="input-group-addon">
-                        <span class="glyphicon glyphicon-calendar"></span>
-                    </span>
-                </div>
+//     return <<<_EOF_
+//                     <div class='input-group date datepicke'>
+//                     <input type='text' class="form-control" />
+//                     <span class="input-group-addon">
+//                         <span class="glyphicon glyphicon-calendar"></span>
+//                     </span>
+//                 </div>
                 
-_EOF_;
+// _EOF_;
+
     // $value=($value<>'')?explode('-',$value):array(0=>'',1=>'' ,2=>'');
     // $retstr = '';
 
     
-/*    if(isset($frame['locked']) && $frame['locked'] === true)
+    if(isset($frame['locked']) && $frame['locked'] === true)
         $locked = "readonly";
     else $locked ='';
     
@@ -53,7 +54,7 @@ _EOF_;
         $retstr=$retstr."&nbsp;<label id=\"label_frame\">(dd/mm/aaaa)</label>";    
     //echo 'Date'.$retstr.'</br>';
     
-    return $retstr;*/
+    return $retstr;
 
 }
 
