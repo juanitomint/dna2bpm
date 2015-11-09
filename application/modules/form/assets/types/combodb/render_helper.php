@@ -4,6 +4,7 @@ function edit_combodb($frame, $value) {
     $CI = & get_instance();
     $retstr = '';
     $ops = array();
+
     
     //$required = (@$frame['required']) ? getRequiredStr($frame['type']) : null;
     $value = array_map('floatval', (array) $value);

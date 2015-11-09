@@ -1,13 +1,15 @@
 <?php
+//=====  radio
 
 function edit_radio($frame, $value) {
     $CI = & get_instance();
     $retstr = '';
     $ops = array();
+    
     $value = (array) $value;
     $height = (isset($frame['cols'])) ? $frame['cols'] : 10;
-    $locked=(isset($frame['locked']) && $frame['locked'] === true)?("readonly"):("");   
-    $disabled=(isset($frame['hidden']) && $frame['hidden'] === true)?("hidden"):(""); 
+    $locked=(isset($frame['locked']) && $frame['locked'] === true)?("disabled='disabled'"):("");   
+    $hidden=(isset($frame['hidden']) && $frame['hidden'] === true)?("hidden"):(""); 
     $required=(isset($frame['required']) && $frame['required'] === true)?("required"):("");
      
     $option = $CI->mongowrapper->db->options->findOne(array('idop' => (int)$frame['idop']));
@@ -42,38 +44,39 @@ function edit_radio($frame, $value) {
 
     if (count($ops)) {
         $i = 0;
+
             // if (empty($required))
             // $retstr.="<label for=\"" . $frame['cname'] . "\" class=\"error\" style=\"display:none\">* Seleccione uno</label>";
 
     
-    
- $retstr.="<table  >"; 
- foreach ($ops as $key => $text) {
-    $i++; 
-    $sel = (in_array((string) $key, $value)) ? "checked='checked'" : '';
-    if($i>$height)$retstr.="<tr>";
-    if($disabled == 'hidden')$text='';
-     $retstr.=<<<_EOF_
-<td style='padding-right:5px'><div class="radio">
-  <label>
-    <input type="radio" $required $disabled name="{$frame['cname']}"  value="$key" $sel>
-    $text
-  </label>
-</div></td>
+         $retstr.="<table>"; 
+         foreach ($ops as $key => $text) {
+            $i++; 
+            $sel = (in_array((string) $key, $value)) ? "checked='checked'" : '';
+            if($i>$height)$retstr.="<tr>";
+           // if($disabled == 'hidden')$text='';
+            
+$retstr.=<<<_EOF_
+        <td style='padding-right:5px'><div class="radio $hidden" >
+          <label>
+            <input type="radio"  $required  $locked name="{$frame['cname']}" id="{$frame['cname']}" value="$key" $sel>
+            $text 
+          </label>
+        </div></td>
 _EOF_;
  
  
-    if($i>$height){
-        $retstr.="</tr>";
-        $i=0;
-    }
+        if($i>=$height){
+            $retstr.="</tr>";
+            $i=0;
+        }
      
- }//foreach
+        }//foreach
 $retstr.="</table>"; 
  
         
 
-    }
+    }//if
 
     return $retstr;
 }

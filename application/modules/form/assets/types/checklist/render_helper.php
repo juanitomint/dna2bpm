@@ -3,6 +3,8 @@
 function edit_checklist($frame, $value) {
     $CI = & get_instance();
     $retstr = '';
+        return '------ checklist';
+        
     $ops = array();
     $disabled = '';
     $required = '';
