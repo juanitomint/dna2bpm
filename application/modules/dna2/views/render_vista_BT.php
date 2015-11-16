@@ -53,13 +53,7 @@ $this->load->helper('url');
         <!--<script src="{base_url}jscript/dna2/prototype.js" type="text/javascript"></script>-->
 
 
-     <script type="text/javascript">
-           $(document).ready(function(){
-                var ops={locale:'es'};
-                $('.datepicker').datetimepicker(ops);
-                console.log('---- date');
-            });
-        </script>
+
     </head>
     <body>
         APP{idapp}/{idobject}/{thisLang}
@@ -67,12 +61,7 @@ $this->load->helper('url');
         {header}
 
         <div class="container">
-                    <div class='input-group date datepicker' id='datetimepicker1'>
-                    <input type='text' class="form-control" />
-                    <span class="input-group-addon">
-                        <span class="glyphicon glyphicon-calendar"></span>
-                    </span>
-                </div>
+
                 
                 <!-- Title -->
                 <div class="row title">
@@ -118,7 +107,25 @@ $this->load->helper('url');
                 
         </div>
         
+<!-- === JS onReady === -->        
+     <script type="text/javascript">
+           $(document).ready(function(){
+               
+               //== Datepicker
+                var ops={locale:'es',
+                format:'DD-MM-YYYY'};
+                $('.datepicker').datetimepicker(ops);
+                console.log('---- date');
 
+               //== Datepicker
+                var ops2={locale:'es',
+                format:'DD-MM-YYYY HH:mm'};
+                $('.datetimepicker').datetimepicker(ops2);
+                console.log('---- datetime');
+                
+                
+            });
+        </script>
     </body>
 </html>
 

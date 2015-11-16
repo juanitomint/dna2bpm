@@ -5,39 +5,22 @@ function edit_date($frame, $value) {
     //var_dump($frame);
     
     
-//     return <<<_EOF_
-//                     <div class='input-group date datepicke'>
-//                     <input type='text' class="form-control" />
-//                     <span class="input-group-addon">
-//                         <span class="glyphicon glyphicon-calendar"></span>
-//                     </span>
-//                 </div>
+
                 
-// _EOF_;
+
 
     // $value=($value<>'')?explode('-',$value):array(0=>'',1=>'' ,2=>'');
     // $retstr = '';
 
-    
-    if(isset($frame['locked']) && $frame['locked'] === true)
-        $locked = "readonly";
-    else $locked ='';
-    
-    ///Campo Hidden
-    if(isset($frame['hidden']) && $frame['hidden'] === true)
-        $disabled = "hidden";
-    else $disabled ='';
-    
-    ///Campo requerido
-    if(isset($frame['required']) && $frame['required'] === true)
-        $required = "required";
-    else $required ='';  
-    
+$locked=(!isset($frame['locked']) && $frame['locked'] === true)?("readonly"):("");    
+$disabled=(!isset($frame['hidden']) && $frame['hidden'] === true)?("hidden"):("");     
+$required=(!isset($frame['required']) && $frame['required'] === true)?("required"):(""); 
+//$mask=(isset($frame['mask'])) ? $frame['mask']:null;
 
-    $mask=      (isset($frame['mask']))     ? $frame['mask']:null;
-    //$required=  (isset($frame['required'])) ? getRequiredStr($frame['type']):null;
-    //-----dia---------------------------------------
- //   $retstr=$retstr."<input type=text class='textInput' min=\"1\" max=\"31\"  minlength=\"2\"id='".$frame['cname']."[d]' name='".$frame['cname']."[d]' maxlength='2' size='2' min='1' max='31' minlength='2' value='$value[2]'>\r";
+/*
+//$required=  (isset($frame['required'])) ? getRequiredStr($frame['type']):null;
+//-----dia---------------------------------------
+//   $retstr=$retstr."<input type=text class='textInput' min=\"1\" max=\"31\"  minlength=\"2\"id='".$frame['cname']."[d]' name='".$frame['cname']."[d]' maxlength='2' size='2' min='1' max='31' minlength='2' value='$value[2]'>\r";
     $retstr=$retstr."<input type=text ".$disabled." class='textInput' id='".$frame['cname']."[d]' name='".$frame['cname']."[d]' maxlength='2' size='2' min='1' max='31' minlength='2' value='".$value[2]."' ".$locked." ".$required.">\r";
     if($frame['hidden'] == false)
         $retstr=$retstr."/ ";
@@ -53,8 +36,19 @@ function edit_date($frame, $value) {
     if($frame['hidden'] == false)    
         $retstr=$retstr."&nbsp;<label id=\"label_frame\">(dd/mm/aaaa)</label>";    
     //echo 'Date'.$retstr.'</br>';
-    
-    return $retstr;
+    */
+$mydate=(isset($value))?($value):('');
+
+    return <<<_EOF_
+                <div class='input-group date datetimepicker'>
+                    <input type='text' class="form-control" $locked $disabled $required id='{$frame['cname']}' name='{$frame['cname']}' value='$mydate'/>
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div>
+_EOF_;
+
+
 
 }
 
