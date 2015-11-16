@@ -547,17 +547,19 @@ class Bpm extends CI_Model {
         if ($type) {
             $query['type'] = $type;
         }
-
         //var_dump2(json_encode($query));
         $result = $this->db
                 ->where($query)
-                ->order_by(array('_id' => true))
+                ->order_by(array(
+                    // '_id' => true, 
+                    'checkdate'=>true
+                    ))
                 ->get('tokens')
                 ->result_array();
         return $result;
     }
 
-    function get_tokens_byFilter($filter, $fields = array(), $sort = array()) {
+    function get_tokens_byFilter($filter, $fields = array(), $sort = array('checkdate'=>true)) {
         //$this->db->debug=true;
         $this->db->where($filter);
         $this->db->select($fields);
@@ -566,7 +568,7 @@ class Bpm extends CI_Model {
         return $rs->result_array();
     }
 
-    function get_tokens_byFilter_count($filter, $fields = array(), $sort = array()) {
+    function get_tokens_byFilter_count($filter, $fields = array(), $sort = array('checkdate'=>true)) {
         //$this->db->debug=true;
         $this->db->where($filter);
         $this->db->select($fields);
