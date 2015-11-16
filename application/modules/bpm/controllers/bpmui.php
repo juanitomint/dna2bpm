@@ -185,9 +185,8 @@ class Bpmui extends MX_Controller {
             'assign' => $this->idu,
             'status' => 'user'
         );
-
-        $tasks = $this->bpm->get_tasks_byFilter($query);
-        $data['number'] = count($tasks);
+        $tasks = $this->bpm->get_tokens_byFilter_count($query);
+        $data['number'] = $tasks;
         $data['icon'] = 'ion-android-checkmark';
         $data['more_info_link'] = $this->base_url . 'dashboard/show/tasks';
         $data['widget_url'] = base_url() . $this->router->fetch_module() . '/' . $this->router->class . '/' . __FUNCTION__;
@@ -209,8 +208,8 @@ class Bpmui extends MX_Controller {
             'status' => 'user'
         );
         //@todo get just task count instead tasks
-        $tasks = $this->bpm->get_tasks_byFilter($query);
-        $data['number'] = count($tasks);
+        $tasks = $this->bpm->get_tokens_byFilter_count($query);
+        $data['number'] = $tasks;
         $data['icon'] = 'ion-android-checkmark';
         $data['more_info_link'] = $this->base_url . 'dashboard/show/tasks';
         $data['widget_url'] = base_url() . $this->router->fetch_module() . '/' . $this->router->class . '/' . __FUNCTION__;
@@ -220,14 +219,14 @@ class Bpmui extends MX_Controller {
     function tile_tasks_done() {
         $data['lang'] = $this->lang->language;
         $data['title'] = $this->lang->line('TasksDone');
-        $tasks = $this->bpm->get_tasks_byFilter(
+        $tasks = $this->bpm->get_tokens_byFilter_count(
                 array(
                     'assign' => $this->idu,
                     'status' => 'finished',
                     'tasktype' => 'User'
                 )
         );
-        $data['number'] = count($tasks);
+        $data['number'] = $tasks;
         $data['icon'] = 'ion-android-checkmark';
         $data['more_info_link'] = $this->base_url . 'dashboard/show/tasks';
         $data['widget_url'] = base_url() . $this->router->fetch_module() . '/' . $this->router->class . '/' . __FUNCTION__;
@@ -237,13 +236,13 @@ class Bpmui extends MX_Controller {
     function tile_cases($idwf = null) {
         $data['lang'] = $this->lang->language;
         $data['title'] = $this->lang->line('Cases');
-        $cases = $this->bpm->get_cases_byFilter(
+        $cases = $this->bpm->get_cases_byFilter_count(
                 array(
                     'iduser' => $this->idu,
                     'status' => 'open',
                 )
         );
-        $data['number'] = count($cases);
+        $data['number'] = $cases;
         $data['icon'] = 'ion-play';
         $data['more_info_link'] = $this->base_url . 'dashboard/show/tasks';
         $data['widget_url'] = base_url() . implode('/', array_filter(array($this->router->fetch_module(), $this->router->class, __FUNCTION__, $idwf)));
@@ -254,13 +253,13 @@ class Bpmui extends MX_Controller {
         $data['lang'] = $this->lang->language;
         $data['title'] = $this->lang->line('CasesClosed');
         ;
-        $cases = $this->bpm->get_cases_byFilter(
+        $cases = $this->bpm->get_cases_byFilter_count(
                 array(
                     'iduser' => $this->idu,
                     'status' => 'closed',
                 )
         );
-        $data['number'] = count($cases);
+        $data['number'] = $cases;
         $data['icon'] = 'ion-play';
         $data['more_info_link'] = $this->base_url . 'dashboard/show/tasks';
         $data['widget_url'] = base_url() . implode('/', array_filter(array($this->router->fetch_module(), $this->router->class, __FUNCTION__, $idwf)));
