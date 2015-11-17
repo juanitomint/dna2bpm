@@ -4,9 +4,10 @@ if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
 /**
- * kpi
+ * Case Manager class
  *
- * Description of the class kpi
+ * This class has al the functions related to case specific management
+ * rever, delegate, get tokens, browse use cases, freeze and unfreeze
  *
  * @author Juan Ignacio Borda <juanignacioborda@gmail.com>
  * @date   Mar 30, 2013
@@ -348,26 +349,101 @@ class Case_manager extends MX_Controller {
         }
 
  }
- function unfreeze(){
-     $debug=false;
-     $idwf=$this->input->post('idwf');
-     $idcase=$this->input->post('idcase');
-     if($this->bpm->unfreeze($idwf,$idcase)){
-         $data['ok']=true;
-         $data['msg']="Case $idwf::$idcase restored" ;
-     }else{
-         $data['ok']=false;
-         $data['msg']="Case $idwf::$idcase not restored" ;
+     function unfreeze(){
+         $debug=false;
+         $idwf=$this->input->post('idwf');
+         $idcase=$this->input->post('idcase');
+         if($this->bpm->unfreeze($idwf,$idcase)){
+            $data['ok']=true;
+            $data['msg']="Case $idwf::$idcase restored" ;
+        }else{
+            $data['ok']=false;
+            $data['msg']="Case $idwf::$idcase not restored" ;
+        }
 
-     }
-     if (!$debug) {
+        if (!$debug) {
             $this->output->set_content_type('json','utf-8');
             echo json_encode($data);
         } else {
             var_dump($data);
         }
 
- }
-}
+    }
 
-/* End of file kpi */
+        function delegate($idwf, $case,$to_idu,$from_idu=null) {
+
+        $iduser =($from_idu)? (int) $from_idu :(int) $this->session->userdata('iduser');
+        //---get the user
+        $user = $this->user->get_user($iduser);
+        $user_groups = $user->group;
+        $token = $this->bpm->get_token($idwf, $case, $resourceId);
+        //---check if the user is in the assigned groups
+
+        $is_allowed =($this->user->isAdmin()) ? true :false;
+        //---check if user belong to the group the task is assigned to
+        if (isset($token['idgroup'])) {
+            foreach ($user_groups as $thisgroup) {
+                if (in_array($thisgroup, $token['idgroup']))
+                    $is_allowed = true;
+            }
+        }
+
+        if ($is_allowed) {
+            $token['assign'] = array((int)$to_idu);
+            $this->bpm->save_token($token);
+        } else {
+            show_error('user is not allowed to delegate task');
+        }
+
+    redirect($this->config->item('default_controller'));
+
+    }
+
+    function delegate_ui($idwf, $idcase, $resourceId) {
+        $this->load->model('bpm/bpm');
+        $this->load->library('parser');
+        $this->load->library('bpm/ui');
+        //---Get case
+        $case=$this->bpm->get_case($idcase, $idwf);
+
+        $resources['idgroup']= $case['idgroup'];
+
+        //---get actual user
+        $iduser = (int) $this->session->userdata('iduser');
+        //---get the user
+        $user = $this->user->get_user($iduser);
+        $user_groups = $user->group;
+        $token = $this->bpm->get_token($idwf, $case, $resourceId);
+        //---check if the user is in the assigned groups
+
+        $renderData = array();
+        $renderData['title']=ucwords($this->lang->line('delegate').' '.$this->lang->line('task'));
+        //---Get users from groups
+        $renderData['users']=$this->user->getbygroup($resources['idgroup']);
+
+        foreach($renderData['users'] as $key=>&$this_user) {
+            $this_user['avatar']=$this->user->get_avatar($this_user['idu']);
+        }
+        // var_dump($renderData['users']);exit;
+        $renderData['idwf'] = $idwf;
+        $renderData['idcase'] = $idcase;
+        $renderData['resourceId'] = $resourceId;
+        $renderData ['base_url'] = $this->base_url;
+// ---prepare UI
+        $renderData ['js'] = array(
+            $this->base_url . 'bpm/assets/jscript/modal_window.js' => 'Modal Window Generic JS'
+        );
+// ---prepare globals 4 js
+        $renderData ['global_js'] = array(
+            'base_url' => $this->base_url,
+            'module_url' => $this->base_url . 'bpm'
+        );
+//        $this->bpm->debug['load_case_data'] = true;
+        //---tomo el template de la tarea
+        $renderData['label'] = 'Delegate Case: '.$case['id'];
+
+        // var_dump($renderData);
+//        exit;
+        $this->ui->compose('bpm/modal_case_delegate', 'bpm/bootstrap.ui.php', $renderData);
+    }
+}
