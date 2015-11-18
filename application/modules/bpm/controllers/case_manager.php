@@ -370,31 +370,33 @@ class Case_manager extends MX_Controller {
 
     }
 
-        function delegate($idwf, $case,$to_idu,$from_idu=null) {
+    function delegate($idwf, $idcase,$to_idu,$from_idu=null) {
 
-        $iduser =($from_idu)? (int) $from_idu :(int) $this->session->userdata('iduser');
+        $from_idu =($from_idu)? (int) $from_idu :(int) $this->session->userdata('iduser');
         //---get the user
-        $user = $this->user->get_user($iduser);
-        $user_groups = $user->group;
-        $token = $this->bpm->get_token($idwf, $case, $resourceId);
-        //---check if the user is in the assigned groups
-
-        $is_allowed =($this->user->isAdmin()) ? true :false;
-        //---check if user belong to the group the task is assigned to
-        if (isset($token['idgroup'])) {
-            foreach ($user_groups as $thisgroup) {
-                if (in_array($thisgroup, $token['idgroup']))
-                    $is_allowed = true;
-            }
-        }
-
-        if ($is_allowed) {
-            $token['assign'] = array((int)$to_idu);
+        // $user = $this->user->get_user($from_idu);
+        // $user_groups = $user->group;
+        
+        //---get all tasks assigned $from_idu
+        $filter=array(
+            'idwf'=>$idwf,
+            'case'=>$idcase,
+            'assign'=>(int)$from_idu,
+            'status' => array (
+                '$nin' => array ('finished','canceled')
+            )
+        );
+        $tokens=$this->bpm->get_tokens_byFilter($filter);
+        foreach($tokens as $token){
+            //----replace $from_idu with $to_idu
+             $token['assign']=array_map(function ($v) use ($from_idu, $to_idu) {
+            return $v == $from_idu ? (int)$to_idu : $v;
+            }, $token['assign']);
+            $token['lockedBy']=(int)$to_idu;
+            $token['lockedDate']=date('Y-m-d H:i:s');
             $this->bpm->save_token($token);
-        } else {
-            show_error('user is not allowed to delegate task');
         }
-
+        // echo "delegated case:$idcase from: $from_idu to $to_idu";
     redirect($this->config->item('default_controller'));
 
     }

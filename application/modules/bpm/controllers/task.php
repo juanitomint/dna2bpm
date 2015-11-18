@@ -49,6 +49,8 @@ class Task extends MX_Controller {
         
         if ($is_allowed) {
             $token['assign'] = array((int)$to_idu);
+            $token['lockedBy']=(int)$to_idu;
+            $token['lockedDate']=date('Y-m-d H:i:s');
             $this->bpm->save_token($token);
         } else {
             show_error('user is not allowed to delegate task');
