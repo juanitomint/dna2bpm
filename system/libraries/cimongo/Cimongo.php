@@ -417,7 +417,35 @@ class Cimongo extends Cimongo_extras {
         }
         try {
             $options = array_merge(array("w" => $this->query_safety, 'multiple' => FALSE), $options);
+            if ($this->debug){
+                var_dump('Wheres',$this->wheres,json_encode($this->wheres));
+                var_dump('Updates',$this->updates,json_encode($this->updates));
+                var_dump('Options',$options,json_encode($options));
+            }
             $this->db->selectCollection($collection)->update($this->wheres, $this->updates, $options);
+            $this->_clear();
+            return TRUE;
+        } catch (MongoCursorException $e) {
+            show_error("Update of data into MongoDB failed: {$e->getMessage()}", 500);
+        } catch (MongoCursorException $e) {
+            show_error("Update of data into MongoDB failed: {$e->getMessage()}", 500);
+        } catch (MongoCursorTimeoutException $e) {
+            show_error("Update of data into MongoDB failed: {$e->getMessage()}", 500);
+        }
+    }
+    
+    public function save($collection = "", $data = array(), $options = array()) {
+        if (empty($collection)) {
+            show_error("No Mongo collection selected to save", 500);
+        }
+        
+        try {
+            $options = array_merge(array("w" => $this->query_safety, 'multiple' => FALSE), $options);
+            if ($this->debug){
+                var_dump('Wheres',$this->wheres,json_encode($this->wheres));
+                var_dump('Options',$options,json_encode($options));
+            }
+            $this->db->selectCollection($collection)->save($data, $options);
             $this->_clear();
             return TRUE;
         } catch (MongoCursorException $e) {
