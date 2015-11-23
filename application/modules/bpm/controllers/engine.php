@@ -206,8 +206,10 @@ class Engine extends MX_Controller {
 
             $this->show_modal($this->lang->line('lock'), $this->parser->parse_string($this->lang->line('caseLocked'), $msg_data));
         } else {
-
+            //---check Exists.
             $mywf = $this->bpm->load($idwf, $this->expandSubProcess);
+            
+            if($mywf){
             $mywf ['data'] ['idwf'] = $idwf;
             $mywf ['data'] ['case'] = $case;
             $mywf ['data'] ['folder'] = $mywf ['folder'];
@@ -284,6 +286,12 @@ class Engine extends MX_Controller {
             $this->get_pending('model', $idwf, $case, $run_resourceId);
             $this->run_after();
             $run_resourceId = null;
+        
+            
+            //---end check model exists
+            } else {
+                show_error("Model: $idwf doesn't exitst contact Administrator");
+            }
         }
     }
 
