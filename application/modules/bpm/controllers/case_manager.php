@@ -4,9 +4,10 @@ if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
 /**
- * kpi
+ * Case Manager class
  *
- * Description of the class kpi
+ * This class has al the functions related to case specific management
+ * rever, delegate, get tokens, browse use cases, freeze and unfreeze
  *
  * @author Juan Ignacio Borda <juanignacioborda@gmail.com>
  * @date   Mar 30, 2013
@@ -348,26 +349,105 @@ class Case_manager extends MX_Controller {
         }
 
  }
- function unfreeze(){
-     $debug=false;
-     $idwf=$this->input->post('idwf');
-     $idcase=$this->input->post('idcase');
-     if($this->bpm->unfreeze($idwf,$idcase)){
-         $data['ok']=true;
-         $data['msg']="Case $idwf::$idcase restored" ;
-     }else{
-         $data['ok']=false;
-         $data['msg']="Case $idwf::$idcase not restored" ;
+     function unfreeze(){
+         $debug=false;
+         $idwf=$this->input->post('idwf');
+         $idcase=$this->input->post('idcase');
+         if($this->bpm->unfreeze($idwf,$idcase)){
+            $data['ok']=true;
+            $data['msg']="Case $idwf::$idcase restored" ;
+        }else{
+            $data['ok']=false;
+            $data['msg']="Case $idwf::$idcase not restored" ;
+        }
 
-     }
-     if (!$debug) {
+        if (!$debug) {
             $this->output->set_content_type('json','utf-8');
             echo json_encode($data);
         } else {
             var_dump($data);
         }
 
- }
-}
+    }
 
-/* End of file kpi */
+    function delegate($idwf, $idcase,$to_idu,$from_idu=null) {
+
+        $from_idu =($from_idu)? (int) $from_idu :(int) $this->session->userdata('iduser');
+        //---get the user
+        // $user = $this->user->get_user($from_idu);
+        // $user_groups = $user->group;
+        
+        //---get all tasks assigned $from_idu
+        $filter=array(
+            'idwf'=>$idwf,
+            'case'=>$idcase,
+            'assign'=>(int)$from_idu,
+            'status' => array (
+                '$nin' => array ('finished','canceled')
+            )
+        );
+        $tokens=$this->bpm->get_tokens_byFilter($filter);
+        foreach($tokens as $token){
+            //----replace $from_idu with $to_idu
+             $token['assign']=array_map(function ($v) use ($from_idu, $to_idu) {
+            return $v == $from_idu ? (int)$to_idu : $v;
+            }, $token['assign']);
+            $token['lockedBy']=(int)$to_idu;
+            $token['lockedDate']=date('Y-m-d H:i:s');
+            $this->bpm->save_token($token);
+        }
+        // echo "delegated case:$idcase from: $from_idu to $to_idu";
+    redirect($this->config->item('default_controller'));
+
+    }
+
+    function delegate_ui($idwf, $idcase) {
+        $this->load->model('bpm/bpm');
+        $this->load->library('parser');
+        $this->load->library('bpm/ui');
+        //---Get case
+        $case=$this->bpm->get_case($idcase, $idwf);
+        //---get actual user
+        $iduser = (int) $this->session->userdata('iduser');
+        //---get the user
+        $user = $this->user->get_user($iduser);
+        
+        $resources['idgroup']= $user->group;
+
+        
+
+        $renderData = array();
+        $renderData['title']=ucwords($this->lang->line('delegate').' '.$this->lang->line('task'));
+        //---Get users from groups
+        // $renderData['users']=$this->user->getbygroup($resources['idgroup']);
+
+        // foreach($renderData['users'] as $key=>&$this_user) {
+        //     $this_user['avatar']=$this->user->get_avatar($this_user['idu']);
+        // }
+        // var_dump($renderData['users']);exit;
+        $renderData['idwf'] = $idwf;
+        $renderData['idcase'] = $idcase;
+        $renderData ['base_url'] = $this->base_url;
+// ---prepare UI
+        $renderData ['js'] = array(
+            $this->base_url . 'bpm/assets/jscript/modal_window.js' => 'Modal Window Generic JS',
+            $this->base_url . 'jscript/select2-master/dist/js/select2.min.js' => 'Select2',
+            $this->base_url . 'bpm/assets/jscript/case_manager/delegate.js' => 'delegate_ui',
+        );
+        $renderData['css']=array(
+            $this->base_url . 'jscript/select2-master/dist/css/select2.css' => 'Select2',
+            );
+// ---prepare globals 4 js
+        $renderData ['global_js'] = array(
+            'base_url' => $this->base_url,
+            'module_url' => $this->base_url . 'bpm'
+        );
+//        $this->bpm->debug['load_case_data'] = true;
+        //---tomo el template de la tarea
+        $renderData['label'] = 'Delegate Case: '.$case['id'];
+
+        // var_dump($renderData);
+//        exit;
+        $this->ui->compose('bpm/modal_case_delegate', 'bpm/bootstrap.ui.php', $renderData);
+    }
+}

@@ -5,9 +5,9 @@ if (!defined('BASEPATH'))
 
 /**
  * ui
- * 
+ *
  * This class renders the graphical elements to dashboards
- * 
+ *
  * @author Juan Ignacio Borda <juanignacioborda@gmail.com>
  * @date    Jun 16, 2014
  */
@@ -293,8 +293,9 @@ class Bpmui extends MX_Controller {
         echo $this->parser->parse('bpm/widgets/tasks_done', $data, true, true);
     }
 
+
     function widget_2doMe($chunk = 1, $pagesize = 5) {
-        //$data['lang']=$this->lang->language;
+        //$data['lang']=$this->lang->language; ==
         $query = array(
             'assign' => $this->idu,
             'status' => 'user'
@@ -310,6 +311,23 @@ class Bpmui extends MX_Controller {
         echo $this->parser->parse('bpm/widgets/2do', $data, true, true);
     }
 
+    function widget_2doMeCards($chunk = 1, $pagesize = 8) {
+        //$data['lang']=$this->lang->language; ==
+        $query = array(
+            'assign' => $this->idu,
+            'status' => 'user'
+        );
+        //var_dump(json_encode($query));exit;
+        $tasks = $this->bpm->get_tasks_byFilter($query, array(), array('checkdate' => 'desc'));
+        $data = $this->prepare_tasks($tasks, $chunk, $pagesize);
+        //$data['lang'] = $this->lang->language;
+        $data['title'] = $this->lang->line('Tasks') . ' ' . $this->lang->line('Pending');
+
+        $data['more_info_link'] = $this->base_url . 'bpm/';
+        $data['widget_url'] = base_url() . $this->router->fetch_module() . '/' . $this->router->class . '/' . __FUNCTION__;
+        echo $this->parser->parse('bpm/widgets/2do_cards', $data, true, true);
+    }
+
     function widget_2do($chunk = 1, $pagesize = 5) {
         //$data['lang']=$this->lang->language;
         $query = array(
@@ -322,7 +340,7 @@ class Bpmui extends MX_Controller {
 //        $query=array(
 //        		'assign' => $this->idu,
 //            	'status' => 'user'
-//        
+//
 //        );
         //var_dump(json_encode($query));exit;
         $tasks = $this->bpm->get_tasks_byFilter($query, array(), array('checkdate' => 'desc'));
@@ -433,13 +451,34 @@ class Bpmui extends MX_Controller {
             foreach ($tasks as $task) {
                 $model = $this->bpm->get_model($task['idwf'], array('data.properties'));
                 if ($model) {
+                    $task['model']=$model->data['properties']['name'];
+                    $task['name']=$task['title'];
                     $title = $model->data['properties']['name'] . ' :: ' . $task['title'];
                 } else {
                     $title = '???' . ' :: ' . $task['title']; //---missing model
                 }
                 $task['title'] = $title;
                 $task['label'] = (isset($task['checkdate'])) ? $this->time_elapsed_string($task['checkdate']) : '';
-                $task['label-class'] = 'label-warning';
+                //----calculate task color
+                $task['class'] = 'success';
+                $now = new DateTime;
+                $ago = new DateTime($task['checkdate']);
+                $diff = $now->diff($ago);
+                //---ok=success
+                if($diff->days>=$this->config->item('task_ok')){
+                    $task['class']='success';
+                }
+                //----warning
+                if($diff->days>=$this->config->item('task_warn')){
+                    $task['class']='warning';
+                }
+                //----danger
+                if($diff->days>=$this->config->item('task_danger')){
+                    $task['class']='danger';
+                }
+
+
+
                 $task['icon'] = $this->bpm->get_icon($task['type']);
                 $data['mytasks'][] = $task;
             }

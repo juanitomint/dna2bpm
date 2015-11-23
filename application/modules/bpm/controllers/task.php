@@ -17,10 +17,109 @@ class Task extends MX_Controller {
         $this->user->authorize();
         //----LOAD LANGUAGE
         $this->lang->load('library', $this->config->item('language'));
+        $this->lang->load('bpm/bpm', $this->config->item('language'));
+        $this->base_url=base_url();
+        $this->module_url = base_url() . $this->router->fetch_module() . '/';
+        
     }
     function Index(){
         echo "<h1>BPM/TASK</h1>";
     }
+    /**
+     * This function is a combined action of refuse and claim 
+     */ 
+    
+    function delegate($idwf, $case, $resourceId,$to_idu) {
+        
+        $iduser = (int) $this->session->userdata('iduser');
+        //---get the user
+        $user = $this->user->get_user($iduser);
+        $user_groups = $user->group;
+        $token = $this->bpm->get_token($idwf, $case, $resourceId);
+        //---check if the user is in the assigned groups
+
+        $is_allowed =($this->user->isAdmin()) ? true :false;
+        //---check if user belong to the group the task is assigned to
+        if (isset($token['idgroup'])) {
+            foreach ($user_groups as $thisgroup) {
+                if (in_array($thisgroup, $token['idgroup']))
+                    $is_allowed = true;
+            }
+        }
+        
+        if ($is_allowed) {
+            $token['assign'] = array((int)$to_idu);
+            $token['lockedBy']=(int)$to_idu;
+            $token['lockedDate']=date('Y-m-d H:i:s');
+            $this->bpm->save_token($token);
+        } else {
+            show_error('user is not allowed to delegate task');
+        }
+
+    redirect($this->config->item('default_controller'));
+        
+    }
+    
+    function delegate_ui($idwf, $idcase, $resourceId) {
+        $this->load->model('bpm/bpm');
+        $this->load->library('parser');
+        $this->load->library('bpm/ui');
+        //---load bpm model
+        $mywf = $this->bpm->load($idwf);
+        $wf = $this->bpm->bindArrayToObject($mywf ['data']);
+        //---Get case
+        $case=$this->bpm->get_case($idcase, $idwf);
+        //---Get Shape
+        $shape=$this->bpm->get_shape($resourceId,$wf);
+        
+        //---Get parent lane
+        $lane = $this->bpm->find_parent($shape, 'Lane', $wf);
+        $token_shape=$this->bpm->get_token($idwf, $idcase, $resourceId);
+        $token_lane=$this->bpm->get_token($idwf, $idcase, $lane->resourceId);
+        
+        $resources = $this->bpm->get_resources($lane, $wf,$case);
+        $resources['idgroup']=(!isset($resources['idgroup']))? $token_shape['idgroup']:array_merge((array)$resources['idgroup'],$token_shape['idgroup']);
+        
+        //---get actual user
+        $iduser = (int) $this->session->userdata('iduser');
+        //---get the user
+        $user = $this->user->get_user($iduser);
+        $user_groups = $user->group;
+        $token = $this->bpm->get_token($idwf, $case, $resourceId);
+        //---check if the user is in the assigned groups
+        
+        $renderData = array();
+        $renderData['title']=ucwords($this->lang->line('delegate').' '.$this->lang->line('task'));
+        //---Get users from groups
+        $renderData['users']=$this->user->getbygroup($resources['idgroup']);
+        foreach($renderData['users'] as &$this_user) { 
+            
+            $this_user['avatar']=$this->user->get_avatar($this_user['idu']);
+            
+        }
+        // var_dump($renderData['users']);exit;
+        $renderData['idwf'] = $idwf;
+        $renderData['idcase'] = $idcase;
+        $renderData['resourceId'] = $resourceId;
+        $renderData ['base_url'] = $this->base_url;
+// ---prepare UI
+        $renderData ['js'] = array(
+            $this->base_url . 'bpm/assets/jscript/modal_window.js' => 'Modal Window Generic JS'
+        );
+// ---prepare globals 4 js
+        $renderData ['global_js'] = array(
+            'base_url' => $this->base_url,
+            'module_url' => $this->base_url . 'bpm'
+        );
+//        $this->bpm->debug['load_case_data'] = true;
+        //---tomo el template de la tarea
+        $renderData['label'] = 'Delegate TASK: ' . $shape->properties->name;
+        
+        // var_dump($renderData);
+//        exit;
+        $this->ui->compose('bpm/modal_task_delegate', 'bpm/bootstrap.ui.php', $renderData);
+    }
+    
     function claim($idwf, $case, $resourceId) {
         $iduser = (int) $this->session->userdata('iduser');
         //---get the user

@@ -284,7 +284,7 @@ class User extends CI_Model {
                     'lastname' => 'asc'
                 )
         );
-        $result = $this->db->get('users')->result();
+        $result = $this->db->get('users')->result_array();
         return $result;
     }
 
@@ -426,13 +426,26 @@ class User extends CI_Model {
         $current_user = (array) $this->user->get_user_safe($iduser);
         $genero = isset($current_user['gender']) ? ($current_user['gender']) : ("male");
 
+        
+        $current_user=(empty($iduser))?((int)$this->idu):((int)$iduser);
+        $genero = isset($current_user['gender']) ? ($current_user['gender']) : ("male");
+        $userdata=(array) $this->user->get_user($current_user);
+
         // Chequeo avatar
-        if (is_file("images/avatar/" . $iduser . ".jpg")) {
-            return base_url() . "images/avatar/" . $iduser . ".jpg";
-        } elseif (is_file("images/avatar/" . $iduser . ".png")) {
-            return base_url() . "images/avatar/" . $iduser . ".png";
-        } else {
-            return ($genero == "male") ? (base_url() . "images/avatar/male.jpg") : (base_url() . "images/avatar/female.jpg");
+        if ( is_file(FCPATH."images/avatar/".$current_user.".jpg")){
+        	return base_url()."images/avatar/".$current_user.".jpg";
+        }elseif(is_file(FCPATH."images/avatar/".$current_user.".png")){
+        	return base_url()."images/avatar/".$current_user.".png";
+        }else{
+            //=== gravatar test
+            if($this->config->item('gravatar')){
+                $hash=md5( strtolower( trim( $userdata['email'] ) ) );
+                $gravatar="http://www.gravatar.com/avatar/$hash";
+                return $gravatar;
+            }
+            //
+            
+        	return ($genero == "male")?(base_url()."images/avatar/male.jpg"):(base_url()."images/avatar/female.jpg");    	
         }
     }
 

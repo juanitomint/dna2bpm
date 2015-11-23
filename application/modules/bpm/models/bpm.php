@@ -547,17 +547,19 @@ class Bpm extends CI_Model {
         if ($type) {
             $query['type'] = $type;
         }
-
         //var_dump2(json_encode($query));
         $result = $this->db
                 ->where($query)
-                ->order_by(array('_id' => true))
+                ->order_by(array(
+                    // '_id' => true, 
+                    'checkdate'=>true
+                    ))
                 ->get('tokens')
                 ->result_array();
         return $result;
     }
 
-    function get_tokens_byFilter($filter, $fields = array(), $sort = array()) {
+    function get_tokens_byFilter($filter, $fields = array(), $sort = array('checkdate'=>true)) {
         //$this->db->debug=true;
         $this->db->where($filter);
         $this->db->select($fields);
@@ -566,7 +568,7 @@ class Bpm extends CI_Model {
         return $rs->result_array();
     }
 
-    function get_tokens_byFilter_count($filter, $fields = array(), $sort = array()) {
+    function get_tokens_byFilter_count($filter, $fields = array(), $sort = array('checkdate'=>true)) {
         //$this->db->debug=true;
         $this->db->where($filter);
         $this->db->select($fields);
@@ -943,17 +945,19 @@ class Bpm extends CI_Model {
     }
 
     function save_token($token) {
-        if (isset($token['_id'])) {
-            unset($token['_id']);
-            $criteria = array(
-                'case' => $token['case'],
-                'idwf' => $token['idwf'],
-                'resourceId' => $token['resourceId'],
-                );
-           return  $this->db->where($criteria)->update('tokens', $token);
-        } else {
-            return $this->db->insert('tokens', $token);
-        }
+        // var_dump($this->db);
+        return $this->db->save('tokens',$token);
+        // if (isset($token['_id'])) {
+        //     unset($token['_id']);
+        //     $criteria = array(
+        //         'case' => $token['case'],
+        //         'idwf' => $token['idwf'],
+        //         'resourceId' => $token['resourceId'],
+        //         );
+        //   return  $this->db->where($criteria)->update('tokens', $token);
+        // } else {
+        //     return $this->db->insert('tokens', $token);
+        // }
     }
 
     function get_icon($type) {
