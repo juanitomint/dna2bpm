@@ -237,7 +237,11 @@ var TreeClick=function(widget,event){
         //center_panel.body.load(options);
         //---prevent not loading
         var first=false;
-        load_model(n.data.id);
+        Ext.getCmp('center_panel').setLoading("Loading Model...");
+        load_model(n.data.id,function(){
+            Ext.getCmp('center_panel').setLoading(false);
+            
+        });
 
     }
 }

@@ -226,8 +226,9 @@ var modelPanel= Ext.create('Ext.Panel', {
 }
 });
         
-center_panel=Ext.create('Ext.panel.Panel', {
+var center_panel=Ext.create('Ext.panel.Panel', {
     title: '<i class="fa fa-bpm"></i> Model Explorer',    
+    id:"center_panel",
     tbar:toolBar,
     border:2,
     layout: "fit",

@@ -18,7 +18,7 @@ var tooltips = new Array();
  */
 
 
-function load_data(idwf) {
+function load_data(idwf,callback) {
     //--load model data
     if (!first) {
 
@@ -32,6 +32,7 @@ function load_data(idwf) {
                 alert('Error Loading:' + response.err);
             },
             success: function(response, options) {
+                
                 var model_data = Ext.JSON.decode(response.responseText);
 
                 center_panel = Ext.getCmp('modelPanel');
@@ -69,14 +70,15 @@ function load_data(idwf) {
                 if (typeof (panzoom_init) == 'function') {
                     panzoom_init();
                 }
-
+                if(typeof callback=="function")
+                        callback();
             }
         });
         first = true;
     }
 }
 //---some functions
-function load_model(idwf) {
+function load_model(idwf,callback) {
     first = false;
     //---only do something if its leaf=model
     center_panel = Ext.getCmp('modelPanel');
@@ -84,7 +86,7 @@ function load_model(idwf) {
     options = {
         url: globals.module_url + 'repository/svg/' + idwf,
         success: function() {
-            load_data(idwf);
+            load_data(idwf,callback);
 
         }
     }
