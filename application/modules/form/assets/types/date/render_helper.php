@@ -12,9 +12,9 @@ function edit_date($frame, $value) {
     // $value=($value<>'')?explode('-',$value):array(0=>'',1=>'' ,2=>'');
     // $retstr = '';
 
-$locked=(!isset($frame['locked']) && $frame['locked'] === true)?("readonly"):("");    
-$disabled=(!isset($frame['hidden']) && $frame['hidden'] === true)?("hidden"):("");     
-$required=(!isset($frame['required']) && $frame['required'] === true)?("required"):(""); 
+$locked=(isset($frame['locked']) && $frame['locked'] === true)?("readonly"):("");    
+$disabled=(isset($frame['hidden']) && $frame['hidden'] === true)?("hidden"):("");     
+$required=(isset($frame['required']) && $frame['required'] === true)?("required"):(""); 
 //$mask=(isset($frame['mask'])) ? $frame['mask']:null;
 
 /*

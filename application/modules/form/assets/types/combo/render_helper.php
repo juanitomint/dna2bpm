@@ -1,28 +1,21 @@
 <?php
+//=== combobox 
+
 
 function edit_combo($frame, $value) {
     $CI = & get_instance();
     $retstr = '';
-    $ops = array();
-    $disabled='';
-    $required='';
-    //---ensure array----
-    $value = (array) $value;
-    //var_dump($frame);
-    if(isset($frame['locked']) && $frame['locked'] === true)
-        $locked = "disabled";
-    else $locked ='';
-    
-    ///Campo Hidden
-    if(isset($frame['hidden']) && $frame['hidden'] === true)
-        $disabled = "style='visibility:hidden'";
-    else $disabled ='';
-    
-    ///Campo requerido
-    if(isset($frame['required']) && $frame['required'] === true)
-        $required = "required";
-    else $required =''; 
-    
+
+$ops = array();
+
+//---ensure array----
+$value = (array) $value;
+
+$locked=(isset($frame['locked']) && $frame['locked'] === true)?("readonly"):("");    
+$disabled=(isset($frame['hidden']) && $frame['hidden'] === true)?("hidden"):("");     
+$required=(isset($frame['required']) && $frame['required'] === true)?("required"):(""); 
+
+
     /*  
     if (isset($frame['disabled']))
         $disabled = ($frame['disabled']) ? getDisabledStr($frame['type']) : null;
@@ -31,7 +24,9 @@ function edit_combo($frame, $value) {
         $required = ($frame['required']) ? getRequiredStr($frame['type']) : null;
     */    
     $option = $CI->mongowrapper->db->options->findOne(array('idop' =>(int) $frame['idop']));
-    
+
+
+
 //prepare options array
     if (isset($option['fromContainer'])) { // if gets data from internal db
         $option['data'] = getOpsFromContainer($option);
@@ -52,7 +47,8 @@ function edit_combo($frame, $value) {
 
 
 
-    $retstr = "<select  $locked $required name='" . $frame['cname'] . "' id='" . $frame['cname'] . "' $disabled>\n";
+
+    $retstr = "<select  class='form-control' $locked $required name='" . $frame['cname'] . "' id='" . $frame['cname'] . "' $disabled>\n";
     $retstr.="<option value=''>Seleccione una opci&oacute;n</option>\n";
     foreach ($ops as $key => $text) {
         $sel = (in_array($key, $value)) ? "selected='selected'" : '';

@@ -34,10 +34,10 @@ $this->load->helper('url');
 
 
 <!-- JQuery Validate -->
-        <!--<script src="{base_url}jscript/jquery/plugins/jquery-validate/jquery.validate.js" type="text/javascript"></script>-->
-        <!--<script src="{base_url}jscript/jquery/plugins/jquery-validate/additional-methods.js" type="text/javascript"></script>-->
-        <!--<script src="{base_url}jscript/dna2/validator.custom.js" type="text/javascript"></script>-->
-        <!--<script src="{base_url}jscript/jquery/plugins/jquery-validate/localization/messages_es.js" type="text/javascript"></script>-->
+        <script src="{base_url}jscript/jquery/plugins/jquery-validate/jquery.validate.js" type="text/javascript"></script>
+        <script src="{base_url}jscript/jquery/plugins/jquery-validate/additional-methods.js" type="text/javascript"></script>
+        <script src="{base_url}jscript/dna2/validator.custom.js" type="text/javascript"></script>
+        <script src="{base_url}jscript/jquery/plugins/jquery-validate/localization/messages_es.js" type="text/javascript"></script>
 <!-- JQuery Metadata 2.0 -->
         <!--<script src="{base_url}jscript/jquery/plugins/metadata/jquery.metadata.min.js" type="text/javascript"></script>-->
 <!-- JQuery Table Sorter -->
@@ -90,7 +90,8 @@ $this->load->helper('url');
                       
                       <!-- field -->
                       <div class="form-group" id="BLOCK_{cname}">
-                         <label class='titulopreg'>{cname} {title} </label>
+                         <h4 class='titulopreg'>{cname} <small>{title}</small></h4>
+                         
                           {if {has_id}}<a href="#" class="btn btn-info btn-xs showHist" data-idframe="{idframe}" title="{showHistory}"><i class="fa fa-clock-o"></i></a>{/if}
                          <div id="div_{idframe}">
                          {render}
@@ -111,13 +112,50 @@ $this->load->helper('url');
      <script type="text/javascript">
            $(document).ready(function(){
                
-               //== Datepicker
+                //====== Context 4 other scripts   
+                var imin='{idobject}';     
+                var id='{id}';         
+                var idap='{idapp}';   
+            
+                //====== Validator   
+                $.validator.messages.required = "";
+                $.validator.setDefaults({
+                    ignore: ".ignore",
+                    submitHandler: function() {
+    
+                        $("[disabled]").addClass('tmpDisabled');
+                        $("#form1 *").removeAttr("disabled");
+                        if($("#form1").valid()){
+                            dosubmit("submitted!");
+                        } else {
+                            $(".tmpDisabled").attr('disabled',true);
+                            $(".tmpDisabled").removeClass('tmpDisabled');
+                        }
+                    },
+                    invalidHandler: function(e, validator) {
+                        var errors = validator.numberOfInvalids();
+                        if (errors) {
+                            var message = errors == 1
+                                ? 'Falta completar 1 campo. Ha sido resaltado más abajo'
+                            : 'Faltan completar ' + errors + ' campos.  Han sido resaltados más abajo';
+    
+                            $("div.error span").html(message);
+                            $("div.error").show();
+                        } else {
+                            $("div.error").hide();
+                        }
+                    }
+                });
+
+
+            
+               //====== Datepicker
                 var ops={locale:'es',
                 format:'DD-MM-YYYY'};
                 $('.datepicker').datetimepicker(ops);
                 console.log('---- date');
 
-               //== Datepicker
+               //====== Datetimepicker
                 var ops2={locale:'es',
                 format:'DD-MM-YYYY HH:mm'};
                 $('.datetimepicker').datetimepicker(ops2);
@@ -125,6 +163,52 @@ $this->load->helper('url');
                 
                 
             });
+            
+            //====== Functions
+            
+                var addressFormatting = function(text){
+                var newText = text;
+                //array of find replaces
+                var findreps = [
+                    {find:/^([^\-]+) \- /g, rep: '<span class="ui-selectmenu-item-header">$1</span>'},
+                    {find:/([^\|><]+) \| /g, rep: '<span class="ui-selectmenu-item-content">$1</span>'},
+                    {find:/([^\|><\(\)]+) (\()/g, rep: '<span class="ui-selectmenu-item-content">$1</span>$2'},
+                    {find:/([^\|><\(\)]+)$/g, rep: '<span class="ui-selectmenu-item-content">$1</span>'},
+                    {find:/(\([^\|><]+\))$/g, rep: '<span class="ui-selectmenu-item-footer">$1</span>'}
+                ];
+
+                for(var i in findreps){
+                    newText = newText.replace(findreps[i].find, findreps[i].rep);
+                }
+                return newText;
+            }
+            
+            function dosubmit(obj){
+
+                disableSubmit();
+                layer=document.getElementById("Layer1");
+                layer.style.top=document.body.scrollTop+50;
+                $('#Layer1').show();
+                document.form1.Submit2.value="Guardar";
+                document.form1.submit();
+            }
+
+            function dosubmit_child(obj){
+                layer=document.getElementById("Layer1");
+                layer.style.top=document.body.scrollTop+50;
+                MM_showHideLayers('Layer1','','show');
+                document.form1.Submit2.value="Guardar";
+                obj.disabled=true;
+                document.form1.submit();
+            }
+            function enableSubmit(){
+                document.getElementById('mySubmit').disabled = false;
+            }
+
+            function disableSubmit(){
+                document.getElementById('mySubmit').disabled = true;
+            }
+            
         </script>
     </body>
 </html>

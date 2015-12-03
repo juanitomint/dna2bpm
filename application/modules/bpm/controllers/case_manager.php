@@ -370,73 +370,87 @@ class Case_manager extends MX_Controller {
 
     }
 
-        function delegate($idwf, $case,$to_idu,$from_idu=null) {
-
-        $iduser =($from_idu)? (int) $from_idu :(int) $this->session->userdata('iduser');
+    function delegate($idwf, $idcase,$to_idu,$from_idu=null) {
+        $debug=false;
+        $from_idu =($from_idu)? (int) $from_idu :(int) $this->session->userdata('iduser');
         //---get the user
-        $user = $this->user->get_user($iduser);
-        $user_groups = $user->group;
-        $token = $this->bpm->get_token($idwf, $case, $resourceId);
-        //---check if the user is in the assigned groups
-
-        $is_allowed =($this->user->isAdmin()) ? true :false;
-        //---check if user belong to the group the task is assigned to
-        if (isset($token['idgroup'])) {
-            foreach ($user_groups as $thisgroup) {
-                if (in_array($thisgroup, $token['idgroup']))
-                    $is_allowed = true;
-            }
-        }
-
-        if ($is_allowed) {
-            $token['assign'] = array((int)$to_idu);
+        // $user = $this->user->get_user($from_idu);
+        // $user_groups = $user->group;
+        
+        //---get all tasks assigned $from_idu
+        $filter=array(
+            'idwf'=>$idwf,
+            'case'=>$idcase,
+            'assign'=>(int)$from_idu,
+            'status' => array (
+                '$nin' => array ('finished','canceled')
+            )
+        );
+        $result=array();
+        $tokens=$this->bpm->get_tokens_byFilter($filter);
+        foreach($tokens as $token){
+            //----replace $from_idu with $to_idu
+             $token['assign']=array_map(function ($v) use ($from_idu, $to_idu) {
+            return $v == $from_idu ? (int)$to_idu : $v;
+            }, $token['assign']);
+            $token['lockedBy']=(int)$to_idu;
+            $token['lockedDate']=date('Y-m-d H:i:s');
             $this->bpm->save_token($token);
-        } else {
-            show_error('user is not allowed to delegate task');
         }
-
-    redirect($this->config->item('default_controller'));
+        $result['tokens']=count($tokens);
+        $result['ok']=true;
+        // echo "delegated case:$idcase from: $from_idu to $to_idu";
+        if (!$debug) {
+            header('Content-type: application/json');
+            echo json_encode($result);
+        } else {
+            var_dump($result);
+        }
 
     }
 
-    function delegate_ui($idwf, $idcase, $resourceId) {
+    function delegate_ui($idwf, $idcase) {
         $this->load->model('bpm/bpm');
         $this->load->library('parser');
         $this->load->library('bpm/ui');
         //---Get case
         $case=$this->bpm->get_case($idcase, $idwf);
-
-        $resources['idgroup']= $case['idgroup'];
-
         //---get actual user
         $iduser = (int) $this->session->userdata('iduser');
         //---get the user
         $user = $this->user->get_user($iduser);
-        $user_groups = $user->group;
-        $token = $this->bpm->get_token($idwf, $case, $resourceId);
-        //---check if the user is in the assigned groups
+        
+        $resources['idgroup']= $user->group;
+
+        
 
         $renderData = array();
         $renderData['title']=ucwords($this->lang->line('delegate').' '.$this->lang->line('task'));
         //---Get users from groups
-        $renderData['users']=$this->user->getbygroup($resources['idgroup']);
+        // $renderData['users']=$this->user->getbygroup($resources['idgroup']);
 
-        foreach($renderData['users'] as $key=>&$this_user) {
-            $this_user['avatar']=$this->user->get_avatar($this_user['idu']);
-        }
+        // foreach($renderData['users'] as $key=>&$this_user) {
+        //     $this_user['avatar']=$this->user->get_avatar($this_user['idu']);
+        // }
         // var_dump($renderData['users']);exit;
         $renderData['idwf'] = $idwf;
         $renderData['idcase'] = $idcase;
-        $renderData['resourceId'] = $resourceId;
         $renderData ['base_url'] = $this->base_url;
 // ---prepare UI
         $renderData ['js'] = array(
-            $this->base_url . 'bpm/assets/jscript/modal_window.js' => 'Modal Window Generic JS'
+            $this->base_url . 'bpm/assets/jscript/modal_window.js' => 'Modal Window Generic JS',
+            $this->base_url . 'jscript/select2-master/dist/js/select2.min.js' => 'Select2',
+            $this->base_url . 'bpm/assets/jscript/case_manager/delegate.js' => 'delegate_ui',
         );
+        $renderData['css']=array(
+            $this->base_url . 'jscript/select2-master/dist/css/select2.css' => 'Select2',
+            );
 // ---prepare globals 4 js
         $renderData ['global_js'] = array(
             'base_url' => $this->base_url,
-            'module_url' => $this->base_url . 'bpm'
+            'module_url' => $this->base_url . 'bpm',
+            'idcase'=>$idcase,
+            'idwf'=>$idwf,
         );
 //        $this->bpm->debug['load_case_data'] = true;
         //---tomo el template de la tarea

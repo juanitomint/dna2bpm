@@ -945,17 +945,19 @@ class Bpm extends CI_Model {
     }
 
     function save_token($token) {
-        if (isset($token['_id'])) {
-            unset($token['_id']);
-            $criteria = array(
-                'case' => $token['case'],
-                'idwf' => $token['idwf'],
-                'resourceId' => $token['resourceId'],
-                );
-           return  $this->db->where($criteria)->update('tokens', $token);
-        } else {
-            return $this->db->insert('tokens', $token);
-        }
+        // var_dump($this->db);
+        return $this->db->save('tokens',$token);
+        // if (isset($token['_id'])) {
+        //     unset($token['_id']);
+        //     $criteria = array(
+        //         'case' => $token['case'],
+        //         'idwf' => $token['idwf'],
+        //         'resourceId' => $token['resourceId'],
+        //         );
+        //   return  $this->db->where($criteria)->update('tokens', $token);
+        // } else {
+        //     return $this->db->insert('tokens', $token);
+        // }
     }
 
     function get_icon($type) {
