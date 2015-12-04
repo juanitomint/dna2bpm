@@ -22,9 +22,13 @@ class assets extends MX_Controller {
     
     function index(){
         //$this->user->authorize();
-        // var_dump($this->uri->segments);
+         
+         if(count($this->uri->segments)==2){
+             show_error("Serving assets for: ".APPPATH. 'modules/' . implode('/', $this->uri->segments));
+             exit;
+         }
         //---get working directory and map it to your module
-        $file = getcwd() . '/application/modules/' . implode('/', $this->uri->segments);
+        $file = APPPATH. 'modules/' . implode('/', $this->uri->segments);
         //----get path parts form extension
         $path_parts = pathinfo( $file);
         //---set the type for the headers
