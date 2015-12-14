@@ -118,6 +118,9 @@ class Engine extends MX_Controller {
             $mycase = $this->bpm->get_case($idcase, $idwf);
             $mycase ['parent'] = $parent;
             $mycase['data'] = $data;
+            //----try to generate caseid from parent
+            $mycase['id']=($this->bpm->get_case($parent['case'],$idwf))?$mycase['id']:$this->bpm->gen_case($idwf,$parent['case']);
+            
             $this->bpm->save_case($mycase);
             /*
              * UPDATE PARENT
