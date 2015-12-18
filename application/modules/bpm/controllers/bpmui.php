@@ -113,7 +113,7 @@ class Bpmui extends MX_Controller {
     }
 
     function ministatus($idwf, $showArr = array()) {
-        $showArr = (count($showArr)) ? $showArr : array(
+        $showArr = (count($showArr)) ? (array)$showArr : array(
             'Task',
             'Exclusive_Databased_Gateway',
             'StartNoneEvent',
@@ -123,10 +123,8 @@ class Bpmui extends MX_Controller {
         $this->user->authorize();
         $this->lang->load('bpm/bpm');
         $data['widget_url'] = base_url() . implode('/', array_filter(array($this->router->fetch_module(), $this->router->class, __FUNCTION__, $idwf)));
-        $state = Modules::run('bpm/manager/mini_status', $idwf, 'array');
-        $state = array_filter($state, function($task) use ($showArr) {
-            return (in_array($task['type'], $showArr) and $task['title']);
-        });
+        $filter=array('idwf'=>$idwf,'type'=>array('$in'=>$showArr));
+        $state = $this->bpm->get_cases_stats($filter);
         $data['lang'] = $this->lang->language;
         //---las aplano un poco
         foreach ($state as $task) {

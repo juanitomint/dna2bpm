@@ -306,8 +306,17 @@ class Bpm extends CI_Model {
             );
         $rs=$this->mongowrapper->db->tokens->aggregate($query);
         // var_dump($rs['result'][2]);exit;
-        if($rs['ok'])
+        if($rs['ok']){
+            //---flaten status
+            foreach($rs['result'] as &$task){
+                $t=array();
+                foreach($task['status'] as $item)
+                    $t[$item['status']]=$item['qtty'];
+                $task['status']=$t;
+            }
              return $rs['result'];
+            
+        }
         
     }
     
@@ -704,7 +713,7 @@ class Bpm extends CI_Model {
         return $rs;
     }
 
-    function get_pending($idwf, $case, $status = 'user', $filter=array()) {
+    function get_pending($idwf, $case, $status = 'user', $filter=array(),$filter_user=false) {
         $query = array(
             'idwf' => $idwf,
             'case' => $case,
