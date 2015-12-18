@@ -231,9 +231,15 @@ class Case_manager extends MX_Controller {
             $tokens = array();
             $filter['idwf'] = $idwf;
             $all_tokens = $this->bpm->get_cases_stats($filter);
-            foreach ($all_tokens as $token)
+            foreach ($all_tokens as $token){
+                $token['icon'] = "<img src='" . $this->base_url . $this->bpm->get_icon($token['type']) . "' />";
+                $token['user'] ='all';
+                $token['date'] = '???';
+                $token['status']=count($token['status']);
+                $token['run'] = $token['qtty'];
                 $tokens[] = $token;
             $out['rows'] = $tokens;
+            }
         } else {
             //--get case
             $case = $this->bpm->get_case($idcase, $idwf);
