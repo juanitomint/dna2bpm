@@ -174,6 +174,7 @@ class Bpmui extends MX_Controller {
 
     function tile_tasks2me() {
         $data['lang'] = $this->lang->language;
+        $data['id'] = __FUNCTION__;
         $data['title'] = $this->lang->line('MyTasks');
 //        $query = array(
 //            'assign' => $this->idu,
@@ -194,6 +195,7 @@ class Bpmui extends MX_Controller {
 
     function tile_tasks() {
         $data['lang'] = $this->lang->language;
+        $data['id'] = __FUNCTION__;
         $data['title'] = $this->lang->line('MyTasks');
 //        $query = array(
 //            'assign' => $this->idu,
@@ -217,6 +219,7 @@ class Bpmui extends MX_Controller {
 
     function tile_tasks_done() {
         $data['lang'] = $this->lang->language;
+        $data['id'] = __FUNCTION__;
         $data['title'] = $this->lang->line('TasksDone');
         $tasks = $this->bpm->get_tasks_byFilter(
                 array(
@@ -234,6 +237,7 @@ class Bpmui extends MX_Controller {
 
     function tile_cases($idwf = null) {
         $data['lang'] = $this->lang->language;
+        $data['id'] = __FUNCTION__;
         $data['title'] = $this->lang->line('Cases');
         $cases = $this->bpm->get_cases_byFilter(
                 array(
@@ -250,6 +254,7 @@ class Bpmui extends MX_Controller {
 
     function tile_cases_closed($idwf = null) {
         $data['lang'] = $this->lang->language;
+        $data['id'] = __FUNCTION__;
         $data['title'] = $this->lang->line('CasesClosed');
         ;
         $cases = $this->bpm->get_cases_byFilter(
