@@ -25,6 +25,7 @@ class kpi_time_avg {
     function tile($kpi) {
         if ($kpi['resourceId'] <> '') {
             $cpData = $this->core($kpi);
+            $cpData['id']=$cpData['idkpi'];
             $rtn = $this->CI->parser->parse('dashboard/tiles/' . $kpi['widget'], $cpData, true);
         } else {
             $rtn = '<strong>Warning!</strong>Function:' . $kpi['type'] . '<br/>' . $kpi['title'] . '<br/>resourceId not defined. ';

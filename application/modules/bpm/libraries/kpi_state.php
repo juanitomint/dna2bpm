@@ -19,6 +19,7 @@ class kpi_state {
     function tile($kpi) {
         if ($kpi['resourceId'] <> '') {
             $cpData = $this->core($kpi);
+            $cpData['id']=$cpData['idkpi'];
             $cpData['more_info_class'] = "load_tiles_after";
             $cpData['more_info_link'] = base_url() . "bpm/kpi/list_cases/" . $kpi['idkpi'];
             $rtn = $this->CI->parser->parse('dashboard/tiles/' . $kpi['widget'], $cpData, true);
