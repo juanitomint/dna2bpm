@@ -57,8 +57,8 @@ class kpi_time_avg {
             array (
                 '$project' => array (
                           'resourceId' => '$_id',
-                          'min' => '$min',
-                          'max' => '$max',
+                          'min_real' => '$min',
+                          'max_real' => '$max',
                           'avg' => '$avg',
                           'count' => '$count',
                           '_id' => 0,
@@ -68,7 +68,7 @@ class kpi_time_avg {
         $rs=$this->CI->mongowrapper->db->tokens->aggregate($aquery);
         $cpData = $kpi;
             if($rs['ok']){
-            $cpData+=$rs['result'][0];
+            $cpData=$rs['result'][0]+$kpi;
             }
         $cpData['avg_formated'] = number_format($cpData['avg'], 2);
         $cpData['number'] = $cpData['avg_formated'];
@@ -78,7 +78,10 @@ class kpi_time_avg {
     function widget($kpi) {
         if ($kpi['resourceId'] <> '') {
             $cpData = $this->core($kpi);
-            $rtn = $this->CI->parser->parse('dashboard/widgets/' . $kpi['widget'], $cpData, true);
+            $w=(isset($kpi['widget']))?'dashboard/widgets/' .$kpi['widget']:'bpm/widgets/kpi_time_avg';
+            $w='bpm/widgets/kpi_time_avg';
+            $rtn = $this->CI->parser->parse( $w, $cpData, true);
+            
         } else {
             $rtn = $this->CI->ShowMsg('<strong>Warning!</strong>Function:' . $kpi['type'] . '<br/>' . $kpi['title'] . '<br/>resourceId not defined. ', 'alert');
         }
