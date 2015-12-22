@@ -132,6 +132,10 @@ class Kpi_model extends CI_Model {
                     break;
             }
         }
+        ///---add resource Id if exists
+        if(isset($kpi['resourceId']))
+            $filter['resourceId']=$kpi['resourceId'];
+            
         $filter = array_merge((array) $filter_extra, $filter);
         return $filter;
     }
