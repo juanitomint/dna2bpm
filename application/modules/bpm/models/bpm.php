@@ -1343,7 +1343,7 @@ class Bpm extends CI_Model {
                     echo "&nbsp;&nbsp;&nbsp;Recalling:" . $obj->stencil->id . '<hr>';
                 $shape = $this->get_inbound_shapes($resourceId, $obj);
                 if ($shape)
-                    $rtnarr[] = $shape[0];
+                    $rtnarr+= $shape;
             }
 //---go thru outgoing
             foreach ($obj->outgoing as $out) {
