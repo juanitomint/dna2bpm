@@ -41,7 +41,7 @@ class mongo_normalized_connector extends CI_Model {
             
             while($arr = $rs->getNext()){
                 $arr['_id'] = null;
-                $rtn_arr=array_filter($arr);
+                $rtn_arr[]=array_filter($arr);
             }
             return $rtn_arr;
         }
