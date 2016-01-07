@@ -7,7 +7,7 @@ if (!defined('BASEPATH'))
  * ie: records will always be an array
  * 
  * */
-class mongo_connector extends CI_Model {
+class mongo_normalized_connector extends CI_Model {
 
     function Mongo_connector() {
         parent::__construct();
