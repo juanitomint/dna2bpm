@@ -727,13 +727,15 @@ class Engine extends MX_Controller {
         $case = $this->bpm->get_case($idcase, $wf->idwf);
         // ---load mongo_connector by default
         $this->load->model('bpm/connectors/mongo_connector');
-        if (isset($case ['data'])) {
+                if (isset($case ['data'])) {
             foreach ($case ['data'] as $key => $value) {
                 if (is_array($value)) {
                     if (isset($value ['connector'])) {
                         $conn = $value ['connector'] . '_connector';
                         if ($debug)
                             echo "Calling Connector: $conn<br/>";
+                        $this->load->model('bpm/connectors/$conn');    
+                        if(method_exists($this->$conn,'get_data'))
                         $this->data->$key = $this->$conn->get_data($value);
                     } else {
                         $this->data->$key = $value;
