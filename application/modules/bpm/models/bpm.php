@@ -68,7 +68,9 @@ class Bpm extends CI_Model {
                         $conn = $value['connector'] . '_connector';
                         if ($debug)
                             echo "Calling Connector: $conn<br/>";
-                        $data[$key] = $this->$conn->get_data($value);
+                         $this->load->model("bpm/connectors/$conn");    
+                        if(method_exists($this->$conn,'get_data'))
+                            $data[$key] = $this->$conn->get_data($value);
                     } else {
                         $data[$key] = $value;
                     }

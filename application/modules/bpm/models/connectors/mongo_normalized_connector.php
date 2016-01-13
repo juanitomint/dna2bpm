@@ -3,12 +3,11 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 /**
- * This Class provides a Mongo data source
- * if recordset count == 1 then the flat recorset is returned
- * if recordset count >1 then an array of records is returned
+ * This Class provides an always normalized data source
+ * ie: records will always be an array
  * 
  * */
-class mongo_connector extends CI_Model {
+class mongo_normalized_connector extends CI_Model {
 
     function Mongo_connector() {
         parent::__construct();
@@ -40,18 +39,9 @@ class mongo_connector extends CI_Model {
                 $rs->sort($sort);
             $rtn_arr = array();
             
-            if($rs->count()>1){
-                while ($arr = $rs->getNext()) {
-                    //---remove _id to avoid save problems
-                    $arr['_id'] = null;
-                    $rtn_arr[]=array_filter($arr);
-                }
-                
-            } else {
-                while($arr = $rs->getNext()){
-                    $arr['_id'] = null;
-                    $rtn_arr=array_filter($arr);
-                }
+            while($arr = $rs->getNext()){
+                $arr['_id'] = null;
+                $rtn_arr[]=array_filter($arr);
             }
             return $rtn_arr;
         }
