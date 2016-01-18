@@ -7,8 +7,8 @@
      <input id="modal-title" type="text" name="modal-title" class="form-control" placeholder="{lang calendar_title}" value="{title}">
       <div class="input-group-btn">
         <!-- Color -->
-        <div class="btn-group" style="width: 100%; margin-bottom: 10px;">
-            <button type="button"  class="btn btn-default color-picker dropdown-toggle" data-toggle="dropdown"><i class="fa fa-square " id='modal-color-box' style="color:{color}"></i> <span class="caret"></span></button>
+        <div class="btn-group " style="width: 100%; margin-bottom: 10px;">
+            <button type="button"  class="btn btn-default color-picker dropdown-toggle" data-toggle="dropdown" >{first_color_anchor} <span class="caret"></span></button>
             <ul class="dropdown-menu" id="color-chooser">
                {ul}
             </ul>
@@ -26,12 +26,26 @@
   
 
 
-<!-- Group events -->
-{if {user_can_create_group_events}}
-<div class="form-group">
-    <input id="modal_group" type="text" name="modal_group" class="form-control" placeholder="{lang calendar_groups} 1,2,3,#" value="{group}">
-</div>     
-{/if}
+ <!-- Group events -->
+ 
+ {if {user_can_create_group_events}}
+
+    <div class="form-group">
+    <label>{lang calendar_groups}</label>
+    <div class="input-group">
+        <select class="form-control"  id="modal-select_group">
+            <option value="all" selected="selected">All groups</option>
+            {groups}
+        </select>
+      <div class="input-group-btn">
+        <button type="button" class="btn btn-default dropdown-toggle"  id="modal-add_group" title="Add group" > <i class="fa fa-plus"></i></button>
+      </div>
+
+    </div>
+    </div>
+    <div class="form-group" id="modal-groups_box">{group_box}</div> 
+
+ {/if}
 
 <!-- Fecha -->
 <div class="form-group">

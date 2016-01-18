@@ -1,13 +1,5 @@
-<div class="box box-primary">
-    <div class="box-header">
-        <h3 class="box-title">{lang calendar_create_event}</h3>
-                <div class="box-tools pull-right">
-            <button data-original-title="Collapse" class="btn btn-default btn-sm" data-widget="collapse" data-toggle="tooltip" title=""><i class="fa fa-minus"></i></button>
-            <button data-original-title="Remove" class="btn btn-default btn-sm" data-widget="remove" data-toggle="tooltip" title=""><i class="fa fa-times"></i></button>
-        </div>
-    </div>
-    <div class="box-body">
 
+                
 
 
         <!-- Titulo && color-->
@@ -18,7 +10,7 @@
               <div class="input-group-btn">
                 <!-- Color -->
                 <div class="btn-group " style="width: 100%; margin-bottom: 10px;">
-                    <button type="button" class="btn btn-default  dropdown-toggle" data-toggle="dropdown"><i class="fa fa-square" style="color:{first_color}"></i> <span class="caret"></span></button>
+                    <button type="button" class="btn btn-default  dropdown-toggle" data-toggle="dropdown">{first_color_anchor}</button>
                     <ul class="dropdown-menu" >
                        {ul}
                     </ul>
@@ -28,22 +20,34 @@
         <input type='hidden' value='{first_color}' name='event-color' id='event-color'/>
         </div>
 
-
         <!-- Mensaje -->
         <div class="form-group">
             <label>{lang calendar_message}</label>
             <textarea class="form-control" name="event-body" id="event-body" rows="3" placeholder="Enter ..."></textarea>
         </div>
         
-
-                                    
+                                
          <!-- Group events -->
          
          {if {user_can_create_group_events}}
+
             <div class="form-group">
-                <label>{lang groups}</label>
-                <input id="event-groups" type="text" name="event-groups" class="form-control" placeholder="1,2,3,#">
-            </div>     
+            <label>{lang calendar_groups}</label>
+            <div class="input-group">
+                <select class="form-control"  id="select_group">
+                    <option value="all" selected="selected">All groups</option>
+                    {groups}
+                </select>
+              <div class="input-group-btn">
+                <button type="button" class="btn btn-default dropdown-toggle"  id="add_group" title="Add group" > <i class="fa fa-plus"></i></button>
+              </div>
+
+            </div>
+            </div>
+            <div class="form-group" id="groups_box">
+
+            </div> 
+
          {/if}
         
         <!-- Dates -->
@@ -66,5 +70,3 @@
         <div class="input-group-btn">
             <button id="add-new-event" type="button" class="btn btn-default btn-flat btn-block">{lang calendar_create_event}</button>
         </div>                        
-    </div>
-</div>
