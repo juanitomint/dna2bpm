@@ -745,7 +745,7 @@ class Bpm extends CI_Model {
         return $rs;
     }
 
-    function get_triggers() {
+    function get_triggers($idcase=null,$idwf=null) {
         // ---defines wich types will be returned
         $type = array(
             'IntermediateTimerEvent',
@@ -755,10 +755,11 @@ class Bpm extends CI_Model {
         //     'status' => 'waiting',
         //     'type' => array('$in' => $type),
         // );
+        if($idwf) $this->db->where(array('idwf'=>$idwf));
+        if($idcase) $this->db->where(array('case'=>$idcase));
         $this->db->where_in('type',$type);
         $this->db->where(array('status' => 'waiting'));
-        //var_dump2(json_encode($query));
-        $this->db->debug=true;
+        // $this->db->debug=true;
         return $this->db->get('tokens')->result_array();
     }
 

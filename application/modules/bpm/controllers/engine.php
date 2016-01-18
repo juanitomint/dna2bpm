@@ -56,7 +56,7 @@ class Engine extends MX_Controller {
         $this->debug ['show_modal'] = null;
 
         // ---debug Helpers
-        $this->debug ['run_Task'] = null;
+        $this->debug ['run_Task'] = false;
         $this->debug ['run_CollapsedSubprocess'] = null;
         $this->debug ['run_Exclusive_Databased_Gateway'] = null;
         $this->debug ['run_IntermediateEventThrowing'] = null;
@@ -244,18 +244,17 @@ class Engine extends MX_Controller {
             $filter = (count($this->run_filter)) ? $this->run_filter : array(
                 'idwf' => $idwf,
                 'case' => $case,
-                'status' => 'pending'
+                'status' => array('$in'=>array('pending','waiting'))
             );
 
             // ----filter specific shape to run
             if ($run_resourceId)
                 $filter ['resourceId'] = $run_resourceId;
             // var_dump(json_encode($filter));exit;
-
             /**
              * Start procesing pending tokens
              */
-
+            $open = $this->bpm->get_tokens_byFilter($filter);
             while ($i <= 100 and $open = $this->bpm->get_tokens_byFilter($filter)) {
                 if ($debug)
                     echo "<h1>Step:$i</h1>";
@@ -283,9 +282,12 @@ class Engine extends MX_Controller {
                         $result = (function_exists($callfunc)) ? $callfunc($shape, $wf, $this) : $this->bpm->movenext($shape, $wf);
                     }
                 }
-                // ---clear resource id filter
+            //----remove waiting from filter after 1st run
+            $filter['status']='pending';
+            $open = $this->bpm->get_tokens_byFilter($filter);
+            
             }
-
+            
             $this->bpm->update_case_token_status($idwf, $case);
             //----if some helper want to break then break
 //            if ($this->break_on_next) {
