@@ -12,5 +12,8 @@
     <li>
         <a href="{module_url}inbox" > <i class="fa fa-envelope"></i>{lang Inbox}</a>
     </li>
+    <li>
+        <a href="{base_url}calendar" > <i class="fa fa-calendar"></i>{lang Calendar}</a>
+    </li>
 </ul>
 {menu_custom}

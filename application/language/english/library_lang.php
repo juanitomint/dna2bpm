@@ -41,6 +41,7 @@ $lang["Cases"] = 'Cases';
 $lang["CasesClosed"] = 'Closed Cases';
 $lang["Reports"] = 'Reports';
 $lang["Alerts"] = 'Alerts';
+$lang["Calendar"] = 'Calendar';
 
 /* ---Control Panel ----- */
 $lang['htmltitle'] = 'DNA² | WorkFlow';
