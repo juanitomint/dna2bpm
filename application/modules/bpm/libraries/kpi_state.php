@@ -32,6 +32,7 @@ class kpi_state {
     function list_cases($kpi) {
 
         $filter = $this->CI->kpi_model->get_filter($kpi); 
+        unset($filter['resourceId']);
         $status = (isset($kpi['status'])) ? $kpi['status'] : 'user';
         $filter['$and'] = array(
             array('token_status.' . $kpi['resourceId'] => array('$exists' => true)),
