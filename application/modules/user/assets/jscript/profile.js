@@ -12,6 +12,7 @@ $('form').on('submit',function(e){
 
 	$.post(globals['base_url']+'user/profile/save',{'data':post},function(result){
 		var feedback=JSON.parse(result);
+		console.log(result);
 		if(feedback.ok==1){
 			$('.content').prepend('<div class="alert alert-success alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button><strong>Profile saved!</div>');
 		}else{

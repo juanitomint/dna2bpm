@@ -49,7 +49,7 @@ class Profile extends MX_Controller {
     	$data['base_url'] = base_url();
         $data['module_url'] = base_url() . 'user/';
         $data['disabled']=($disabled)?('disabled'):('');
-        
+
          $customData['js'] = array(
          		'jqueryUI', 'PLUpload',
          		$this->module_url . "assets/jscript/profile.js" => 'profile JS',
@@ -81,11 +81,11 @@ class Profile extends MX_Controller {
         	$data['check_notiN'] = 'checked';
 
         // Chequeo avatar
-
         $data['avatar']=$this->get_avatar();
+       
 		$customData['content']=$this->parser->parse('user/profile',$data,true);
 
-       // $this->ui->compose('profile', 'bootstrap3.ui.php', $customData);
+        //$this->ui->compose('profile', 'bootstrap3.ui.php', $customData);
 		return $customData;
     
     }
@@ -179,7 +179,7 @@ class Profile extends MX_Controller {
         //header('Location:');
     }
     
-    function get_avatar($userID){
+    function get_avatar($userID=null){
 
         $current_user=(empty($userID))?((int)$this->idu):((int)$userID);
         $genero = isset($current_user['gender']) ? ($current_user['gender']) : ("male");

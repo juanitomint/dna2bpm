@@ -454,11 +454,11 @@ class User extends CI_Model {
      * Save Raw user data
      */
     function save($data) {
-        //var_dump($data);
-        unset($data['_id']);
-        $this->db->where(array('idu' => $data['idu']));
-        $result = $this->db->update('users', $data);
-        return $result;
+        var_dump($data);
+        // unset($data['_id']);
+        // $this->db->where(array('idu' => $data['idu']));
+        // $result = $this->db->update('users', $data);
+        // return $result;
     }
 
     //forgot password: change password token
