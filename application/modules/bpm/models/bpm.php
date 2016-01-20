@@ -1586,6 +1586,7 @@ class Bpm extends CI_Model {
 
     function assign($shape, $wf) {
         $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
+        // $debug=true;
         if ($debug)
             echo '<H1>Assign:' . $shape->properties->name . '</H1>';
         $token = $this->get_token($wf->idwf, $wf->case, $shape->resourceId);
@@ -1646,6 +1647,7 @@ class Bpm extends CI_Model {
             if ($group) {
                 $idgroup = (int) $group['idgroup'];
                 $data['idgroup'][] = $group['idgroup'];
+                if($debug) echo "Assign Lane group:".$group['idgroup'].'<br/>';
                 //---if group exists add it to the array
             } else {
                 //---if group doesn't exists add a -1
@@ -1744,9 +1746,10 @@ class Bpm extends CI_Model {
 
         ///-clear data
         $data = array_filter($data);
-
         //---if assignment not set either by group or explicit assignment then assign task to "Initiator"
         if (!isset($data['assign']) or ! count($data['assign'])) {
+            if($debug)echo "No assign yet!<br>";
+            
             if (isset($data['idgroup'])) {
                 if (count($data['idgroup'])) {
                     $initiator = $this->user->get_user($this->user->Initiator);
@@ -1777,6 +1780,7 @@ class Bpm extends CI_Model {
                 $this->set_token($wf->idwf, $wf->case, $parent->resourceId, $parent->stencil->id, $status, $data_parent);
             }
         }
+        // exit;
         return $data;
     }
 
