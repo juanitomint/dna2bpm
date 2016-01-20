@@ -298,6 +298,7 @@ class Manager extends MX_Controller {
     function mini_status($idwf, $output = 'array', $filter = array()) {
         $filter['idwf'] = $idwf;
         $tokens = $this->bpm->get_cases_stats($filter);
+        // var_dump($tokens);exit;
         switch ($output) {
 
             /*
@@ -320,16 +321,16 @@ class Manager extends MX_Controller {
              * HTML
              */
             case 'html':
-                foreach ($tokens as $id => $tasks) {
+                foreach ($tokens as  $task) {
                     //$user = $this->user->get_user($id);
                     //---load cards here
                     //echo $user->name . '<br>';
-                    foreach ($tasks as $task) {
+                    
                         echo $task['title'] . '<br/>';
-                        echo $task['status'] . '<br/>';
-                    }
+                        echo $task['qtty'] . '<br/>';
                     echo '<hr/>';
-                }
+                    }
+                
                 break;
             /*
              * JSON

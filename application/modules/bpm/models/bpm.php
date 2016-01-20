@@ -68,7 +68,9 @@ class Bpm extends CI_Model {
                         $conn = $value['connector'] . '_connector';
                         if ($debug)
                             echo "Calling Connector: $conn<br/>";
-                        $data[$key] = $this->$conn->get_data($value);
+                         $this->load->model("bpm/connectors/$conn");    
+                        if(method_exists($this->$conn,'get_data'))
+                            $data[$key] = $this->$conn->get_data($value);
                     } else {
                         $data[$key] = $value;
                     }
@@ -241,39 +243,85 @@ class Bpm extends CI_Model {
     }
 
     function get_cases_stats($filter) {
-
-        $all_tokens = array();
-        $allcases = $this->get_cases_byFilter($filter, array('id', 'idwf', 'token_status'));
-        foreach ($allcases as $case) {
-            $tokens = (isset($case['token_status'])) ? $case['token_status'] : null;
-            //var_dump($case,$tokens);exit;
-            if ($tokens) {
-                foreach ($tokens as $resourceId => $state) {
-                    if (isset($all_tokens[$resourceId])) {
-                        $all_tokens[$resourceId]['run'] ++;
-                        $all_tokens[$resourceId]['status'][$state] = (!isset($all_tokens[$resourceId]['status'][$state])) ? 0 : $all_tokens[$resourceId]['status'][$state];
-                        $all_tokens[$resourceId]['status'][$state] ++;
-                    } else {
-
-                        $token = $this->bpm->get_token($case['idwf'], $case['id'], $resourceId);
-                        //var_dump($token);exit;
-                        //$data = $this->bpm->get_shape($resourceId, $wf);
-
-                        $all_tokens[$resourceId] = array(
-                            'idwf' => $case['idwf'],
-                            'resourceId' => $resourceId,
-                            'title' => (isset($token['title'])) ? $token['title'] : '',
-                            'type' => $token['type'],
-                            'run' => 1,
-                            'status' => array($state => 1),
-                            'icon' => $this->get_icon($token['type'])
-                        );
-                    }
-                }
-            }
-        }//---end foreach cases
+        //@todo some room for date filtering of case
+        $all_tokens = $this->get_token_stats($filter);
         return $all_tokens;
     }
+    
+    function get_token_stats($filter){
+        $query=array(
+            array('$match'=>$filter),
+            array (
+                '$group' => 
+                array (
+                  '_id' => 
+                  array (
+                    'status' => '$status',
+                    'resourceId' => '$resourceId',
+                  ),
+                  'qtty' =>array ('$sum' => 1),
+                  'title' =>array ('$first' =>'$title'),
+                  'type' =>array ('$first' =>'$type'),
+                  
+                ),
+            ),
+            array (
+                '$project' => 
+                array (
+                  'status' => '$_id.status',
+                  'resourceId' => '$_id.resourceId',
+                  'qtty' => 1,
+                  'title' => 1,
+                  'type' => 1,
+                  '_id' => 0,
+                ),
+            ),
+            array (
+                '$group' => array (
+                    '_id' => '$resourceId',
+                    'qtty' => array (
+                        '$sum' => '$qtty',
+                    ),
+                    'title' =>array ('$first' =>'$title'),
+                    'type' =>array ('$first' =>'$type'),
+                    'resourceId' =>array ('$first' =>'$resourceId'),
+                    'status' => array (
+                        '$addToSet' => 
+                        array (
+                            'status' => '$status',
+                            'qtty' => '$qtty',
+                        ),
+                    ),
+                ),
+            ),
+            array (
+                '$project' => 
+                array (
+                  'resourceId' => 1,
+                  'qtty' => 1,
+                  'title' => 1,
+                  'type' => 1,
+                  'status'=>1,
+                  '_id' => 0,
+                ),
+            ),
+            );
+        $rs=$this->mongowrapper->db->tokens->aggregate($query);
+        // var_dump($rs['result'][2]);exit;
+        if($rs['ok']){
+            //---flaten status
+            foreach($rs['result'] as &$task){
+                $t=array();
+                foreach($task['status'] as $item)
+                    $t[$item['status']]=$item['qtty'];
+                $task['status']=$t;
+            }
+             return $rs['result'];
+            
+        }
+        
+    }
+    
 
     function get_cases($user = null, $offset = 0, $limit = null, $filter_status = array()) {
         $data = array(
@@ -667,7 +715,7 @@ class Bpm extends CI_Model {
         return $rs;
     }
 
-    function get_pending($idwf, $case, $status = 'user', $filter=array()) {
+    function get_pending($idwf, $case, $status = 'user', $filter=array(),$filter_user=false) {
         $query = array(
             'idwf' => $idwf,
             'case' => $case,
@@ -697,7 +745,7 @@ class Bpm extends CI_Model {
         return $rs;
     }
 
-    function get_triggers() {
+    function get_triggers($idcase=null,$idwf=null) {
         // ---defines wich types will be returned
         $type = array(
             'IntermediateTimerEvent',
@@ -707,10 +755,11 @@ class Bpm extends CI_Model {
         //     'status' => 'waiting',
         //     'type' => array('$in' => $type),
         // );
+        if($idwf) $this->db->where(array('idwf'=>$idwf));
+        if($idcase) $this->db->where(array('case'=>$idcase));
         $this->db->where_in('type',$type);
         $this->db->where(array('status' => 'waiting'));
-        //var_dump2(json_encode($query));
-        $this->db->debug=true;
+        // $this->db->debug=true;
         return $this->db->get('tokens')->result_array();
     }
 
@@ -1297,7 +1346,7 @@ class Bpm extends CI_Model {
                     echo "&nbsp;&nbsp;&nbsp;Recalling:" . $obj->stencil->id . '<hr>';
                 $shape = $this->get_inbound_shapes($resourceId, $obj);
                 if ($shape)
-                    $rtnarr[] = $shape[0];
+                    $rtnarr+= $shape;
             }
 //---go thru outgoing
             foreach ($obj->outgoing as $out) {

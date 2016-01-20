@@ -231,9 +231,15 @@ class Case_manager extends MX_Controller {
             $tokens = array();
             $filter['idwf'] = $idwf;
             $all_tokens = $this->bpm->get_cases_stats($filter);
-            foreach ($all_tokens as $token)
+            foreach ($all_tokens as $token){
+                $token['icon'] = "<img src='" . $this->base_url . $this->bpm->get_icon($token['type']) . "' />";
+                $token['user'] ='all';
+                $token['date'] = '???';
+                $token['status']=count($token['status']);
+                $token['run'] = $token['qtty'];
                 $tokens[] = $token;
             $out['rows'] = $tokens;
+            }
         } else {
             //--get case
             $case = $this->bpm->get_case($idcase, $idwf);
@@ -371,7 +377,7 @@ class Case_manager extends MX_Controller {
     }
 
     function delegate($idwf, $idcase,$to_idu,$from_idu=null) {
-
+        $debug=false;
         $from_idu =($from_idu)? (int) $from_idu :(int) $this->session->userdata('iduser');
         //---get the user
         // $user = $this->user->get_user($from_idu);
@@ -386,6 +392,7 @@ class Case_manager extends MX_Controller {
                 '$nin' => array ('finished','canceled')
             )
         );
+        $result=array();
         $tokens=$this->bpm->get_tokens_byFilter($filter);
         foreach($tokens as $token){
             //----replace $from_idu with $to_idu
@@ -396,8 +403,15 @@ class Case_manager extends MX_Controller {
             $token['lockedDate']=date('Y-m-d H:i:s');
             $this->bpm->save_token($token);
         }
+        $result['tokens']=count($tokens);
+        $result['ok']=true;
         // echo "delegated case:$idcase from: $from_idu to $to_idu";
-    redirect($this->config->item('default_controller'));
+        if (!$debug) {
+            header('Content-type: application/json');
+            echo json_encode($result);
+        } else {
+            var_dump($result);
+        }
 
     }
 
@@ -440,7 +454,9 @@ class Case_manager extends MX_Controller {
 // ---prepare globals 4 js
         $renderData ['global_js'] = array(
             'base_url' => $this->base_url,
-            'module_url' => $this->base_url . 'bpm'
+            'module_url' => $this->base_url . 'bpm',
+            'idcase'=>$idcase,
+            'idwf'=>$idwf,
         );
 //        $this->bpm->debug['load_case_data'] = true;
         //---tomo el template de la tarea

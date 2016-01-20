@@ -551,6 +551,23 @@ class Repository extends MX_Controller {
             var_dump($rtnObject);
         }
     }
+    
+    function import_test(){
+        $this->user->authorize();
+        $this->load->helper('directory');
+        $test_path=APPPATH.'modules/bpm/assets/test_models/';
+        echo $test_path;
+        $overwrite=false;
+        $map = directory_map($test_path, 1);
+        // var_dump($map);
+        echo '<h1>Importing: '.count($map).' models</h1>';
+        foreach($map as $file){
+            echo "Importing: $file<br/>";
+            $result=$this->bpm->import($test_path.$file,$overwrite);
+            var_dump($result);
+            echo "ok.<hr/>";
+        }
+    }
 
     function update_folder() {
         $debug = false;

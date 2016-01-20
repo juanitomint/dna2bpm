@@ -270,14 +270,16 @@ class Kpi extends MX_Controller {
 		$cpData ['module_url'] = $this->module_url;
 		$cpData ['idwf'] = $idwf;
 		$kpis = $this->kpi_model->get_model ( $idwf );
-		
+		$cpData ['tiles']='';
+		$cpData ['widgets']='';
 		// ----PROCESS KPIS
 		$kpi_show = array ();
 		foreach ( $kpis as $kpi ) {
 			// echo $kpi['type'].'<hr/>';
 			$kpi_type = 'kpi_' . $kpi ['type'];
 			$this->load->library ( $kpi_type );
-			$kpi_show [] = $this->$kpi_type->tile ( $kpi );
+			$cpData ['tiles'].= $this->$kpi_type->tile ( $kpi );
+			$cpData['widgets'].=$this->$kpi_type->widget( $kpi );
 		}
 		$cpData ['content'] = implode ( $kpi_show );
 		// ----define Globals
@@ -286,12 +288,8 @@ class Kpi extends MX_Controller {
 				'module_url' => $this->module_url 
 		);
 		$cpData ['js'] = array (
-				$this->module_url . 'assets/canv-gauge-master/gauge.js' => 'Jscript Gauge',
-				$this->module_url . 'assets/jscript/gauge/gauge.init_1.js' => 'Init Gauges',
-				$this->module_url . 'assets/jscript/gauge/gauge.init_reverse.js' => 'Init Gauges reverse' 
 		);
-		
-		$this->ui->makeui ( 'test.kpi.ui.php', $cpData );
+		$this->ui->makeui ( 'dashboard/layout', $cpData );
 	}
 	function list_status($idwf, $resourceId, $status, $page = 1, $pagesize = 5) {
 		$debug = (isset ( $this->debug [__FUNCTION__] )) ? $this->debug [__FUNCTION__] : false;

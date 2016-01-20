@@ -24,6 +24,7 @@ class kpi_time_avg_all {
 
     function tile($kpi) {
         $cpData = $this->core($kpi);
+        $cpData['id']=$cpData['idkpi'];
         $cpData['number'] =(int) $cpData['avg'];
         $rtn = $this->CI->parser->parse('dashboard/tiles/' . $kpi['widget'], $cpData, true);
         return $rtn;

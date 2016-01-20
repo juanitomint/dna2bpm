@@ -56,7 +56,7 @@ class Engine extends MX_Controller {
         $this->debug ['show_modal'] = null;
 
         // ---debug Helpers
-        $this->debug ['run_Task'] = null;
+        $this->debug ['run_Task'] = false;
         $this->debug ['run_CollapsedSubprocess'] = null;
         $this->debug ['run_Exclusive_Databased_Gateway'] = null;
         $this->debug ['run_IntermediateEventThrowing'] = null;
@@ -74,25 +74,33 @@ class Engine extends MX_Controller {
         // var_dump($this->user->get_user_safe($this->idu));
     }
 
-    function assign($model, $idwf, $idcase, $src_resourceId, $resourceId, $idu) {
-        $idu = (int) $idu;
-        $mywf = $this->bpm->load($idwf, $this->expandSubProcess);
-        if (!$mywf) {
-            show_error("Model referenced:$idwf does not exists");
+    function assign($model, $idwf, $idcase, $src_resourceId, $resourceId, $idu=null) {
+        if($idu){
+            $idu = (int) $idu;
+            $mywf = $this->bpm->load($idwf, $this->expandSubProcess);
+            if (!$mywf) {
+                show_error("Model referenced:$idwf does not exists");
+            }
+            $wf = bindArrayToObject($mywf ['data']);
+            $wf->idwf = $idwf;
+            $wf->case = $idcase;
+            $shape = $this->bpm->get_shape($resourceId, $wf);
+            $src_shape=$this->bpm->get_shape($src_resourceId, $wf);
+            if(!$shape)
+                show_error("The shape:$resourceId doesn't exists in the model: $idwf");
+            if(!$src_shape)
+                show_error("The source shape:$resourceId doesn't exists in the model: $idwf");
+
+            $token = $this->bpm->get_token($idwf, $idcase, $resourceId);
+            if ($token) {
+                $this->bpm->assign_task($token, (array) $idu);
+            } else {
+                $token = $this->bpm->token_checkin(array(), $wf, $shape);
+                $token['assign'] = array($idu);
+                $this->bpm->save_token($token);
+            }
+            $this->run_post($model, $idwf, $idcase, $src_resourceId);
         }
-        $wf = bindArrayToObject($mywf ['data']);
-        $wf->idwf = $idwf;
-        $wf->case = $idcase;
-        $shape = $this->bpm->get_shape($resourceId, $wf);
-        $token = $this->bpm->get_token($idwf, $idcase, $resourceId);
-        if ($token) {
-            $this->bpm->assign_task($token, (array) $idu);
-        } else {
-            $token = $this->bpm->token_checkin(array(), $wf, $shape);
-            $token['assign'] = array($idu);
-            $this->bpm->save_token($token);
-        }
-        $this->run_post($model, $idwf, $idcase, $src_resourceId);
     }
 
     function Newcase($model, $idwf, $manual = false, $parent = null, $silent = false, $data = array()) {
@@ -110,6 +118,9 @@ class Engine extends MX_Controller {
             $mycase = $this->bpm->get_case($idcase, $idwf);
             $mycase ['parent'] = $parent;
             $mycase['data'] = $data;
+            //----try to generate caseid from parent
+            $mycase['id']=($this->bpm->get_case($parent['case'],$idwf))?$mycase['id']:$this->bpm->gen_case($idwf,$parent['case']);
+            
             $this->bpm->save_case($mycase);
             /*
              * UPDATE PARENT
@@ -208,7 +219,7 @@ class Engine extends MX_Controller {
         } else {
             //---check Exists.
             $mywf = $this->bpm->load($idwf, $this->expandSubProcess);
-            
+
             if($mywf){
             $mywf ['data'] ['idwf'] = $idwf;
             $mywf ['data'] ['case'] = $case;
@@ -233,18 +244,17 @@ class Engine extends MX_Controller {
             $filter = (count($this->run_filter)) ? $this->run_filter : array(
                 'idwf' => $idwf,
                 'case' => $case,
-                'status' => 'pending'
+                'status' => array('$in'=>array('pending','waiting'))
             );
 
             // ----filter specific shape to run
             if ($run_resourceId)
                 $filter ['resourceId'] = $run_resourceId;
             // var_dump(json_encode($filter));exit;
-            
             /**
              * Start procesing pending tokens
-             */ 
-            
+             */
+            $open = $this->bpm->get_tokens_byFilter($filter);
             while ($i <= 100 and $open = $this->bpm->get_tokens_byFilter($filter)) {
                 if ($debug)
                     echo "<h1>Step:$i</h1>";
@@ -272,9 +282,12 @@ class Engine extends MX_Controller {
                         $result = (function_exists($callfunc)) ? $callfunc($shape, $wf, $this) : $this->bpm->movenext($shape, $wf);
                     }
                 }
-                // ---clear resource id filter
+            //----remove waiting from filter after 1st run
+            $filter['status']='pending';
+            $open = $this->bpm->get_tokens_byFilter($filter);
+            
             }
-
+            
             $this->bpm->update_case_token_status($idwf, $case);
             //----if some helper want to break then break
 //            if ($this->break_on_next) {
@@ -286,8 +299,8 @@ class Engine extends MX_Controller {
             $this->get_pending('model', $idwf, $case, $run_resourceId);
             $this->run_after();
             $run_resourceId = null;
-        
-            
+
+
             //---end check model exists
             } else {
                 show_error("Model: $idwf doesn't exitst contact Administrator");
@@ -491,7 +504,7 @@ class Engine extends MX_Controller {
         //-Prepare Documents
         foreach ($previous as $dataShape) {
             if ($dataShape->stencil->id == 'DataObject') {
-                
+
                     $do = $this->bindObjectToArray($dataShape);
                     $strStor = $dataShape->properties->name;
                     $conn = $dataShape->properties->connector . '_connector';
@@ -501,7 +514,7 @@ class Engine extends MX_Controller {
                     }
 
                     $renderData['DataObject_Input'][] = $do;
-                
+
             }
         }
         //  var_dump($shape->properties->datainputset);
@@ -674,7 +687,7 @@ class Engine extends MX_Controller {
             if(method_exists($this->$conn,'get_data')){
                 $this->data->$strStor = json_decode(json_encode($this->$conn->get_data($resource, $shape, $this->wf)));
             }
-            
+
             // ----4 debug
             if ($debug) {
                 echo "<h3>Data Store:$strStor</h3>";
@@ -716,13 +729,15 @@ class Engine extends MX_Controller {
         $case = $this->bpm->get_case($idcase, $wf->idwf);
         // ---load mongo_connector by default
         $this->load->model('bpm/connectors/mongo_connector');
-        if (isset($case ['data'])) {
+                if (isset($case ['data'])) {
             foreach ($case ['data'] as $key => $value) {
                 if (is_array($value)) {
                     if (isset($value ['connector'])) {
                         $conn = $value ['connector'] . '_connector';
                         if ($debug)
                             echo "Calling Connector: $conn<br/>";
+                        $this->load->model("bpm/connectors/$conn");    
+                        if(method_exists($this->$conn,'get_data'))
                         $this->data->$key = $this->$conn->get_data($value);
                     } else {
                         $this->data->$key = $value;
@@ -913,7 +928,7 @@ class Engine extends MX_Controller {
         if ($case ['status'] == 'open') {
             // ----load WF data
             $myTasks = $this->bpm->get_pending(
-                $idwf, 
+                $idwf,
                 $idcase, array('user','manual'),//---status
                     $filter);
             // foreach($myTasks as $task){

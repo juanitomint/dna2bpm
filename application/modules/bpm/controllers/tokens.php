@@ -92,7 +92,7 @@ class tokens extends MX_Controller {
         $segments = $this->uri->segment_array();
         $mywf = $this->bpm->load($idwf, $this->expandSubProcess);
         
-        $wf = $mywf['data'];
+        $wf = (array)$mywf['data'];
         unset($wf['childShapes']);
         $cpData+=$wf;
         

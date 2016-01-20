@@ -36,4 +36,20 @@ $(document).ready(function() {
 
     });
 
+    $(document).on('click', '#delegate-btn', function(e) {
+        var url = globals.base_url + 'bpm/case_manager/delegate/' + globals.idwf + '/' + globals.idcase + '/' + $("#from").val() + '/' + $("#to").val();
+        $.ajax({
+            url: url,
+            type: 'POST',
+            success: function(data) {
+            console.log(data);
+             if(data.ok){
+                 window.location=globals.base_url;
+             }
+            },
+            error: function(err) {
+                alert(err.toString());
+            }
+        });
+    });
 });

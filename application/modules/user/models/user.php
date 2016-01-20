@@ -13,6 +13,7 @@ class User extends CI_Model {
         $this->idu = $this->session->userdata('iduser');
         $this->config->load('user/config');
         $this->autodiscover = ($this->config->item('autodiscover')) ? true : false;
+        $this->login_url=base_url() . 'user/login';
     }
 
     function add($user_data) {
@@ -136,7 +137,7 @@ class User extends CI_Model {
         if (!$canaccess) {
             $this->session->set_userdata('redir', base_url() . uri_string());
             $this->session->set_userdata('msg', 'nolevel');
-            redirect(base_url() . 'user/login');
+            redirect($this->login_url);
         }
     }
 
@@ -160,7 +161,7 @@ class User extends CI_Model {
         if (!$this->session->userdata('loggedin')) {
             $this->session->set_userdata('redir', base_url() . uri_string());
             $this->session->set_userdata('msg', 'hastolog');
-            redirect(base_url() . 'user/login');
+            redirect($this->login_url);
         } else {
             return true;
         }
@@ -426,7 +427,7 @@ class User extends CI_Model {
         $current_user = (array) $this->user->get_user_safe($iduser);
         $genero = isset($current_user['gender']) ? ($current_user['gender']) : ("male");
 
-        
+
         $current_user=(empty($iduser))?((int)$this->idu):((int)$iduser);
         $genero = isset($current_user['gender']) ? ($current_user['gender']) : ("male");
         $userdata=(array) $this->user->get_user($current_user);
@@ -444,8 +445,8 @@ class User extends CI_Model {
                 return $gravatar;
             }
             //
-            
-        	return ($genero == "male")?(base_url()."images/avatar/male.jpg"):(base_url()."images/avatar/female.jpg");    	
+
+        	return ($genero == "male")?(base_url()."images/avatar/male.jpg"):(base_url()."images/avatar/female.jpg");
         }
     }
 
