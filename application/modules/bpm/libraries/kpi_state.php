@@ -46,7 +46,8 @@ class kpi_state {
     }
 
     function core($kpi) {
-        $filter = $this->CI->kpi_model->get_filter($kpi); 
+        $filter = $this->CI->kpi_model->get_filter($kpi);
+        unset($filter['resourceId']);
         $status = (isset($kpi['status'])) ? $kpi['status'] : 'user';
         $filter['$and'] = array(
             array('token_status.' . $kpi['resourceId'] => array('$exists' => true)),
@@ -54,8 +55,9 @@ class kpi_state {
         );
         $cases_filtered = $this->CI->bpm->get_cases_byFilter($filter);
         $cpData = $kpi;
-        //var_dump($tokens);
         $cpData['number'] = count($cases_filtered);
+        // var_dump(json_encode($filter),$cpData);
+        // exit;
         return $cpData;
     }
 
