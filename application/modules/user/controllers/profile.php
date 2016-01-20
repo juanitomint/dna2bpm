@@ -102,27 +102,23 @@ class Profile extends MX_Controller {
 
         $allowed=array('name','gender','lastname','idnumber','birthdate','email','phone','celular','address','cp','city','signature','notification_by_email');
 
-		foreach($this->input->post('data') as $item){
- 			if(in_array($item['name'],$allowed))
- 			$post_obj[$item['name']]=$item['value'];
-		}
-
-        $iduser = (double) $this->session->userdata('iduser');
-        $post_obj['idu'] = (int) $iduser;
-
         //lo que esta en la base
         $dbobj = (array) $this->user->get_user((int) $iduser);
+        
+        
+		foreach($this->input->post('data') as $item){
+ 			if(in_array($item['name'],$allowed))
+ 			$dbobj[$item['name']]=$item['value'];
+ 			
+ 			if($item['name']=='passw')
+ 	        	// Cambio de pass
+        	    $dbobj['passw']=md5( $item['value']);
+		}
 
-        //process password
-        if(!empty($post_obj['passw'])){
-        	// Cambio de pass
-        	$post_obj['passw']=md5( $post_obj['passw']);
-        }
-
-        $result = $this->user->update($post_obj);
+        $result = $this->user->update($dbobj);
 		
 		echo json_encode($result);
-        
+
     }
 
     /*
