@@ -110,10 +110,11 @@ class Profile extends MX_Controller {
  			if(in_array($item['name'],$allowed))
  			$dbobj[$item['name']]=$item['value'];
  			
- 			if($item['name']=='passw')
+ 			if($item['name']=='passw' && !empty($item['value']))
  	        	// Cambio de pass
         	    $dbobj['passw']=md5( $item['value']);
 		}
+
 
         $result = $this->user->update($dbobj);
 		
