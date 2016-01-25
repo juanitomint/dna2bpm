@@ -16,34 +16,38 @@ class mongo_normalized_connector extends CI_Model {
 
     function get_data($resource) {
         //---connect to database and retrive data as specified
-        if (isset($resource['datastoreref']) && isset($resource['query'])) {
-            $fields = (isset($resource['fields'])) ? $resource['fields'] : null;
-            $query = $resource['query'];
-            $query = ($query <> '') ? $query : array();
-            $query = (is_array($query)) ? $query : json_decode($query);
-            ///---if array of ids convert into $in
-            if(isset($query['id'])&& is_array($query['id'])){
-                $query['id']=array('$in'=>$query['id']);
+        try{
+            if (isset($resource['datastoreref']) && isset($resource['query'])) {
+                $fields = (isset($resource['fields'])) ? $resource['fields'] : null;
+                $query = $resource['query'];
+                $query = ($query <> '') ? $query : array();
+                $query = (is_array($query)) ? $query : json_decode($query);
+                ///---if array of ids convert into $in
+                if(isset($query['id'])&& is_array($query['id'])){
+                    $query['id']=array('$in'=>$query['id']);
+                }
+                //---select the database
+                if ($resource['datastoreref']) {
+                    $this->mongowrapper->db = $this->mongowrapper->selectDB($resource['datastoreref']);
+                }
+                if (isset($fields)) {
+                    $rs = $this->mongowrapper->db->selectCollection($resource['itemsubjectref'])->find($query, $fields);
+                } else {
+                    $rs = $this->mongowrapper->db->selectCollection($resource['itemsubjectref'])->find($query);
+                }
+             
+                if (isset($resource['sort']))
+                    $rs->sort($sort);
+                $rtn_arr = array();
+                
+                while($arr = $rs->getNext()){
+                    $arr['_id'] = null;
+                    $rtn_arr[]=array_filter($arr);
+                }
+                return $rtn_arr;
             }
-            //---select the database
-            if ($resource['datastoreref']) {
-                $this->mongowrapper->db = $this->mongowrapper->selectDB($resource['datastoreref']);
-            }
-            if (isset($fields)) {
-                $rs = $this->mongowrapper->db->selectCollection($resource['itemsubjectref'])->find($query, $fields);
-            } else {
-                $rs = $this->mongowrapper->db->selectCollection($resource['itemsubjectref'])->find($query);
-            }
-         
-            if (isset($resource['sort']))
-                $rs->sort($sort);
-            $rtn_arr = array();
-            
-            while($arr = $rs->getNext()){
-                $arr['_id'] = null;
-                $rtn_arr[]=array_filter($arr);
-            }
-            return $rtn_arr;
+        } catch (Exception $e){
+                return array('error'=>$e->getMessage());
         }
     }
 
