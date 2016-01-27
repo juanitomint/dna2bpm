@@ -4,7 +4,7 @@ $config['show_warn']	= false;
 $config['run_mode']	= 'development';
 //----Browser
 $config['browser_tree_expanded']=false;
-$config['tree_icon_model']='icon-ok-circle';
+$config['tree_icon_model']='';
 $config['browser_tree_checkable_folders']=false;
 $config['browser_tree_checkable_models']=false;
 //----Engine
