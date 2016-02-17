@@ -338,6 +338,47 @@ class Engine extends MX_Controller {
             if ($resourceId) {
                 $shape = $this->bpm->get_shape($resourceId, $wf);
                 if ($shape) {
+                //load data
+                // //////////////////////////////////////////////////////////////////////
+                // /////////////////// Read From DataObjects /////////////////  //////////
+                // //////////////////////////////////////////////////////////////////////
+                //-get Inbound shapes
+                $previous = $this->bpm->get_previous($resourceId, $wf);
+                
+                $post=$this->input->post();
+                foreach ($previous as $dataShape) {
+                    if ($dataShape->stencil->id == 'DataObject') {
+                    // echo $shape->properties->name;
+                    // ---LOAD DATA CONNECTORS
+                    // var_dump($dataShape->properties->input_output);exit;
+                        if($dataShape->properties->input_output<>'Output'){
+                        if ($dataShape->properties->connector) {
+                        $modelname = 'bpm/connectors/' . $dataShape->properties->connector . '_connector';
+                        $this->load->model($modelname);
+                        // ---END LOAD DATA CONNECTORS
+                        $strStor = $dataShape->properties->name;
+                        $conn = $dataShape->properties->connector . '_connector';
+                        if ($debug) {
+                            var_dump('$strStor', $strStor, $resource);
+                            echo '<hr/>';
+                        }
+                        // $this->$strStor= bindArrayToObject($this->app->getall($item,$container));
+                        if(method_exists($this->$conn,'save_data')){
+                            $this->$conn->save_data($idwf,$case,$dataShape,$post);
+                        }
+                        // ----4 debug
+                        if ($debug) {
+                            echo "<h3>Data Store:$strStor</h3>";
+                            var_dump($this->data->$strStor);
+                        }
+                    }
+                    }
+                    }
+                } // --end foreach
+                
+                // //////////////////////////////////////////////////////////////////////
+                    //---process data objects
+                    
                     //---save postdata in case
                     if (property_exists($shape->properties, 'datainputset')) {
                         if (property_exists($shape->properties->datainputset, 'items')) {
@@ -504,7 +545,6 @@ class Engine extends MX_Controller {
         //-Prepare Documents
         foreach ($previous as $dataShape) {
             if ($dataShape->stencil->id == 'DataObject') {
-
                     $do = $this->bindObjectToArray($dataShape);
                     $strStor = $dataShape->properties->name;
                     $conn = $dataShape->properties->connector . '_connector';
