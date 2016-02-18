@@ -120,7 +120,7 @@ class Engine extends MX_Controller {
             $mycase['data'] = $data;
             //----try to generate caseid from parent
             $mycase['id']=($this->bpm->get_case($parent['case'],$idwf))?$mycase['id']:$this->bpm->gen_case($idwf,$parent['case']);
-            
+
             $this->bpm->save_case($mycase);
             /*
              * UPDATE PARENT
@@ -285,9 +285,9 @@ class Engine extends MX_Controller {
             //----remove waiting from filter after 1st run
             $filter['status']='pending';
             $open = $this->bpm->get_tokens_byFilter($filter);
-            
+
             }
-            
+
             $this->bpm->update_case_token_status($idwf, $case);
             //----if some helper want to break then break
 //            if ($this->break_on_next) {
@@ -344,7 +344,7 @@ class Engine extends MX_Controller {
                 // //////////////////////////////////////////////////////////////////////
                 //-get Inbound shapes
                 $previous = $this->bpm->get_previous($resourceId, $wf);
-                
+
                 $post=$this->input->post();
                 foreach ($previous as $dataShape) {
                     if ($dataShape->stencil->id == 'DataObject') {
@@ -375,10 +375,10 @@ class Engine extends MX_Controller {
                     }
                     }
                 } // --end foreach
-                
+
                 // //////////////////////////////////////////////////////////////////////
                     //---process data objects
-                    
+
                     //---save postdata in case
                     if (property_exists($shape->properties, 'datainputset')) {
                         if (property_exists($shape->properties->datainputset, 'items')) {
@@ -504,6 +504,7 @@ class Engine extends MX_Controller {
         //---prepare additions arrays
         $this->add_js=array();
         $this->add_css=array();
+        $this->add_globals=array();
         // ----prepare renderData
         $renderData = array();
         $renderData ['lang'] = $this->lang->language;
@@ -617,6 +618,7 @@ class Engine extends MX_Controller {
                 'idcase' => $idcase,
                 'resourceId' => $resourceId
             );
+            $renderData ['global_js']+=$this->add_globals;
             // var_dump($renderData);exit;
             $this->ui->compose('bpm/manual_task', 'bpm/bootstrap.ui.php', $renderData);
         }
@@ -776,7 +778,7 @@ class Engine extends MX_Controller {
                         $conn = $value ['connector'] . '_connector';
                         if ($debug)
                             echo "Calling Connector: $conn<br/>";
-                        $this->load->model("bpm/connectors/$conn");    
+                        $this->load->model("bpm/connectors/$conn");
                         if(method_exists($this->$conn,'get_data'))
                         $this->data->$key = $this->$conn->get_data($value);
                     } else {
