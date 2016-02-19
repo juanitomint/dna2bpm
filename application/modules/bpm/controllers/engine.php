@@ -524,6 +524,7 @@ class Engine extends MX_Controller {
         $case = $this->bpm->get_case($idcase, $idwf);
         //---set inititaror
         $renderData['Initiator'] = (array) $this->user->get_user_safe($case['iduser']);
+        $renderData['user']=$renderData['Initiator'];
         // ---get token
         $token = $this->bpm->get_token($idwf, $idcase, $resourceId);
 
