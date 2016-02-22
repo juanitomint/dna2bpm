@@ -688,8 +688,9 @@ class Bpm extends CI_Model {
 
     function get_token_byid($id) {
         $query = array(
-            '_id' => $id,
+            '_id' =>new MongoId( $id),
         );
+        $this->db->debug=true;
         $rs=$this->db->get_where('tokens',$query)->result_array();
 
         if(count($rs))
