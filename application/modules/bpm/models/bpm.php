@@ -690,7 +690,6 @@ class Bpm extends CI_Model {
         $query = array(
             '_id' =>new MongoId( $id),
         );
-        $this->db->debug=true;
         $rs=$this->db->get_where('tokens',$query)->result_array();
 
         if(count($rs))
