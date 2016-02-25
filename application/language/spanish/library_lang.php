@@ -3,6 +3,7 @@
 if (!defined("BASEPATH"))
     exit("No direct script access allowed");
 $lang["thisLang"] = "Español";
+$lang["thisLangCode"] = "es";
 $lang['dateFmt'] = 'd/m/Y';
 $lang['dateFmt_JS'] = 'd MM yy';
 $lang['dateTimeFmt'] = 'd/m/Y H:i';
@@ -41,6 +42,7 @@ $lang["Cases"] = 'Casos';
 $lang["CasesClosed"] = 'Casos Cerrados';
 $lang["Reports"] = 'Reportes';
 $lang["Alerts"] = 'Alertas';
+$lang["Calendar"] = 'Calendario';
 
 /* ---Control Panel ----- */
 $lang['htmltitle'] = 'DNA² | WorkFlow';

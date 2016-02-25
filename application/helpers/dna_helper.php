@@ -50,11 +50,11 @@ function getDisabledStr($type) {
 function getvalue($id, $idframe) {
     $CI = & get_instance();
     //var_dump('getvalue',$id,$idframe);
-    $frame = $CI->mongo->db->frames->findOne(array(idframe => $idframe), array('container'));
+    $frame = $CI->mongowrapper->db->frames->findOne(array(idframe => $idframe), array('container'));
     $query = array(id => $id);
     $fields = array((string) $idframe);
     if ($frame[container]) {
-        $result = $CI->mongo->db->selectCollection($frame[container])->findOne($query, $fields);
+        $result = $CI->mongowrapper->db->selectCollection($frame[container])->findOne($query, $fields);
     } else {
         trigger_error("container property missing for: $idframe");
     }
@@ -78,7 +78,7 @@ function getOpsFromContainer($option) {
         $fields = array_filter($fields);
         //echo '<hr>'. $option['idop'];
         //var_dump($option['container'],$query,$fields);
-        $rsop = $CI->mongo->db->selectCollection($option['container'])->find($query, $fields);
+        $rsop = $CI->mongowrapper->db->selectCollection($option['container'])->find($query, $fields);
         while ($arr = $rsop->getNext()) {
             $text = array();
             foreach ($option['fieldText'] as $field)
@@ -103,14 +103,14 @@ function formGetBack($idform) {
     $CI = & get_instance();
     //---get SRC -----------------------
     $query = array('idform' => (int) $idform);
-    $formBACK = $CI->mongo->db->selectCollection('forms.back')->findOne($query);
+    $formBACK = $CI->mongowrapper->db->selectCollection('forms.back')->findOne($query);
 //---get DST -----------------------
     $query = array('idform' => (int) $idform);
-    $formSRC = $CI->mongo->db->forms->findOne($query);
+    $formSRC = $CI->mongowrapper->db->forms->findOne($query);
 
-    $result = $CI->mongo->db->forms->save($formBACK);
+    $result = $CI->mongowrapper->db->forms->save($formBACK);
 
-    $result1 = $CI->mongo->db->selectCollection('forms.back')->save($formSRC, array(safe => true));
+    $result1 = $CI->mongowrapper->db->selectCollection('forms.back')->save($formSRC, array(safe => true));
 
 
     return true;
@@ -122,8 +122,8 @@ function formCheckOut($idform) {
     $CI = & get_instance();
     //---get DST -----------------------
     $query = array('idform' => (int) $idform);
-    $formSRC = $CI->mongo->db->forms->findOne($query);
-    $result = $CI->mongo->db->selectCollection('forms.back')->save($formSRC, array(safe => true));
+    $formSRC = $CI->mongowrapper->db->forms->findOne($query);
+    $result = $CI->mongowrapper->db->selectCollection('forms.back')->save($formSRC, array(safe => true));
     //echo "$idform -> BACK -> $result[ok]<br/>";
     return $result['ok'];
 

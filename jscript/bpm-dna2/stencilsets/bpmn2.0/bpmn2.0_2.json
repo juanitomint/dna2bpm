@@ -3612,7 +3612,7 @@
                                 "description" : "",
                                 "readonly" : false,
                                 "optional" : true,
-                                "length": 50,
+                                "length": 250,
                                 "wrapLines" : true
                         },
                                 // - - - - added for BPM Engine - - - - - - - - - - - - - - - - - - - - - -
@@ -3624,7 +3624,7 @@
                                 "description" : "",
                                 "readonly" : false,
                                 "optional" : true,
-                                "length": 50,
+                                "length": 250,
                                 "wrapLines" : true
                         },
                         {

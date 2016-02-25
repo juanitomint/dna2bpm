@@ -124,6 +124,7 @@ var tokenstore = Ext.create('Ext.data.Store', {
         type: 'ajax',
         url: globals.module_url+'case_manager/tokens/read/'+globals.idwf,  // url that will load data with respect to start and limit params
         noCache: false,
+        timeout: 120*1000,//---set timeout to 120 seconds
         reader: {
             type: 'json',
             root: 'rows',

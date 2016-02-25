@@ -34,6 +34,7 @@ class Render extends MX_Controller {
     }
 
     function Go($idobject='', $id=null) {
+
         $type = $idobject[0];
         switch ($type) {
 
@@ -287,16 +288,19 @@ class Render extends MX_Controller {
             //echo "** CALLING: $callfunc **<hr>";
             //$renderData['frames'][$key]['render']= (function_exists($callfunc)) ? $callfunc($thisframe, $value):null;
             $frames[$key] = (function_exists($callfunc)) ? $callfunc($thisframe, $value) : null;
+
             //---- Apply parser to the html string
             //
             //$frames[$key]=$this->parser->parse_string($frames[$key],$renderData);
         }
+        
+
         foreach ($frames as $key => $html)
             $renderData['frames'][$key]['render'] = $html;
 
         //var_dump($renderData);
-
-        $this->parser->parse('dna2/render_vista', $renderData);
+//var_dump($renderData);
+        $this->parser->parse('dna2/render_vista_BT', $renderData);
     }
     //---------- PRINT -------------
     function Printable($idobject, $id='new') {

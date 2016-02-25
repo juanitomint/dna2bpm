@@ -15,6 +15,8 @@ $lang["finishTask"] = 'dar por Finalizada';
 $lang["closeTask"] = 'volver';
 $lang["claim"] = 'reclamar';
 $lang["refuse"] = 'rechazar';
+$lang["delegate"] = 'delegar';
+$lang["task"] = 'tarea';
 
 /* --WF-Messages----- */
 $lang['newTask'] = 'Nueva Tarea';

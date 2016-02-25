@@ -182,7 +182,7 @@ var propsGrid = Ext.create('Ext.grid.property.Grid', {
                     }    
                 });                
                 //---return idop+text
-                return value+' :: '+optionsStore.findRecord('idop',value).data.title;
+                return value+' :: '+optionsStore.findRecord('idop',value,0,false,true,true).data.title;
             } else {
                 return value;
             }

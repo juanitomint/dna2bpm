@@ -68,9 +68,14 @@
                 {
                     "title": "HighCharts",
                     "module": "dashboard",
-                    "controller": "dashboard",
-                    "function": "highcharts",
-                    "js":[{"0":"highCharts"}]
+                    "controller": "highcharts",
+                    "function": "index",
+                    "js":[{"0":"highCharts"}],
+                    "box_icon":"fa-bullhorn",
+                    "box_class":["box box-primary"],
+                    "box_buttons":["remove","collapse"],
+                    "box_collapsed":"0",
+                    "params":[{"title":{"text":"hey"}},"400"]
                 }
             ]
         },

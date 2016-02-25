@@ -6,31 +6,31 @@
         <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
         <!--====== CSS BASE ===== -->
         <!-- bootstrap 3.0.2 -->
-        <link href="{module_url}assets/bootstrap-wysihtml5/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <link href="{base_url}dashboard/assets/bootstrap-wysihtml5/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
         <!-- font Awesome -->
-        <link href="{module_url}assets/bootstrap-wysihtml5/css/font-awesome-4.4.0/css/font-awesome.css" rel="stylesheet" type="text/css" />
+        <link href="{base_url}dashboard/assets/bootstrap-wysihtml5/css/font-awesome-4.4.0/css/font-awesome.css" rel="stylesheet" type="text/css" />
        	<!-- Ionicons -->
-        <link href="{module_url}assets/bootstrap-wysihtml5/css/ionicons.min.css" rel="stylesheet" type="text/css" />
+        <link href="{base_url}dashboard/assets/bootstrap-wysihtml5/css/ionicons.min.css" rel="stylesheet" type="text/css" />
         <!-- Daterange picker -->
-        <link href="{module_url}assets/bootstrap-wysihtml5/css/daterangepicker/daterangepicker-bs3.css" rel="stylesheet" type="text/css" />
+        <link href="{base_url}dashboard/assets/bootstrap-wysihtml5/css/daterangepicker/daterangepicker-bs3.css" rel="stylesheet" type="text/css" />
         <!-- bootstrap wysihtml5 - text editor -->
-        <link href="{module_url}assets/bootstrap-wysihtml5/css/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css" rel="stylesheet" type="text/css" />
+        <link href="{base_url}dashboard/assets/bootstrap-wysihtml5/css/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css" rel="stylesheet" type="text/css" />
         <!-- Theme style -->
-        <link href="{module_url}assets/bootstrap-wysihtml5/css/AdminLTE.css" rel="stylesheet" type="text/css" />
+        <link href="{base_url}dashboard/assets/bootstrap-wysihtml5/css/AdminLTE.css" rel="stylesheet" type="text/css" />
         <!--  Juery UI css -->
         <link href="{base_url}jscript/jquery/ui/jquery-ui-1.10.2.custom/css/smoothness/jquery-ui-1.10.2.custom.min.css" rel="stylesheet" type="text/css" />
         <!--  iCheck -->
-        <link href="{module_url}assets/bootstrap-wysihtml5/css/iCheck/minimal/blue.css" rel="stylesheet" type="text/css" />
+        <link href="{base_url}dashboard/assets/bootstrap-wysihtml5/css/iCheck/minimal/blue.css" rel="stylesheet" type="text/css" />
 
         <!--====== Font Kits ===== -->
-        <link href="{module_url}assets/fonts/webfontkit-20140806-113318/stylesheet.css" rel="stylesheet" type="text/css" />
-        <link href="{module_url}assets/fonts/Droid-Sans-fontfacekit/web_fonts/droidsans_regular_macroman/stylesheet.css" rel="stylesheet" type="text/css" />   
+        <link href="{base_url}dashboard/assets/fonts/webfontkit-20140806-113318/stylesheet.css" rel="stylesheet" type="text/css" />
+        <link href="{base_url}dashboard/assets/fonts/Droid-Sans-fontfacekit/web_fonts/droidsans_regular_macroman/stylesheet.css" rel="stylesheet" type="text/css" />   
 
         <!--====== CSS for widgets ===== -->
         {widgets_css}
 
         <!-- overload css skins -->
-        <link href="{module_url}assets/css/style.css" rel="stylesheet" type="text/css" />
+        <link href="{base_url}dashboard/assets/css/style.css" rel="stylesheet" type="text/css" />
 
 
 
@@ -87,7 +87,7 @@
                                 <!-- Menu Footer-->
                                 <li class="user-footer">
                                     <div class="pull-left">
-                                        <a href="{module_url}profile" class="btn btn-default btn-flat">{lang user_profile}</a>
+                                        <a href="{base_url}dashboard/profile" class="btn btn-default btn-flat">{lang user_profile}</a>
                                     </div>
                                     <div class="pull-right">
                                         <a href="{base_url}user/logout" class="btn btn-default btn-flat">{lang user_logout}</a>

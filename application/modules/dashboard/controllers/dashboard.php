@@ -208,7 +208,7 @@ class Dashboard extends MX_Controller {
          */
 
         if($extraData){
-         $customData+=$extraData;   
+         $customData=$extraData+$customData;  
         }
 
         $this->ui->compose($layout, $customData);
@@ -238,6 +238,9 @@ class Dashboard extends MX_Controller {
     }
 
     function tile($template, $data) {
+        $darr=debug_backtrace();
+        if(!isset($data['id']))
+            $data['id']=isset($darr[3]['function'])? $darr[3]['function']:'';
         $data['lang'] = $this->lang->language;
         $data['more_info_text'] = (isset($data['more_info_text'])) ? $data['more_info_text'] : $this->lang->line('more_info');
         return $this->parser->parse($template, $data, true);

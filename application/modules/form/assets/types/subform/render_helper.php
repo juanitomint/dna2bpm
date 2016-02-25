@@ -2,6 +2,7 @@
 
 function edit_subform($frame, $value) {
     $CI = & get_instance();
+    return '------ subform';
     $retstr = '';
     $required = '';
     $disabled = '';
@@ -16,10 +17,10 @@ function edit_subform($frame, $value) {
 //---ensure array----
     $value = (array) $value;
     //----Get object
-    $form = $CI->mongo->db->forms->findOne(array('idobj' => $frame['object']));
+    $form = $CI->mongowrapper->db->forms->findOne(array('idobj' => $frame['object']));
     //var_dump($form);
 //---get Entity data
-    $entity = $CI->mongo->db->entities->findOne(array('ident' => $form['ident']));
+    $entity = $CI->mongowrapper->db->entities->findOne(array('ident' => $form['ident']));
 
 
     //if ($idparent) $mydir.= "&idparent=$id";
@@ -104,7 +105,7 @@ function edit_subform($frame, $value) {
         $query = array('idframe' => array('$in' => $form['frames']));
         //$fields = array('idframe', 'desc', 'type', 'idop');
         $fields = array();
-        $selframes = $CI->mongo->db->frames->find($query, $fields);
+        $selframes = $CI->mongowrapper->db->frames->find($query, $fields);
         $desc = array();
         //var_dump('frames',json_encode($query),$fields);
         while ($arr = $selframes->getNext()) {
@@ -118,7 +119,7 @@ function edit_subform($frame, $value) {
         $fields = array_slice(array_map('toString', $form['frames']), 0, $rows);
         $fields[] = 'id';
         $sort = array($form['frames'][0] => 1);
-        $subforms = $CI->mongo->db->selectCollection($form['container'])->find($query, $fields);
+        $subforms = $CI->mongowrapper->db->selectCollection($form['container'])->find($query, $fields);
         //var_dump('container',$form['container'],'$query',$query,'$fields',$fields,'$sort',$sort);
         $subforms = $subforms->sort($sort);
         //var_dump($form[container],$query,$fields,$sort,$subforms);

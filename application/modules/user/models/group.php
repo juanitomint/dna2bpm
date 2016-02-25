@@ -15,7 +15,6 @@ class Group extends CI_Model {
         $container = 'groups';
         $fieldname = 'idgroup';
 
-        $options = array('upsert' => true, 'w'=>true);
         $query = array();
         $fields = array($fieldname);
         $sort = array($fieldname => -1);
@@ -32,17 +31,17 @@ class Group extends CI_Model {
     }
 
     function get_count($idgroup) {
-        //returns a mongo cursor with matching id's
+        //returns a  cursor with matching id's
         $query = array('group' => $idgroup);
         //var_dump(json_encode($query));
         return $this->db->where($query)->count_all_results('users');
     }
 
     function getbyid($idgroup) {
-        //returns a mongo cursor with matching id's
+        //returns a  cursor with matching id's
         $grouparr = (array) json_decode($idgroup);
         $query = array('idgroup' => array('$in' => $grouparr));
-        //returns a mongo cursor with matching id's
+        //returns a  cursor with matching id's
         //var_dump(json_encode($query));
         $rs=$this->db->get_where('groups',$query)->result_array();
         if(count($rs)){
@@ -65,7 +64,7 @@ class Group extends CI_Model {
     }
 
     function get_byname($groupname) {
-        //returns a mongo cursor with matching id's
+        //returns a  cursor with matching id's
         $query = array('name' => $groupname);
         //var_dump(json_encode($query));
         $rs=$this->db->get_where('groups',$query)->result_array();

@@ -1,4 +1,4 @@
-<div class="small-box bg-purple {update_class}">
+<div class="small-box bg-purple {update_class}" id="{id}">
 <span class="hidden widget_url">{widget_url}</span>
     <div class="inner">
         <h3>

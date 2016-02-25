@@ -17,7 +17,7 @@
             "title": "Full Table",
             "module": "calendar",
             "controller": "calendar",
-            "function": "panel_calendar",
+            "function": "widget_calendar",
             "span":12
              }]
     },    

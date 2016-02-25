@@ -32,7 +32,7 @@ class tokens extends MX_Controller {
         
     }
 
-    function View($idcase) {
+    function View($idwf,$idcase) {
         $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
         if ($debug)
             echo '<h2>' . __FUNCTION__ . '</h2>';
@@ -40,7 +40,7 @@ class tokens extends MX_Controller {
         $level = $this->user->getlevel($this->idu);
         $cpData = $this->lang->language;
         $segments = $this->uri->segment_array();
-        $case = $this->bpm->get_case($idcase);
+        $case = $this->bpm->get_case($idcase,$idwf);
         $cpData+=$case;
         $cpData['theme'] = $this->config->item('theme');
         $cpData['level'] = $level;
@@ -74,7 +74,7 @@ class tokens extends MX_Controller {
         $cpData['global_js'] = array(
             'base_url' => $this->base_url,
             'module_url' => $this->module_url,
-            'idwf' => $cpData['idwf'],
+            'idwf' => $idwf,
             'idcase' => $idcase,
         );
 
@@ -92,7 +92,7 @@ class tokens extends MX_Controller {
         $segments = $this->uri->segment_array();
         $mywf = $this->bpm->load($idwf, $this->expandSubProcess);
         
-        $wf = $mywf['data'];
+        $wf = (array)$mywf['data'];
         unset($wf['childShapes']);
         $cpData+=$wf;
         

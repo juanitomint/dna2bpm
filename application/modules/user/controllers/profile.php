@@ -49,7 +49,7 @@ class Profile extends MX_Controller {
     	$data['base_url'] = base_url();
         $data['module_url'] = base_url() . 'user/';
         $data['disabled']=($disabled)?('disabled'):('');
-        
+
          $customData['js'] = array(
          		'jqueryUI', 'PLUpload',
          		$this->module_url . "assets/jscript/profile.js" => 'profile JS',
@@ -81,11 +81,11 @@ class Profile extends MX_Controller {
         	$data['check_notiN'] = 'checked';
 
         // Chequeo avatar
-
         $data['avatar']=$this->get_avatar();
+       
 		$customData['content']=$this->parser->parse('user/profile',$data,true);
 
-       // $this->ui->compose('profile', 'bootstrap3.ui.php', $customData);
+        //$this->ui->compose('profile', 'bootstrap3.ui.php', $customData);
 		return $customData;
     
     }
@@ -102,27 +102,24 @@ class Profile extends MX_Controller {
 
         $allowed=array('name','gender','lastname','idnumber','birthdate','email','phone','celular','address','cp','city','signature','notification_by_email');
 
-		foreach($this->input->post('data') as $item){
- 			if(in_array($item['name'],$allowed))
- 			$post_obj[$item['name']]=$item['value'];
-		}
-
-        $iduser = (double) $this->session->userdata('iduser');
-        $post_obj['idu'] = (int) $iduser;
-
         //lo que esta en la base
         $dbobj = (array) $this->user->get_user((int) $iduser);
+        
+        
+		foreach($this->input->post('data') as $item){
+ 			if(in_array($item['name'],$allowed))
+ 			$dbobj[$item['name']]=$item['value'];
+ 			
+ 			if($item['name']=='passw' && !empty($item['value']))
+ 	        	// Cambio de pass
+        	    $dbobj['passw']=md5( $item['value']);
+		}
 
-        //process password
-        if(!empty($post_obj['passw'])){
-        	// Cambio de pass
-        	$post_obj['passw']=md5( $post_obj['passw']);
-        }
 
-        $result = $this->user->update($post_obj);
+        $result = $this->user->update($dbobj);
 		
 		echo json_encode($result);
-        
+
     }
 
     /*
@@ -179,7 +176,7 @@ class Profile extends MX_Controller {
         //header('Location:');
     }
     
-    function get_avatar($userID){
+    function get_avatar($userID=null){
 
         $current_user=(empty($userID))?((int)$this->idu):((int)$userID);
         $genero = isset($current_user['gender']) ? ($current_user['gender']) : ("male");

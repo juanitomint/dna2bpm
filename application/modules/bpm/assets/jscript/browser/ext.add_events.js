@@ -13,20 +13,23 @@ var add_events = function(shapes) {
         yBound = shape.bounds.upperLeft.y + offset_y;
         width = shape.bounds.lowerRight.x - shape.bounds.upperLeft.x;
         height = shape.bounds.lowerRight.y - shape.bounds.upperLeft.y
-        if (exclude_shape.indexOf(shape.stencil.id) == -1) {//---if not excluded
+        if (exclude_shape.indexOf(shape.stencil.id) == -1) { //---if not excluded
+            var addCls = '';
             switch (shape.stencil.id) {
                 case 'Lane':
                     width = 24;
                     break;
+                case 'Exclusive_Databased_Gateway':
+                    addCls = 'diamond';
+                    break;
 
             }
-            Ext.core.DomHelper.append('svg-box',
-                    {
-                        tag: 'div',
-                        cls: 'model_overlay',
-                        id: 'overlay' + shape.resourceId,
-                        //html:shape.properties.documentation,
-                        style: ' border-radius: 3px;\n\
+            Ext.core.DomHelper.append('svg-box', {
+                tag: 'div',
+                cls: 'model_overlay ' + addCls,
+                id: 'overlay' + shape.resourceId,
+                //html:shape.properties.documentation,
+                style: ' border-radius: 3px;\n\
                         position:absolute;\n\
                         left:' + xBound + 'px;\n\
                         top:' + yBound + 'px;\n\
@@ -34,11 +37,10 @@ var add_events = function(shapes) {
                         height:' + height + 'px;\n\
 \n\
 '
-                    }
-            );
+            });
 
             documentation = (shape.properties.documentation != null) ? shape.properties.documentation : '';
-            rendering = (shape.properties.rendering != null) ? '<br/><span>Rendering:<br/>'+ shape.properties.rendering+'<br/>' : '';
+            rendering = (shape.properties.rendering != null) ? '<br/><span>Rendering:<br/>' + shape.properties.rendering + '<br/>' : '';
             config = {
                 id: 'toolTip' + shape.resourceId,
                 target: 'overlay' + shape.resourceId,
@@ -46,23 +48,26 @@ var add_events = function(shapes) {
                 dismissDelay: 0,
                 minWidth: 320,
                 //anchorOffset: 85, // center the anchor on the tooltip
-                html: "<span class='resourceId'>resourceId:<br>" + shape.resourceId + "</span><p style='word-wrap:break-word;'>Doc:" + documentation +"</p><p style='word-wrap:break-word;'>"+ rendering+"</p>"
+                html: "<span class='resourceId'>resourceId:<br>" + shape.resourceId + "</span>" +
+                    "<p style='word-wrap:break-word;'>Doc:" + documentation + "</p>" +
+                    "<p style='word-wrap:break-word;'>" + rendering + "</p>"
             };
-            
+
             tooltips.push(
-                    Ext.create('Ext.tip.ToolTip', config)
-                    );
+                Ext.create('Ext.tip.ToolTip', config)
+            );
 
             div = Ext.get('overlay' + shape.resourceId);
 
             div.on('click', function(event, target, options) {
                 resourceId = target.id.replace('overlay', '');
-                tip=Ext.getCmp('toolTip' + resourceId);
-                if(tip.isVisible()){
-                Ext.getCmp('toolTip' + resourceId).autoHide = true;    
-                } else {
-                Ext.getCmp('toolTip' + resourceId).show(); 
-                Ext.getCmp('toolTip' + resourceId).autoHide = false;
+                tip = Ext.getCmp('toolTip' + resourceId);
+                if (tip.isVisible()) {
+                    Ext.getCmp('toolTip' + resourceId).autoHide = true;
+                }
+                else {
+                    Ext.getCmp('toolTip' + resourceId).show();
+                    Ext.getCmp('toolTip' + resourceId).autoHide = false;
                 }
 
                 if (window.clipboardData && clipboardData.setData) {
@@ -72,8 +77,8 @@ var add_events = function(shapes) {
 
         }
         if (shape.childShapes.length) {
-            offset_x_orig = offset_x;
-            offset_y_orig = offset_y;
+            var offset_x_orig = offset_x;
+            var offset_y_orig = offset_y;
             offset_x = xBound;
             offset_y = yBound;
 

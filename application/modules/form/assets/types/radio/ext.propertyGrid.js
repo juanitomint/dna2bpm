@@ -101,7 +101,7 @@ var rendererOptions=function(value){
         //---return idop+text
         //wait to optionsStore to finish
         //---Safe renderer: if still loading return plain value
-        return value+' :: '+optionsStore.findRecord('idop',value).data.title;
+        return value+' :: '+optionsStore.findRecord('idop',value,0,false,true,true).data.title;
         if(!optionsStore.loading){
         } else {
             return value;

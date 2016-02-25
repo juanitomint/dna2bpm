@@ -22,6 +22,7 @@ class Alerts_model extends CI_Model {
         // $this->db->where_in('target',$target);
         // $this->db->where_not_in('read',array($this->idu));
         //$query=array();
+
         $query=array('read'=>array('$ne'=>$this->idu),'target'=>array('$in'=>$target),'show'=>1);
         $this->db->where($query);
         $res=$this->db->get($this->container)->result_array();

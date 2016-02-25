@@ -243,7 +243,8 @@ class Dna2 extends MX_Controller {
         }
         /* Inbox Count MSgs */
         $mymgs = $this->msg->get_msgs($this->idu,'inbox');
-        $cpData['inbox_count'] = $mymgs->count();
+        // var_dump($mymgs);
+        $cpData['inbox_count'] =count($mymgs);
 
 
         $cpData+=$customData;

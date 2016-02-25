@@ -4,21 +4,22 @@ if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
 class User extends CI_Model {
+
     //---default discover policy
-    var  $autodiscover=true;
-    
+    var $autodiscover = true;
+
     function __construct() {
         parent::__construct();
         $this->idu = $this->session->userdata('iduser');
         $this->config->load('user/config');
-        $this->autodiscover=($this->config->item('autodiscover'))?true:false;
+        $this->autodiscover = ($this->config->item('autodiscover')) ? true : false;
+        $this->login_url=base_url() . 'user/login';
     }
-    
 
     function add($user_data) {
         $user = null;
         //---1st check if user exists by its idu
-        if(!is_array($user_data['group']))
+        if (!is_array($user_data['group']))
             $user_data['group'] = array_map('intval', explode(',', $user_data['group']));
         $user_data['idu'] = isset($user_data['idu']) ? $user_data['idu'] : null;
         if ($user_data['idu']) {
@@ -63,7 +64,7 @@ class User extends CI_Model {
 
     function authenticate($username = '', $password = '') {
         //----MD5 is used for password hashing
-        if($username=='' or $password==''){
+        if ($username == '' or $password == '') {
             return false;
         }
         $query = array('nick' => $username, 'passw' => $this->hash($password));
@@ -112,7 +113,7 @@ class User extends CI_Model {
              * Auto-discover from existent will add all the paths it's hits
              * turn off for production
              */
-            if($this->autodiscover){ 
+            if ($this->autodiscover) {
                 $this->rbac->put_path($path, array(
                     'source' => 'AutoDiscovery',
                     'checkdate' => date('Y-m-d H:i:s'),
@@ -136,12 +137,12 @@ class User extends CI_Model {
         if (!$canaccess) {
             $this->session->set_userdata('redir', base_url() . uri_string());
             $this->session->set_userdata('msg', 'nolevel');
-            redirect(base_url() . 'user/login');
+            redirect($this->login_url);
         }
     }
 
     /*
-     * Check if the user belong to Admin Group 
+     * Check if the user belong to Admin Group
      */
 
     function isAdmin($thisUser = null) {
@@ -160,7 +161,7 @@ class User extends CI_Model {
         if (!$this->session->userdata('loggedin')) {
             $this->session->set_userdata('redir', base_url() . uri_string());
             $this->session->set_userdata('msg', 'hastolog');
-            redirect(base_url() . 'user/login');
+            redirect($this->login_url);
         } else {
             return true;
         }
@@ -185,7 +186,7 @@ class User extends CI_Model {
     }
 
     function getapps($idu) {
-        
+
     }
 
     function getby_id($_id) {
@@ -194,7 +195,7 @@ class User extends CI_Model {
          */
         //var_dump(json_encode($query));
         //$this->db->debug = true;
-        $this->db->where(array('_id' => new MongoId($_id)));
+        $this->db->where($this->where_id($_id));
         $result = $this->db->get('users')->result();
         ///----return only 1st
         //$this->db->debug = false;
@@ -204,13 +205,14 @@ class User extends CI_Model {
             return false;
         }
     }
-    function getby_token($token=null) {
+
+    function getby_token($token = null) {
         /**
          * returns single user with matching id
          */
         //var_dump(json_encode($query));
         //$this->db->debug = true;
-        $this->db->where(array('token' =>$token));
+        $this->db->where(array('token' => $token));
         $result = $this->db->get('users')->result();
         ///----return only 1st
         //$this->db->debug = false;
@@ -260,7 +262,7 @@ class User extends CI_Model {
         }
     }
 
-    //forgot passw: used to change password 
+    //forgot passw: used to change password
     function getbymailaddress($mail) {
 
         $this->db->where(array('email' => $mail));
@@ -283,7 +285,7 @@ class User extends CI_Model {
                     'lastname' => 'asc'
                 )
         );
-        $result = $this->db->get('users')->result();
+        $result = $this->db->get('users')->result_array();
         return $result;
     }
 
@@ -350,8 +352,7 @@ class User extends CI_Model {
             return $user[0];
     }
 
-
-    function get_users_count($query_txt = null, $idgroup = null,$match='both') {
+    function get_users_count($query_txt = null, $idgroup = null, $match = 'both') {
         if ($idgroup) {
             $this->db->where_in('group', (array) $idgroup);
         }
@@ -373,12 +374,12 @@ class User extends CI_Model {
 
     function get_users($offset = 0, $limit = 50, $order = null, $query_txt = null, $idgroup = null, $match = 'both') {
         $this->db->get('users');
-               
+
         //var_dump($start,$limit,$idgroup, $order, $idgroup);
         if ($idgroup) {
             $this->db->where_in('group', (array) $idgroup);
         }
-               
+
         if ($query_txt) {
             $this->db->or_like('nick', $query_txt);
             $this->db->or_like('name', $query_txt);
@@ -401,60 +402,69 @@ class User extends CI_Model {
 
     function put_user($object) {
         //var_dump($object);
-        $options = array('upsert' => true, 'w' => true);
         unset($object['_id']);
-        $query=array('idu'=>$object['idu']);
-        return $this->db->where($query)->update('users',$object, $options);
+        $query = array('idu' => $object['idu']);
+        return $this->db->where($query)->update('users', $object);
     }
 
     function remove($iduser) {
         /**
-         * 
+         *
          * @todo add code to remove a user from database
          * @param $user_data
          */
     }
 
     function update($user_data) {
-    return $this->save($user_data);
-         
+        return $this->save($user_data);
     }
+
     /**
-    * Get user avatar from disk
-    */
-    function get_avatar($idu=null){
-        $iduser=($idu)? $idu:$this->idu;
-        $current_user=(array) $this->user->get_user_safe($iduser);
+     * Get user avatar from disk
+     */
+    function get_avatar($idu = null) {
+        $iduser = ($idu) ? $idu : $this->idu;
+        $current_user = (array) $this->user->get_user_safe($iduser);
         $genero = isset($current_user['gender']) ? ($current_user['gender']) : ("male");
 
+
+        $current_user=(empty($iduser))?((int)$this->idu):((int)$iduser);
+        $genero = isset($current_user['gender']) ? ($current_user['gender']) : ("male");
+        $userdata=(array) $this->user->get_user($current_user);
+
         // Chequeo avatar
-        if ( is_file("images/avatar/".$iduser.".jpg")){
-        	return base_url()."images/avatar/".$iduser.".jpg";
-        }elseif(is_file("images/avatar/".$iduser.".png")){
-        	return base_url()."images/avatar/".$iduser.".png";
+        if ( is_file(FCPATH."images/avatar/".$current_user.".jpg")){
+        	return base_url()."images/avatar/".$current_user.".jpg";
+        }elseif(is_file(FCPATH."images/avatar/".$current_user.".png")){
+        	return base_url()."images/avatar/".$current_user.".png";
         }else{
-        	return ($genero == "male")?(base_url()."images/avatar/male.jpg"):(base_url()."images/avatar/female.jpg");    	
+            //=== gravatar test
+            if($this->config->item('gravatar')){
+                $hash=md5( strtolower( trim( $userdata['email'] ) ) );
+                $gravatar="http://www.gravatar.com/avatar/$hash";
+                return $gravatar;
+            }
+            //
+
+        	return ($genero == "male")?(base_url()."images/avatar/male.jpg"):(base_url()."images/avatar/female.jpg");
         }
     }
 
     /**
      * Save Raw user data
      */
+    // function save_raw($data) {
+    //     unset($data['_id']);
+    //     $this->db->where(array('idu' => $data['idu']));
+    //     $result = $this->db->update('users', $data);
+    //     return $result;
 
-    function save($data) {
-        //var_dump($data);
-        unset($data['_id']);
-        $options = array('w' => true, 'upsert' => true);
-        $this->db->where(array('idu'=>$data['idu']));
-        $result = $this->db->update('users',$data, $options);
-        return $result;
-    }
+    // }
 
     //forgot password: change password token
     function save_token($object) {
         //var_dump($object);
-        $options = array('w' => true, 'upsert' => true);
-        return $this->db->insert('users_token',$object, $options);
+        return $this->db->insert('users_token', $object);
     }
 
     function delete_token($token) {
@@ -464,7 +474,7 @@ class User extends CI_Model {
         $result = $this->db->delete('users_token');
         return $result;
     }
-    
+
     function delete_by_id($_id) {
 
         //----make backup first
@@ -477,10 +487,13 @@ class User extends CI_Model {
             //---make a new copy in backup table.
             $result = $this->db->insert('users.back', (array) $obj);
         }
-        $this->db->where(array('_id' => new MongoId($_id)));
+        $this->db->where($this->where_id($_id));
         //---now delete original
         $result = $this->db->delete('users');
         return $result;
+    }
+    function where_id($_id) {
+
     }
 
     function delete($iduser) {
@@ -517,7 +530,6 @@ class User extends CI_Model {
         $hasone = false;
 
         while (!$hasone and $i <= $trys) {//---search until found or $trys iterations
-            
             //while (!$hasone) {//---search until found or 1000 iterations
             $query = array('idu' => $id);
             $result = $this->db->where($query)->count_all_results($container);
@@ -526,12 +538,11 @@ class User extends CI_Model {
                 if ($passed) {
                     show_error("id:$id already Exists in $container");
                     break;
-                } 
+                }
                 $hasone = false;
                 $id = mt_rand();
-                
             } else {
-                $hasone=true;
+                $hasone = true;
             }
         }
         if (!$hasone) {//-----cant allocate free id

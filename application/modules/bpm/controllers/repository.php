@@ -11,7 +11,12 @@ class Repository extends MX_Controller {
         $this->load->model('user');
         $this->load->model('bpm');
         $this->load->helper('bpm');
-//---TODO set propper roles 4 access
+        //---check login
+        if(!$this->session->userdata('loggedin')){
+            show_error('Session Expired<br>', 500);
+            exit;
+        }
+        //---TODO set propper roles 4 access
         $this->user->authorize();
 //----LOAD LANGUAGE
         $this->lang->load('library', $this->config->item('language'));
@@ -37,16 +42,15 @@ class Repository extends MX_Controller {
 
     function save() {
         $data = json_decode($this->input->post('data'));
+//---if has name then save it
+        if ($data) {
 //---fresh modification date
         $data->properties->modificationdate = date('Y-m-d') . 'T00:00:00';
         $svg = $this->input->post('svg');
-//
-//---if has name then save it
-        if ($data) {
             $idwf = $data->resourceId;
-            header('Content-Type:text/plain');
-//---check Existing revision.
+            //---check Existing revision.
             $this->bpm->save($idwf, $data, $svg);
+            
         } else {
             show_error('No name defined<br>', 500);
         }
@@ -240,12 +244,12 @@ class Repository extends MX_Controller {
         );
 
         $renderData['css'] = array(
-            $this->module_url . 'assets/css/jsoneditor.min.css' => 'JSON-Editor CSS',
+            $this->module_url . 'assets/jscript/jsoneditor/dist/jsoneditor.min.css' => 'JSON-Editor CSS',
             $this->module_url . 'assets/css/json_view.css' => 'JSON-Editor CSS',
         );
 
         $renderData['js'] = array(
-            $this->module_url . 'assets/jscript/jsoneditor.min.js' => 'JSON-Editor',
+            $this->module_url . 'assets/jscript/jsoneditor/dist/jsoneditor.min.js' => 'JSON-Editor',
             $this->module_url . 'assets/jscript/repository/json_view.js' => 'JSON-View Init',
         );
         $this->ui->compose('bpm/json_editor', 'bpm/bootstrap.ui.php', $renderData);
@@ -274,8 +278,27 @@ class Repository extends MX_Controller {
 
 
         //$this->output->set_content_type('json','utf-8');
-        //$this->bpm->save($idwf, $wf, $mywf['svg']);
+        $this->bpm->save($idwf, $wf, $mywf['svg']);
         echo date($this->lang->line('dateFmt'))." Saved!";
+
+
+    }
+    function save_model($idwf){
+        $this->user->authorize();
+        $debug=false;
+        $data=json_decode($this->input->post('data'));
+        // ----LOAD LANGUAGE
+        $this->lang->load('library', $this->config->item('language'));
+        $this->load->model('bpm/bpm');
+        $this->load->module('bpm/engine');
+        $this->load->library('parser');
+        $this->load->library('bpm/ui');
+        $user = $this->user->getuser((int) $this->session->userdata('iduser'));
+        $renderData = array();
+        //---get model
+        $mywf = $this->bpm->load($idwf);
+        $this->bpm->save($idwf, $data, $mywf['svg']);
+        echo date($this->lang->line('dateTimeFmt'))." Saved!";
 
 
     }
@@ -526,6 +549,23 @@ class Repository extends MX_Controller {
             echo json_encode($rtnObject);
         } else {
             var_dump($rtnObject);
+        }
+    }
+    
+    function import_test(){
+        $this->user->authorize();
+        $this->load->helper('directory');
+        $test_path=APPPATH.'modules/bpm/assets/test_models/';
+        echo $test_path;
+        $overwrite=false;
+        $map = directory_map($test_path, 1);
+        // var_dump($map);
+        echo '<h1>Importing: '.count($map).' models</h1>';
+        foreach($map as $file){
+            echo "Importing: $file<br/>";
+            $result=$this->bpm->import($test_path.$file,$overwrite);
+            var_dump($result);
+            echo "ok.<hr/>";
         }
     }
 

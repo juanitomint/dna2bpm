@@ -25,6 +25,7 @@ class kpi_time_avg {
     function tile($kpi) {
         if ($kpi['resourceId'] <> '') {
             $cpData = $this->core($kpi);
+            $cpData['id']=$cpData['idkpi'];
             $rtn = $this->CI->parser->parse('dashboard/tiles/' . $kpi['widget'], $cpData, true);
         } else {
             $rtn = '<strong>Warning!</strong>Function:' . $kpi['type'] . '<br/>' . $kpi['title'] . '<br/>resourceId not defined. ';
@@ -37,26 +38,39 @@ class kpi_time_avg {
     }
 
     function core($kpi) {
-        $filter = Modules::run('kpi/get_filter',$kpi);
-        $tokens = $this->CI->bpm->get_tokens_byResourceId($kpi['resourceId'], $filter);
+         $filter = $this->CI->kpi_model->get_filter($kpi); 
+        
+        //---prepare aggregation query (faster than foreach)
+        $aquery=array(
+            array(
+                '$match' =>$filter
+            ),
+            array (
+                '$group' =>array (
+                          '_id' => '$resourceId',
+                          'min' => array ('$min' => '$interval.days'),
+                          'max' => array ('$max' => '$interval.days'),
+                          'avg' => array ('$avg' => '$interval.days'),
+                          'count' => array ('$sum' => 1),
+                ),
+            ),
+            array (
+                '$project' => array (
+                          'resourceId' => '$_id',
+                          'min_real' => '$min',
+                          'max_real' => '$max',
+                          'avg' => '$avg',
+                          'count' => '$count',
+                          '_id' => 0,
+                ),
+            ),
+            );
+        $rs=$this->CI->mongowrapper->db->tokens->aggregate($aquery);
         $cpData = $kpi;
-        $max = 0;
-        $min = 36000;
-        $timesum=0;
-        foreach ($tokens as $thisToken) {
-            $max = ($max < $thisToken['interval']['days']) ? $thisToken['interval']['days'] : $max;
-            $min = ($min > $thisToken['interval']['days']) ? $thisToken['interval']['days'] : $min;
-            $timesum+=$thisToken['interval']['days'];
-        }
-        $cpData['avg'] = (int) ($timesum / count($tokens));
-        if ($timesum) {
-
-            $cpData['avg_formated'] = number_format($timesum / count($tokens), 2);
-        } else {
-            $cpData['avg_formated'] = 0;
-        }
-        $cpData['max'] = ($kpi['max']) ? $kpi['max'] : $max;
-        $cpData['min'] = $min;
+            if($rs['ok']){
+            $cpData=$rs['result'][0]+$kpi;
+            }
+        $cpData['avg_formated'] = number_format($cpData['avg'], 2);
         $cpData['number'] = $cpData['avg_formated'];
         return $cpData;
     }
@@ -64,7 +78,10 @@ class kpi_time_avg {
     function widget($kpi) {
         if ($kpi['resourceId'] <> '') {
             $cpData = $this->core($kpi);
-            $rtn = $this->CI->parser->parse('dashboard/widgets/' . $kpi['widget'], $cpData, true);
+            $w=(isset($kpi['widget']))?'dashboard/widgets/' .$kpi['widget']:'bpm/widgets/kpi_time_avg';
+            $w='bpm/widgets/kpi_time_avg';
+            $rtn = $this->CI->parser->parse( $w, $cpData, true);
+            
         } else {
             $rtn = $this->CI->ShowMsg('<strong>Warning!</strong>Function:' . $kpi['type'] . '<br/>' . $kpi['title'] . '<br/>resourceId not defined. ', 'alert');
         }

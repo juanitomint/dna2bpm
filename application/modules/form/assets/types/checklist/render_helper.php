@@ -3,6 +3,8 @@
 function edit_checklist($frame, $value) {
     $CI = & get_instance();
     $retstr = '';
+        return '------ checklist';
+        
     $ops = array();
     $disabled = '';
     $required = '';
@@ -36,7 +38,7 @@ function edit_checklist($frame, $value) {
     if (isset($frame['required']))
         $required = ($frame['required']) ? getRequiredStr($frame['type']) : null;
     */    
-    $option = $CI->mongo->db->options->findOne(array('idop' => $frame['idop']));
+    $option = $CI->mongowrapper->db->options->findOne(array('idop' => $frame['idop']));
     //prepare options array
     if (isset($option['fromContainer'])) { // if gets data from internal db
         $option['data'] = getOpsFromContainer($option);
@@ -113,7 +115,7 @@ function view_checklist($frame, $value) {
     $retstr = '';
     $ops = array();
     $value = (array) $value;
-    $option = $CI->mongo->db->options->findOne(array('idop' => $frame['idop']));
+    $option = $CI->mongowrapper->db->options->findOne(array('idop' => $frame['idop']));
     //prepare options array
     if (isset($option['fromContainer'])) { // if gets data from internal db
         $option['data'] = getOpsFromContainer($option);

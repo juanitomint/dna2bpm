@@ -2,6 +2,8 @@
 
 function edit_subformparent($frame, $value) {
     $CI = & get_instance();
+    return '------ subformparent';
+        
     $retstr = '';
     $id = $CI->dna_id;
     $form = $CI->app->get_object($frame['object']);

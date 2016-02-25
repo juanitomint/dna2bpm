@@ -12,7 +12,7 @@ class Rbac extends CI_Model {
     }
 
     function get_repository($query = array()) {
-        //returns a mongo cursor with matching id's
+        //returns a  cursor with matching id's
        $rs = $this->db
         ->where($query)
         ->get($this->permRepo)

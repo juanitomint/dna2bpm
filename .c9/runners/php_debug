@@ -1,0 +1,15 @@
+// Create a custom Cloud9 runner - similar to the Sublime build system
+// For more information see https://docs.c9.io/custom_runners.html
+{
+    "cmd": [
+        "read"
+    ],
+    "selector": "^.*\\.(php)$",
+    "debugger": "xdebug",
+    "debugport": 9000,
+    "env": {
+    "XDEBUG_CONFIG": "xdebug.remote_enable=1 idekey=cloud9ide remote_host=localhost remote_port=9000 remote_mode=req"
+    },
+    "info": "PHP with Local Debugger\n press any Key to end debug session",
+    "working_dir": "$project_path"
+}

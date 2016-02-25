@@ -168,11 +168,13 @@ class Admin extends MX_Controller {
         $debug = false;
         //---get models
         $order = 'data.properties.name';
-        $models = $this->bpm->get_models();
+        $models = $this->bpm->get_models(array(),array('idwf','folder','data'));
         foreach ($models as $bpm) {
+            if($bpm){
             $folder = (property_exists($bpm, 'folder')) ? $bpm->folder . '/' : '';
             $name = (isset($bpm->data['properties']['name'])) ? $bpm->data['properties']['name'] : "no name";
             $m_arr[$folder . $bpm->idwf] = $name . ' [' . $bpm->idwf . ']';
+            }
         }
         $tree = $this->explodeTree($m_arr, $delimiter = '/');
 

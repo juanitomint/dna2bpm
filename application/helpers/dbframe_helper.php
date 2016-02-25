@@ -3,7 +3,7 @@
 //---End Class
 class dbframe {
 
-    static $template;
+    public $template;
 
     public function __construct() {
         $args = func_get_args();
