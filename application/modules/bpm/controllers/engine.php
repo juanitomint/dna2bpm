@@ -120,7 +120,7 @@ class Engine extends MX_Controller {
             $mycase['data'] = $data;
             //----try to generate caseid from parent
             $mycase['id']=($this->bpm->get_case($parent['case'],$idwf))?$mycase['id']:$this->bpm->gen_case($idwf,$parent['case']);
-            
+
             $this->bpm->save_case($mycase);
             /*
              * UPDATE PARENT
@@ -285,9 +285,9 @@ class Engine extends MX_Controller {
             //----remove waiting from filter after 1st run
             $filter['status']='pending';
             $open = $this->bpm->get_tokens_byFilter($filter);
-            
+
             }
-            
+
             $this->bpm->update_case_token_status($idwf, $case);
             //----if some helper want to break then break
 //            if ($this->break_on_next) {
@@ -338,6 +338,47 @@ class Engine extends MX_Controller {
             if ($resourceId) {
                 $shape = $this->bpm->get_shape($resourceId, $wf);
                 if ($shape) {
+                //load data
+                // //////////////////////////////////////////////////////////////////////
+                // /////////////////// Read From DataObjects /////////////////  //////////
+                // //////////////////////////////////////////////////////////////////////
+                //-get Inbound shapes
+                $previous = $this->bpm->get_previous($resourceId, $wf);
+
+                $post=$this->input->post();
+                foreach ($previous as $dataShape) {
+                    if ($dataShape->stencil->id == 'DataObject') {
+                    // echo $shape->properties->name;
+                    // ---LOAD DATA CONNECTORS
+                    // var_dump($dataShape->properties->input_output);exit;
+                        if($dataShape->properties->input_output<>'Output'){
+                        if ($dataShape->properties->connector) {
+                        $modelname = 'bpm/connectors/' . $dataShape->properties->connector . '_connector';
+                        $this->load->model($modelname);
+                        // ---END LOAD DATA CONNECTORS
+                        $strStor = $dataShape->properties->name;
+                        $conn = $dataShape->properties->connector . '_connector';
+                        if ($debug) {
+                            var_dump('$strStor', $strStor, $resource);
+                            echo '<hr/>';
+                        }
+                        // $this->$strStor= bindArrayToObject($this->app->getall($item,$container));
+                        if(method_exists($this->$conn,'save_data')){
+                            $this->$conn->save_data($idwf,$case,$dataShape,$post);
+                        }
+                        // ----4 debug
+                        if ($debug) {
+                            echo "<h3>Data Store:$strStor</h3>";
+                            var_dump($this->data->$strStor);
+                        }
+                    }
+                    }
+                    }
+                } // --end foreach
+
+                // //////////////////////////////////////////////////////////////////////
+                    //---process data objects
+
                     //---save postdata in case
                     if (property_exists($shape->properties, 'datainputset')) {
                         if (property_exists($shape->properties->datainputset, 'items')) {
@@ -463,6 +504,7 @@ class Engine extends MX_Controller {
         //---prepare additions arrays
         $this->add_js=array();
         $this->add_css=array();
+        $this->add_globals=array();
         // ----prepare renderData
         $renderData = array();
         $renderData ['lang'] = $this->lang->language;
@@ -482,6 +524,7 @@ class Engine extends MX_Controller {
         $case = $this->bpm->get_case($idcase, $idwf);
         //---set inititaror
         $renderData['Initiator'] = (array) $this->user->get_user_safe($case['iduser']);
+        $renderData['user']=$renderData['Initiator'];
         // ---get token
         $token = $this->bpm->get_token($idwf, $idcase, $resourceId);
 
@@ -504,7 +547,6 @@ class Engine extends MX_Controller {
         //-Prepare Documents
         foreach ($previous as $dataShape) {
             if ($dataShape->stencil->id == 'DataObject') {
-
                     $do = $this->bindObjectToArray($dataShape);
                     $strStor = $dataShape->properties->name;
                     $conn = $dataShape->properties->connector . '_connector';
@@ -577,6 +619,7 @@ class Engine extends MX_Controller {
                 'idcase' => $idcase,
                 'resourceId' => $resourceId
             );
+            $renderData ['global_js']+=$this->add_globals;
             // var_dump($renderData);exit;
             $this->ui->compose('bpm/manual_task', 'bpm/bootstrap.ui.php', $renderData);
         }
@@ -736,7 +779,7 @@ class Engine extends MX_Controller {
                         $conn = $value ['connector'] . '_connector';
                         if ($debug)
                             echo "Calling Connector: $conn<br/>";
-                        $this->load->model("bpm/connectors/$conn");    
+                        $this->load->model("bpm/connectors/$conn");
                         if(method_exists($this->$conn,'get_data'))
                         $this->data->$key = $this->$conn->get_data($value);
                     } else {

@@ -3,6 +3,7 @@
 if (!defined("BASEPATH"))
     exit("No direct script access allowed");
 $lang["thisLang"] = "Español";
+$lang["thisLangCode"] = "es";
 $lang['dateFmt'] = 'd/m/Y';
 $lang['dateFmt_JS'] = 'd MM yy';
 $lang['dateTimeFmt'] = 'd/m/Y H:i';

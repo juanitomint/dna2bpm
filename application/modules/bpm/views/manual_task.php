@@ -10,10 +10,7 @@
             <div class="modal-body">
                 <p>{task_documentation}</p>
                 {DataObject_Input}
-                <div class="file-input row" resourceId="{resourceId}">
-                    
                     {ui}
-                </div>
                 {/DataObject_Input}
                 {DataInputSet}
                     <div class="form-group">

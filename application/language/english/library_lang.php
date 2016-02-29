@@ -6,6 +6,7 @@ $lang['dateFmt'] = 'm/d/Y';
 $lang['dateFmt_JS'] = 'd MM yy';
 $lang['dateTimeFmt'] = 'm/d/Y H:i';
 $lang['thisLang'] = 'English';
+$lang["thisLangCode"] = "en";
 $lang['addNew'] = 'add new';
 $lang["remove"] = "remove";
 $lang['search'] = 'search';
