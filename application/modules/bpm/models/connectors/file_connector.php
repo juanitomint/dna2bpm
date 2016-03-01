@@ -34,20 +34,20 @@ class File_connector extends CI_Model {
         if($shape->properties->input_output=='Input'){
             $collection = $shape->properties->iscollection;
             $dirinfo['dropClass'] = ($collection) ? 'multipleDrop' : 'singleDrop';
-         
-             
+
+
         } else{
-             
-             
-        }
-        $str = $this->parser->parse('bpm/file_connector', $dirinfo, true);
+
+
+        }echo 1;
+        $str = $this->parser->parse('../models/connectors/file_connector_view.php', $dirinfo, true);
         return $str;
     }
-    
+
     function delete_file($resource, $shape, $wf){
         $path = 'images/user_files/' . $wf->idwf . '/' . $wf->case . '/' . str_replace("\n",'_', $shape->properties->name);
-        
-    } 
+
+    }
 }
 /*
 ok
