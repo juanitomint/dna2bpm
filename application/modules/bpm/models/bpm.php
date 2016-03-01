@@ -1135,7 +1135,6 @@ class Bpm extends CI_Model {
         if ($idcase)
             $query['case'] = $idcase;
         $this->db->debug=true;
-        $this->db->where($query);
         return $this->db->get('tokens')->result_array();
     }
 
