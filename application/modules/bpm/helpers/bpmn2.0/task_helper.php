@@ -138,7 +138,7 @@ function run_Task($shape, $wf, $CI) {
             if ($debug)
                 echo "USER<br/>";
             //----ASSIGN TASK to USER / GROUP
-            $CI->bpm->assign($shape, $wf);
+            $CI->bpm->assign($shape, $wf,$case);
             //----Get token data
             if ($CI->break_on_next) {
                 redirect($CI->base_url . $CI->config->item('default_controller'));

@@ -1673,7 +1673,7 @@ class Bpm extends CI_Model {
             /*
              * TRY GET Lane Resources
              */
-            $resources = $this->get_resources($parent, $wf);
+            $resources = $this->get_resources($parent, $wf,$case);
             if ($debug) {
                 echo "Get Resources result:<br/>";
                 var_dump($resources);
@@ -1817,7 +1817,7 @@ class Bpm extends CI_Model {
 
     function get_resources($shape, $wf, $case = null) {
         $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
-//        $debug = true;
+        // $debug = true;
         $rtn = array();
         if (isset($shape->properties->resources->items)) {
             if ($debug)
