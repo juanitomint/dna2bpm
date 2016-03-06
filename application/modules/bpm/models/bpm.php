@@ -68,7 +68,7 @@ class Bpm extends CI_Model {
                         $conn = $value['connector'] . '_connector';
                         if ($debug)
                             echo "Calling Connector: $conn<br/>";
-                         $this->load->model("bpm/connectors/$conn");    
+                         $this->load->model("bpm/connectors/$conn");
                         if(method_exists($this->$conn,'get_data'))
                             $data[$key] = $this->$conn->get_data($value);
                     } else {
@@ -247,14 +247,14 @@ class Bpm extends CI_Model {
         $all_tokens = $this->get_token_stats($filter);
         return $all_tokens;
     }
-    
+
     function get_token_stats($filter){
         $query=array(
             array('$match'=>$filter),
             array (
-                '$group' => 
+                '$group' =>
                 array (
-                  '_id' => 
+                  '_id' =>
                   array (
                     'status' => '$status',
                     'resourceId' => '$resourceId',
@@ -262,11 +262,11 @@ class Bpm extends CI_Model {
                   'qtty' =>array ('$sum' => 1),
                   'title' =>array ('$first' =>'$title'),
                   'type' =>array ('$first' =>'$type'),
-                  
+
                 ),
             ),
             array (
-                '$project' => 
+                '$project' =>
                 array (
                   'status' => '$_id.status',
                   'resourceId' => '$_id.resourceId',
@@ -286,7 +286,7 @@ class Bpm extends CI_Model {
                     'type' =>array ('$first' =>'$type'),
                     'resourceId' =>array ('$first' =>'$resourceId'),
                     'status' => array (
-                        '$addToSet' => 
+                        '$addToSet' =>
                         array (
                             'status' => '$status',
                             'qtty' => '$qtty',
@@ -295,7 +295,7 @@ class Bpm extends CI_Model {
                 ),
             ),
             array (
-                '$project' => 
+                '$project' =>
                 array (
                   'resourceId' => 1,
                   'qtty' => 1,
@@ -317,11 +317,11 @@ class Bpm extends CI_Model {
                 $task['status']=$t;
             }
              return $rs['result'];
-            
+
         }
-        
+
     }
-    
+
 
     function get_cases($user = null, $offset = 0, $limit = null, $filter_status = array()) {
         $data = array(
@@ -599,7 +599,7 @@ class Bpm extends CI_Model {
         $result = $this->db
                 ->where($query)
                 ->order_by(array(
-                    // '_id' => true, 
+                    // '_id' => true,
                     'checkdate'=>true
                     ))
                 ->get('tokens')
@@ -690,7 +690,6 @@ class Bpm extends CI_Model {
         $query = array(
             '_id' =>new MongoId( $id),
         );
-        $this->db->debug=true;
         $rs=$this->db->get_where('tokens',$query)->result_array();
 
         if(count($rs))
@@ -1109,7 +1108,7 @@ class Bpm extends CI_Model {
         return $rs->result_array();
     }
 
-    function get_tasks($iduser, $idcase = null) {
+    function get_tasks($iduser, $idcase = null,$idwf=null,$tasktype=null) {
         //@todo refactor for other db engines
         $user = $this->user->get_user((int) $iduser);
         $user_groups = $user->group;
@@ -1126,9 +1125,16 @@ class Bpm extends CI_Model {
                 array('idgroup' => array('$in' => $user_groups)) //---tasks that are to my group
             )
         );
+
+        if($tasktype)
+            $query['tasktype']=$tasktype;
+
+        if($idwf)
+            $query['idwf']=$idwf;
+
         if ($idcase)
-            $query['idcase'] = $idcase;
-        $this->db->where($query);
+            $query['case'] = $idcase;
+        $this->db->where($query);    
         return $this->db->get('tokens')->result_array();
     }
 
@@ -1667,7 +1673,7 @@ class Bpm extends CI_Model {
             /*
              * TRY GET Lane Resources
              */
-            $resources = $this->get_resources($parent, $wf);
+            $resources = $this->get_resources($parent, $wf,$case);
             if ($debug) {
                 echo "Get Resources result:<br/>";
                 var_dump($resources);
@@ -1750,7 +1756,7 @@ class Bpm extends CI_Model {
         //---if assignment not set either by group or explicit assignment then assign task to "Initiator"
         if (!isset($data['assign']) or ! count($data['assign'])) {
             if($debug)echo "No assign yet!<br>";
-            
+
             if (isset($data['idgroup'])) {
                 if (count($data['idgroup'])) {
                     $initiator = $this->user->get_user($this->user->Initiator);
@@ -1811,7 +1817,7 @@ class Bpm extends CI_Model {
 
     function get_resources($shape, $wf, $case = null) {
         $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
-//        $debug = true;
+        // $debug = true;
         $rtn = array();
         if (isset($shape->properties->resources->items)) {
             if ($debug)

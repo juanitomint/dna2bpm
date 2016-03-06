@@ -138,7 +138,7 @@ function run_Task($shape, $wf, $CI) {
             if ($debug)
                 echo "USER<br/>";
             //----ASSIGN TASK to USER / GROUP
-            $CI->bpm->assign($shape, $wf);
+            $CI->bpm->assign($shape, $wf,$case);
             //----Get token data
             if ($CI->break_on_next) {
                 redirect($CI->base_url . $CI->config->item('default_controller'));
@@ -169,13 +169,19 @@ function run_Task($shape, $wf, $CI) {
             }
             break;
         case 'Manual':
+            //----ASSIGN TASK to USER / GROUP
+            $CI->bpm->assign($shape, $wf);
+            //----Get token data
+            if ($CI->break_on_next) {
+                redirect($CI->base_url . $CI->config->item('default_controller'));
+            }
             //---change status to manual (stops execution and wait 4 manual input)
             $CI->bpm->set_token($wf->idwf, $wf->case, $shape->resourceId, $shape->stencil->id, 'user', $data);
             if ($CI->break_on_next) {
                 redirect($CI->base_url . $CI->config->item('default_controller'));
             }
             break;
-        
+
         case 'Script':
 //----run the script
             if ($CI->break_on_next) {
@@ -251,7 +257,7 @@ function run_Task($shape, $wf, $CI) {
                     $data['from'] = $CI->user->get_user_safe($resource['Performer']);
                     $user = $CI->bpm->get_user(array_pop($resource['Performer']));
                 }
-            } 
+            }
             //---Get FROM
             $user = $CI->user->get_user_safe($msg['from']);
             $data['user'] = (array) $user;
@@ -270,8 +276,8 @@ function run_Task($shape, $wf, $CI) {
                 if ($debug)
                     echo "Sending msg to user:$to_user<br/>";
                 switch($shape->properties->rendering){
-                    
-                     
+
+
                      case 'ui':
                          //---route msg to user interface subsystem
                           $CI->bpm->movenext($shape, $wf);
@@ -279,7 +285,7 @@ function run_Task($shape, $wf, $CI) {
                          break;
                      case 'alert':
                          //---route msg to alert subsystem
-                         
+
                          break;
                     default:
                      $CI->msg->send($msg, $to_user);
@@ -304,7 +310,7 @@ function run_Task($shape, $wf, $CI) {
             //---TODO
             break;
         case 'Service':
-            //---TODO 
+            //---TODO
             break;
 
         default://---default acction
