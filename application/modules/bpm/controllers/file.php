@@ -32,6 +32,7 @@ class File extends MX_Controller {
         }
         $wf = $this->bpm->bindArrayToObject($mywf ['data']);
         $shape = $this->bpm->get_shape($resourceId, $wf);
+        $out['resourceId']=$resourceId;
         $out['path'] = 'images/user_files/' . $idwf . '/' . $idcase . '/' . str_replace("\n", '_', $shape->properties->name);
         $out = array_merge((array) $shape->properties, $out);
 //        $out['dname']=$this->input->post('dname');

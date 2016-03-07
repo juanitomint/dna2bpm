@@ -31,6 +31,7 @@ class File_connector extends CI_Model {
             }, $info);
         }
         $dirinfo['properties']=(array)$shape->properties;
+        $dirinfo['data_resourceId']=$shape->resourceId;
         if($shape->properties->input_output=='Input'){
             $collection = $shape->properties->iscollection;
             $dirinfo['dropClass'] = ($collection) ? 'multipleDrop' : 'singleDrop';

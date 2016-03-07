@@ -198,6 +198,7 @@ class Task extends MX_Controller {
         }
     }
     function connector($connector,$method,$idwf,$idcase,$resourceId){
+        //---check that the resource exists
         //----load model
         $modelname = 'bpm/connectors/' .$connector . '_connector';
         $this->load->model($modelname);
