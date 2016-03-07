@@ -237,7 +237,7 @@ class Bpm extends CI_Model {
         return $rs->result_array();
     }
 
-    function get_cases_byFilter_count($filter) {
+    function get_cases_byFilter_count($filter, $fields = array(), $sort = array()) {
         $this->db->where($filter);
         return $this->db->count_all_results('case');
     }
