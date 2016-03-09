@@ -105,7 +105,9 @@ class Msg extends CI_Model {
     }
 
     function send_mail($msg, $user) {
-        
+    $debug=false;    
+    // $debug=true;    
+    if($debug) echo '<pre>';
         if (property_exists($user,'email')) {
             $this->load->library('phpmailer/phpmailer');
             $this->load->config('email');
@@ -113,9 +115,18 @@ class Msg extends CI_Model {
             $mail = $this->phpmailer;
             $mail->IsSMTP(); // telling the class to use SMTP
             $mail->Host = $this->config->item('smtp_host'); // SMTP server
-            $mail->SMTPDebug = 0;                     // enables SMTP debug information (for testing)
-// 1 = errors and messages
-// 2 = messages only
+            // enables SMTP debug information (for testing)
+            // 1 = errors and messages
+            // 2 = messages only
+            if($debug){
+            $mail->SMTPDebug = 1; 
+                
+            }
+            //---ReplyTo
+            $sender=$user = $this->user->get_user($msg['from']);
+            if($sender->email<>''){
+                $mail->AddReplyTo($sender->email,$sender->name.' '.$sender->lastname);
+            }
             $mail->SetFrom($this->config->item('smtp_user'), $this->config->item('smtp_user_name'));
             $mail->Subject = utf8_decode($this->config->item('mail_suffix').' ' . $msg['subject']);
             $mail->AltBody = "To view the message, please use an HTML compatible email viewer!"; // optional, comment out and test
@@ -128,6 +139,11 @@ class Msg extends CI_Model {
 //        $mail->AddAttachment("images/phpmailer_mini.gif"); // attachment
 
             if (!$mail->Send()) {
+                if($debug) {
+                    echo '/<pre>';
+                    var_dump($this->config->item('smtp_user'), $this->config->item('smtp_user_name'),$mail->ErrorInfo);
+                    exit;
+                }
                 return "error: " . $mail->ErrorInfo;
             } else {
                 return true;
