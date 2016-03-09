@@ -1,7 +1,7 @@
 <div style="padding-top: 30px;" class="data-header">    
 <h4>
-    <i class="fa fa-caret-right"></i> 
-    <i class="fa fa-files"></i> 
+    <!--<i class="fa fa-caret-right"></i> -->
+    <i class="fa fa-file"></i> 
     {properties name}
 </h4>
     
@@ -9,6 +9,7 @@
 <p>{properties documentation}</p>
 <!-- Files Block -->
 <!--<h5>{lang drop_here}</h5>-->
+<div class="file-input" resourceId="{data_resourceId}">
 {if {input_output} == 'Input' }
   <div style=" height: 115px; border-width: 2px; margin-bottom: 20px; color: #aaa; border-style: dashed;
       border-color: #ccc; line-height: 15px; text-align: center" class="dropfile {dropClass}" id="drop-zone">
@@ -21,7 +22,6 @@
     </span>
   </div>
 {/if}    
-<div>
        <div class="list-group">
 {files}
            <div class="alert alert-success alert-dismissible" role="alert">
@@ -30,8 +30,6 @@
             </div>      
 {/files}
         </div>
-    
-        
+</div>    
    
-</div>
 <!-- END Files Block -->

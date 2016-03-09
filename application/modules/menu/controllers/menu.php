@@ -316,8 +316,8 @@ class Menu extends MX_Controller {
         return $returnArr;
     }
 
-    function test_menu($repoId) {
-        echo $this->get_menu($repoId);
+    function test_menu($repoId=0) {
+        echo $this->get_menu($repoId,'',!$this->user->isAdmin());
     }
 
     
