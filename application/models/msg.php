@@ -125,7 +125,9 @@ class Msg extends CI_Model {
             //---ReplyTo
             $sender=$user = $this->user->get_user($msg['from']);
             if($sender->email<>''){
-                $mail->AddReplyTo($sender->email,$sender->name.' '.$sender->lastname);
+             $sname=(property_exists($sender,'name'))?$sender->name:'???';
+             $slastname=(property_exists($sender,'lastname'))?$sender->lastname:'???';
+                $mail->AddReplyTo($sender->email,$sname.' '.$slastname);
             }
             $mail->SetFrom($this->config->item('smtp_user'), $this->config->item('smtp_user_name'));
             $mail->Subject = utf8_decode($this->config->item('mail_suffix').' ' . $msg['subject']);

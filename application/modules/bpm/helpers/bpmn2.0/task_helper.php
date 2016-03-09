@@ -251,11 +251,10 @@ function run_Task($shape, $wf, $CI) {
 //            exit;
             //---process inbox--------------
             //---Override FROM if Performer is set
-            if (isset($resource['Performer'])) {
-                if (count($resource['Performer'])) {
-                    $msg['from'] = array_pop($resource['Performer']);
-                    $data['from'] = $CI->user->get_user_safe($resource['Performer']);
-                    $user = $CI->bpm->get_user(array_pop($resource['Performer']));
+            if (isset($resources['Performer'])) {
+                if (count($resources['Performer'])) {
+                    $msg['from'] = array_pop($resources['Performer']);
+                    $data['from'] = (array)$CI->user->get_user_safe($msg['from']);
                 }
             }
             //---Get FROM
