@@ -112,7 +112,7 @@ class Msg extends CI_Model {
             $this->load->library('phpmailer/phpmailer');
             $this->load->config('email');
             $ok = false;
-            $mail = $this->phpmailer;
+            $mail = new $this->phpmailer;
             $mail->IsSMTP(); // telling the class to use SMTP
             $mail->Host = $this->config->item('smtp_host'); // SMTP server
             // enables SMTP debug information (for testing)
