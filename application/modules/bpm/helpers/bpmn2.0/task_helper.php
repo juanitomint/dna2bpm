@@ -253,13 +253,14 @@ function run_Task($shape, $wf, $CI) {
             //---Override FROM if Performer is set
             if (isset($resources['Performer'])) {
                 if (count($resources['Performer'])) {
-                    $msg['from'] = array_pop($resources['Performer']);
+                    $msg['from'] = $resources['Performer'][0];
                     $data['from'] = (array)$CI->user->get_user_safe($msg['from']);
                 }
             }
             //---Get FROM
             $user = $CI->user->get_user_safe($msg['from']);
             $data['user'] = (array) $user;
+            
                 if ($debug){
                     echo "Parsing Subject:<br/>";
                     var_dump($data);

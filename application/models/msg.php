@@ -84,7 +84,7 @@ class Msg extends CI_Model {
 //---set msg timestamp
         $msg['checkdate'] = date('Y-m-d H:i:s');
         $user = $this->user->get_user($to);
-
+        
 //---TODO : Check if user want's to recive email copies
         if (isset($msg['to']) and isset($msg['from'])) {
             $this->db->insert('msg', $msg); 
@@ -123,7 +123,7 @@ class Msg extends CI_Model {
                 
             }
             //---ReplyTo
-            $sender=$user = $this->user->get_user($msg['from']);
+            $sender= $this->user->get_user($msg['from']);
             if($sender->email<>''){
              $sname=(property_exists($sender,'name'))?$sender->name:'???';
              $slastname=(property_exists($sender,'lastname'))?$sender->lastname:'???';
