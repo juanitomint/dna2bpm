@@ -39,7 +39,6 @@ class Ssl extends MX_Controller {
     }
     
     
-
      public function list_my_keys(){
          $data['keys']=$this->ssl_model->get_my_keys();
          return $this->parser->parse('my_keys',$data,true);
@@ -55,7 +54,7 @@ class Ssl extends MX_Controller {
          $key['fingerprint']=md5($key['public_key']);
          $res=$this->ssl_model->add_key($key);
          $list=$this->list_my_keys();
-         echo json_encode(array('status'=>$res,'fingerprint'=>$key['fingerprint'],'list'=>$list));
+         echo json_encode(array('status'=>$res['status'],'error'=>$res['error'],'fingerprint'=>$key['fingerprint'],'list'=>$list));
 
     }  
     
@@ -76,6 +75,12 @@ class Ssl extends MX_Controller {
     public function ajax_add_key(){
         echo $this->parser->parse('add_key',array(),true);
     }
+    
+    // Encrypt form
+    public function ajax_encrypt(){
+        echo $this->parser->parse('encrypt',array(),true);
+    }
+    
     
     
     
@@ -106,23 +111,32 @@ class Ssl extends MX_Controller {
     }   
    
     //== Encryption (Public Key)
-     public function encrypt($data,$pubkey){
-        openssl_public_encrypt($data, $encrypted, $pubKey);
+     public function encrypt($data=null,$fingerprint=null){
+         
+        if(is_null($data) || is_null($fingerprint))return false;
+        
+        $key=$this->ssl_model->get_key($fingerprint);
+        openssl_public_encrypt($data, $encrypted, $key->public_key);
         return $encrypted;
      }
      
-    //== Decryption (Private Key)
-     public function decrypt($data,$privkey){
-        openssl_private_decrypt($encrypted, $decrypted, $privKey);
-        return $decrypted;
+     public function wrapper_encrypt(){
+
      }
+     
+    //== Decryption (Private Key)
+    //  public function decrypt($privKey=""){
+         
+    //     $encrypted=$this->encrypt();
+
+    //      openssl_private_decrypt($encrypted, $decrypted, $privKey);
+    //     //return $decrypted;
+    //     var_dump($decrypted);
+    //  }
     
   
 
-    function test(){
-           $key=$this->input->post();
-       var_dump($key['keys']);
-    }
+
     
     
     

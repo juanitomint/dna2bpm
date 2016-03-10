@@ -6,11 +6,11 @@
     "js": [{"{base_url}ssl/assets/jscript/app.js": "ssl-JS"}],
     "css": [],
     "zones": [{"tiles": []},
-	{"col1": [{
-                "title": "Add Keys",
+	{"col1": [            {
+                "title": "Encrypt",
                 "module": "ssl",
                 "controller": "ssl",
-                "function": "ajax_add_key",
+                "function": "ajax_encrypt",
                 "box_icon":"",
                 "box_class":["box box-primary"],
                 "box_buttons":["remove","collapse"],
@@ -19,7 +19,18 @@
         ]
 
     },{
-    "col2": [{
+    "col2": [
+        {
+                "title": "Add Keys",
+                "module": "ssl",
+                "controller": "ssl",
+                "function": "ajax_add_key",
+                "box_icon":"",
+                "box_class":["box box-primary"],
+                "box_buttons":["remove","collapse"],
+                "box_collapsed":"0"
+            },
+        {
                 "title": "My Keys",
                 "module": "ssl",
                 "controller": "ssl",

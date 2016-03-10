@@ -13,11 +13,9 @@
             <textarea class="form-control" name="public_key" rows="6" placeholder="Public Key"></textarea>
         </div>
         
-                                
-        <div class="callout callout-info" id="fingerprint" style="display:none">
-                <h4>Fingerprint generated</h4>
-                <p></p>
-        </div>
+         <!-- area for msgs -->                       
+        <div id="dummy1"></div>
+        
         <!-- Send -->                    
         <div class="input-group-btn">
             <button  type="submit" class="btn btn-default btn-flat btn-block"><i class="fa fa-floppy-o"></i> Save Key</button>

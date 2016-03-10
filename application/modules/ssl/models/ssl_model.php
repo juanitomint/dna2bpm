@@ -20,7 +20,7 @@ class ssl_model extends CI_Model {
             return array('status'=>false,'error'=>'fingerprint in use');
         }else{
             $rs=$this->db->insert($this->container, $key); 
-            return array('status'=>$rs);
+            return array('status'=>$rs,'error'=>'');
         }
     
     }
@@ -40,5 +40,13 @@ class ssl_model extends CI_Model {
         $query=array('idu'=>$this->idu,'fingerprint'=>$fingerprint);
         return $this->db->where($query)->delete($this->container);
     }  
+    
+    //=== key by fingerprint
+     public function get_key($fingerprint){
+        $query=array('fingerprint'=>$fingerprint);
+        return $this->db->where($query)->get($this->container)->row();
+
+    }   
+    
 
 }
