@@ -84,7 +84,7 @@ class Msg extends CI_Model {
 //---set msg timestamp
         $msg['checkdate'] = date('Y-m-d H:i:s');
         $user = $this->user->get_user($to);
-
+        
 //---TODO : Check if user want's to recive email copies
         if (isset($msg['to']) and isset($msg['from'])) {
             $this->db->insert('msg', $msg); 
@@ -105,17 +105,30 @@ class Msg extends CI_Model {
     }
 
     function send_mail($msg, $user) {
-        
+    $debug=false;    
+    // $debug=true;    
+    if($debug) echo '<pre>';
         if (property_exists($user,'email')) {
             $this->load->library('phpmailer/phpmailer');
             $this->load->config('email');
             $ok = false;
-            $mail = $this->phpmailer;
+            $mail = new $this->phpmailer;
             $mail->IsSMTP(); // telling the class to use SMTP
             $mail->Host = $this->config->item('smtp_host'); // SMTP server
-            $mail->SMTPDebug = 0;                     // enables SMTP debug information (for testing)
-// 1 = errors and messages
-// 2 = messages only
+            // enables SMTP debug information (for testing)
+            // 1 = errors and messages
+            // 2 = messages only
+            if($debug){
+            $mail->SMTPDebug = 1; 
+                
+            }
+            //---ReplyTo
+            $sender= $this->user->get_user($msg['from']);
+            if($sender->email<>''){
+             $sname=(property_exists($sender,'name'))?$sender->name:'???';
+             $slastname=(property_exists($sender,'lastname'))?$sender->lastname:'???';
+                $mail->AddReplyTo($sender->email,$sname.' '.$slastname);
+            }
             $mail->SetFrom($this->config->item('smtp_user'), $this->config->item('smtp_user_name'));
             $mail->Subject = utf8_decode($this->config->item('mail_suffix').' ' . $msg['subject']);
             $mail->AltBody = "To view the message, please use an HTML compatible email viewer!"; // optional, comment out and test
@@ -128,6 +141,11 @@ class Msg extends CI_Model {
 //        $mail->AddAttachment("images/phpmailer_mini.gif"); // attachment
 
             if (!$mail->Send()) {
+                if($debug) {
+                    echo '/<pre>';
+                    var_dump($this->config->item('smtp_user'), $this->config->item('smtp_user_name'),$mail->ErrorInfo);
+                    exit;
+                }
                 return "error: " . $mail->ErrorInfo;
             } else {
                 return true;

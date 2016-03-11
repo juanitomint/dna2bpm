@@ -68,9 +68,13 @@ $(document).ready(function () {
 //            // file is the actual file of the index
 //            // len = total files user dropped
 //        },
-//        uploadFinished: function (i, file, response, time) {
-//            // response is the data you got back from server in JSON format.
-//        },
+        uploadFinished: function (i, file, response, time) {
+            //response is the data you got back from server in JSON format.
+            //console.log('uploadFinished',i, file, response, time);
+            var append='<div class="alert alert-success alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><a style="border-radius: 0px;" href="'+globals.base_url+response.path+'/'+file.name+'" target="_blank">'+file.name+'</a></div>';
+            var obj=$("[resourceID="+response.resourceId+"] .dropfile");
+            obj.after(append);
+        },
 //        progressUpdated: function (i, file, progress) {
 //            // this function is used for large files and updates intermittently
 //            // progress is the integer value of file being uploaded percentage to completion
@@ -97,7 +101,7 @@ $(document).ready(function () {
             // file is a file object
             // i is the file index
             // call done() to start the upload
-            console.log(this.data);
+            //console.log(this.data);
             done();
         },
 //        afterAll: function () {
@@ -144,7 +148,7 @@ $(document).ready(function () {
         allowedfiletypes: ['image/jpeg', 'image/png', 'image/gif'], // filetypes allowed by Content-Type.  Empty array means no restrictions
         allowedfileextensions: ['.jpg', '.jpeg', '.png', '.gif'], // file extensions allowed. Empty array means no restrictions
         maxfiles: 20,
-        maxfilesize: 20, // max file size in MBs
+        maxfilesize: 8, // max file size in MBs
         dragOver: function () {
             // user dragging files over #dropzone
         },

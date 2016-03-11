@@ -133,13 +133,16 @@ class test extends MX_Controller {
             }
         }
         $token['assign'] = (isset($token['assign'])) ? $token['assign'] : array($this->user->Initiator);
+        
         $to = (isset($resources['assign'])) ? array_merge($token['assign'], $resources['assign']) : $token['assign'];
         $to = array_unique(array_filter($to));
         foreach ($to as $iduser) {
             $user = $this->user->get_user_safe($iduser);
-            $msg['to'][] = $user;
-//            var_dump($user);exit;
-            $renderData['to'][] = $user->name . ' ' . $user->lastname;
+            if($user){
+                $msg['to'][] = $user;
+    //            var_dump($user);exit;
+                $renderData['to'][] = $user->name . ' ' . $user->lastname;
+            }
         }
 //---Get FROM
         $user = $this->user->get_user_safe($msg['from']);

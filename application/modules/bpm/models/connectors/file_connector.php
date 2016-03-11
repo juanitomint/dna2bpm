@@ -16,7 +16,7 @@ class File_connector extends CI_Model {
         return $dirinfo;
     }
 
-    function get_ui($resource, $shape, $wf) {
+    function get_ui($resource, $shape, $wf,&$CI) {
         $this->load->library('parser');
         $path = 'images/user_files/' . $wf->idwf . '/' . $wf->case . '/' . str_replace("\n",'_', $shape->properties->name);
         $dirinfo = array();
@@ -31,23 +31,30 @@ class File_connector extends CI_Model {
             }, $info);
         }
         $dirinfo['properties']=(array)$shape->properties;
+        $dirinfo['data_resourceId']=$shape->resourceId;
         if($shape->properties->input_output=='Input'){
             $collection = $shape->properties->iscollection;
             $dirinfo['dropClass'] = ($collection) ? 'multipleDrop' : 'singleDrop';
-         
-             
+
+
         } else{
              
              
         }
-        $str = $this->parser->parse('bpm/file_connector', $dirinfo, true);
+        //---extra js
+        $CI->add_js[$CI->base_url .'bpm/assets/jscript/jquery-filedrop-master/jquery.filedrop.js']='File_connector File Drop';
+        $CI->add_js[$CI->base_url .'bpm/assets/jscript/dropzone.js']='File_connector Dropzone';
+        //----extra css
+        $CI->add_css[$CI->base_url .'bpm/assets/css/file_connector.css']='File_connector CSS';
+        
+         $str = $this->parser->parse('../models/connectors/file_connector_view.php', $dirinfo, true);
         return $str;
     }
-    
+
     function delete_file($resource, $shape, $wf){
         $path = 'images/user_files/' . $wf->idwf . '/' . $wf->case . '/' . str_replace("\n",'_', $shape->properties->name);
-        
-    } 
+
+    }
 }
 /*
 ok
