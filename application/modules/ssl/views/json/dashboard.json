@@ -10,7 +10,7 @@
                 "title": "Encrypt",
                 "module": "ssl",
                 "controller": "ssl",
-                "function": "ajax_encrypt",
+                "function": "encrypt_form",
                 "box_icon":"",
                 "box_class":["box box-primary"],
                 "box_buttons":["remove","collapse"],
