@@ -69,6 +69,23 @@ console.log('----- SSL');
     });
     
     
+    //== Verify MSG
+    $(document).on('submit','#form_verify',function(e){
+        e.preventDefault();
+        var url=globals['base_url']+"ssl/wrapper_verify";
+        var mytarget=$(this).parent();
+       
+       
+         var fingerprint=$(this).find('[name="fingerprint"]').val()
+         var plain_text=$(this).find('[name="plain_text"]').val();
+         var signature=$(this).find('[name="signature"]').val();
+        $.post(url,{fingerprint:fingerprint,plain_text:plain_text,signature:signature},function(resp){
+          mytarget.after(resp);
+         // console.log(resp);
+         // encrypted_text.val(resp);
+        });
+    });
+    
 
 //==  ready
 });

@@ -201,6 +201,17 @@ class ui {
         var_dump($this->scripts);
     }
 
+// ============= UI Elements
+
+function callout($config=array()){
+    $default['class']='info';
+    $default['_id']=md5(time());
+    $data=array_merge( $default,$config);
+    return $this->CI->parser->parse('dashboard/ui/callout', $data, true,true);
+
+}
+
+
 }
 
 /*

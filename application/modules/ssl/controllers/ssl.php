@@ -23,6 +23,8 @@ class Ssl extends MX_Controller {
         $this->base_url = base_url();
         $this->module_url = base_url() . $this->router->fetch_module() . '/';
         $this->load->library('parser');
+        $this->load->library('dashboard/ui');
+        
         $this->idu = (int) $this->session->userdata('iduser');
         $this->load->model('ssl/ssl_model');
 
@@ -38,7 +40,10 @@ class Ssl extends MX_Controller {
 
     }
     
-    
+
+//======================= DASHBOARD 
+
+
     //==== Keys kist
      public function list_my_keys(){
          $data['keys']=$this->ssl_model->get_my_keys();
@@ -77,7 +82,15 @@ class Ssl extends MX_Controller {
         echo json_encode(array('status'=>$res,'list'=>$list));
     }      
 
-
+    // Encrypt box
+    public function encrypt_form(){
+        echo $this->parser->parse('encrypt',array(),true);
+    }
+    
+    // Verify box
+    public function verify_form(){
+        echo $this->parser->parse('verify',array(),true);
+    }
 
 //======================= ENCRYPT
 
@@ -92,10 +105,6 @@ class Ssl extends MX_Controller {
         return $encrypted;
      }
      
-    // form
-    public function encrypt_form(){
-        echo $this->parser->parse('encrypt',array(),true);
-    }
     
     // wrapper    
     public function wrapper_encrypt(){
@@ -106,45 +115,64 @@ class Ssl extends MX_Controller {
      }   
 
     
-//======================= DECRYPT     
+//======================= DECRYPT  (needs PRIV KEY)  
 
      
-//== Decryption for @debug
-public function decrypt($privKey=""){
-
-$encrypted=$this->encrypt("Hey como va","dc6fcd226959ffc26571ebd6c5697f43"); 
-//$encrypted64=base64_encode($encrypted);
-
-$privKey = openssl_pkey_get_private($this->get_priv_key());
-
-
-openssl_private_decrypt($encrypted, $decrypted, $privKey);
-//return $decrypted;
-var_dump($decrypted);
-}
+//== Decrypt for @debug
+// public function decrypt($privKey=""){
+// $encrypted=$this->encrypt("Hey como va","dc6fcd226959ffc26571ebd6c5697f43"); 
+// $privKey = openssl_pkey_get_private($this->get_priv_key());
+// openssl_private_decrypt($encrypted, $decrypted, $privKey);
+// return $decrypted;
+// }
     
 //======================= SIGNATURES
 
-//===== Create signature for data
+//===== Create signature for data 
 
-// function sign($data="Hey",$privKey=''){
-// //$privKey=$this->get_priv_key();
-// $privKey = openssl_pkey_get_private($privKey);
-// openssl_sign($data, $signature, $privKey, OPENSSL_ALGO_SHA256);
-// return $signature;
+function sign($data,$privKey){;
+openssl_sign($data, $signature, $privKey, OPENSSL_ALGO_SHA256);
+return $signature;
+}
 
-// }
+// for testing
+function wrapper_sign($data="Hey"){
+$pk=$this->get_priv_key();
+$privKey = openssl_pkey_get_private($pk);
+openssl_sign($data, $signature, $privKey, OPENSSL_ALGO_SHA256);
+echo base64_encode($signature);
+}
 
 //===== Verify Signature
 
 function verify($data,$signature,$pubKey){
-$signature=$this->sign();    
-//$pubKey=$this->get_pub_key();
 $pubKey = openssl_pkey_get_public($pubKey);
 $res=openssl_verify($data, $signature, $pubKey, "sha256WithRSAEncryption");
-var_dump($res);
+return $res;
 }
   
+//== wrapper
+public function wrapper_verify(){
+    $plain_text=$this->input->post('plain_text');
+    $fingerprint=$this->input->post('fingerprint');
+    $signature=base64_decode($this->input->post('signature'));
+    if(empty($plain_text) || empty($fingerprint) || empty($signature)) return json_encode(array('status'=>false));
+    
+    $res=$this->ssl_model->get_key($fingerprint);
+    $pub_key = openssl_pkey_get_public($res->public_key);
+ 
+    // echo base64_encode($this->verify($plain_text,$signature,$pub_key));
+    $status=$this->verify($plain_text,$signature,$pub_key);
+    
+    if($status==1)
+    $config=array('title'=>'Verified!','class'=>'info');
+    else
+    $config=array('title'=>'Not Verified!','class'=>'danger');
+    
+    echo $this->ui->callout($config);
+
+}   
+     
     
 //======================= MISC 
 
@@ -174,7 +202,9 @@ var_dump($res);
 }   
 
 //======================= DEBUG 
-    
+
+//=== private key for testing
+
 private function get_priv_key(){
 $ret=<<<_EOF_
 -----BEGIN PRIVATE KEY-----
@@ -234,6 +264,7 @@ _EOF_;
 return $ret;
 }
 
+//=== public key for testing
 private function get_pub_key(){
 $ret=<<<_EOF_
 -----BEGIN PUBLIC KEY-----

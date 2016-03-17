@@ -6,11 +6,21 @@
     "js": [{"{base_url}ssl/assets/jscript/app.js": "ssl-JS"}],
     "css": [],
     "zones": [{"tiles": []},
-	{"col1": [            {
+{"col1": [ {
                 "title": "Encrypt",
                 "module": "ssl",
                 "controller": "ssl",
                 "function": "encrypt_form",
+                "box_icon":"",
+                "box_class":["box box-primary"],
+                "box_buttons":["remove","collapse"],
+                "box_collapsed":"0"
+            },
+            {
+                "title": "Verify",
+                "module": "ssl",
+                "controller": "ssl",
+                "function": "verify_form",
                 "box_icon":"",
                 "box_class":["box box-primary"],
                 "box_buttons":["remove","collapse"],
