@@ -30,6 +30,9 @@ class Login extends MX_Controller {
     }
 
     function Index() {
+        // if user is logged in then send it to default controller
+        if($this->user->isloggedin())
+            redirect(base_url() . $this->config->item('default_controller'));
         $msg = $this->session->userdata('msg');
         //----LOAD LANGUAGE
         $this->lang->load('login', $this->config->item('language'));
