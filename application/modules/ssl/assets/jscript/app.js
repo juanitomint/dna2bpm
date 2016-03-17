@@ -8,8 +8,9 @@ jQuery(document).ready(function($) {
    
 console.log('----- SSL');
 
-    //=== submit
+
    
+   //== New key
     $(document).on('submit','#form_add_key',function(e){
         e.preventDefault();
         var url=globals['base_url']+"ssl/add_key";
@@ -38,7 +39,7 @@ console.log('----- SSL');
         });
     });
     
-    
+    //== Delete key
     $(document).on('click','[data-cmd="delete"]',function(e){
         var url=globals['base_url']+"ssl/delete_my_key";
         var mytarget=$(this).parentsUntil('.box-primary');
@@ -47,9 +48,24 @@ console.log('----- SSL');
            mytarget.html(resp.list);
            console.log(resp);
         },'json');
-        
-
-
+    });
+    
+    
+    //== Encrypt MSG
+    $(document).on('submit','#form_encrypt',function(e){
+        e.preventDefault();
+        var url=globals['base_url']+"ssl/wrapper_encrypt";
+        //var mytarget=$(this).parentsUntil('.box-primary');
+       
+ 
+         var fingerprint=$(this).find('[name="fingerprint"]').val()
+         var plain_text=$(this).find('[name="plain_text"]').val();
+         var encrypted_text=$(this).find('[name="encrypted_text"]');
+        $.post(url,{fingerprint:fingerprint,plain_text:plain_text},function(resp){
+          //mytarget.html(resp.list);
+          console.log(resp);
+          encrypted_text.val(resp);
+        });
     });
     
     

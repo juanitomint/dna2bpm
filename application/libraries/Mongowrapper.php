@@ -2,7 +2,7 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-class Mongowrapper extends mongo {
+class Mongowrapper extends Mongo {
 
     var $db;
 
@@ -10,14 +10,14 @@ class Mongowrapper extends mongo {
         // Fetch CodeIgniter instance
         $ci = get_instance();
         // Load Mongo configuration file
-        $ci->load->config('mongo');
+        $ci->load->config('cimongo');
 
         // Fetch Mongo server and database configuration
-        $server = $ci->config->item('mongo_server');
-        $dbname = $ci->config->item('mongo_dbname');
-        $user = $ci->config->item('mongo_username');
-        $password = $ci->config->item('mongo_password');
-
+        $server = $ci->config->item('host');
+        $dbname = $ci->config->item('db');
+        $user = $ci->config->item('username');
+        $password = $ci->config->item('pass');
+        
         // Initialise Mongo
         if ($server) {
             parent::__construct($server);
