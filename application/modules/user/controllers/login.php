@@ -25,15 +25,15 @@ class Login extends MX_Controller {
         $cpData['show_warn'] = $this->config->item('show_warn');
         $cpData['theme'] = $this->config->item('theme');
         $cpData['plugins'] = (class_exists('Userlayer')) ? implode(',', $this->config->item('user_plugin')) : array();
-        //----load login again with msg 
+        //----load login again with msg
         $this->parser->parse('user/login', $cpData);
     }
 
     function Index() {
         // if user is logged in then send it to default controller
-        if($this->user->isloggedin())
-            redirect(base_url() . $this->config->item('default_controller'));
         $msg = $this->session->userdata('msg');
+        if($this->session->userdata('loggedin') && !$msg)
+            redirect(base_url() . $this->config->item('default_controller'));
         //----LOAD LANGUAGE
         $this->lang->load('login', $this->config->item('language'));
         //---add language data
@@ -62,7 +62,7 @@ class Login extends MX_Controller {
         }
 
         $this->session->set_userdata('msg', $msg);
-        //---build UI 
+        //---build UI
         //---define files to viewport
         $cpData['css'] = array(
             $this->module_url . "assets/css/login.css" => 'Login Specific',

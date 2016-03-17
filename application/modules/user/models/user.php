@@ -159,6 +159,7 @@ class User extends CI_Model {
 
     function isloggedin() {
         if (!$this->session->userdata('loggedin')) {
+            $this->session->userdata('loggedin',false);
             $this->session->set_userdata('redir', base_url() . uri_string());
             $this->session->set_userdata('msg', 'hastolog');
             redirect($this->login_url);
