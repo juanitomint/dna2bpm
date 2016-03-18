@@ -422,6 +422,7 @@ class CI_Parser {
 	// Parses tag pairs:  {some_tag} string... {/some_tag}
 	function _parse_pair($variable, $data, $string)
 	{
+	
 		if (FALSE === ($matches = $this->_match_pair($string, $variable)))
 		{
 			return $string;
@@ -436,7 +437,6 @@ class CI_Parser {
 			foreach ($data as $rowkey=>$row)
 			{
 				$temp = $m['1'];
-
 				if(is_array($row))
 				{
 					foreach ($row as $key => $val)
@@ -450,6 +450,7 @@ class CI_Parser {
 							$temp = $this->_parse_pair($key, $val, $temp);
                             // parse array elements
                             $temp=  $this->_parse_array_elems($key, $val, $temp);
+
 						}
 					}
 					$str .= $temp;
@@ -474,8 +475,8 @@ class CI_Parser {
 	//
 	function _match_pair($string, $variable)
 	{
-            
-		if ( ! preg_match_all("|".$this->l_delim . $variable . $this->r_delim."(.+)".$this->l_delim . '/' . $variable . $this->r_delim."|sU", $string, $match, PREG_SET_ORDER))
+		// var_dump($string,$variable,"|".$this->l_delim . $variable . $this->r_delim."(.+)".$this->l_delim . '/' . $variable . $this->r_delim."|sU");
+		if ( @! preg_match_all("|".$this->l_delim . $variable . $this->r_delim."(.+)".$this->l_delim . '/' . $variable . $this->r_delim."|sU", $string, $match, PREG_SET_ORDER))
 		{
 			return FALSE;
 		}
