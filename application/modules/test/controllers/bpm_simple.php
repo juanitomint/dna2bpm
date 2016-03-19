@@ -82,43 +82,19 @@ class Bpm_simple extends Toast {
 
     function test_start_case() {
         $url[]=site_url('bpm/engine/startcase/model/'.$this->idwf.'/'.$this->idcase);
-        
         $result=$this->_curl_get($url);
         $this->message =$result;
     }
 
     function test_run() {
-//        $result=$this->bpm->import('images/zip/test_trivial.zip',true,'Tests');
-//        $this->message =$result['msg'];
-//		$this->_assert_equals_strict($result['success'], true);
-//        Modules::run('');
+        $url[]=site_url('bpm/engine/run/model/'.$this->idwf.'/'.$this->idcase);
+        $result=$this->_curl_get($url);
+
+        $this->message =$result;
+	   // $this->_assert_equals_strict($result['success'], true);
     }
 
-    function test_that_fails() {
-        $a = true;
-        $b = $a;
-
-        // You can test multiple assertions / variables in one function:
-
-        $this->_assert_true($a); // true
-        $this->_assert_false($b); // false
-        $this->_assert_equals($a, $b); // true
-        // Since one of the assertions failed, this test case will fail
-    }
-
-    function test_or_operator() {
-        $a = true;
-        $b = false;
-        $var = $a || $b;
-
-        $this->_assert_true($var);
-
-        // If you need to, you can pass a message /
-        // description to the unit test results page:
-
-        $this->message = '$a || $b';
-    }
-
+ 
 }
 
 // End of file example_test.php */
