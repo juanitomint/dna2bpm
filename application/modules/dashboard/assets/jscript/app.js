@@ -237,6 +237,10 @@ $(document).ready(function() {
 
 });
 
+//== jquery.matchHeight
+
+$('.small-box').matchHeight();
+
 
 /* ==============================
  *  Wrappers BT & LTE
