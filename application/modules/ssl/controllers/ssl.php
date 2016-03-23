@@ -173,6 +173,31 @@ public function wrapper_verify(){
 
 }   
      
+//======================= SIMETRIC ENCRYPTION 
+
+
+public function encrypt_simetric($plaintext,$key){
+
+$this->load->helper('ssl/Crypt/Blowfish');
+$cipher = new Crypt_Blowfish();
+// keys can range in length from 32 bits to 448 in steps of 8
+$cipher->setKey($key);
+$encrypted=$cipher->encrypt($plaintext);
+return $encrypted;
+
+}
+
+public function decrypt_simetric($encrypted,$key){
+
+$this->load->helper('ssl/Crypt/Blowfish');
+$cipher = new Crypt_Blowfish();
+// keys can range in length from 32 bits to 448 in steps of 8
+$cipher->setKey($key);
+return $cipher->decrypt($encrypted);
+
+}
+
+
     
 //======================= MISC 
 
@@ -200,6 +225,10 @@ public function wrapper_verify(){
     echo $pubKey;  
     
 }   
+
+
+
+
 
 //======================= DEBUG 
 
@@ -283,6 +312,12 @@ CAS8APqipSOc4OFf52/Txd0CAwEAAQ==
 -----END PUBLIC KEY-----
 _EOF_;
 return $ret;
+}
+
+function test(){
+$this->load->library('rest');
+
+echo $this->rest->post();
 }
     
 }//class
