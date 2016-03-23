@@ -242,6 +242,7 @@ function run_test($idwf,$idcase,$resourceId){
     $this->load->library('bpm/ui');
     $user = $this->user->getuser((int) $this->session->userdata('iduser'));
     $case = $this->bpm->get_case($idcase, $idwf);
+    $token = $this->bpm->get_token($idwf, $idcase, $resourceId);
     $renderData = array();
     //---get Shape
     $mywf = $this->bpm->load($idwf);
