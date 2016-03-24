@@ -3,8 +3,7 @@ $(document).ready(function(){
     
     $('#myModal').on('hidden',
         function() {
-            url=globals.base_url+'dashboard';
-            //window.location=url;
+            window.close();
         });
     
     $('#testTask').click(function(){
@@ -37,5 +36,6 @@ $(document).ready(function(){
     });
      var editor = ace.edit("editor");
      editor.setTheme("ace/theme/monokai");
-     editor.session.setMode("ace/mode/php");
+     editor.session.setMode({path:"ace/mode/php", inline:true});
+    //  editor.session.setMode("ace/mode/php");
 });

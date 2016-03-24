@@ -227,7 +227,8 @@ function test_task($idwf, $idcase,$resourceId=null) {
             'module_url' => $this->base_url . 'bpm',
             'idwf'=>$idwf,
             'idcase'=>$idcase,
-            'resourceId'=>$resourceId
+            'resourceId'=>$resourceId,
+            'options'=>array('backdrop'=>'static', 'keyboard'=> false)
         );
 //        $this->bpm->debug['load_case_data'] = true;
 //---saco título para el resultado

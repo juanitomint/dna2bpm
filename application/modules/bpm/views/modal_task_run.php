@@ -12,8 +12,7 @@
                     <div class="col-md-8">
                     
                         {ignore}
-                        <pre id="editor" style="height: 550px; width: 100%;"><?php echo "&lt;?php\n$script";?>
-                        </pre>
+                        <pre id="editor" style="height: 550px; width: 100%;"><?php echo "$script";?></pre>
                         {/ignore}
                     </div>
                     <div class="col-md-4">
