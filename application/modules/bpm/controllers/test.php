@@ -191,7 +191,18 @@ class test extends MX_Controller {
 //        exit;
         $this->ui->compose('bpm/modal_task_send', 'bpm/bootstrap.ui.php', $renderData);
     }
-
+function get_script($idwf,$resourceId){
+    $this->load->model('bpm/bpm');
+     $mywf = $this->bpm->load($idwf,false);
+        $wf = $this->bpm->bindArrayToObject($mywf ['data']);
+        
+        if($resourceId){
+             $shape = $this->bpm->get_shape($resourceId, $wf);
+             $renderData['script']=$shape->properties->script;
+             $renderData['title']=$shape->properties->name;
+        }
+    
+}
 function test_task($idwf, $idcase,$resourceId=null) {
         $this->user->authorize();
         $this->load->model('bpm/bpm');
@@ -203,9 +214,12 @@ function test_task($idwf, $idcase,$resourceId=null) {
         $renderData ['base_url'] = $this->base_url;
         
 // ---prepare UI
+        $renderData ['css'] = array(
+            $this->module_url . 'assets/css/ace_editor.css' => 'Ace Editor CSS',
+            );
         $renderData ['js'] = array(
-            $this->base_url . 'bpm/assets/jscript/test_task.js' => 'Modal Window Generic JS',
-            $this->base_url . 'jscript/editarea/edit_area/edit_area_full.js' => 'Edit Area',
+            $this->module_url . 'assets/jscript/test_task.js' => 'Modal Window Generic JS',
+            $this->module_url . 'assets/jscript/ace-builds/src-min/ace.js' => 'Ace Editor',
         );
 // ---prepare globals 4 js
         $renderData ['global_js'] = array(
@@ -236,13 +250,13 @@ function run_test($idwf,$idcase,$resourceId){
     $this->user->authorize();
     $debug=false;
     $script=$this->input->post('script');
+    $script=str_replace("<?php\n",'',$script);
     $this->load->model('bpm/bpm');
     $this->load->module('bpm/engine');
     $this->load->library('parser');
     $this->load->library('bpm/ui');
     $user = $this->user->getuser((int) $this->session->userdata('iduser'));
     $case = $this->bpm->get_case($idcase, $idwf);
-    $token = $this->bpm->get_token($idwf, $idcase, $resourceId);
     $renderData = array();
     //---get Shape
     $mywf = $this->bpm->load($idwf);
