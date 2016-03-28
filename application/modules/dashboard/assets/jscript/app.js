@@ -239,7 +239,7 @@ $(document).ready(function() {
 
 //== jquery.matchHeight
 
-$('.small-box').matchHeight();
+$('.small-box .inner').matchHeight();
 
 
 /* ==============================
