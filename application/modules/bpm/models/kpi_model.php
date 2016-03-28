@@ -94,7 +94,10 @@ class Kpi_model extends CI_Model {
                 case 'user' :
                     $filter = array(
                         'idwf' => $kpi ['idwf'],
-                        'iduser' => $this->idu
+                        '$or'=>array(
+                        array('iduser' => $this->idu),
+                        array('assign' => $this->idu),
+                            ),
                     );
                     break;
                 default : // ---filter by idwf

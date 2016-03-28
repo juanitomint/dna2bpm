@@ -35,8 +35,8 @@ class kpi_state {
         unset($filter['resourceId']);
         $status = (isset($kpi['status'])) ? $kpi['status'] : 'user';
         
-        $filter['status'] = $kpi['status'];
         $filter = $this->CI->kpi_model->get_filter($kpi);        
+        $filter['status'] = $kpi['status'];
         $tokens = $this->CI->bpm->get_tokens_byResourceId($kpi['resourceId'], $filter);
         $cases = array_map(function ($token) {
             return $token['case'];
@@ -49,9 +49,10 @@ class kpi_state {
         $filter = $this->CI->kpi_model->get_filter($kpi);        
         $status = (isset($kpi['status'])) ? $kpi['status'] : 'user';
         $filter['status'] = $kpi['status'];
+        echo json_encode($filter);
         $tokens = $this->CI->bpm->get_tokens_byFilter_count($filter);
         $cpData = $kpi;
-        //var_dump($tokens);
+        
         $cpData['number'] = $tokens;
         return $cpData;
     }
