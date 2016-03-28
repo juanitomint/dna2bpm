@@ -352,10 +352,11 @@ class Repository extends MX_Controller {
         $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
         if ($debug)
             echo '<h2>' . __FUNCTION__ . '</h2>';
+        $this->load->library('ui');
         $this->load->helper('file');
         $data = array();
-        $data = $this->lang->language;
-        $data['htmltitle'] .= ' | Viewer:' . $idwf;
+        // $data = $this->lang->language;
+        $data['title'] = ' | Viewer:' . $idwf;
         $data['theme'] = $this->config->item('theme');
         $data['base_url'] = $this->base_url;
         $data['idwf'] = $idwf;
@@ -364,11 +365,26 @@ class Repository extends MX_Controller {
 //var_dump($wfData);
 //---read model SVG
         $data['svgfile'] = "images/svg/$idwf.svg";
-        $data['SVG'] = htmlspecialchars(read_file($data['svgfile']));
-//---OUTPUT AS XML
-        header("Content-Type: application/xhtml+xml");
-        echo '<?xml version="1.0" encoding="UTF-8"?>';
-        echo $this->parser->parse('bpm/view-model.php', $data, true);
+        // $data['SVG'] = htmlspecialchars(read_file($data['svgfile']));
+         $data['css'] = array(
+        );
+        $data['js'] = array(
+            //----Pan & ZooM---------------------------------------------
+            $this->module_url . 'assets/jscript/panzoom/jquery.panzoom.min.js' => 'Panzoom Minified',
+            $this->module_url . 'assets/jscript/panzoom/jquery.mousewheel.js' => 'wheel-suppport',
+            $this->module_url . 'assets/jscript/panzoom/pnazoom_wheel.js' => 'wheel script',
+            $this->module_url . 'assets/jscript/view-model.js'=>'view model',
+            //-----------------------------------------------------------------
+            $this->base_url . "jscript/bootstrap/js/bootstrap.min.js" => 'Bootstrap JS',
+        );
+
+        $data['global_js'] = array(
+            'base_url' => $this->base_url,
+            'module_url' => $this->module_url,
+            'idwf' => $idwf,
+        );
+        // var_dump($data);
+        $this->ui->compose('view-model','bpm/bootstrap.ui.php', $data);
     }
 
     function tokens($model, $idwf, $idcase, $filter_status = '') {

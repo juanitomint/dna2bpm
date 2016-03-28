@@ -79,20 +79,35 @@ var POPUP_TEXT=function(token,shape){
 ///////////////////////DOCUMENT READY///////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 $(document).ready(function(){
+    
+    $('#div-svg').load(globals.module_url+'repository/svg/' + globals.idwf,null,function(){
+        panzoom_init();
+        //fix links
+        $('#svg-box a').each(
+            function(e){
+                link=globals.module_url+'repository/view/'+$(this).attr('xlink:href').replace('editor.xhtml#','');
+                console.log(link);
+                $(this).attr('xlink:href',link);
+                // $(this).attr();
+                
+            }
+            );
+    });
+    
     //---1.convert svg to an object 4 jquery
-    svg=$("#svg-box").svg();
+    // svg=$("#svg-box").svg();
 
-    //---2. load model data
-    model=loadSync(MODEL_URL);
+    // //---2. load model data
+    // model=loadSync(MODEL_URL);
 
-    //---3. load tokens
-    thiscase={};
+    // //---3. load tokens
+    // thiscase={};
 
-    //---4. make overlay 4 tooltips
-    overlay(model);
+    // //---4. make overlay 4 tooltips
+    // overlay(model);
 
-    //---5. Add popups to divs
-    add_popup();
+    // //---5. Add popups to divs
+    // add_popup();
 
     //---6. Fires highlight routine
     //intervalID=window.setInterval(paintme,HSPEED);
