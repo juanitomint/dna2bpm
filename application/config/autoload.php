@@ -52,12 +52,7 @@ $autoload['packages'] = array();
 |	$autoload['libraries'] = array('database', 'session', 'xmlrpc');
 */
 
-$autoload['libraries'] = array(
-    'mongowrapper',
-    'session',      
-    //-----if you need full layer support with plugin loader load the user/userlayer library
-    'user/userlayer'
-    );
+$autoload['libraries'] = array();
 
 
 /*
@@ -114,11 +109,7 @@ $autoload['language'] = array();
 |
 */
 
-$autoload['model'] = array(
-    'user/user',
-    'user/group',
-    'user/rbac',
-    );
+$autoload['model'] = array();
 
 
 /* End of file autoload.php */
