@@ -49,7 +49,6 @@ class kpi_state {
         $filter = $this->CI->kpi_model->get_filter($kpi);        
         $status = (isset($kpi['status'])) ? $kpi['status'] : 'user';
         $filter['status'] = $kpi['status'];
-        echo json_encode($filter);
         $tokens = $this->CI->bpm->get_tokens_byFilter_count($filter);
         $cpData = $kpi;
         
