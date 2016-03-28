@@ -89,8 +89,9 @@ color: #ddd;
 
 /* Matchheight adjust - sending footer to the bottom*/
 
-.small-box > .small-box-footer{
-position:absolute;
-bottom:0px;
-width:100%;
-}
+/*.small-box > .small-box-footer{*/
+/*position:absolute;*/
+/*bottom:0px;*/
+/*width:100%;*/
+/*}*/
+
