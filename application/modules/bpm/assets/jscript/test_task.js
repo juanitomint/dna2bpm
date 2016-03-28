@@ -1,14 +1,14 @@
 $(document).ready(function(){
+    $('#myModal').modal(globals.options);
     
     $('#myModal').on('hidden',
         function() {
-            url=globals.base_url+'dashboard';
-            //window.location=url;
+            window.close();
         });
     
     $('#testTask').click(function(){
         url=globals.base_url+'bpm/test/run_test/'+globals.idwf+'/'+globals.idcase+'/'+globals.resourceId;
-        data={script:editAreaLoader.getValue("editArea")}
+        data={script: editor.getValue()}
          $.ajax({
         url : url,
         type: 'POST',
@@ -22,7 +22,7 @@ $(document).ready(function(){
     });
     $('#saveTask').click(function(){
         url=globals.base_url+'bpm/test/save_script/'+globals.idwf+'/'+globals.resourceId;
-        data={script:editAreaLoader.getValue("editArea")}
+        data={script: editor.getValue()}
          $.ajax({
         url : url,
         type: 'POST',
@@ -34,14 +34,8 @@ $(document).ready(function(){
         });
     
     });
-    editAreaLoader.init({
-			id: "editArea"	// id of the textarea to transform		
-			,start_highlight: true	// if start with highlight
-			,allow_resize: "both"
-			,allow_toggle: true
-			,word_wrap: true
-			,language: "en"
-			,syntax: "php"	
-		});
-    $('#myModal').modal(globals.options);
+     var editor = ace.edit("editor");
+     editor.setTheme("ace/theme/monokai");
+     editor.session.setMode({path:"ace/mode/php", inline:true});
+    //  editor.session.setMode("ace/mode/php");
 });

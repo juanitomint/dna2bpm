@@ -14,25 +14,23 @@ class Mongowrapper extends Mongo {
 
         // Fetch Mongo server and database configuration
         $server = $ci->config->item('host');
+        $port = $ci->config->item('port');
         $dbname = $ci->config->item('db');
-        $user = $ci->config->item('username');
+        $user = $ci->config->item('user');
         $password = $ci->config->item('pass');
-        
-        // Initialise Mongo
-        if ($server) {
+        $mongodb_uri="mongodb://$server:$port";
+        $options=array();
+        if ($user <> '' and $password <> '') {
+            $mongodb_uri="mongodb://$user:$password@$server:$port/$dbname";
+        }
+        // Initialize Mongo
+        try{
             parent::__construct($server);
-        } else {
-            parent::__construct();
+        }    
+        catch (MongoConnectionException $e){
+            show_error($e->getMessage().'<hr><p>Check your config file ('.ENVIRONMENT.'/cimongo.php) or run the setup wizard again</p>');
         }
         $this->db = $this->$dbname;
-        if ($user <> '' and $password <> '') {
-            $rs = $this->db->authenticate($user, $password);
-            //var_dump('authenticate',$user, $password,$rs);
-            if(!$rs['ok'])
-                show_error ($rs['errmsg'].'<br/>Mongo Authentication has Failed for user: '.$user.
-                        '<br/>Check username & password on: /system/application/config/mongo.php'
-                        );
-        }
     }
 
 }

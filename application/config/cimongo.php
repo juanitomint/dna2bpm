@@ -1,7 +1,7 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 // Generally localhost
-$config['host'] = "localhost";
+$config['host'] = "localhosta";
 // Generally 27017
 $config['port'] = '';
 // The database you want to work on

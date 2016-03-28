@@ -1,5 +1,5 @@
 <!-- Modal -->
-<div id="myModal" class="modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+<div id="myModal" class="modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false" >
     <div class="modal-dialog" style="width:90%">
         <div class="modal-content">
             <div class="modal-header">
@@ -12,9 +12,7 @@
                     <div class="col-md-8">
                     
                         {ignore}
-                        <div id="editor">
-                            <textarea id="editArea"  style="height: 550px; width: 100%;"><?php echo $script;?></textarea>
-                        </div>
+                        <pre id="editor" style="height: 550px; width: 100%;"><?php echo "$script";?></pre>
                         {/ignore}
                     </div>
                     <div class="col-md-4">
