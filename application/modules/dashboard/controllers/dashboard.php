@@ -133,6 +133,7 @@ class Dashboard extends MX_Controller {
         $customData['base_url'] = $this->base_url;
         $customData['module_url'] = $this->module_url;
         $customData['lang'] = $this->lang->language;
+        $customData['is_admin']=$this->user->isAdmin();
         //---load custom menu
         $menu_custom = Modules::run('menu/get_menu', '0', 'sidebar-menu', !$this->user->isAdmin());
         $customData['menu_custom'] = $this->parser->parse_string($menu_custom, $customData, TRUE, TRUE);
@@ -159,6 +160,8 @@ class Dashboard extends MX_Controller {
     // ==== Dashboard
 
     function Dashboard($json = 'dashboard/json/dashboard.json',$debug = false,$extraData=null) {
+
+
         /* eval Group hooks first */
         $this->session->set_userdata('json', $json);
         $user = $this->user->get_user((int) $this->idu);
@@ -260,7 +263,7 @@ class Dashboard extends MX_Controller {
     // ============ Parse JSON config
     function parse_config($file, $debug = false) {
         $myconfig = json_decode($this->load->view($file, '', true), true);
-        define('MINWIDTH', 2);
+        $minwidth=2;
 //             $return['js'] = array();
         //Root config
 
@@ -308,7 +311,7 @@ class Dashboard extends MX_Controller {
             
             foreach ($myzone as $item) {
                 $widgets[] = $item;
-                $spans[] = (empty($item["span"])) ? (MINWIDTH) : ($item["span"]);
+                $spans[] = (empty($item["span"])) ? ($minwidth) : ($item["span"]);
                 if (isset($item["span"]))
                     $empty_spans++;
             }
@@ -374,7 +377,7 @@ class Dashboard extends MX_Controller {
                 
             if(isset($myWidget['box_class'])){
                // box info present, use this box bitch --
-     
+                $customData=array();
                 $customData['box_class']=implode(" ",$myWidget['box_class']);
                 // Color schema
                 $customData['btn_class']='btn-default';
@@ -439,6 +442,7 @@ class Dashboard extends MX_Controller {
 
             $return[$myzone_key] = $content;
         }
+
         return $return;
     }
 
@@ -463,42 +467,6 @@ class Dashboard extends MX_Controller {
 
     } 
     
-    // ============ highcharts
-    function highcharts($args=array()) {
-    	
-    	$data['lang'] = $this->lang->language;
-    	$data['base_url'] = $this->base_url;
-    	$data['module_url'] = $this->module_url;
-    	$return['content']=$this->parser->parse('widgets/highcharts', $data, true, true);
-    	
-    	$return['inlineJS']=<<<BLOCK
-    	//------- Highcharts
-    	$('#highcharts1').highcharts({
-        chart: {
-            type: 'bar'
-        },
-        title: {
-            text: 'Fruit Consumption'
-        },
-        xAxis: {
-            categories: ['Apples', 'Bananas', 'Oranges']
-        },
-        yAxis: {
-            title: {
-                text: 'Fruit eaten'
-            }
-        },
-        series: [{
-            name: 'Jane',
-            data: [1, 0, 4]
-        }, {
-            name: 'John',
-            data: [5, 7, 3]
-        }]
-    });
-BLOCK;
-    	return $return;
-    }
     
     // ============ Widgets
 
@@ -506,78 +474,6 @@ BLOCK;
         return $this->parser->parse('widgets/box_primary', $data, true, true);
     }
 
-    // ============ Knob
-    function knob($data = "",$config="") {
-
-// 		JSON data example
-//  	"params":[
-//  	"[{'value':50,'data-label':'Hey','data-fgColor':'#f60'},{'value':90,'data-label':'Hey2'},{'value':20,'data-label':'Hey3'}]",
-//  	"{'title':'mytitle','col-md':4,'col-sm':6,'col-xs':6}"
-//  	]
-// 		First parameter brings data for each knob, second parameter is for general settings
-    			
-    	$data_ST = str_replace("'", "\"", $data);
-    	$config_ST = str_replace("'", "\"", $config);
-    	$data=(json_decode($data_ST,true));
-    	$config=(json_decode($config_ST,true));
-
-        // Global Settings
-        $default=array(
-        	'data-width'=>'90',
-        	'data-height'=>'90',
-        	'data-min'=>0,
-        	'data-max'=>100,
-        	//'data-step'=>1,//step size 
-        	//'data-angleOffset'=>0,  //starting angle in degrees  
-        	//'data-angleArc'=>360,//arc size in degrees
-        	//'data-readOnly'=>true,
-        	//'data-fgColor'=>'#f56954',
-        	//'data-font'=>'arial',
-        	//'data-inputColor'=>'#0f0', // number color
-        	//'data-linecap'=>'butt', // butt|round    	  		
-        	'data-thickness'=>.3,
-        	//'data-displayInput'=>true,
-        	//'data-displayPrevious'=>false, // show/hide shadow when moving the knob
-        	'title'=>'-',
-        	'col-md'=>3,
-        	'col-sm'=>6,
-        	'col-xs'=>6
-        );
-
-        $config=array_merge($default,$config); // Join user params with default 
-
-        // get params for parser
-        $customData['title']=$config['title'];
-        $customData['col-md']=$config['col-md'];
-        $customData['col-sm']=$config['col-sm'];
-        $customData['col-xs']=$config['col-xs'];
-
-
-        //== DEBUG
-//          $data[]=array('value'=>50,'data-label'=>'Fuck');
-//          $data[]=array('value'=>10,'data-fgColor'=>'#f60','data-label'=>'Fuck');
-		//==
-
-        foreach($data as $item){
-        	$myconfig=array_merge($config,$item);
-        	
-        	$input=" ";
-        	// individual settings
-        	foreach($myconfig as $attr=>$val){
-        		$input.="$attr='$val' ";
-        	}
-			$label=(isset($myconfig['data-label']))?($myconfig['data-label']):('');
-        	$customData['knobs'][]=array(
-        			'input'=>"<input type='text' $input class='knob' >",
-        			'label'=>$label
-        	);
-        	
-
-        }
-
-        return $this->parser->parse('widgets/knob', $customData, true, true);
-        
-    }
 
     function widget_dashboards() {
         $this->load->helper('file');
@@ -598,12 +494,7 @@ BLOCK;
         return $this->parser->parse('widgets/dashboards', $data, true, true);
     }
     
-    //=== Kitchen Sink :: Boxes
-    function kitchensink_boxes(){
-   
-        return $this->parser->parse('widgets/kitchensink_boxes', array(), true, true);
 
-    }
 
 }
 

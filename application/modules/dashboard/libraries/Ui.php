@@ -63,7 +63,7 @@ class ui {
         $this->styles['daterangerpicker'][] = $data['base_url'] . "dashboard/assets/bootstrap-wysihtml5/css/daterangepicker/daterangepicker.css";
         
         // Load default JS 
-        $default = array('jquery', 'jqueryUI','jquery.smooth-scroll','jquery.matchHeight','bootstrap','WYSIHTML5','adminLTE', 'inboxJS','dashboardJS', 'jquery.form', 'morris');
+        $default = array('jquery', 'jqueryUI','jquery.smooth-scroll','jquery.matchHeight','bootstrap','WYSIHTML5','adminLTE', 'inboxJS','dashboardJS', 'jquery.form');
  
         //Custom JS Check
         if (isset($data['js'])) {
@@ -204,7 +204,7 @@ class ui {
     }
 
 
-/* ============= UI Elements  */
+/* ============= UI Elements  =============  */
 
 
 //=== Callouts
@@ -290,20 +290,20 @@ function progress_success($width){
 
 function ul($data,$unstyled=false){
     $class=($unstyled)?('list-unstyled'):('');
-    return "<ul class='$class'>".$this->arr2ul($data,'ul')."</ul>";
+    return "<ul class='$class'>".$this->arr2ul($data,'ul',$unstyled)."</ul>";
 }
 
 function ol($data,$unstyled=false){
     $class=($unstyled)?('list-unstyled'):('');
-    return "<ol class='$class'>".$this->arr2ul($data,'ol')."</ol>";
+    return "<ol class='$class'>".$this->arr2ul($data,'ol',$unstyled)."</ol>";
 }
 
-private function arr2ul($data,$tag='ol'){
+private function arr2ul($data,$tag='ol',$unstyled=false){
     $block="";
     foreach($data as $ul){
         if(is_array($ul)){
             $block.="<$tag>\n";
-            $block.=$this->ol($ul);
+            $block.=$this->ol($ul,$unstyled);
             $block.="</$tag>\n";
         }else{
            $block.="<li>$ul</li>\n";

@@ -85,18 +85,8 @@ class Ssl extends MX_Controller {
 
     // Encrypt box
     public function encrypt_form(){
-      //  echo $this->parser->parse('encrypt',array(),true);
-        
-        $config=array('body'=>'Esto es un callout','title'=>'Callout');
-        echo $this->ui->callout($config);
-        //
-        echo $this->ui->alert_danger('<strong>Body</strong>');
-        //
-        echo $this->ui->progress_success(50);
-        
-        $data=array('item1','item2',array('item3a','item3b',array('item4')));
-        echo $this->ui->ol($data);
-
+        echo $this->parser->parse('encrypt',array(),true);
+    
     }
     
     // Verify box
