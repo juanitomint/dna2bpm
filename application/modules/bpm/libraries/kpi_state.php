@@ -34,31 +34,25 @@ class kpi_state {
         $filter = $this->CI->kpi_model->get_filter($kpi); 
         unset($filter['resourceId']);
         $status = (isset($kpi['status'])) ? $kpi['status'] : 'user';
-        $filter['$and'] = array(
-            array('token_status.' . $kpi['resourceId'] => array('$exists' => true)),
-            array('token_status.' . $kpi['resourceId'] => $status),
-        );
-        $cases_filtered = $this->CI->bpm->get_cases_byFilter($filter);
-
-        $cases = array_map(function ($case) {
-            return $case['id'];
-        }, $cases_filtered);
+        
+        $filter['status'] = $kpi['status'];
+        $filter = $this->CI->kpi_model->get_filter($kpi);        
+        $tokens = $this->CI->bpm->get_tokens_byResourceId($kpi['resourceId'], $filter);
+        $cases = array_map(function ($token) {
+            return $token['case'];
+        }, $tokens);
         return $cases;
+        
     }
 
     function core($kpi) {
-        $filter = $this->CI->kpi_model->get_filter($kpi);
-        unset($filter['resourceId']);
+        $filter = $this->CI->kpi_model->get_filter($kpi);        
         $status = (isset($kpi['status'])) ? $kpi['status'] : 'user';
-        $filter['$and'] = array(
-            array('token_status.' . $kpi['resourceId'] => array('$exists' => true)),
-            array('token_status.' . $kpi['resourceId'] => $status),
-        );
-        $cases_filtered = $this->CI->bpm->get_cases_byFilter($filter);
+        $filter['status'] = $kpi['status'];
+        $tokens = $this->CI->bpm->get_tokens_byFilter_count($filter);
         $cpData = $kpi;
-        $cpData['number'] = count($cases_filtered);
-        // var_dump(json_encode($filter),$cpData);
-        // exit;
+        //var_dump($tokens);
+        $cpData['number'] = $tokens;
         return $cpData;
     }
 
