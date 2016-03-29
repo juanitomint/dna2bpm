@@ -63,7 +63,7 @@ class ui {
         $this->styles['daterangerpicker'][] = $data['base_url'] . "dashboard/assets/bootstrap-wysihtml5/css/daterangepicker/daterangepicker.css";
         
         // Load default JS 
-        $default = array('jquery', 'jqueryUI','jquery.smooth-scroll','jquery.matchHeight','bootstrap','WYSIHTML5','adminLTE', 'inboxJS','dashboardJS', 'jquery.form', 'morris');
+        $default = array('jquery', 'jqueryUI','jquery.smooth-scroll','jquery.matchHeight','bootstrap','WYSIHTML5','adminLTE', 'inboxJS','dashboardJS', 'jquery.form');
  
         //Custom JS Check
         if (isset($data['js'])) {
@@ -203,15 +203,117 @@ class ui {
         var_dump($this->scripts);
     }
 
-// ============= UI Elements
 
+/* ============= UI Elements  =============  */
+
+
+//=== Callouts
 function callout($config=array()){
-    $default['class']='info';
-    $default['_id']=md5(time());
+    // class: info,warning,danger
+    $default=array('body'=>'','title'=>'untitled','class'=>'info');
+    $default['_id']=md5(time()); // selector
     $data=array_merge( $default,$config);
     return $this->CI->parser->parse('dashboard/ui/callout', $data, true,true);
-
 }
+
+
+//=== Alerts
+function alert($config=array()){
+    // class: info,success,warning,danger
+    $default=array('body'=>'','class'=>'info','dismissable'=>true,'icon'=>true,'icon_class'=>'fa-info');
+    $default['_id']=md5(time()); // selector
+    $data=array_merge( $default,$config);
+
+    return $this->CI->parser->parse('dashboard/ui/alert', $data, true,true);
+}
+
+// wrappers
+function alert_info($body){
+    // class: info,success,warning,danger
+    $config=array('body'=>$body,'class'=>'info','dismissable'=>true,'icon'=>true,'icon_class'=>'fa-info');
+    return $this->alert($config);
+}
+
+function alert_danger($body){
+    // class: info,success,warning,danger
+    $config=array('body'=>$body,'class'=>'danger','dismissable'=>true,'icon'=>true,'icon_class'=>'fa-ban');
+    return $this->alert($config);
+}
+
+function alert_warning($body){
+    // class: info,success,warning,danger
+    $config=array('body'=>$body,'class'=>'warning','dismissable'=>true,'icon'=>true,'icon_class'=>'fa-warning');
+    return $this->alert($config);
+}
+
+function alert_success($body){
+    // class: info,success,warning,danger
+    $config=array('body'=>$body,'class'=>'success','dismissable'=>true,'icon'=>true,'icon_class'=>'fa-check');
+    return $this->alert($config);
+}
+
+//=== progress
+function progress($config=array()){
+    // class: info,success,warning,danger
+    // size: sm,xs
+    $default=array('width'=>'100','class'=>'info','active'=>true,'stripped'=>true,'size'=>'');
+    $default['_id']=md5(time()); // selector
+    $data=array_merge( $default,$config);
+
+    return $this->CI->parser->parse('dashboard/ui/progress', $data, true,true);
+}
+
+// wrappers
+function progress_info($width){
+    $config=array('width'=>$width);
+    return $this->progress($config);
+}
+
+function progress_danger($width){
+    $config=array('width'=>$width,'class'=>'danger');
+    return $this->progress($config);
+}
+
+function progress_warning($width){
+    $config=array('width'=>$width,'class'=>'warning');
+    return $this->progress($config);
+}
+
+function progress_success($width){
+    $config=array('width'=>$width,'class'=>'success');
+    return $this->progress($config);
+}
+
+
+
+//=== ULs
+
+function ul($data,$unstyled=false){
+    $class=($unstyled)?('list-unstyled'):('');
+    return "<ul class='$class'>".$this->arr2ul($data,'ul',$unstyled)."</ul>";
+}
+
+function ol($data,$unstyled=false){
+    $class=($unstyled)?('list-unstyled'):('');
+    return "<ol class='$class'>".$this->arr2ul($data,'ol',$unstyled)."</ol>";
+}
+
+private function arr2ul($data,$tag='ol',$unstyled=false){
+    $block="";
+    foreach($data as $ul){
+        if(is_array($ul)){
+            $block.="<$tag>\n";
+            $block.=$this->ol($ul,$unstyled);
+            $block.="</$tag>\n";
+        }else{
+           $block.="<li>$ul</li>\n";
+        }
+    }
+     return $block;
+}
+
+
+
 
 
 }

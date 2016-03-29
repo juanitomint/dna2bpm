@@ -48,6 +48,7 @@ class Ssl extends MX_Controller {
      public function list_my_keys(){
          $data['keys']=$this->ssl_model->get_my_keys();
          return $this->parser->parse('my_keys',$data,true);
+         
     }
     
     // Wrapper Keys List  
@@ -85,6 +86,7 @@ class Ssl extends MX_Controller {
     // Encrypt box
     public function encrypt_form(){
         echo $this->parser->parse('encrypt',array(),true);
+    
     }
     
     // Verify box
@@ -315,9 +317,7 @@ return $ret;
 }
 
 function test(){
-$this->load->library('rest');
 
-echo $this->rest->post();
 }
     
 }//class

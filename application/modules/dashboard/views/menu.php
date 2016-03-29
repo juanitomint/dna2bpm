@@ -4,6 +4,13 @@
 			<span>Dashboard</span>
 	</a>
     </li>
+    {if {is_admin}}
+    	<li>
+            <a href="{module_url}kitchensink"> <i class="fa fa-flask"></i>
+        		<span>KitchenSink</span>
+        	</a>
+    	</li>
+	{/if}
 	<li>
         <a href="{module_url}tasks"> <i class="fa fa-tasks"></i>
 			<span>{lang Tasks}</span>
