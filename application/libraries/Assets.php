@@ -13,11 +13,11 @@ if (!defined('BASEPATH'))
  * 
  */
 
-class assets extends MX_Controller {
+class Assets extends MX_Controller {
 
     function __construct() {
         parent::__construct();
-       $this->index();
+       
     }
     
     function index(){

@@ -4,28 +4,36 @@ if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
 /*
- * ASSETS Controller
- * 
- * This file allows you to  access assets from within your modules directory
+ * ASSETS Like Controller
+ * This file allows you to  access jscript as assets  
+ * This controller allows you for run from embedded
  * 
  * @author Borda Juan Ignacio
  * 
- * @version 	1.0 (2012-05-27)
- * @ignore 
+ * @version 	2.0 (2016-03-28)
+ * 
  */
 
-class assets extends CI_Controller {
+class Jscript extends CI_Controller {
 
     function __construct() {
         parent::__construct();
+       $this->index();
+    }
+    
+    function index(){
         //$this->user->authorize();
+         if(count($this->uri->segments)==2){
+             show_error("Serving assets for: jscript/". implode('/', $this->uri->segments));
+             exit;
+         }
         //---get working directory and map it to your module
-        $file = getcwd() . '/application/modules/' . implode('/', $this->uri->segments);
+        $file =  implode('/', $this->uri->segments);
         //----get path parts form extension
         $path_parts = pathinfo( $file);
         //---set the type for the headers
         $file_type=  strtolower($path_parts['extension']);
-        
+        var_dump($file);
         if (is_file($file)) {
             //----write propper headers
             switch ($file_type) {
@@ -56,14 +64,9 @@ class assets extends CI_Controller {
  
             readfile($file);
         } else {
-            show_404();
+            show_error("Asset not found: $file");
         }
         exit;
     }
-
-    function code_block($code, $lang='php', $theme='monokai', $rows=16){
-    return '<textarea rows="'.$rows.'" class="code_block" theme="'.$theme.'" lang="'.$lang.'">'.$code.'</textarea>';
-    }
-
 
 }
