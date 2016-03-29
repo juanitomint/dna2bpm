@@ -50,7 +50,7 @@ class Repository extends MX_Controller {
             $idwf = $data->resourceId;
             //---check Existing revision.
             $this->bpm->save($idwf, $data, $svg);
-            
+
         } else {
             show_error('No name defined<br>', 500);
         }
@@ -367,6 +367,7 @@ class Repository extends MX_Controller {
         $data['svgfile'] = "images/svg/$idwf.svg";
         // $data['SVG'] = htmlspecialchars(read_file($data['svgfile']));
          $data['css'] = array(
+            $this->module_url . 'assets/css/view-model.css'=>'view model CSS'
         );
         $data['js'] = array(
             //----Pan & ZooM---------------------------------------------
@@ -374,6 +375,7 @@ class Repository extends MX_Controller {
             $this->module_url . 'assets/jscript/panzoom/jquery.mousewheel.js' => 'wheel-suppport',
             $this->module_url . 'assets/jscript/panzoom/pnazoom_wheel.js' => 'wheel script',
             $this->module_url . 'assets/jscript/view-model.js'=>'view model',
+            $this->module_url . 'assets/jscript/model-utils.js'=>'model Utilities',
             //-----------------------------------------------------------------
             $this->base_url . "jscript/bootstrap/js/bootstrap.min.js" => 'Bootstrap JS',
         );
@@ -567,7 +569,7 @@ class Repository extends MX_Controller {
             var_dump($rtnObject);
         }
     }
-    
+
     function import_test(){
         $this->user->authorize();
         $this->load->helper('directory');

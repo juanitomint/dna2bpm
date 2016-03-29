@@ -1,15 +1,17 @@
 var model,thiscase,offset_x,offset_y;
 
 var flat={};
-function loadSync(url){
+function loadSync(url,callback){
     var rtnData={};
     $.ajax({
         url : url,
         async:false,
         type: 'GET',
-        //dataType:'json',
+        dataType:'json',
         success:function(data){
             rtnData=data;
+            if(typeof callback=="function")
+                callback(data);
         }
     });
     return rtnData;

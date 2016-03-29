@@ -72,28 +72,70 @@ var POPUP_TEXT=function(token,shape){
                 //popup_text=
             popup_text='';
             popup_text='Doc:'+shape.properties.documentation;
-             
+
             return popup_text;
 }
-////////////////////////////////////////////////////////////////////////////////
-///////////////////////DOCUMENT READY///////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-$(document).ready(function(){
-    
-    $('#div-svg').load(globals.module_url+'repository/svg/' + globals.idwf,null,function(){
+function load_model(idwf,nostack){
+        if(!idwf)
+            return;
+        $('#div-svg').load(globals.module_url+'repository/svg/' +idwf,null,function(){
+        //---init panzoom;
         panzoom_init();
         //fix links
         $('#svg-box a').each(
             function(e){
-                link=globals.module_url+'repository/view/'+$(this).attr('xlink:href').replace('editor.xhtml#','');
-                console.log(link);
+                link=$(this).attr('xlink:href').replace('editor.xhtml#model/','');
                 $(this).attr('xlink:href',link);
                 // $(this).attr();
-                
+
             }
             );
+        data=loadSync(globals.module_url+'repository/load/model/'+idwf,
+        function(data){
+            // data=JSON.parse(raw);
+            nav=$('#navbar');
+            if(!nostack){
+              stack.push({
+                  name:data.properties.name,
+                  idwf:data.resourceId
+              });
+            // nav.html('');
+        //   $.each(stack, function( index, obj ){
+             nav.append('<li><a href=""><i class="fa fa-chevron-right"></i></a></li>');
+             nav.append('<li><a href="'+data.resourceId+'">'+data.properties.name+'</a></li>');
+            // });
+            }
+        });
+        $('#svg-box').fadeIn(500);
+
     });
-    
+}
+
+////////////////////////////////////////////////////////////////////////////////
+///////////////////////DOCUMENT READY///////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+var stack=[];
+$(document).ready(function(){
+
+load_model(globals.idwf);
+$(document).on('click','#svg-box a',function(e){
+           e.preventDefault();
+           idwf=$(this).attr('xlink:href');
+           if(!idwf)
+            return;
+           $('#svg-box').fadeOut(500);
+           load_model(idwf);
+       })
+$(document).on('click','#navbar a',function(e){
+           e.preventDefault();
+           idwf=$(this).attr('href');
+           if(!idwf)
+            return;
+           $(this).parent().nextAll().fadeOut(500).remove();
+           $('#svg-box').fadeOut(500);
+           load_model(idwf,true);
+       });
+
     //---1.convert svg to an object 4 jquery
     // svg=$("#svg-box").svg();
 
