@@ -38,7 +38,7 @@ class Calendar extends MX_Controller {
         $this->load->config('calendar/config');
         $this->load->model('calendar/calendar_model');
         //Lang
-        $this->lang->load('calendar', $this->config->item('language'));
+        $this->lang->load('calendar/calendar', $this->config->item('language'));
         
         $this->user->authorize();
         //---Output Profiler
@@ -60,7 +60,7 @@ class Calendar extends MX_Controller {
     
     function widget_calendar(){
          $data=array();
-         echo  $this->parser->parse('calendar',$data ,true);
+         echo  $this->parser->parse('calendar/calendar',$data ,true);
     }
     
 
