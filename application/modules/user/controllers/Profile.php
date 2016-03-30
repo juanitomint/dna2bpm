@@ -109,7 +109,9 @@ class Profile extends MX_Controller {
 		foreach($this->input->post('data') as $item){
  			if(in_array($item['name'],$allowed))
  			$dbobj[$item['name']]=$item['value'];
- 			
+ 			//---sanitize fields
+ 			    $dbobj[$item['name']]=strip_tags($item['value'],'<p><a><br><hr><b><strong>');
+ 			//---set password if posted
  			if($item['name']=='passw' && !empty($item['value']))
  	        	// Cambio de pass
         	    $dbobj['passw']=md5( $item['value']);
