@@ -461,18 +461,12 @@ class Dashboard extends MX_Controller {
         $this->dashboard('dashboard/json/tasks.json');
     }
     
-    // ============ Demo
-     function demo($args=array()) {
-    	 $this->dashboard('dashboard/json/demo.json');
-
-    } 
-    
     
     // ============ Widgets
 
-    function box_primary($data = array()) {
-        return $this->parser->parse('widgets/box_primary', $data, true, true);
-    }
+    // function box_primary($data = array()) {
+    //     return $this->parser->parse('widgets/box_primary', $data, true, true);
+    // }
 
 
     function widget_dashboards() {

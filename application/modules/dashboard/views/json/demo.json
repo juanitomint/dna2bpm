@@ -64,7 +64,18 @@
                     "box_class":["box"],
                     "box_buttons":["remove","collapse"],
                     "box_collapsed":"0"
+                },
+                {
+                    "title": "Pagination",
+                    "module": "dashboard",
+                    "controller": "kitchensink",
+                    "function": "pagination",
+                    "box_icon":"fa-book",
+                    "box_class":["box"],
+                    "box_buttons":["remove","collapse"],
+                    "box_collapsed":"0"
                 }
+                
             ]
         }
         
