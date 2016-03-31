@@ -16,7 +16,7 @@ class Kitchensink extends MX_Controller {
         parent::__construct();
         $this->load->model('user/user');
         $this->load->library('dashboard/ui');
-        // $this->load->library('dashboard/pagination');
+        $this->load->library('dashboard/pagination');
     
     }
 
@@ -150,26 +150,53 @@ _EOF_;
 //=== Pagination
 
 function pagination(){
-//           $text=<<<_EOF_
-// Linea 1<br>
-// Linea 2<br>
-// Linea 3<br>
-// <!-- pagebreak -->
-// Linea 4<br>
-// Linea 5<br>
-// Linea 6<br>
-// _EOF_;
+    
+$text=<<<_EOF_
+Linea 1<br>
+Linea 2<br>
+<!-- pagebreak -->
+Linea 3<br>
+Linea 4<br>
+<!-- pagebreak -->
+Linea 5<br>
+Linea 6<br>
+<!-- pagebreak -->
+Linea 7<br>
+Linea 8<br>
+<!-- pagebreak -->
+Linea 9<br>
+Linea 10<br>
+<!-- pagebreak -->
+Linea 11<br>
+Linea 10<br>
+<!-- pagebreak -->
+Linea 12<br>
+Linea 13<br>
+_EOF_;
 
-// $pages=explode('<!-- pagebreak -->',$text);
-// $config=array(
-// 'pagination_always_visible'=>true,
-// 'items_total'=>3,
-// 'items_x_page'=>1
-// );
-// echo $this->pagination->index($config);
-// var_dump($pages);
-echo "Not yet";
-      }
+echo <<<'_EOF_'
+<code>
+$this->load->library('dashboard/ui');<br>
+$config['width']=4 //optional<br>
+$config['sep']='&lt;!-- pagebreak -->' //optional<br>
+
+/* If $text is a string, the pages will be extracted using the separator. If it is an array, each array item is a page and must have strings inside.*/<br>
+
+echo $this->ui->paginate($text,$config);
+</code><p style="height:15px"></p>
+_EOF_;
+    
+
+
+// $text[2]="Linea 1<br>Linea 2<br>";
+// $text[3]="Linea 3<br>Linea4<br>";
+// $text[4]="Linea 5<br>Linea 6<br>";
+// $text[6]="Linea 7<br>Linea 8<br>";
+
+echo $this->ui->paginate($text,array('width'=>4));
+
+
+  }
 
 }
 

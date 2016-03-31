@@ -242,6 +242,53 @@ $(document).ready(function() {
 $('.small-box .inner').matchHeight();
 
 
+//== Pagination
+
+$(document).on('click','ul.pagination li a',function(e){
+    e.preventDefault();
+    if($(this).parent().hasClass('disabled')==true)return;
+     var pager_ul=$(this).parent().parent();
+     var prev_li=pager_ul.find('li[data-link="back"]');
+     var next_li=pager_ul.find('li[data-link="next"]');
+                  
+     var id=pager_ul.attr('data-target');
+     var width=pager_ul.attr('data-width');
+     var ul =$('ul[data-id="'+id+'"]'); // text wrapper
+     var page=$(this).attr('data-link');
+     var mygroup=pager_ul.find('li a:visible').eq(1).attr('data-group');
+     
+     if(page=='next'){
+         var nextgroup= +mygroup+1;
+         var nextnextgroup= +mygroup+2;
+         // Show next group if exists, hide the old one
+         if(pager_ul.find('li [data-group="'+nextgroup+'"]').length){
+             pager_ul.find('li [data-group="'+nextgroup+'"]').css('display','block');
+             pager_ul.find('li [data-group="'+mygroup+'"]').css('display','none');
+             prev_li.removeClass('disabled');
+             if(pager_ul.find('li [data-group="'+nextnextgroup+'"]').length==0)
+                next_li.addClass('disabled');
+         }
+     }else if(page=='back'){
+          var prevgroup= +mygroup-1;
+
+         // Show prev group if exists, hide the old one
+         if(pager_ul.find('li [data-group="'+prevgroup+'"]').length){
+             pager_ul.find('li [data-group="'+prevgroup+'"]').css('display','block');
+             pager_ul.find('li [data-group="'+mygroup+'"]').css('display','none');
+             next_li.removeClass('disabled');
+             prev_li.removeClass('disabled');
+             if(prevgroup==1)
+              prev_li.addClass('disabled');
+         }         
+     }else{
+        ul.find('li').hide();
+        ul.find('[data-page="'+page+'"]').fadeIn(500);
+     }
+
+    
+});
+
+
 /* ==============================
  *  Wrappers BT & LTE
  * 

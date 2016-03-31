@@ -312,9 +312,88 @@ private function arr2ul($data,$tag='ol',$unstyled=false){
      return $block;
 }
 
-//=== BOXes 
+//=== Pagination 
+
+ function paginate($text=null,$config=array()){
+        
+        if(is_null($text))return;
+        
+        $default=array(
+            'sep'=>'<!-- pagebreak -->',
+            'width'=>3,
+            );
+        $config=array_merge($default,$config);
+
+        //=== Content
+        
+        if(is_array($text)){
+            $text=implode($config['sep'],$text);
+        }
+        $pages=explode($config['sep'],$text);
+        $count=count($pages);
+
+        $li="";
+        $anchors=array();
+
+        for($i=0;$i<$count;$i++){
+            $i2=$i+1;
+            if($i>0){
+               
+                $li.="<li style='display:none' data-page='$i2'>{$pages[$i]}</li>";
+            }else{
+                 $li.="<li data-page='$i2'>{$pages[$i]}</li>";
+            }
+        }
+
+        $id=md5(time());
+        $ret="<ul data-id='$id' class='list-unstyled'>$li</ul>";
+        
+        // Buttons
+        
+        $data_group=1;
+        $extra=($count%$config['width']);
+        $extra=$count+($config['width']-$extra);
+
+        for($i=0,$j=1;$i<$extra;$i++){
+            $disabled=($i>=$count)?('disabled'):('');
+             $i2=$i+1;
+            if($i<$config['width']){
+                $anchors[]="<li class='$disabled '><a href='#' data-link='$i2' data-group='$data_group'>$i2</a></li>";
+            }else{
+                $anchors[]="<li class='$disabled'><a href='#' data-link='$i2' data-group='$data_group' style='display:none'>$i2</a></li>";
+            }
+            $j++;
+            if($j>$config['width']){
+                $j=1;
+                $data_group++;
+            }
+        }
+        
+
+        // Render    
+        $li2=implode('',$anchors);
+        $disabled=($count>$config['width'])?(''):('disabled');
+        $ret.=<<<_EOF_
+        <nav>
+          <ul class="pagination" data-width="{$config['width']}" data-target="$id">
+            <li class="disabled" data-link="back">
+              <a href="#" aria-label="Previous" data-link="back">
+                <span aria-hidden="true">&laquo;</span>
+              </a>
+            </li>
+                $li2
+            <li class="$disabled" data-link="next">
+              <a href="#" aria-label="Next" data-link="next">
+                <span aria-hidden="true">&raquo;</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+_EOF_;
 
 
+        return $ret;
+    }
 
 
 
