@@ -5,19 +5,22 @@ if (!defined('BASEPATH'))
 
 /**
  * gateway
- * 
+ *
  * Description of the class
- * 
+ *
  * @author Juan Ignacio Borda <juanignacioborda@gmail.com>
  * @date    Jul 23, 2014
  */
-class Gateway extends CI_Controller {
+class Gateway extends MX_Controller {
 
     function __construct() {
         parent::__construct();
+
+    }
+    function index(){
         session_start();
-        if (isset($_REQUEST['url'])) {
-            $url =  base64_decode(urldecode($_REQUEST['url']));
+        if ($this->input->get('url')) {
+            $url =  base64_decode(urldecode($this->input->get('url')));
             $_SESSION['idu'] = $this->session->userdata('iduser');
             //echo $url;exit;
             redirect($url);
@@ -28,6 +31,3 @@ class Gateway extends CI_Controller {
     }
 
 }
-
-/* End of file welcome.php */
-/* Location: ./system/application/controllers/welcome.php */
