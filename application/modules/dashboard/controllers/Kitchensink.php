@@ -179,19 +179,13 @@ echo <<<'_EOF_'
 $this->load->library('dashboard/ui');<br>
 $config['width']=4 //optional<br>
 $config['sep']='&lt;!-- pagebreak -->' //optional<br>
-
+$config['align']='right'//optional (left|center|right)
 /* If $text is a string, the pages will be extracted using the separator. If it is an array, each array item is a page and must have strings inside.*/<br>
 
 echo $this->ui->paginate($text,$config);
 </code><p style="height:15px"></p>
 _EOF_;
     
-
-
-// $text[2]="Linea 1<br>Linea 2<br>";
-// $text[3]="Linea 3<br>Linea4<br>";
-// $text[4]="Linea 5<br>Linea 6<br>";
-// $text[6]="Linea 7<br>Linea 8<br>";
 
 echo $this->ui->paginate($text,array('width'=>4));
 

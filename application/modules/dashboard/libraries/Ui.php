@@ -321,6 +321,7 @@ private function arr2ul($data,$tag='ol',$unstyled=false){
         $default=array(
             'sep'=>'<!-- pagebreak -->',
             'width'=>3,
+            'align'=>'right'
             );
         $config=array_merge($default,$config);
 
@@ -374,7 +375,7 @@ private function arr2ul($data,$tag='ol',$unstyled=false){
         $li2=implode('',$anchors);
         $disabled=($count>$config['width'])?(''):('disabled');
         $ret.=<<<_EOF_
-        <nav>
+        <nav class='text-{$config['align']}'>
           <ul class="pagination" data-width="{$config['width']}" data-target="$id">
             <li class="disabled" data-link="back">
               <a href="#" aria-label="Previous" data-link="back">
