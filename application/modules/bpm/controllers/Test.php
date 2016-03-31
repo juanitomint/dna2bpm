@@ -18,7 +18,7 @@ class test extends MX_Controller {
         $this->base_url = base_url();
         $this->module_url = base_url() . $this->router->fetch_module() . '/';
         $this->debug_manual = null;
-        $this->load->config();
+        $this->load->config('config');
         $this->load->model('user/user');
         $this->load->model('user/group');
         $this->user->authorize();
