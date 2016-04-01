@@ -51,13 +51,18 @@ class util extends MX_Controller {
     
         
     }
-    function get_active_user() {
-        $debug=false;
+    function get_active_user($debug=false) {
         //---check login
+        
+        
+        
         if(!$this->session->userdata('loggedin')){
             show_error('Session Expired<br>', 500);
             exit;
         }
+        $this->session->set_userdata('lastsee',date('H:i:s'));
+        $rtnU['sess_updated']=$this->sess_update();
+        
         $iduser = $this->user->idu;
         $user = $this->user->get_user($iduser);
         //---Available
@@ -77,21 +82,72 @@ class util extends MX_Controller {
          * "group"
          * 
          */
+        // $rtnU+=$this->session->userdata;
         $rtnU['idu']=$user->idu;
         $rtnU['nick']=$user->nick;
         $rtnU['name']=$user->name;
+        $rtnU['lastsee']=$this->session->userdata('lastsee');
         $rtnU['lastname']=$user->lastname;
-        $rtn=$rtnU;
+        $rtnU['ajax']=$this->input->is_ajax_request();
+        $rtnU['sess_time_to_update']=$this->session->now-($this->session->userdata['last_activity'] + $this->session->sess_time_to_update);
+        $rtnU['sess_time_to']=($this->session->userdata['last_activity'] + $this->session->sess_time_to_update >= $this->session->now);
+        
         if (!$debug) {
             $this->output->set_content_type('json','utf-8');
-            $this->output->set_output(json_encode($rtn));
+            $this->output->set_output(json_encode($rtnU));
         } else {
-            var_dump($rtn);
+            var_dump($rtnU);
         }
     
         
     }
+    
+    function sess_update()	{
+		// We only update the session every five minutes by default
+		if ($this->session->userdata['last_activity'] + $this->session->sess_time_to_update >= $this->session->now)
+		{
+			return false;
+		}
 
+		// Save the old session id so we know which record to
+		// update in the database if we need it
+		$old_sessid = $this->session->userdata['session_id'];
+		$new_sessid = '';
+		while (strlen($new_sessid) < 32)
+		{
+			$new_sessid .= mt_rand(0, mt_getrandmax());
+		}
+
+		// To make the session ID even more secure we'll combine it with the user's IP
+		$new_sessid .= $this->input->ip_address();
+
+		// Turn it into a hash
+		$new_sessid = md5(uniqid($new_sessid, TRUE));
+
+		// Update the session data in the session data array
+		$this->session->userdata['session_id'] = $new_sessid;
+		$this->session->userdata['last_activity'] = $this->now;
+
+		// _set_cookie() will handle this for us if we aren't using database sessions
+		// by pushing all userdata to the cookie.
+		$cookie_data = NULL;
+
+		// Update the session ID and last_activity field in the DB if needed
+		if ($this->session->sess_use_database === TRUE)
+		{
+			// set cookie explicitly to only have our session data
+			$cookie_data = array();
+			foreach (array('session_id','ip_address','user_agent','last_activity') as $val)
+			{
+				$cookie_data[$val] = $this->userdata[$val];
+			}
+
+			$this->db->query($this->db->update_string($this->sess_table_name, array('last_activity' => $this->now, 'session_id' => $new_sessid), array('session_id' => $old_sessid)));
+		}
+
+		// Write the cookie
+		$this->session->_set_cookie($cookie_data);
+	}
 }
 
 ?>
