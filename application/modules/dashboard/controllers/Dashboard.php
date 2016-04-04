@@ -26,6 +26,8 @@ class Dashboard extends MX_Controller {
         $this->base_url = base_url();
         $this->module_url = base_url() . $this->router->fetch_module() . '/';
         $this->user->authorize();
+        //---update session ttl
+        $this->session->sess_update();
         //----LOAD LANGUAGE
         $this->lang->load('library', $this->config->item('language'));
         $this->idu = $this->user->idu;
