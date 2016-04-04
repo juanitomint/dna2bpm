@@ -93,6 +93,10 @@ class util extends MX_Controller {
         $rtnU['sess_time_to']=($this->session->userdata['last_activity'] + $this->session->sess_time_to_update >= $this->session->now);
         
         if (!$debug) {
+            $this->output->set_header('Last-Modified: '.gmdate('D, d M Y H:i:s', $last_update).' GMT');
+            $this->output->set_header("Cache-Control: no-store, no-cache, must-revalidate");
+            $this->output->set_header("Cache-Control: post-check=0, pre-check=0");
+            $this->output->set_header("Pragma: no-cache");
             $this->output->set_content_type('json','utf-8');
             $this->output->set_output(json_encode($rtnU));
         } else {
