@@ -25,6 +25,8 @@ $lang["nousrR"] = "Ud no es un usuario registrado o confundió su email";
 $lang["mailsendpart1"]= "<h2>Estimado usuario, </h2><p>Hemos recibido un pedido de reseteo de contraseña a su nombre.</p><p>Su nombre de usuario es:";
 $lang["mailsendpart2"]= "<p>Si ha sido efectuado por Ud. simplemente haga click en el link al pie y ud podr&aacute; elegir su nueva contraseña.</p>";
 $lang["mailsendpart3"]= "Quiero resetear mi clave";
+$lang["type_your_email"] = "Por favor ingrese su email";
+
 $lang["mailsubject"]= "Reseteo de contraseña sistema DNA2";
 $lang["mailmsg1"]="Revise su email.</br> Muchas gracias.";
 $lang["mailback"]="VOLVER";

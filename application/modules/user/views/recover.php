@@ -1,28 +1,28 @@
-<div class="container">
-    <div class="well well-large span6 offset3">
-        <form  action="{module_url}recover/send" method="post">
-            <h1>{lang loginMsgR}</h1>
-            {if {show_warn}}                
-            <div class="alert">
-                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                <strong>Warning!</strong> {msgcode}
-            </div>
-            {/if}   
-            <!-- username -->
-            <div class="div_text">
-                <div class="input-prepend">
-                    <span class="add-on">
-                    <i class="icon-envelope"></i>
-                    </span>
-                    <input name="mail" id="log inputIcon" value="" class="username span5" placeholder="Email" type="email">
-                </div><br/>
-                    <button class="btn btn-success" type="submit">{lang loginButtonR}</button>
+        <div class="form-box" id="login-box">
+            <div class="header bg-navy">{lang loginMsgR}</div>
+                <form  action="{module_url}recover/send" method="post">
+                    {if {show_warn}}                
+                    <div class="alert">
+                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                        <strong>Warning!</strong> {msgcode}
+                    </div>
+                    {/if}   
+
+                    <div class="body bg-gray">
+    				    <label>{lang type_your_email}</label>
+                        <div class="form-group">
+                            <input type="text" name="mail" class="form-control" placeholder="{lang email}"/>
+                        </div>
 
 
+                    </div>
+                    <div class="footer">                                                               
+                        <button type="submit" class="btn bg-olive btn-block">{lang loginButtonR}</button>  
+                    
+                        
+                    </div>
+                </form>
 
-            </div>
-        </form>
-    </div> 
-</div> 
 
-<!-- /container -->
+        </div>
+ 

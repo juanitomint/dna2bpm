@@ -60,11 +60,14 @@ class Recover extends MX_Controller {
         //----clear data
          $this->session->unset_userdata('msg');
 
-        $this->ui->compose('user/recover.php','user/bootstrap.ui.php',$cpData);
+        $this->ui->compose('user/recover.php','user/bootstrap3.ui.php',$cpData);
     }
     
     function Send() {
         //----LOAD LANGUAGE
+        
+
+        
         $this->lang->load('login', $this->config->item('language'));
         //---add language data
         $cpData['lang'] = $this->lang->language;
@@ -74,7 +77,7 @@ class Recover extends MX_Controller {
         $cpData['theme'] = $this->config->item('theme');
         
         $clean['email']  = $this->input->post('mail');
-        
+
   ////////////////////////////////////////////////            
 //        $email_pattern = '/^[^@\s<&>]+@([-a-z0-9]+\.)+[a-z]{2,}$/i';
 //        if (!preg_match($email_pattern, $_POST['email']))
@@ -83,13 +86,14 @@ class Recover extends MX_Controller {
 //        }
         // Chequeo datos atraves del email
         $dbobj=(array)$this->user->getbymailaddress($clean['email']);
-       
+
         // Envio
         if(isset($dbobj['idu'])){ 
 
             $token=md5($dbobj['email'].$dbobj['idu']);
             //armamos el mail
             $content = $this->lang->line('mailsendpart1');
+
             $content.=" <strong>{$dbobj['nick']}</strong> $this->base_url</p>";
             $content.=$this->lang->line('mailsendpart2');
             $content.="<a href='{$this->base_url}user/recover/new_pass/$token'>".$this->lang->line('mailsendpart3')."</a>";
