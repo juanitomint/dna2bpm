@@ -53,7 +53,7 @@ class Code extends MX_Controller {
     function demo($filetype){
         $this->load->helper('file');
         $this->load->module('dashboard');
-        $filename=FCPATH . APPPATH . "modules/code/views/$filetype.php";
+        $filename= APPPATH . "modules/code/views/$filetype.php";
         $code=read_file($filename);
         $data['content']=$this->code_block($code,$filetype);
         $data['title']="Demo: ".$filetype;
@@ -63,7 +63,7 @@ class Code extends MX_Controller {
     function demo_highlight($filetype){
         $this->load->helper('file');
         $this->load->module('dashboard');
-        $filename=FCPATH . APPPATH . "modules/code/views/$filetype.php";
+        $filename=APPPATH . "modules/code/views/$filetype.php";
         $code=read_file($filename);
         $data['content']=$this->highlight_block($code,$filetype);
         $data['title']="Demo: ".$filetype;
@@ -73,7 +73,7 @@ class Code extends MX_Controller {
     function file($file,$lang,$theme='monokai'){
         $this->load->helper('file');
         $this->load->module('dashboard');
-        $filename=FCPATH . APPPATH . $file;
+        $filename=APPPATH . $file;
         $code=read_file($filename);
         $data['content']=$this->code_block($code,$lang,$theme);
         $data['title']="File: ".$filename;
@@ -83,7 +83,7 @@ class Code extends MX_Controller {
     function highlight_file($file,$lang,$theme='monokai'){
         $this->load->helper('file');
         $this->load->module('dashboard');
-        $filename=FCPATH . APPPATH . $file;
+        $filename=APPPATH . $file;
         $code=read_file($filename);
         $data['content']=$this->highlight_block($code,$lang,$theme);
         $data['title']="File: ".$filename;
