@@ -180,12 +180,12 @@ public function wrapper_verify(){
 
 public function encrypt_simetric($plaintext,$key){
 
-$this->load->helper('ssl/Crypt/Blowfish');
-$cipher = new Crypt_Blowfish();
-// keys can range in length from 32 bits to 448 in steps of 8
-$cipher->setKey($key);
-$encrypted=$cipher->encrypt($plaintext);
-return $encrypted;
+ $this->load->helper('ssl/Crypt/Blowfish');
+ $cipher = new Crypt_Blowfish();
+// // keys can range in length from 32 bits to 448 in steps of 8
+ $cipher->setKey($key);
+ $encrypted=$cipher->encrypt($plaintext);
+ return $encrypted;
 
 }
 
