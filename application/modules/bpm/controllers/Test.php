@@ -103,6 +103,7 @@ class test extends MX_Controller {
 
         $data = $this->bpm->load_case_data($case, $idwf);
         $data['date'] = date($this->lang->line('dateFmt'));
+        $data['case'] = $case;
         $msg['from'] = $this->idu;
 
         $msg['idwf'] = $idwf;
@@ -212,6 +213,7 @@ function test_task($idwf, $idcase,$resourceId=null) {
         $renderData['idwf'] = $idwf;
         $renderData['idcase'] = $idcase;
         $renderData ['base_url'] = $this->base_url;
+        $renderData['case'] = $this->bpm->get_case($idcase, $idwf);
         
 // ---prepare UI
         $renderData ['css'] = array(
