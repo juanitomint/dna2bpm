@@ -44,10 +44,27 @@ class Rest extends MX_Controller {
 
     function init(){
 
-        $mypost=$this->input->post();
+        $mypost=$this->input->post('fingerprint');
+        $fingerprint=trim($mypost);
+        $res=$this->ssl_model->get_key($fingerprint);
+         
+         if(empty($res)){
+             //== Error
+             $response['status']=false;
+             $response['msg']='Bad fingerprint';
+         }else{
+             $response['status']=true;
+             $response['simetric_key']='---';
+         }
+         
+         $key="123123";
+         
+         $resp=Modules::run('ssl/encrypt_simetric', 'texto',$key);
+        // echo json_encode($resp);
+         echo base64_encode($resp);
+         //$res->public_key
+         
 
-        $res=$this->ssl_model->get_key($mypost['fingerprint']);
-        var_dump($res);
     }
     
 }//class

@@ -791,7 +791,7 @@ class Kpi extends MX_Controller {
 	function import_kpi($module) {
 		if ($module && $this->user->isAdmin ()) {
 			$this->load->helper ( 'file' );
-			$path = FCPATH . APPPATH . "modules/$module/views/kpi/"; // ---don't
+			$path = APPPATH . "modules/$module/views/kpi/"; // ---don't
 			$files = get_filenames ( $path );
 			
 			foreach ( $files as $file ) {

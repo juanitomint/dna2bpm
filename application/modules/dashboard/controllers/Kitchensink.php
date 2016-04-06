@@ -16,7 +16,7 @@ class Kitchensink extends MX_Controller {
         parent::__construct();
         $this->load->model('user/user');
         $this->load->library('dashboard/ui');
-        $this->load->library('dashboard/pagination');
+
     
     }
 

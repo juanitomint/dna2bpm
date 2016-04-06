@@ -75,7 +75,7 @@ class Toast_all extends MX_Controller {
     function _get_test_files() {
         $files = array();
 
-        $handle = opendir(FCPATH . APPPATH . "modules/test/controllers");
+        $handle = opendir(APPPATH . "modules/test/controllers");
         while (false !== ($file = readdir($handle))) {
             // Skip hidden/system files and the files in the skip[] array
             if (!in_array($file, $this->skip) && !(substr($file, 0, 1) == '.')) {
