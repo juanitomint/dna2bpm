@@ -704,7 +704,7 @@ class Bpm extends CI_Model {
                 ) + $filter;
 //        var_dump(json_encode($query));
 //        exit;
-        $result = $this->db->get_where('tokens',$query)->result_array();
+        $result = $this->db->order_by($sort)->get_where('tokens',$query)->result_array();
         $rs = array();
         foreach ($result as $record) {
             //----don't add missing tokens
@@ -1134,7 +1134,7 @@ class Bpm extends CI_Model {
 
         if ($idcase)
             $query['case'] = $idcase;
-        $this->db->where($query);    
+        $this->db->where($query);
         return $this->db->get('tokens')->result_array();
     }
 
