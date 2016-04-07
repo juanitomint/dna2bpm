@@ -64,7 +64,7 @@ class Assets extends MX_Controller {
  
             readfile($file);
         } else {
-            show_404('Asset not found: $file');
+            show_error("Asset not found: $file");
         }
         exit;
     }
