@@ -32,7 +32,7 @@ class kpi_time_avg_all {
 
     function list_cases($kpi) {
         $filter = $this->CI->kpi_model->get_filter($kpi); 
-        $tokens = $this->CI->bpm->get_tokens_byResourceId($kpi['resourceId'], $filter);
+        $tokens = $this->CI->bpm->get_tokens_byResourceId($kpi['resourceId'], $filter,array('checkdate'=>true));
         $cpData = $kpi;
         $cases = array_map(function ($token) {
             return $token['case'];
