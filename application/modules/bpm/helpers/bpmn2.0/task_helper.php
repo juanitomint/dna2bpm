@@ -240,6 +240,7 @@ function run_Task($shape, $wf, $CI) {
 
             $msg['idwf'] = $wf->idwf;
             $msg['case'] = $wf->case;
+            
             $msg['resourceId'] = $resourceId;
             if ($shape->properties->properties <> '') {
                 foreach ($shape->properties->properties->items as $property) {
@@ -260,6 +261,8 @@ function run_Task($shape, $wf, $CI) {
             //---Get FROM
             $user = $CI->user->get_user_safe($msg['from']);
             $data['user'] = (array) $user;
+            $data['idwf'] = $wf->idwf;
+            $data['case'] = $case;
             
                 if ($debug){
                     echo "Parsing Subject:<br/>";
@@ -273,8 +276,10 @@ function run_Task($shape, $wf, $CI) {
             $to = (isset($resources['assign'])) ? $resources['assign'] : $token['assign'];
             $to = array_unique(array_filter($to));
             foreach ($to as $to_user) {
-                if ($debug)
+                if ($debug){
                     echo "Sending msg to user:$to_user<br/>";
+                    var_dump($msg);
+                }
                 switch($shape->properties->rendering){
 
 
