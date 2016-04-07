@@ -420,7 +420,6 @@ class Kpi extends MX_Controller {
 		$pagesize=(int)$pagesize;
 
 		$debug = (isset ( $this->debug [__FUNCTION__] )) ? $this->debug [__FUNCTION__] : false;
-		$debug=true;
 		if ($debug)
 			echo '<h2>' . __FUNCTION__ . '</h2>';
 		$this->load->model ( 'bpm' );
