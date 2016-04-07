@@ -17,8 +17,8 @@ echo "Creating Module Controllers";
 mkdir "$1/controllers";
 touch "$1/controllers/.gitattributes"
 echo "Setting up Assets controller"
-cp ./user/controllers/assets.php $1/controllers
-default_controller=$1/controllers/$1.php
+cp ./user/controllers/Assets.php $1/controllers
+default_controller="$1/controllers/${1^}.php"
 if [ ! -f $default_controller ]; then
 echo "Setting up Default Controller";
 cp ./controller_scaffold.php $default_controller
