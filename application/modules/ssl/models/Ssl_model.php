@@ -48,5 +48,25 @@ class ssl_model extends CI_Model {
 
     }   
     
+    
+     public function add_simetric($key,$fingerprint){
+        $query=array('fingerprint'=>$fingerprint);
+        $keys['simetric_key']=$key;
+        $keys['simetric_date']= new MongoDate(time());
+        $this->db->where($query);
+        return $this->db->update($this->container,$keys);
+         
+    } 
+    
+    
+    //======== REST 
+    
+     public function rest_push($data){
+
+        $rs=$this->db->insert('rest', $data); 
+        return array('status'=>$rs,'error'=>''); 
+        
+    } 
+    
 
 }
