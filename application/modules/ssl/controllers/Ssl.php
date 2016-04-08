@@ -122,10 +122,11 @@ class Ssl extends MX_Controller {
      
 //== Decrypt for @debug
 // public function decrypt($privKey=""){
-// $encrypted=$this->encrypt("Hey como va","dc6fcd226959ffc26571ebd6c5697f43"); 
+// $encrypted=base64_decode("UIZLtdenU7LKmGYLX2mx979YLny7i1GGK6sU9CrD04E/INWsjc1qzV0I52I8NFIMFNgLDpkNqSw+dhYFIJhI/nhOu/CycwgwYfWb8/9wXqUotP5WOt7zNBybu2k82gTu5MtsX5WE3m2nFdGxKOnaBIAjvG3QlgyM2zYo3WA6R17PmyflTOmtMQGu5T6mRjvf5zBE4rCMf6cXUNYWgEIiRuHQzG1fX933M5Ua12dQDXIZTABK9VjZSyPzFvhEqxHYGRoqGcHyT3g3hU/fECImhg/XeobLYczYrAguXZGw5eodnkhPMTiQ8MQWbQyKLfhWF2zid9K7/17+ZkZZMpDoebf/wRObuu8XZfH8EcKX7ijvYZewxtsB4HoR35ssX1xyBo3Um7fpeyEEtoUV6eMXZbCJYzMCkhMfPAPfnQva5I3s50dynmMA5DqLS3PuQRjqkuZpqsrktLVAq5af6WEW18mm0HwyzmYz1Gk/tsLeEQWr9nRdTkP3G4aOeR9l/SaRGhkmnzZ99VKaEmR6/bo6XiIY4nc4bkeDFSw9EYJazg7olAOld/Gs5axyHH2qv66PVPsOq1oZFi4kabHUZuSGQU83KV6OIFCALvxUpHEm/3YUpAUazVA0le0IlOu88lghb0wxfKioo+ivKCt/QY10Zxzkto1mOQUsVSJ73FJcxIo=");
+// //$encrypted=$this->encrypt("Hey como va","dc6fcd226959ffc26571ebd6c5697f43"); 
 // $privKey = openssl_pkey_get_private($this->get_priv_key());
 // openssl_private_decrypt($encrypted, $decrypted, $privKey);
-// return $decrypted;
+// var_dump($decrypted);
 // }
     
 //======================= SIGNATURES
@@ -316,8 +317,9 @@ _EOF_;
 return $ret;
 }
 
-function test(){
 
-}
+
+
+
     
 }//class

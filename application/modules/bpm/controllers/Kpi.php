@@ -36,23 +36,23 @@ class Kpi extends MX_Controller {
 		$this->load->helper ( 'dbframe' );
 		$segments = $this->uri->segment_array ();
 		$debug = (in_array ( 'debug', $segments )) ? true : false;
-		
+
 		$custom = '';
 		$types_path = $this->types_path;
 		// var_dump($_POST);
 		$out = array ();
 		// $form = $this->app->get_object($idapp);
-		
+
 		if (isset ( $model )) {
 			switch ($action) {
 				// ----start READ--------------
 				case 'read' :
-					
+
 					$kpi = $this->kpi_model->get_model ( $model );
 					if (count ( $kpi )) {
 						$forms ['totalcount'] = count ( $kpi );
 						include ($types_path . 'base/kpi.base.php');
-						
+
 						foreach ( $kpi as $obj ) {
 							$forms ['rows'] [] = $obj;
 						}
@@ -71,11 +71,11 @@ class Kpi extends MX_Controller {
 						$thisKpi = ( array ) $thisKpi;
 						$dbKpi = $this->kpi_model->get ( $thisKpi ['idkpi'], 'object' );
 						$newKpi = array_merge ( $dbKpi, $thisKpi );
-						
+
 						$this->kpi_model->save ( $newKpi );
 					}
 					$out = array (
-							'status' => 'ok' 
+							'status' => 'ok'
 					);
 					break;
 				/*
@@ -94,7 +94,7 @@ class Kpi extends MX_Controller {
 						$this->kpi_model->save ( $kpi->toSave () );
 					}
 					$out = array (
-							'success' => true 
+							'success' => true
 					);
 					break;
 				case 'destroy' :
@@ -103,7 +103,7 @@ class Kpi extends MX_Controller {
 						$result = $this->kpi_model->delete ( $thisKpi->idkpi );
 					}
 					$out = array (
-							'success' => true 
+							'success' => true
 					);
 					break;
 			}
@@ -134,11 +134,11 @@ class Kpi extends MX_Controller {
 		$cpData ['module_url'] = $this->module_url;
 		$cpData ['idwf'] = $idwf;
 		$cpData ['title'] = 'Key Performance Indicators Browser/Editor';
-		
+
 		$cpData ['css'] = array (
 				$this->module_url . 'assets/css/jsoneditor.min.css' => 'JSON-Editor CSS',
 				$this->module_url . 'assets/css/kpi.css' => 'KPI special Rules',
-				$this->module_url . 'assets/css/extra-icons.css' => 'KPI special Rules' 
+				$this->module_url . 'assets/css/extra-icons.css' => 'KPI special Rules'
 		);
 		$cpData ['js'] = array (
 				$this->module_url . 'assets/jscript/jsoneditor.min.js' => 'JSON-Editor',
@@ -158,15 +158,15 @@ class Kpi extends MX_Controller {
 				$this->module_url . 'assets/jscript/panzoom/jquery.mousewheel.js' => 'wheel-suppport',
 				$this->module_url . 'assets/jscript/panzoom/pnazoom_wheel.js' => 'wheel script',
 				// -----------------------------------------------------------------
-				$this->base_url . "jscript/bootstrap/js/bootstrap.min.js" => 'Bootstrap JS' 
+				$this->base_url . "jscript/bootstrap/js/bootstrap.min.js" => 'Bootstrap JS'
 		);
-		
+
 		$cpData ['global_js'] = array (
 				'base_url' => $this->base_url,
 				'module_url' => $this->module_url,
-				'idwf' => $idwf 
+				'idwf' => $idwf
 		);
-		
+
 		$this->ui->makeui ( 'ext.ui.php', $cpData );
 	}
 	function Get_properties($idkpi = null, $mode = 'json') {
@@ -179,7 +179,7 @@ class Kpi extends MX_Controller {
 		$thisKpi = array ();
 		$custom = '';
 		$thisKpi = array (
-				'' 
+				''
 		);
 		if (isset ( $idkpi )) {
 			$thisKpi = $this->kpi_model->get ( $idkpi );
@@ -190,7 +190,7 @@ class Kpi extends MX_Controller {
 		// ---set user
 		$thisKpi ['idu'] = (isset ( $thisKpi ['idu'] )) ? $thisKpi ['idu'] : $this->idu;
 		$type = (isset ( $thisKpi ['type'] )) ? $thisKpi ['type'] : 'count';
-		
+
 		// ---load base properties from helpers/types/base
 		// ---defines $common
 		include ($this->types_path . 'base/kpi.base.php');
@@ -202,11 +202,11 @@ class Kpi extends MX_Controller {
 				echo "Loaded Custom:$file_custom<br/>";
 			include ($file_custom);
 		}
-		
+
 		// ---now define the properties template
 		$properties_template = $common + $type_props;
 		$kpi = new dbframe ( $thisKpi, $properties_template );
-		
+
 		if (! $debug) {
 			switch ($mode) {
 				case "object" :
@@ -239,7 +239,7 @@ class Kpi extends MX_Controller {
 		// ----------------------------------------------------------------------
 		// ---Load Base Properties
 		// ----------------------------------------------------------------------
-		
+
 		$file = $this->module_path . "assets/jscript/kpi/ext.baseProperties.js";
 		if (is_file ( $file )) {
 			$baseProps = "// FILE:$file\n";
@@ -285,7 +285,7 @@ class Kpi extends MX_Controller {
 		// ----define Globals
 		$cpData ['global_js'] = array (
 				'base_url' => $this->base_url,
-				'module_url' => $this->module_url 
+				'module_url' => $this->module_url
 		);
 		$cpData ['js'] = array (
 		);
@@ -309,9 +309,9 @@ class Kpi extends MX_Controller {
 				"resourceId" => $resourceId,
 				"status" => $status,
 				'list_template' => '',
-				'list_fields' => '' 
+				'list_fields' => ''
 		);
-		
+
 		// var_dump($kpi);exit;
 		// ----if specified pagesize comes from KPI
 		$detail = $this->base_url . 'bpm/engine/run/model/{idwf}/{idcase}';
@@ -326,7 +326,7 @@ class Kpi extends MX_Controller {
 		$offset = ($page - 1) * $pagesize;
 		$top = min ( array (
 				$offset + $pagesize,
-				$total 
+				$total
 		) );
 		// ---prepare pages
 		$cpData ['showPager'] = ($pages > 1) ? true : false;
@@ -334,16 +334,16 @@ class Kpi extends MX_Controller {
 			$cpData ['pages'] [] = array (
 					'title' => $i,
 					'url' => $this->base_url . 'bpm/kpi/list_status/' . $idwf . '/' . $resourceId . '/' . $status . '/' . $i . '/' . $pagesize,
-					'class' => ($i == $page) ? 'bg-blue' : '' 
+					'class' => ($i == $page) ? 'bg-blue' : ''
 			);
 		}
-		
+
 		$cpData ['start'] = $offset + 1;
 		$cpData ['top'] = $top;
 		$cpData ['qtty'] = $total;
 		// ----make content
 		$isAdmin = $this->user->isAdmin ();
-		
+
 		for($i = $offset; $i < $top; $i ++) {
 			$idcase = $cases [$i];
 			$case = $this->bpm->get_case ( $idcase, $kpi ['idwf'] );
@@ -361,20 +361,20 @@ class Kpi extends MX_Controller {
 					'base_url' => $this->base_url,
 					'module_url' => $this->module_url,
 					'checkdate' => date ( $this->lang->line ( 'dateTimeFmt' ), strtotime ( $case ['checkdate'] ) ),
-					'user' => ( array ) $this->user->get_user_safe ( $case ['iduser'] ) 
+					'user' => ( array ) $this->user->get_user_safe ( $case ['iduser'] )
 			), $case ['data'] );
 		}
 		if ($kpi ['list_template'] != '') {
 			$template = $kpi ['list_template'];
 		} else {
-			
+
 			// ----create headers values 4 templates
 			$columns = json_decode ( $kpi ['list_fields'] );
 			$default_columns = array (
 					'#' => 'i',
 					'ID' => 'idcase',
 					ucfirst ( $this->lang->line ( 'checkdate' ) ) => 'checkdate',
-					ucfirst ( $this->lang->line ( 'user' ) ) => 'user lastname} {user name' 
+					ucfirst ( $this->lang->line ( 'user' ) ) => 'user lastname} {user name'
 			);
 			$tdata = ($columns) ? $columns : $default_columns;
 			if ($tdata) {
@@ -403,7 +403,7 @@ class Kpi extends MX_Controller {
 		}
 		// var_dump($parseArr);exit;
 		$cpData ['content'] = $this->parser->parse_string ( $template, array (
-				'cases' => $parseArr 
+				'cases' => $parseArr
 		), true, true );
 		$cpData ['footer'] = "
         <a href='" . $this->base_url . "bpm/bpmui/widget_ministatus' class='reload_widget'>
@@ -413,10 +413,12 @@ class Kpi extends MX_Controller {
 		// ----PROCESS KPIS
 		$this->parser->parse ( 'bpm/widgets/list.kpi.ui.php', $cpData,false,true );
 	}
+
 	function list_cases($idkpi, $page = 1, $pagesize = 5) {
+
 		$page=(int)$page;
 		$pagesize=(int)$pagesize;
-		
+
 		$debug = (isset ( $this->debug [__FUNCTION__] )) ? $this->debug [__FUNCTION__] : false;
 		if ($debug)
 			echo '<h2>' . __FUNCTION__ . '</h2>';
@@ -428,7 +430,7 @@ class Kpi extends MX_Controller {
 		$cpData ['module_url'] = $this->module_url;
 		$cpData ['showPager'] = false;
 		$kpi = $this->kpi_model->get ( $idkpi );
-		
+
 
 		// var_dump($kpi);exit;
 		// ----if specified pagesize comes from KPI
@@ -439,9 +441,11 @@ class Kpi extends MX_Controller {
 			$detail = $kpi ['list_detail'];
 			$detail_icon = 'fa-folder';
 		} else {
-			$detail = $this->base_url . 'bpm/engine/run/model/{idwf}/{idcase}';
-			$detail_icon = 'fa-play';
+			$detail = '';
+			$detail_icon = 'fa-folder';
 		}
+			$play_link = $this->base_url . 'bpm/engine/run/model/{idwf}/{idcase}';
+			$play_icon = 'fa-play';
 		$cpData ['kpi'] = $kpi;
 		$cases = $this->Get_cases ( $kpi );
 
@@ -454,19 +458,19 @@ class Kpi extends MX_Controller {
 		$offset = ($page - 1) * $pagesize;
 		$top = min ( array (
 				$offset + $pagesize,
-				$total 
+				$total
 		) );
-		
 
-		
+
+
     	//==== Pagination
     	define("PAGINATION_WIDTH",6);
     	define("PAGINATION_ALWAYS_VISIBLE",true);
     	define("PAGINATION_ITEMS_X_PAGE",$pagesize);
-    	
+
     	$config=array('url'=>$this->base_url . 'bpm/kpi/list_cases/' . $idkpi,
     			'current_page'=>$page,
-    			'items_total'=>$total, // Total items 
+    			'items_total'=>$total, // Total items
     			'items_x_page'=>PAGINATION_ITEMS_X_PAGE,
     			'pagination_width'=>PAGINATION_WIDTH,
     			'class_ul'=>"pagination-sm",
@@ -475,25 +479,25 @@ class Kpi extends MX_Controller {
     	);
     	$cpData['pagination']=$this->pagination->index($config);
     	$cpData['items_total']=$total;
-    	
+
 
     	//==
-    	
+
 		//---prepare pages
 		// $cpData ['showPager'] = ($pages > 1) ? true : false;
 		// for($i = 1; $i <= $pages; $i ++) {
 		// 	$cpData ['pages'] [] = array (
 		// 			'title' => $i,
 		// 			'url' => $this->base_url . 'bpm/kpi/list_cases/' . $idkpi . '/' . $i . '/' . $pagesize,
-		// 			'class' => ($i == $page) ? 'bg-blue' : '' 
+		// 			'class' => ($i == $page) ? 'bg-blue' : ''
 		// 	);
 		// }
-		
+
 		// $cpData ['start'] = $offset + 1;
 		// $cpData ['top'] = $top;
 		 $cpData ['qtty'] = $total;
 		// ----make content
-		
+
 		for($i = $offset; $i < $top; $i ++) {
 			$idcase = $cases [$i];
 			$case = $this->bpm->get_case ( $idcase, $kpi ['idwf'] );
@@ -511,26 +515,27 @@ class Kpi extends MX_Controller {
 					'base_url' => $this->base_url,
 					'module_url' => $this->module_url,
 					'checkdate' => date ( $this->lang->line ( 'dateTimeFmt' ), strtotime ( $case ['checkdate'] ) ),
-					'user' => ( array ) $this->user->get_user_safe ( $case ['iduser'] ) 
+					'user' => ( array ) $this->user->get_user_safe ( $case ['iduser'] )
 			), $case ['data'] );
 		}
-		
-		
+
+
 		if ($kpi ['list_template'] != '') {
 			$template = $kpi ['list_template'];
 		} else {
-			
+
 			// ----create headers values 4 templates
 			$columns = json_decode ( $kpi ['list_fields'] );
 			$default_columns = array (
 					'#' => 'i',
 					'ID' => 'idcase',
 					ucfirst ( $this->lang->line ( 'checkdate' ) ) => 'checkdate',
-					ucfirst ( $this->lang->line ( 'user' ) ) => 'user lastname} {user name' 
+					ucfirst ( $this->lang->line ( 'user' ) ) => 'user lastname} {user name'
 			);
 			$tdata = ($columns) ? $columns : $default_columns;
-			
+
 			if ($tdata) {
+				$header [] = '<th></th>';
 				$header [] = '<th></th>';
 				foreach ( $tdata as $key => $value ) {
 					$header [] = '<th>' . $key . '</th>';
@@ -542,7 +547,7 @@ class Kpi extends MX_Controller {
 				$template .= '</thead>';
 				// body
 				$template .= '<tbody>';
-				$template .= '{cases}' . '<tr>' . '<td>' . '<a target="_blank" class="'.$idkpi.'" href="' . $detail . '">' . '<i class="fa ' . $detail_icon . '"></i>' . '</a>' . '</td>' . implode ( $values ) . "" . "</tr>{/cases}\n";
+				$template .= '{cases}' . '<tr>' . '<td>'.'<a target="_blank" class="'.$idkpi.'" href="' . $play_link . '">' . '<i class="fa ' . $play_icon . '"></i></a></td><td>' . '<a target="_blank" class="'.$idkpi.'" href="' . $detail . '">' . '<i class="fa ' . $detail_icon . '"></i>' . '</a>' . '</td>' . implode ( $values ) . "" . "</tr>{/cases}\n";
 				$template .= '</tbody>';
 				$template .= '</table>';
 			} else {
@@ -551,17 +556,17 @@ class Kpi extends MX_Controller {
 		}
 		// var_dump($parseArr);exit;
 		$cpData ['content'] = $this->parser->parse_string ( $template, array (
-				'cases' => $parseArr 
+				'cases' => $parseArr
 		), true, true );
 		// ----PROCESS KPIS
-		
+
 
 
 	$this->parser->parse ( 'bpm/widgets/list.kpi.ui.php', $cpData );
 	}
-	
-	
-	
+
+
+
 	function widget($model, $idkpi, $widget = 'box_info') {
 		$debug = (isset ( $this->debug [__FUNCTION__] )) ? $this->debug [__FUNCTION__] : false;
 		if ($debug)
@@ -579,7 +584,7 @@ class Kpi extends MX_Controller {
 			echo "Error: There is no kpi: $idkpi";
 		}
 	}
-	
+
 	/*
 	 * This function makes a Tile with kpi data
 	 */
@@ -594,7 +599,7 @@ class Kpi extends MX_Controller {
 			echo $this->$kpi_type->tile ( $kpi );
 		}
 	}
-	
+
 	/*
 	 * This function makes a Tile with an idkpi
 	 */
@@ -619,7 +624,7 @@ class Kpi extends MX_Controller {
 	}
 	function Render($kpi = null) {
 		$debug = false;
-		
+
 		$exists = false;
 		// ---load type extension
 		if (! method_exists ( $this, $kpi ['type'] )) {
@@ -654,7 +659,7 @@ class Kpi extends MX_Controller {
 			return $rtn;
 		}
 	}
-	
+
 	/*
 	 * Most common render goes inline
 	 */
@@ -667,12 +672,12 @@ class Kpi extends MX_Controller {
 			case 'user' :
 				$filter = array (
 						'idwf' => $kpi ['idwf'],
-						'iduser' => $this->idu 
+						'iduser' => $this->idu
 				);
 				break;
 			default : // ---filter by idwf
 				$filter = array (
-						'idwf' => $kpi ['idwf'] 
+						'idwf' => $kpi ['idwf']
 				);
 				break;
 		}
@@ -761,14 +766,14 @@ class Kpi extends MX_Controller {
 		$dbkpi = ($this->kpi_model->get ( $idkpi ));
 		$addkpi = ($dbkpi) ? $dbkpi : array ();
 		$obj = $kpi->toSave () + $addkpi;
-		
+
 		$this->kpi_model->save ( $obj );
 		// ----register app in RBAC-REPOSIROTY
 		$path = 'modules/bpm/controllers/model/' . $kpi->idwf . '/kpi/' . $kpi->idkpi . '/' . $kpi->title . ' (' . $kpi->type . ')';
 		$properties = array (
 				"source" => "User",
 				"checkdate" => date ( 'Y-m-d H:i:s' ),
-				"idu" => $this->idu 
+				"idu" => $this->idu
 		);
 		$this->rbac->put_path ( $path, $properties );
 		// $kpi->groups = implode(',', $kpi->groups);
@@ -793,7 +798,7 @@ class Kpi extends MX_Controller {
 			$this->load->helper ( 'file' );
 			$path = APPPATH . "modules/$module/views/kpi/"; // ---don't
 			$files = get_filenames ( $path );
-			
+
 			foreach ( $files as $file ) {
 				echo "Importing: $file<br/>";
 				$content = file_get_contents ( $path . $file );

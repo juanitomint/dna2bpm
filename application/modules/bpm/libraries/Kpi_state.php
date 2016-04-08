@@ -31,27 +31,27 @@ class kpi_state {
 
     function list_cases($kpi) {
 
-        $filter = $this->CI->kpi_model->get_filter($kpi); 
+        $filter = $this->CI->kpi_model->get_filter($kpi);
         unset($filter['resourceId']);
         $status = (isset($kpi['status'])) ? $kpi['status'] : 'user';
-        
-        $filter = $this->CI->kpi_model->get_filter($kpi);        
+
+        $filter = $this->CI->kpi_model->get_filter($kpi);
         $filter['status'] = $kpi['status'];
-        $tokens = $this->CI->bpm->get_tokens_byResourceId($kpi['resourceId'], $filter);
+        $tokens = $this->CI->bpm->get_tokens_byResourceId($kpi['resourceId'], $filter,array('checkdate'=>true));
         $cases = array_map(function ($token) {
             return $token['case'];
         }, $tokens);
         return $cases;
-        
+
     }
 
     function core($kpi) {
-        $filter = $this->CI->kpi_model->get_filter($kpi);        
+        $filter = $this->CI->kpi_model->get_filter($kpi);
         $status = (isset($kpi['status'])) ? $kpi['status'] : 'user';
         $filter['status'] = $kpi['status'];
         $tokens = $this->CI->bpm->get_tokens_byFilter_count($filter);
         $cpData = $kpi;
-        
+
         $cpData['number'] = $tokens;
         return $cpData;
     }
