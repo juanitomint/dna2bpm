@@ -171,6 +171,9 @@ class Repository extends MX_Controller {
 
     function load($model, $idwf, $mode = '', $debug = false) {
 //---decode url string
+        
+        if(!$idwf){
+            show_error("You must provide a model id");
         $idwf = urldecode($idwf);
         $mywf = $this->bpm->load($idwf,false);
         if (!$debug)
