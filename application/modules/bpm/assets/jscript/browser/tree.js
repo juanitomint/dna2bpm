@@ -255,7 +255,7 @@ var TreeDblClick=function(widget,event){
     n=widget.getSelectionModel().getSelection()[0];
     //---only do something if its leaf=model
     if(n && n.isLeaf()){
-        strUrl=globals.base_url+'jscript/bpm/editor.xhtml#model/'+n.data.id.split('/').pop();
+        strUrl=globals.base_url+'jscript/bpm/editor.xhtml#model/'+n.data.id.toString().split('/').pop();
         window.open(strUrl);
     }
 }
