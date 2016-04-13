@@ -93,9 +93,6 @@ function post(){
     $res=$this->ssl_model->get_key($fingerprint);
     
     
-$encrypted_body=Modules::run('ssl/encrypt_simetric', 'Hellow World!',$fingerprint);   
-var_dump(base64_encode($encrypted_body));
-exit();
      if(empty($res)){
          //== Error
          $response['status']=false;
@@ -106,7 +103,7 @@ exit();
 
         //$encrypted_body=Modules::run('ssl/encrypt_simetric', 'Hellow World!',$fingerprint);
 
-        $msg=Modules::run('ssl/decrypt_simetric', $encrypted_body,$fingerprint);
+        $msg=Modules::run('ssl/decrypt_simetric', $encrypted_body,$res->simetric_key);
 
         if($msg){
             // msg ok
