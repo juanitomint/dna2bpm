@@ -7,7 +7,7 @@ var FolderAdd = Ext.create('Ext.Action', {
         if (!n.isLeaf()) {
             Ext.MessageBox.prompt('Model', 'Please Folder name:', function(btn,text){
                 if(btn=='ok' && text){
-                    
+
                     node={
                         id: text,
                         text    : text +' <span class="text-new">[new]</span>',
@@ -27,9 +27,9 @@ var FolderAdd = Ext.create('Ext.Action', {
     }
 });
 function get_path(n){
-    parents=new Array(n.data.id);
+    parents=new Array(n.data.id.toString());
     while(n=n.parentNode){
-        parents.unshift(n.data.id)
+        parents.unshift(n.data.id.toString())
     }
     root=parents.splice(0,1);
     return parents.join('/');
@@ -40,11 +40,11 @@ var ModelAdd = Ext.create('Ext.Action', {
     handler: function(widget, event) {
         var n = tree.getSelectionModel().getSelection()[0];
         if(n){
-            
+
             if (!n.isLeaf()) {
                 Ext.MessageBox.prompt('Model', 'Please enter Model id:', function(btn,text){
                     if(btn=='ok' && text){
-                    
+
                         node={
                             id: text,
                             text    : text +' <span class="text-new">[new]</span>',
@@ -58,7 +58,7 @@ var ModelAdd = Ext.create('Ext.Action', {
                             url: globals.module_url+'repository/add/',
                             method: 'POST',
                             params:{
-                            
+
                                 'idwf':text,
                                 'folder':get_path(n)
                             },
@@ -74,7 +74,7 @@ var ModelAdd = Ext.create('Ext.Action', {
                             failure: function(response,options){
                                 alert('Error Loading:'+response.err);
                                 tree.setLoading(false);
-                
+
                             }
                         });
                     }
@@ -90,7 +90,7 @@ var ModelAdd = Ext.create('Ext.Action', {
 });
 /**
  * Duplicate model from context menu
- * 
+ *
  */
 var ModelDuplicate = Ext.create('Ext.Action', {
     iconCls: 'fa fa-files-o',
@@ -98,7 +98,7 @@ var ModelDuplicate = Ext.create('Ext.Action', {
     handler: function(widget, event) {
         var n = tree.getSelectionModel().getSelection()[0];
         if(n){
-            
+
             if (n.isLeaf()) {
                 Ext.MessageBox.prompt('<i class="fa fa-files-o"></i> Duplicate Model', 'Please enter a new Model id:', function(btn,text){
                     if(btn=='ok' && text){
@@ -108,9 +108,9 @@ var ModelDuplicate = Ext.create('Ext.Action', {
                             url: globals.module_url+'repository/duplicate',
                             method: 'POST',
                             params:{
-                            
+
                                 'newidwf':text,
-                                'idwf':n.data.id
+                                'idwf':n.data.id.toString()
                             },
                             // define a handler for request success
                             success: function(response, options){
@@ -123,7 +123,7 @@ var ModelDuplicate = Ext.create('Ext.Action', {
                             failure: function(response,options){
                                 alert('Error Loading:'+response.err);
                                 tree.setLoading(false);
-                
+
                             }
                         });
                     }
@@ -147,14 +147,14 @@ var ModelRemove = Ext.create('Ext.Action', {
                 title: 'What, really remove model?',
                 msg: 'Are you sure?',
                 buttons: Ext.MessageBox.YESNO,
-                buttonText:{ 
-                    yes: "Definitely!", 
-                    no: "No chance!" 
+                buttonText:{
+                    yes: "Definitely!",
+                    no: "No chance!"
                 },
                 fn: function(btn){
                     if(btn=='yes'){
                         m=n.parentNode;
-                        path=n.data.id;
+                        path=n.data.id.toString();
                         n.remove();
                         //---remove from repo
                         tree.setLoading('Saving');
@@ -164,7 +164,7 @@ var ModelRemove = Ext.create('Ext.Action', {
                             method: 'POST',
                             params:{
                                 //---get the active node
-                                'idwf':n.data.id
+                                'idwf':n.data.id.toString()
                             },
                             // define a handler for request success
                             success: function(response, options){
@@ -174,14 +174,14 @@ var ModelRemove = Ext.create('Ext.Action', {
                             failure: function(response,options){
                                 alert('Error Loading:'+response.err);
                                 tree.setLoading(false);
-                
+
                             }
                         });
-                        
+
                     }
                 }
             });
-            
+
         }
     }
 });
@@ -202,7 +202,7 @@ var contextMenu = Ext.create('Ext.menu.Menu', {
     FolderAdd,ModelAdd,ModelRemove,ModelDuplicate
     ]
 });
-    
+
 //---set all child checked
 function checkchange (node, checked) {
     node.eachChild(function(n) {
@@ -217,39 +217,39 @@ function uncheck_all(){
     root.set('checked',false);
     checkchange(root,false);
 }
-/* 
+/*
  * Click Function
- * 
+ *
  * Load Model Data in center panel
- * 
+ *
  * @todo repeated clicks comes cached
  */
 var TreeClick=function(widget,event){
     n=widget.getSelectionModel().getSelection()[0];
     //---only do something if its leaf=model
     if(n && n.isLeaf()){
-        
+
         //url='http://localhost/dna2.gitorious/bpm/repository/load/model/ksemilla-listados/json';
         options={
-            
-        'url': globals.module_url+'admin/get_model/'+n.data.id
+
+        'url': globals.module_url+'admin/get_model/'+n.data.id.toString()
         }
         //center_panel.body.load(options);
         //---prevent not loading
         var first=false;
         Ext.getCmp('center_panel').setLoading("Loading Model...");
-        load_model(n.data.id,function(){
+        load_model(n.data.id.toString(),function(){
             Ext.getCmp('center_panel').setLoading(false);
-            
+
         });
 
     }
 }
 /*
  * Double click function
- * 
+ *
  * Opens model editor in a new window
- *  
+ *
  */
 var TreeDblClick=function(widget,event){
     n=widget.getSelectionModel().getSelection()[0];
@@ -261,9 +261,9 @@ var TreeDblClick=function(widget,event){
 }
 /*
  * function move node
- * 
+ *
  * moves a node from one point to another
- * 
+ *
  */
 
 function move_node(n,path){
@@ -273,8 +273,8 @@ function move_node(n,path){
         url: globals.module_url+'/repository/update_folder',
         method: 'POST',
         params:{
-                            
-            'idwf':n.data.id,
+
+            'idwf':n.data.id.toString(),
             'folder':path
         },
         // define a handler for request success
@@ -285,7 +285,7 @@ function move_node(n,path){
         failure: function(response,options){
             alert('Error Loading:'+response.err);
             tree.setLoading(false);
-                
+
         }
     });
 }
@@ -314,7 +314,7 @@ var tree=Ext.create('Ext.tree.Panel', {
     /*
      *  VIEWCONFIG
      */
-    
+
     viewConfig: {
         plugins: {
             ptype: 'treeviewdragdrop'
@@ -328,19 +328,21 @@ var tree=Ext.create('Ext.tree.Panel', {
             drop: function ( node, data, overModel, dropPosition, eOpts) {
                 //console.log(data.records[0].data);
                 s=1;
-                n=data.records[0];                 
+                n=data.records[0];
                 if(n.isLeaf()){
                     //---DROPED a NODE
-                    move_node(n,get_path(overModel));
+                    var path=get_path(overModel);
+                    move_node(n,path);
                 } else{
                     //---DROPED a FOLDER
+                    var path=get_path(overModel);
                     move_folder(n,get_path(overModel));
-                    
+
                 }
-                
+
             }
         }
-            
+
     },
     /*
      * LISTENERS
@@ -352,17 +354,17 @@ var tree=Ext.create('Ext.tree.Panel', {
             contextMenu.showAt(e.getXY());
             return false;
         },
-        
+
         itemclick: TreeClick,
         itemdblclick: TreeDblClick
-            
+
     },
 
     dockedItems: [{
         xtype: 'toolbar',
         items: [
-            
-        
+
+
         {
             xtype:'button',
             enableToggle: true,
@@ -380,7 +382,7 @@ var tree=Ext.create('Ext.tree.Panel', {
                 }
             }
         //cls:'x-tree-icon x-tree-icon-parent'
-            
+
         }
         ,
         //saveTree,
