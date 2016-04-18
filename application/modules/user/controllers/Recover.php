@@ -66,65 +66,100 @@ class Recover extends MX_Controller {
     function Send() {
         //----LOAD LANGUAGE
         
-
-        
+        $this->load->model('msg');
         $this->lang->load('login', $this->config->item('language'));
-        //---add language data
-        $cpData['lang'] = $this->lang->language;
-        $cpData['title'] = $this->lang->line('PageDescriptionR');
-        $cpData['base_url'] = $this->base_url;
-        $cpData['module_url'] = $this->module_url;
-        $cpData['theme'] = $this->config->item('theme');
         
-        $clean['email']  = $this->input->post('mail');
+        $msg['to']  = $this->input->post('mail');
+        $dbobj=$this->user->getbymailaddress($msg['to']);
 
-  ////////////////////////////////////////////////            
-//        $email_pattern = '/^[^@\s<&>]+@([-a-z0-9]+\.)+[a-z]{2,}$/i';
-//        if (!preg_match($email_pattern, $_POST['email']))
-//        {
-//        exit("0, Ingrese un email v&aacute;lido");
-//        }
-        // Chequeo datos atraves del email
-        $dbobj=(array)$this->user->getbymailaddress($clean['email']);
-
-        // Envio
-        if(isset($dbobj['idu'])){ 
-
-            $token=md5($dbobj['email'].$dbobj['idu']);
-            //armamos el mail
+        if(!empty($dbobj->idu)){
+            
+            $token=md5($dbobj->email.$dbobj->idu);
             $content = $this->lang->line('mailsendpart1');
-
-            $content.=" <strong>{$dbobj['nick']}</strong> $this->base_url</p>";
+            $content.=" <strong>{$dbobj->nick}</strong> $this->base_url</p>";
             $content.=$this->lang->line('mailsendpart2');
             $content.="<a href='{$this->base_url}user/recover/new_pass/$token'>".$this->lang->line('mailsendpart3')."</a>";
-
-            $this->email->clear();
-            $config['mailtype'] = "html";
-            $this->email->initialize($config);
-            $this->email->set_newline("\r\n");
-            $this->email->from('dna2@industria.gob.ar', 'Soporte');
-            $list = array($clean['email']); //$list = array('xxx@gmail.com', 'xxx@gmail.com');
-            $this->email->to($list);
-            $data = array();
-            $this->email->subject($this->lang->line('mailsubject'));
-            $this->email->message($content);
-
-//echo $content."<br>";
-
-            if ($this->email->send()){
+            
+            
+            //== Envio
+            
+            $msg['reply_email']='dna2@industria.gob.ar';
+            $msg['reply_nicename']='Soporte';
+            //$msg['to']=array('gabriel@trialvd.com.ar'=>'gabriel@trialvd.com.ar');
+            $msg['body']=$content;
+            $msg['subject']= $this->lang->line('PageDescriptionR');
+            $msg['debug']=2;
+            
+            $send_ok=$this->msg->sendmail($msg);
+            if($send_ok){
+                // Mail OK
                 echo $this->lang->line('mailmsg1')."</br> <a href='{$this->base_url}'>".$this->lang->line('mailback')."</a>";
                 //save token
                 $object['token']  = $token;
                 $object['creationdate']  = date('Y-m-d H:i:s');
                 $object['idu'] = (int)$dbobj['idu'];
-                $result = $this->user->save_token($object);
+                $result = $this->user->save_token($object); 
                 
-            }else show_error($this->email->print_debugger());
+            }else{
+                exit("0, No se ha podido enviar el email. ");
+            }
+        
+            
+        }
+
+
+         
+//         $this->lang->load('login', $this->config->item('language'));
+//         //---add language data
+//         $cpData['lang'] = $this->lang->language;
+//         $cpData['title'] = $this->lang->line('PageDescriptionR');
+//         $cpData['base_url'] = $this->base_url;
+//         $cpData['module_url'] = $this->module_url;
+//         $cpData['theme'] = $this->config->item('theme');
+        
+//         $clean['email']  = $this->input->post('mail');
+
+//         // Chequeo datos atraves del email
+//         $dbobj=(array)$this->user->getbymailaddress($clean['email']);
+
+//         // Envio
+//         if(isset($dbobj['idu'])){ 
+
+//             $token=md5($dbobj['email'].$dbobj['idu']);
+//             //armamos el mail
+//             $content = $this->lang->line('mailsendpart1');
+
+//             $content.=" <strong>{$dbobj['nick']}</strong> $this->base_url</p>";
+//             $content.=$this->lang->line('mailsendpart2');
+//             $content.="<a href='{$this->base_url}user/recover/new_pass/$token'>".$this->lang->line('mailsendpart3')."</a>";
+
+//             $this->email->clear();
+//             $config['mailtype'] = "html";
+//             $this->email->initialize($config);
+//             $this->email->set_newline("\r\n");
+//             $this->email->from('dna2@industria.gob.ar', 'Soporte');
+//             $list = array($clean['email']); //$list = array('xxx@gmail.com', 'xxx@gmail.com');
+//             $this->email->to($list);
+//             $data = array();
+//             $this->email->subject($this->lang->line('mailsubject'));
+//             $this->email->message($content);
+
+// //echo $content."<br>";
+
+//             if ($this->email->send()){
+//                 echo $this->lang->line('mailmsg1')."</br> <a href='{$this->base_url}'>".$this->lang->line('mailback')."</a>";
+//                 //save token
+//                 $object['token']  = $token;
+//                 $object['creationdate']  = date('Y-m-d H:i:s');
+//                 $object['idu'] = (int)$dbobj['idu'];
+//                 $result = $this->user->save_token($object);
+                
+//             }else show_error($this->email->print_debugger());
             
                 
-        }else{
-        exit("0, No se ha podido enviar el email. No existe el email");
-        }
+//         }else{
+//         exit("0, No se ha podido enviar el email. No existe el email");
+//         }
 
         
         
