@@ -6,4 +6,5 @@ $config['smtp_user_name'] = 'Im a User';
 $config['smtp_pass'] = 'password';
 $config['smtp_timeout'] = '30';
 $config['charset'] = 'UTF-8';
-$config['wordwrap'] = TRUE;
+$config['wordwrap'] = true;
+$config['debug'] = false;
