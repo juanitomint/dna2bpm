@@ -14,6 +14,8 @@ class Msg extends CI_Model {
         $this->load->library('mongowrapper');
         $this->load->library('cimongo/cimongo');
         $this->db = $this->cimongo;
+        
+        ini_set('display_errors',1);
     }
 
 //---get that msg
@@ -151,6 +153,79 @@ class Msg extends CI_Model {
                 return true;
             }
         }
+    }
+    
+    // == Generic mail sender
+    
+    function sendmail($config=array()){
+       
+        $default=array(
+        'subject'=>'',
+        'body'=>'',
+        'reply_email'=>'',
+        'reply_nicename'=>'',
+        'to'=>array(),
+        'cc'=>array(),
+        'bcc'=>array(),
+        'debug'=>2,
+        'is_html'=>true
+        );
+        $myconfig=array_merge($default,$config);
+          
+        if(empty($myconfig['to']))return;
+        if(empty($myconfig['subject']))return;
+      
+        $this->load->library('phpmailer/phpmailer');
+        $this->load->config('email');
+
+        $mail = new $this->phpmailer;
+        $mail->IsSMTP();
+  
+        if($myconfig['debug']>0)$mail->SMTPDebug = $myconfig['debug'];
+        $mail->Username = $this->config->item('smtp_user');             
+        $mail->Password =  $this->config->item('smtp_passw');
+        $mail->Host = $this->config->item('smtp_host');
+        $mail->SetFrom($this->config->item('smtp_user'), $this->config->item('smtp_user_name'));
+        $mail->Subject = utf8_decode($this->config->item('mail_suffix').' ' . $myconfig['subject']);
+      
+        $mail->AltBody = "To view the message, please use an HTML compatible email viewer!"; //
+        if(!empty($myconfig['reply_email'])){
+            $nicename=(empty($myconfig['reply_nicename']))?($myconfig['reply_email']):($myconfig['reply_nicename']);
+            $mail->AddReplyTo($myconfig['reply_email'], $nicename);
+        }
+          
+        $mail->IsHTML($myconfig['is_html']);
+        $mail->Body=$myconfig['body'];
+
+
+
+        //==== Lets send this mails!
+        
+        foreach($myconfig['to'] as $email => $nicename){
+            $mail->AddAddress($email, $nicename);
+        }
+
+        foreach($myconfig['cc'] as $email => $nicename){
+            $mail->AddCC($email, $nicename);
+        }            
+
+        foreach($myconfig['bcc'] as $email => $nicename){
+            $mail->AddBCC($email, $nicename);
+        }            
+        
+
+        if (!$mail->Send()) {
+            if($debug) {
+                var_dump($myconfig,$mail->ErrorInfo);
+                exit;
+            }
+            return false;
+        } else {
+            return true;
+        }     
+         
+
+        
     }
 
     function remove($mongoid) {
