@@ -215,7 +215,7 @@ class Dashboard extends MX_Controller {
         if($extraData){
          $customData=$extraData+$customData;  
         }
-
+        
         $this->ui->compose($layout, $customData);
     }
 
@@ -454,8 +454,21 @@ class Dashboard extends MX_Controller {
     }
 
     // ============ Profile
-    function Profile($data = array()) {
-        $this->dashboard('dashboard/json/profile.json');
+    function Profile($debug=false) {
+        $extraData['js'] = array(
+         		'jqueryUI', 'PLUpload',
+         		$this->base_url."user/assets/jscript/profile.js" => 'profile JS',
+                $this->base_url."jscript/jquery-validation/dist/jquery.validate.min.js"=>"Validate",
+                $this->base_url."jscript/jquery-validation/dist/additional-methods.min.js"=>"Aditional Methods",
+         );
+        //----add custom language validator
+         switch($this->config->item('language')){
+             case "spanish":
+                $extraData['js'][$this->base_url."jscript/jquery/plugins/jquery-validate/localization/messages_es.js"]="Validator Locale";
+                 break;
+         }
+         
+        $this->dashboard('dashboard/json/profile.json',$debug,$extraData);
     }
 
     // ============ Tasks

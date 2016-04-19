@@ -6,6 +6,7 @@ if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 $lang['Nick'] = 'Usuario';
 $lang['Password'] = 'Contraseña';
+$lang['Confirm'] = 'Confirmar';
 $lang['Name'] = 'Nombre';
 $lang['Lastname'] = 'Apellido';
 $lang['Gender'] = 'Género';

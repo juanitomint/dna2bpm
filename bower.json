@@ -1,0 +1,21 @@
+{
+  "name": "dna2bpm",
+  "authors": [
+    "Juan Borda <juanignacioborda@gmail.com>"
+  ],
+  "description": "DNA2BPM-Suite",
+  "main": "index.php",
+  "license": "MIT",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "jscript",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery-validation": "^1.15.0"
+  }
+}

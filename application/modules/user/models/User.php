@@ -45,7 +45,7 @@ class User extends CI_Model {
         return $user;
     }
 
-    private function hash($str) {
+    function hash($str) {
         return md5($str);
     }
 

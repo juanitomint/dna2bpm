@@ -1,0 +1,26 @@
+{
+  "name": "user",
+  "authors": [
+    "Juan Borda <juanignacioborda@gmail.com>"
+  ],
+  "description": "User layer Module",
+  "main": "",
+  "moduleType": [],
+  "keywords": [
+    "user",
+    "layer",
+    "module"
+  ],
+  "license": "MIT",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery-validation": "^1.15.0"
+  }
+}

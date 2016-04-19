@@ -5,9 +5,9 @@ if (!defined('BASEPATH'))
 
 /**
  * profile
- * 
+ *
  * Description of the class
- * 
+ *
  * @author Juan Ignacio Borda <juanignacioborda@gmail.com>
  * @date    Apr 15, 2013
  */
@@ -18,10 +18,10 @@ class Profile extends MX_Controller {
         $this->load->library('parser');
         $this->load->model('user');
         $this->load->library('ui');
-//         
+//
         $this->load->model('app');
         $this->load->config('config');
-        
+
 
         $this->user->authorize();
         //---base variables
@@ -42,7 +42,7 @@ class Profile extends MX_Controller {
     }
 
 
-    
+
     function Edit($disabled=false) {
         //$this->lang->load('profile', $this->config->item('language'));
         $data['lang']= $this->lang->language;
@@ -53,15 +53,18 @@ class Profile extends MX_Controller {
          $customData['js'] = array(
          		'jqueryUI', 'PLUpload',
          		$this->module_url . "assets/jscript/profile.js" => 'profile JS',
-         		
+         		$this->module_url . "assets/jscript/profile.js" => 'profile JS',
+                $this->base_url."jscript/jquery/plugins/jquery-validate/jquery.validate.js"=>"Validate",
+                $this->base_url."jscript/jquery/plugins/jquery-validate/additional-methods.js"=>"Aditional Methods",
          );
+         
          $customData['css'] = array(
          		$this->module_url . "assets/css/profile.css" => 'profile CSS',
          );
          $customData['global_js'] = array(
          		'myidu'=>$this->idu
          );
-      
+
         //tomamos los datos del usuario
         $data+=(array) $this->user->get_user((int) $this->idu);
 
@@ -71,7 +74,7 @@ class Profile extends MX_Controller {
             $data['checkedF'] = 'checked';
         else
             $data['checkedM'] = 'checked';
-        
+
         //Notifications
         $noti = isset($data['notification_by_email']) ? ($data['notification_by_email']) : ("no");
 
@@ -82,12 +85,11 @@ class Profile extends MX_Controller {
 
         // Chequeo avatar
         $data['avatar']=$this->get_avatar();
-       
-		$customData['content']=$this->parser->parse('user/profile',$data,true);
 
+		$customData['content']=$this->parser->parse('user/profile',$data,true);
         //$this->ui->compose('profile', 'bootstrap3.ui.php', $customData);
 		return $customData;
-    
+
     }
 
     /*
@@ -104,8 +106,8 @@ class Profile extends MX_Controller {
 
         //lo que esta en la base
         $dbobj = (array) $this->user->get_user((int) $iduser);
-        
-        
+
+
 		foreach($this->input->post('data') as $item){
  			if(in_array($item['name'],$allowed))
  			$dbobj[$item['name']]=$item['value'];
@@ -114,12 +116,11 @@ class Profile extends MX_Controller {
  			//---set password if posted
  			if($item['name']=='passw' && !empty($item['value']))
  	        	// Cambio de pass
-        	    $dbobj['passw']=md5( $item['value']);
+        	    $dbobj['passw']=$this->user->hash($item['value']);
 		}
 
-
         $result = $this->user->update($dbobj);
-		
+
 		echo json_encode($result);
 
     }
@@ -142,7 +143,7 @@ class Profile extends MX_Controller {
 
         $iduser = (double) $this->session->userdata('iduser');
         $post_obj['nick'] = $this->input->post('nick');
-        //la foto 
+        //la foto
         $post_obj['name'] = $this->input->post('nombre');
         $post_obj['lastname'] = $this->input->post('apellido');
         $post_obj['idnumber'] = $this->input->post('dni');
@@ -160,7 +161,7 @@ class Profile extends MX_Controller {
         $dbobj = (array) $this->user->get_user((int) $iduser);
 
         //process password
-        //vemos si es la misma 
+        //vemos si es la misma
         if ($dbobj['passw'] == $this->input->post('passw'))
             $post_obj['passw'] = $this->input->post('passw');
         else
@@ -177,7 +178,7 @@ class Profile extends MX_Controller {
         //$result = $this->user->save($new_obj);
         //header('Location:');
     }
-    
+
     function get_avatar($userID=null){
 
         $current_user=(empty($userID))?((int)$this->idu):((int)$userID);
@@ -197,13 +198,13 @@ class Profile extends MX_Controller {
                 return $gravatar;
             }
             //
-            
-        	return ($genero == "male")?(base_url()."images/avatar/male.jpg"):(base_url()."images/avatar/female.jpg");    	
+
+        	return ($genero == "male")?(base_url()."images/avatar/male.jpg"):(base_url()."images/avatar/female.jpg");
         }
     }
-    
-    
-    
+
+
+
     function upload(){
 
     	// Make sure file is not cached (as it happens for example on iOS devices)
@@ -212,7 +213,7 @@ class Profile extends MX_Controller {
     	header("Cache-Control: no-store, no-cache, must-revalidate");
     	header("Cache-Control: post-check=0, pre-check=0", false);
     	header("Pragma: no-cache");
-    	
+
 
     	/*
     	 // Support CORS
@@ -222,24 +223,24 @@ class Profile extends MX_Controller {
     	exit; // finish preflight CORS requests here
     	}
     	*/
-    	
+
     	// 5 minutes execution time
     	@set_time_limit(5 * 60);
-    	
+
     	// Uncomment this one to fake upload time
     	// usleep(5000);
-    	
+
     	// Settings
     	$targetDir = 'images/avatar';
     	$cleanupTargetDir = true; // Remove old files
     	$maxFileAge = 5 * 3600; // Temp file age in seconds
-    	
-    	
+
+
     	// Create target dir
     	if (!file_exists($targetDir)) {
     		@mkdir($targetDir);
     	}
-    	
+
     	// Get a file name
     	$path=pathinfo($_REQUEST["name"]);
 //     	if (isset($_REQUEST["name"])) {
@@ -250,30 +251,30 @@ class Profile extends MX_Controller {
 //     		 $this->idu  = uniqid("file_");
 //     	}
 		$fileName=$this->idu.".".$path['extension'];
-		
+
 		$ext2=($path['extension']=='jpg')?('png'):('jpg');
-		$file2delete = $targetDir . DIRECTORY_SEPARATOR . $this->idu.".$ext2"; 
+		$file2delete = $targetDir . DIRECTORY_SEPARATOR . $this->idu.".$ext2";
     	$filePath = $targetDir . DIRECTORY_SEPARATOR . $fileName;
-    	
+
     	// Chunking might be enabled
     	$chunk = isset($_REQUEST["chunk"]) ? intval($_REQUEST["chunk"]) : 0;
     	$chunks = isset($_REQUEST["chunks"]) ? intval($_REQUEST["chunks"]) : 0;
-    	
-    	
+
+
     	// Remove old temp files
     	if ($cleanupTargetDir) {
     		if (!is_dir($targetDir) || !$dir = opendir($targetDir)) {
     			die('{"jsonrpc" : "2.0", "error" : {"code": 100, "message": "Failed to open temp directory."}, "id" : "id"}');
     		}
-    	
+
     		while (($file = readdir($dir)) !== false) {
     			$tmpfilePath = $targetDir . DIRECTORY_SEPARATOR . $file;
-    	
+
     			// If temp file is current file proceed to the next
     			if ($tmpfilePath == "{$filePath}.part") {
     				continue;
     			}
-    	
+
     			// Remove temp file if it is older than the max age and is not the current file
     			if (preg_match('/\.part$/', $file) && (filemtime($tmpfilePath) < time() - $maxFileAge)) {
     				@unlink($tmpfilePath);
@@ -281,18 +282,18 @@ class Profile extends MX_Controller {
     		}
     		closedir($dir);
     	}
-    	
-    	
+
+
     	// Open temp file
     	if (!$out = @fopen("{$filePath}.part", $chunks ? "ab" : "wb")) {
     		die('{"jsonrpc" : "2.0", "error" : {"code": 102, "message": "Failed to open output stream."}, "id" : "id"}');
     	}
-    	
+
     	if (!empty($_FILES)) {
     		if ($_FILES["file"]["error"] || !is_uploaded_file($_FILES["file"]["tmp_name"])) {
     			die('{"jsonrpc" : "2.0", "error" : {"code": 103, "message": "Failed to move uploaded file."}, "id" : "id"}');
     		}
-    	
+
     		// Read binary input stream and append it to temp file
     		if (!$in = @fopen($_FILES["file"]["tmp_name"], "rb")) {
     			die('{"jsonrpc" : "2.0", "error" : {"code": 101, "message": "Failed to open input stream."}, "id" : "id"}');
@@ -302,27 +303,27 @@ class Profile extends MX_Controller {
     			die('{"jsonrpc" : "2.0", "error" : {"code": 101, "message": "Failed to open input stream."}, "id" : "id"}');
     		}
     	}
-    	
+
     	while ($buff = fread($in, 4096)) {
     		fwrite($out, $buff);
     	}
-    	
+
     	@fclose($out);
     	@fclose($in);
 
     	// Check if file has been uploaded
     	if (!$chunks || $chunk == $chunks - 1) {
     		// Strip the temp .part suffix off
-    			 
+
     		rename("{$filePath}.part", $filePath);
    			@unlink($file2delete);// file with same idu and other extension exists
     	}
-    	
+
     	// Return Success JSON-RPC response
     	die('{"jsonrpc" : "2.0", "result" : null, "id" : "id"}');
-    	
+
     }
-    
+
 
 }
 
