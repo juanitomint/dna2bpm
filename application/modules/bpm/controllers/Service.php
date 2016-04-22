@@ -76,7 +76,7 @@ class Service extends MX_Controller {
                  'trigger'=>$token['trigger'],
                  'resourceId'=>$token['resourceId'],
                  'checkdate'=>date('Y-m-d H:i:s'),
-                 'microtime'=>microtime(),
+                 'microtime'=>microtime(true),
                  );
             //----Log timer
             $options = array('w' => true);

@@ -448,7 +448,7 @@ class Engine extends MX_Controller {
                         'resourceId' => $shape->resourceId,
                         'iduser' => $this->idu,
                         'type' => $shape->stencil->id,
-                        'microtime' => microtime(),
+                        'microtime' => microtime(true),
                         'run' => $token ['run'],
                         'status' => $token ['status'],
                         'name' => (isset($shape->properties->name)) ? $shape->properties->name : ''
