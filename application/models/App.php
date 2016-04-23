@@ -295,6 +295,17 @@ class App extends CI_Model {
         $app = array_merge($app,$new_app);
         return $this->mongowrapper->db->apps->save($app, $options);
     }
+    
+    function put_option($idop, $new_option) {
+        $options = array('upsert' => true, 'w' => true);
+        $idop = (int) $idop;
+        $new_option['idop']=$idop;
+        //--1st get old frame if exists;
+        //--overwrites values with newones
+        $option=$this->get_option($idop);
+        $option = array_merge($option,$new_option);
+        return $this->mongowrapper->db->options->save($option, $options);
+    }
 
     function put_form($idform, $new_form) {
         $options = array('upsert' => true, 'w' => true);

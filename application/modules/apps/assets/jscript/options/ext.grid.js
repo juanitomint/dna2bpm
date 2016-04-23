@@ -8,31 +8,44 @@ var newObject = function() {
 
 var mygrid = Ext.create('Ext.grid.Panel', {
     //  var mygrid=Ext.create('Ext.ux.LiveSearchGridPanel',{
-    title: 'Options',
+    // title: 'Options',
     store: Ext.data.StoreManager.lookup('optionsDefault'),
-    columns: [{
-        text: 'Value',
-        dataIndex: 'value',
-        editor: {
-            allowBlank: false
+    columns: [
+        Ext.create('Ext.grid.RowNumberer', {
+            text: '#',
+            flex: 1,
+            align:'center'
+        }), {
+            text: 'Value',
+            flex: 1,
+            align: 'center',
+            dataIndex: 'value',
+            editor: {
+                allowBlank: false
+            }
+        }, {
+            text: 'Text',
+            dataIndex: 'text',
+            flex: 6,
+            editor: {
+                allowBlank: false
+            }
+        }, {
+            text: 'idrel',
+            dataIndex: 'idrel',
+            editor: {
+                allowBlank: true
+            }
         }
-    }, {
-        text: 'Text',
-        dataIndex: 'text',
-        flex: 1,
-        editor: {
-            allowBlank: false
-        }
-    }, {
-        text: 'idrel',
-        dataIndex: 'idrel',
-        editor: {
-            allowBlank: true
-        }
-    }],
+    ],
     viewConfig: {
         //autoScroll:true,
         stripeRows: true,
+
+        plugins: {
+            ptype: 'gridviewdragdrop',
+            dragText: 'Drag and drop to reorganize'
+        },
         listeners: {
             // itemclick: gridClick
         }

@@ -68,14 +68,9 @@ class Options extends MX_Controller {
             $idop=$this->input->post('idop');
 
         $rtn = array();
-        $options = $this->app->get_ops($idop,$idrel);
-        $rtn['totalcount'] = count($options);
-        foreach ($options as $value => $text) {
-            $rtn['rows'][] = array(
-                'value' => $value,
-                'text' => $text
-            );
-        }
+        $option = $this->app->get_option($idop);
+        $rtn['totalcount'] = count($option['data']);
+        $rtn['rows']= $option['data'];
         if (!$debug) {
             $this->output->set_content_type('json','utf-8');
             $this->output->set_output(json_encode($rtn));
@@ -139,32 +134,23 @@ class Options extends MX_Controller {
         //----create empty frame according to the template
         $option = new dbframe();
         $idop = $postform['idop'];
-        include($types_path . 'base/options.base.php');
+        include($this->types_path . 'base/options.base.php');
         $properties_template = $common;
+        $properties_template['data'] ='array';
+        $data=json_decode($postform['data']);
+        
+        $postform['data']=($data)?$data->rows:array();
         //----load the data from post
         $option->load($postform, $properties_template);
         if ($idop) {
-            $dbapp = $this->app->get_app($idop);
+            $dbapp = $this->app->get_option($idop);
         } else {
             $option->idop= (int) $this->app->gen_inc('options', 'idop');
             $dbapp=array();
         }
-        $option->template['id'] = 'integer';
-        $option->id = $option->idop;
-        // var_dump($option->toSave());exit;
-        
-        $this->app->put_app($option->idop, $option->toSave() + $dbapp);
-        
-        //----register app in RBAC-REPOSIROTY
-        $path = 'modules/application/' . $option->idop;
-        $properties = array(
-            "source" => "User",
-            "checkdate" => date('Y-m-d H:i:s'),
-            "idu" => $this->idu
-        );
-        $this->rbac->put_path($path, $properties);
 
-
+        $this->app->put_option($option->idop, $option->toSave() + $dbapp);
+        
         //----dump results
         if (!$debug) {
             $this->output->set_content_type('json','utf-8');

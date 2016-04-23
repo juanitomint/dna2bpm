@@ -7,5 +7,5 @@ $common = array(
             'help' => 'string',
             'idu' => 'double',
             'idrel' => 'integer',
-            'data'=>'array',
+            // 'data'=>'array',
         );

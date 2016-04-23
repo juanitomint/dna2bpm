@@ -3,13 +3,24 @@ var remove_loaders = function() {
     Ext.fly('loading-mask').remove();
 }
 
-
+var newOption = function() {
+    var url = globals.module_url + 'options/get_options_properties/';
+    load_props(url);
+    optionsDefault.removeAll();
+    optionsDefault.insert(0, {});
+}
+var NewOption = Ext.create('Ext.Action', {
+    text: 'New',
+    iconCls: 'fa fa-plus-square',
+    handler: newOption
+});
 
 Ext.application({
     name: 'Options Editor',
     newObject: newObject,
     init: function() {
 
+        newOption();
     },
     launch: function() {
         var center = Ext.create('Ext.Panel', {
@@ -21,29 +32,29 @@ Ext.application({
             items: [{
                 region: 'center',
                 // layout:'vbox',
-                items: [
-                    {
+                items: [{
                     xtype: 'panel',
-                    layout:'fit',
-                    items:[
-                    comboOptions
-                    ]            
-                        
-                    }, 
-                    {
-                        xtype: 'panel',
-                        // width: 550,
-                        items: [mygrid],
+                    layout: 'fit',
+                    items: [
+                        comboOptions,{}
+                    ],
+                    tbar: {
+                        items: [
+                            NewOption
+                        ]
                     }
-                ]
+                }, {
+                    xtype: 'panel',
+                    // width: 550,
+                    items: [mygrid],
+                }]
             }]
         });
 
         var right = Ext.create('Ext.Panel', {
             id: 'rightPanel',
             region: 'east',
-            animCollapse: true,
-            collapsible: true,
+            collapsible: false,
             animCollapse: false,
             split: true,
             width: 400, // give east and west regions a width
@@ -57,7 +68,7 @@ Ext.application({
                 ///-------Pgrid
                 {
                     xtype: 'panel',
-                    title: 'option properties',
+                    title: 'Option properties',
                     flex: 1,
                     items: [
 

@@ -48,11 +48,12 @@ function save_props(url) {
         id = propsGrid.activeRecord;
 
         var data = propsGrid.getSource();
-        data.data=[];
-        optionsDefault.each(function(rec) {
-            data.data.push(rec.data);
-        });
-        console.log(data);
+        data.data=JSON.stringify(optionsDefault.proxy.reader.rawData);
+        // optionsDefault.each(function(rec) {
+        //     data.data.push(rec.data);
+        // });
+        
+        // console.log(data);
         //---if already loaded just takeit from local cache    
         propsGrid.setLoading(true);
         Ext.Ajax.request({

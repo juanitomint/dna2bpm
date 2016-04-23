@@ -76,10 +76,15 @@ try{
             'idu':'Owner'
         }
         ,
+        customEditors:{
+            idop:idop
+            
+        }
+        ,
         customRenderers: {
             'idu':function(value){
                 if(value){
-                    Ext.optionsly(Ext.data.Connection.prototype, {
+                    Ext.apply(Ext.data.Connection.prototype, {
                         async: false
                     });
 
@@ -90,7 +95,7 @@ try{
                             'idu':value
                         }
                     });
-                    Ext.optionsly(Ext.data.Connection.prototype, {
+                    Ext.apply(Ext.data.Connection.prototype, {
                         async: true
                     });
                     //---return idop+text
@@ -101,7 +106,6 @@ try{
                 }
             }
             ,
-            // idop:idop,
             help: clickToHTML
             ,
             desc: clickToHTML
