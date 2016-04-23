@@ -3,14 +3,7 @@ var remove_loaders = function() {
     Ext.fly('loading-mask').remove();
 }
 
-var comboOptions = new Ext.form.ComboBox({
-    name: 'idop',
-    allowBlank: false,
-    store: Ext.getStore('optionsStore'),
-    displayField: 'title',
-    valueField: 'idop',
-    queryMode: 'local'
-});
+
 
 Ext.application({
     name: 'Options Editor',
@@ -29,9 +22,16 @@ Ext.application({
                 region: 'center',
                 // layout:'vbox',
                 items: [
-                    comboOptions, {
+                    {
+                    xtype: 'panel',
+                    layout:'fit',
+                    items:[
+                    comboOptions
+                    ]            
+                        
+                    }, 
+                    {
                         xtype: 'panel',
-                        title: 'Inner Panel One',
                         // width: 550,
                         items: [mygrid],
                     }

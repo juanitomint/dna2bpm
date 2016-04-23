@@ -4,7 +4,7 @@ Ext.define('Options', {
 });
 Ext.define('Option', {
     extend: 'Ext.data.Model',
-    fields: ['value','text']
+    fields: ['value','text','idrel']
 })
 //----create datastore 4 options
 var optionsStore = Ext.create('Ext.data.Store', {
@@ -25,13 +25,13 @@ var optionsStore = Ext.create('Ext.data.Store', {
 
 var optionsDefault = Ext.create('Ext.data.Store', {
     id:'optionsDefault',
-    autoLoad: true,
+    autoLoad: false,
     model: 'Option',
     proxy: {
         type: 'ajax',
         url: globals.module_url+'options/get_option',  // url that will load data with respect to start and limit params
         noCache: false,
-        extraParams:{idop:39},
+        // extraParams:{idop:39}, //for default parameters to load
         reader: {
             type: 'json',
             root: 'rows',

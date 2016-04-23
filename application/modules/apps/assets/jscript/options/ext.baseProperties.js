@@ -51,7 +51,7 @@ try{
     var desc=Ext.create('Ext.form.TextArea', {});
     var help=Ext.create('Ext.form.TextArea', {});
     var idop=Ext.create('Ext.form.Text',{
-        readOnly:true,
+        disabled:true,
         cls:"locked"
     });
 
@@ -79,7 +79,7 @@ try{
         customRenderers: {
             'idu':function(value){
                 if(value){
-                    Ext.apply(Ext.data.Connection.prototype, {
+                    Ext.optionsly(Ext.data.Connection.prototype, {
                         async: false
                     });
 
@@ -90,7 +90,7 @@ try{
                             'idu':value
                         }
                     });
-                    Ext.apply(Ext.data.Connection.prototype, {
+                    Ext.optionsly(Ext.data.Connection.prototype, {
                         async: true
                     });
                     //---return idop+text
@@ -101,6 +101,7 @@ try{
                 }
             }
             ,
+            // idop:idop,
             help: clickToHTML
             ,
             desc: clickToHTML
@@ -137,7 +138,7 @@ try{
                 text: 'Edit',
                 icon:globals.base_url+'css/ext_icons/edit.png',
                 handler:function(me){
-                    var ref=Ext.getCmp('propsGrid').store.data.get('idapp').data.value;
+                    var ref=Ext.getCmp('propsGrid').store.data.get('idop').data.value;
                     window.open(globals.module_url+'editor/'+ref);
 
                 }
@@ -147,7 +148,7 @@ try{
                 text: 'Save',
                 icon:globals.base_url+'css/ext_icons/save.gif',
                 handler:function(me){
-                    var url=globals.module_url+'save_app_properties/'+Ext.getCmp('propsGrid').store.data.get('idapp').data.value;
+                    var url=globals.module_url+'options/save_options_properties/'+Ext.getCmp('propsGrid').store.data.get('idop').data.value;
                     save_props(url);
                 }
             }
@@ -156,7 +157,7 @@ try{
                 text: 'Refresh',
                 icon:globals.base_url+'css/ext_icons/table_refresh.png',
                 handler:function(me){
-                    load_props(propsGrid.url,propsGrid.idapp,true);
+                    load_props(propsGrid.url,propsGrid.idop,true);
 
                 }
             }
@@ -165,7 +166,7 @@ try{
                 text: 'Preview',
                 icon:globals.base_url+'css/ext_icons/preview.gif',
                 handler:function(me){
-                    load_props(propsGrid.url,propsGrid.idapp,true);
+                    load_props(propsGrid.url,propsGrid.idop,true);
 
                 }
             }

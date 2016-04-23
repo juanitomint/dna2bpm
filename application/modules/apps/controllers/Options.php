@@ -48,6 +48,7 @@ class Options extends MX_Controller {
             $this->module_url . 'assets/jscript/options/ext.baseProperties.js' => 'Property Grid',
             // $this->module_url . 'assets/jscript/options/ext.group_selector.js' => 'Group Selector',
             $this->module_url . 'assets/jscript/options/ext.grid.js' => 'Grid',
+            $this->module_url . 'assets/jscript/options/ext.combo.js' => 'Options Combo',
             $this->module_url . 'assets/jscript/options/ext.viewport.js' => 'viewport',
         );
 
@@ -101,6 +102,75 @@ class Options extends MX_Controller {
             $this->output->set_output(json_encode($rtn));
         } else {
             var_dump($rtn);
+        }
+    }
+    
+    function Get_options_properties($idop=null) {
+        $segments = $this->uri->segment_array();
+        $debug = (in_array('debug', $segments)) ? true : false;
+        $cpData = array();
+        $cpData = $this->lang->language;
+        $option = array();
+        $custom = '';
+        $types_path = $this->types_path;
+        $dbop = $this->app->get_option($idop);
+        
+        //---load base properties from helpers/types/base
+        include($types_path . 'base/options.base.php');
+
+       
+        //---now define the properties template
+        $properties_template = $common;
+        $option = new dbframe($option, $properties_template);
+        $option->load($dbop);
+        if (!$debug) {
+            $this->output->set_content_type('json','utf-8');
+            echo json_encode($option->toShow());
+        } else {
+            var_dump('Obj', $option, 'Save:', $option->toSave(), 'Show', $option->toShow());
+        }
+    }
+    
+    function Save_options_properties($idop=null) {
+        $segments = $this->uri->segment_array();
+        $debug = (in_array('debug', $segments)) ? true : false;
+        $postform = $this->input->post();
+        
+        //----create empty frame according to the template
+        $option = new dbframe();
+        $idop = $postform['idop'];
+        include($types_path . 'base/options.base.php');
+        $properties_template = $common;
+        //----load the data from post
+        $option->load($postform, $properties_template);
+        if ($idop) {
+            $dbapp = $this->app->get_app($idop);
+        } else {
+            $option->idop= (int) $this->app->gen_inc('options', 'idop');
+            $dbapp=array();
+        }
+        $option->template['id'] = 'integer';
+        $option->id = $option->idop;
+        // var_dump($option->toSave());exit;
+        
+        $this->app->put_app($option->idop, $option->toSave() + $dbapp);
+        
+        //----register app in RBAC-REPOSIROTY
+        $path = 'modules/application/' . $option->idop;
+        $properties = array(
+            "source" => "User",
+            "checkdate" => date('Y-m-d H:i:s'),
+            "idu" => $this->idu
+        );
+        $this->rbac->put_path($path, $properties);
+
+
+        //----dump results
+        if (!$debug) {
+            $this->output->set_content_type('json','utf-8');
+            echo json_encode($option->toSave());
+        } else {
+            var_dump($option->toShow());
         }
     }
 }
