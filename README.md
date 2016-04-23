@@ -15,12 +15,22 @@ DNA²BPM is an Open Source BPM Suite based on BPMN2.0 standard, it has all the m
 
 DNA2BPM is a full blown, ready to use,BPMS build on open source software made to evolve.
 
+### Prequisites
+In order to test and run dna2bpm you will need:
+
+Git (optional)
+Apache or Nginx with rewrite engine on for CodeIgniter.
+
+MongoDB
+php5
+php5-mongo MongoDB database driver
+
 ### Install
 clone repository into your preferred web server htdocs folder, an then go to /setup to start the setup wizard
 
 
-### Version 
-Beta 0.8.3
+### Version
+Beta 0.9.7
 
 ### Change Log
-(see last commits)
+https://gitlab.com/dna2/origin/commits/development
