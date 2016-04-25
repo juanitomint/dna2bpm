@@ -4,17 +4,38 @@ var newObject = function() {
     load_props(url, internalId);
 }
 
+function confirm(result) {
+    if (result == 'yes') {
+        optionsDefault.remove(this);
+        // dgstore.sync();
+    }
+}
 
 
 var mygrid = Ext.create('Ext.grid.Panel', {
     //  var mygrid=Ext.create('Ext.ux.LiveSearchGridPanel',{
     // title: 'Options',
     store: Ext.data.StoreManager.lookup('optionsDefault'),
-    columns: [
+    columns: [{
+            menuDisabled: true,
+            sortable: false,
+            xtype: 'actioncolumn',
+            width: 50,
+            items: [{
+                icon: globals.module_url + 'assets/images/delete.png', // Use a URL in the icon config
+                tooltip: 'Remove Option',
+                handler: function(grid, rowIndex, colIndex) {
+                    store = Ext.data.StoreManager.lookup('optionsDefault');
+                    var rec = store.getAt(rowIndex);
+                    Ext.Msg.confirm('Confirm', 'Are you sure you want to remove: ' + rec.get('text') + '?', confirm, rec);
+
+                }
+            }]
+        },
         Ext.create('Ext.grid.RowNumberer', {
             text: '#',
             flex: 1,
-            align:'center'
+            align: 'center'
         }), {
             text: 'Value',
             flex: 1,
@@ -33,6 +54,7 @@ var mygrid = Ext.create('Ext.grid.Panel', {
         }, {
             text: 'idrel',
             dataIndex: 'idrel',
+            flex: 1,
             editor: {
                 allowBlank: true
             }
@@ -55,4 +77,16 @@ var mygrid = Ext.create('Ext.grid.Panel', {
             clicksToEdit: 1
         })
     ],
+    bbar: {
+        items: [{
+            xtype: 'button',
+            text: 'Add Option',
+            icon: globals.module_url + 'assets/images/add.png',
+            handler: function(me) {
+                optionsDefault.insert(optionsDefault.count(),{});
+
+            }
+        }, ]
+
+    }
 });
