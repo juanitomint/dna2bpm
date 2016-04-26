@@ -130,18 +130,19 @@ class Options extends MX_Controller {
         $segments = $this->uri->segment_array();
         $debug = (in_array('debug', $segments)) ? true : false;
         $postform = $this->input->post();
-        
         //----create empty frame according to the template
         $option = new dbframe();
         $idop = $postform['idop'];
         include($this->types_path . 'base/options.base.php');
         $properties_template = $common;
         $properties_template['data'] ='array';
-        $data=json_decode($postform['data']);
+        // $data=json_decode($postform['data']);
         
-        $postform['data']=($data)?$data->rows:array();
+        // $postform['data']=($data)?$data->rows:array();
+        // var_dump($data,$postform);exit;
         //----load the data from post
-        $option->load($postform, $properties_template);
+        $option->template=$properties_template;
+        $option->loadPostdata($postform);
         if ($idop) {
             $dbapp = $this->app->get_option($idop);
         } else {
