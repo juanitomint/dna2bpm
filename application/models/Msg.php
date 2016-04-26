@@ -15,7 +15,7 @@ class Msg extends CI_Model {
         $this->load->library('cimongo/cimongo');
         $this->db = $this->cimongo;
         
-        // ini_set('display_errors',1);
+        //ini_set('display_errors',1);
     }
 
 //---get that msg
@@ -136,7 +136,7 @@ class Msg extends CI_Model {
             $mail->AltBody = "To view the message, please use an HTML compatible email viewer!"; // optional, comment out and test
             $mail->IsHTML(true);
             $mail->MsgHTML(nl2br($msg['body']));
-
+                
             $mail->AddAddress($user->email, "");
 
 //        $mail->AddAttachment("images/phpmailer.gif");      // attachment
@@ -155,10 +155,10 @@ class Msg extends CI_Model {
         }
     }
     
-    // == Generic mail sender
+    // ==== Generic mail sender
     
     function sendmail($config=array()){
-       
+      
         $default=array(
         'subject'=>'',
         'body'=>'',
@@ -168,10 +168,13 @@ class Msg extends CI_Model {
         'cc'=>array(),
         'bcc'=>array(),
         'debug'=>0,
-        'is_html'=>true
+        'is_html'=>true,
+        'db_log'=>true
         );
+        
         $myconfig=array_merge($default,$config);
-          
+            
+            
         if(empty($myconfig['to']))return;
         if(empty($myconfig['subject']))return;
       
@@ -180,14 +183,15 @@ class Msg extends CI_Model {
 
         $mail = new $this->phpmailer;
         $mail->IsSMTP();
-  
+        $mail -> charSet = "UTF-8"; 
+        
         if($myconfig['debug']>0)$mail->SMTPDebug = $myconfig['debug'];
         $mail->Username = $this->config->item('smtp_user');             
         $mail->Password =  $this->config->item('smtp_passw');
         $mail->Host = $this->config->item('smtp_host');
         $mail->SetFrom($this->config->item('smtp_user'), $this->config->item('smtp_user_name'));
         $mail->Subject = utf8_decode($this->config->item('mail_suffix').' ' . $myconfig['subject']);
-      
+
         $mail->AltBody = "To view the message, please use an HTML compatible email viewer!"; //
         if(!empty($myconfig['reply_email'])){
             $nicename=(empty($myconfig['reply_nicename']))?($myconfig['reply_email']):($myconfig['reply_nicename']);
@@ -195,9 +199,8 @@ class Msg extends CI_Model {
         }
           
         $mail->IsHTML($myconfig['is_html']);
-        $mail->Body=$myconfig['body'];
 
-
+        $mail->Body=utf8_decode($myconfig['body']);
 
         //==== Lets send this mails!
         
@@ -213,17 +216,24 @@ class Msg extends CI_Model {
             $mail->AddBCC($email, $nicename);
         }            
         
-
         if (!$mail->Send()) {
-            if($debug) {
-                var_dump($myconfig,$mail->ErrorInfo);
-                exit;
-            }
-            return false;
+            $myconfig['status']=false;
+            $myconfig['error']=$mail->ErrorInfo;
         } else {
-            return true;
+            $myconfig['status']=true;
         }     
+
+         //== DB Log 
+        if($myconfig['db_log']){
+            
+         $myconfig['date']=new MongoDate(time());
+         $myconfig['idu']=$this->idu;
+         $this->db->insert('sendmail', $myconfig); 
+
+        }
+        
          
+         return $myconfig['status'];
 
         
     }
