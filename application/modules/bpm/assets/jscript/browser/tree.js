@@ -43,10 +43,11 @@ var ModelAdd = Ext.create('Ext.Action', {
 
             if (!n.isLeaf()) {
                 Ext.MessageBox.prompt('Model', 'Please enter Model id:', function(btn,text){
+                    
                     if(btn=='ok' && text){
-
+                        text_id=text.trim().replace('/','-');
                         node={
-                            id: text,
+                            id: text.trim(),
                             text    : text +' <span class="text-new">[new]</span>',
                             leaf    : true,
                             iconCls : 'dot-gray',

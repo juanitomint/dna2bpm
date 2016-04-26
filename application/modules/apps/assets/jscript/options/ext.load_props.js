@@ -48,7 +48,8 @@ function save_props(url) {
         id = propsGrid.activeRecord;
 
         var data = propsGrid.getSource();
-        data.data=JSON.stringify(optionsDefault.proxy.reader.rawData);
+        //---convert store data to json
+        data.data=Ext.encode(Ext.pluck(optionsDefault.data.items, 'data'));
         // optionsDefault.each(function(rec) {
         //     data.data.push(rec.data);
         // });
