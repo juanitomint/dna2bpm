@@ -15,7 +15,7 @@ class Msg extends CI_Model {
         $this->load->library('cimongo/cimongo');
         $this->db = $this->cimongo;
         
-        ini_set('display_errors',1);
+        // ini_set('display_errors',1);
     }
 
 //---get that msg
@@ -167,7 +167,7 @@ class Msg extends CI_Model {
         'to'=>array(),
         'cc'=>array(),
         'bcc'=>array(),
-        'debug'=>2,
+        'debug'=>0,
         'is_html'=>true
         );
         $myconfig=array_merge($default,$config);
