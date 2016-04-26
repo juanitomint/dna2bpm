@@ -170,7 +170,7 @@ function run_Exclusive_Databased_Gateway($shape, $wf, $CI) {
             }
         } else {
 
-            show_error("The are more than one valid option,  or none for " . $shape->properties->name . ':' . $shape->properties->gates_assignments);
+            show_error("There are more than one valid option,  or none for " . $shape->properties->name . ':' . $shape->properties->gates_assignments);
         }
     } else {
 //Check if has to be procesed manually
@@ -201,28 +201,28 @@ function run_InclusiveGateway($shape, $wf, $CI) {
 //---Incoming flow must be synchronized like in paralell.
 
     $debug = (isset($CI->debug[__FUNCTION__])) ? $CI->debug[__FUNCTION__] : false;
-//$debug = true;
+    // $debug = true;
     $shape_data = array();
 //---assign gate to current user
     $shape_data['assign'][] = (int) $CI->session->userdata('iduser');
     extract((array) $CI->data);
-    if ($debug)
-        var_dump('DATA', $CI->data);
+    // if ($debug)
+    //     var_dump('DATA', $CI->data);
 //$cond=eval('return '.$shape->properties->gates_assignments.';');
 //var_dump($shape->properties->gates_assignments,$cond);
 //echo '<hr>';
 //--get outgoing rules
     $result = array();
     $i = 0; ///----count ammount of true cases
-//var_dump($shape);
-    $assignment = $shape->properties->gate_assignments;
+// var_dump($shape);
+    $assignment = $shape->properties->gates_assignments;
 //---if has assignment then evaluate
     if ($assignment) {
         foreach ($shape->outgoing as $key => $out) {
 
             $shape_out = $CI->bpm->get_shape($out->resourceId, $wf);
 //var_dump($shape_out);
-            $streval = "return (" . $assignment . ")==('" . (string) $shape_out->properties->conditionexpression . "');";
+            $streval = "return in_array('" . (string) $shape_out->properties->conditionexpression . "',(array)".$assignment.");";
             if ($debug)
                 var_dump($streval);
             $result[$shape_out->resourceId]['streval'] = $streval;
@@ -254,7 +254,7 @@ function run_InclusiveGateway($shape, $wf, $CI) {
             }
         } else {
 
-            show_error("The has to be at least one valid option " . $shape->properties->name . ':' . $shape->properties->gates_assignments);
+            show_error("There has to be at least one valid option " . $shape->properties->name . ':' . $shape->properties->gates_assignments);
         }
     } else {
 //Check if has to be procesed manually
