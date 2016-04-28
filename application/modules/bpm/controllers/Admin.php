@@ -236,12 +236,13 @@ class Admin extends MX_Controller {
      */
     function convert_to_ext($array) {
         $rtn_arr = array();
+        $u=1;
         foreach ($array as $key => $value) {
             if (is_array($value)) {
                 asort($value);
                 $rtn_arr[] = array_filter(
                         array(
-                            'id' => $key,
+                            // 'id' => $key.$i++,
                             'text' => $key,
                             'leaf' => false,
                             'cls' => 'folder',

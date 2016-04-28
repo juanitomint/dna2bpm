@@ -27,9 +27,9 @@ var FolderAdd = Ext.create('Ext.Action', {
     }
 });
 function get_path(n){
-    parents=new Array(n.data.id.toString());
+    parents=new Array(n.data.text.toString());
     while(n=n.parentNode){
-        parents.unshift(n.data.id.toString())
+        parents.unshift(n.data.text.toString())
     }
     root=parents.splice(0,1);
     return parents.join('/');
