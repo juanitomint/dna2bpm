@@ -193,7 +193,7 @@ class Repository extends MX_Controller {
         );
         $data = ($mywf['data']) ? $mywf['data'] : $template;
         if (!$debug){
-            $this->output->set_header('Last-Modified: '.gmdate('D, d M Y H:i:s', $last_update).' GMT');
+            // $this->output->set_header('Last-Modified: '.gmdate('D, d M Y H:i:s', $last_update).' GMT');
             $this->output->set_header("Cache-Control: no-store, no-cache, must-revalidate");
             $this->output->set_header("Cache-Control: post-check=0, pre-check=0");
             $this->output->set_header("Pragma: no-cache");
