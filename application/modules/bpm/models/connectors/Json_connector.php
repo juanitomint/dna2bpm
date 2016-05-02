@@ -5,7 +5,7 @@ if (!defined('BASEPATH'))
 /*
  * This connector treats files in dataobjects as globals, the files will be available to all cases
  */
-class json_connector extends CI_Model {
+class Json_connector extends CI_Model {
 
     function Document_connector() {
         parent::__construct();

@@ -8,7 +8,7 @@ if (!defined('BASEPATH'))
  * if recordset count >1 then an array of records is returned
  * 
  * */
-class mongo_connector extends CI_Model {
+class Mongo_connector extends CI_Model {
 
     function Mongo_connector() {
         parent::__construct();
