@@ -321,7 +321,7 @@ class Admin extends MX_Controller {
         $data = $this->bpm->load_case_data($case);
         if (!$debug) {
             $this->output->set_content_type('json','utf-8');
-            echo json_encode($data);
+            $this->output->set_output(json_encode($data));
         } else {
             var_dump($data);
         }
