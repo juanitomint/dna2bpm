@@ -239,7 +239,7 @@ function test_task($idwf, $idcase,$resourceId=null) {
         
         if($resourceId){
              $shape = $this->bpm->get_shape($resourceId, $wf);
-             $renderData['script']=$shape->properties->script;
+             $renderData['script']=htmlspecialchars($shape->properties->script);
              $renderData['title']=$shape->properties->name;
         }
 //---tomo el template de la tarea
