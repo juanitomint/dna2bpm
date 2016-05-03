@@ -342,8 +342,9 @@ class Repository extends MX_Controller {
     function svg($idwf) {
 //$svg = $this->bpm->svg($idwf);
 //$this->parser->parse('bpm/svg', $svg);
-
+        $idwf=urldecode($idwf);
         $mywf = $this->bpm->load($idwf,false);
+        
         $svg[] = $mywf['svg'];
 //var_dump($svg);
         $data['svg'] = str_replace('>', ">\n", $mywf['svg']);
