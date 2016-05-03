@@ -100,7 +100,25 @@ class Repository extends MX_Controller {
             $this->bpm->save($idwf, $data, $svg);
         }
     }
+    function strip_tags_content($text, $tags = '', $invert = FALSE) { 
 
+      preg_match_all('/<(.+?)[\s]*\/?[\s]*>/si', trim($tags), $tags); 
+      $tags = array_unique($tags[1]); 
+        
+      if(is_array($tags) AND count($tags) > 0) { 
+        if($invert == FALSE) { 
+          return preg_replace('@<(?!(?:'. implode('|', $tags) .')\b)(\w+)\b.*?>.*?</\1>@si', '', $text);
+        } 
+        else { 
+          return preg_replace('@<('. implode('|', $tags) .')\b.*?>.*?</\1>@si', '', $text); 
+        } 
+      } 
+      elseif($invert == FALSE) { 
+        return preg_replace('@<(\w+)\b.*?>.*?</\1>@si', '', $text); 
+      } 
+      return $text; 
+    } 
+    
     function add($new_idwf=null) {
 //---check if has post
         if (!($this->input->post('idwf')or $new_idwf)) {
@@ -108,8 +126,8 @@ class Repository extends MX_Controller {
         }
         $idwf =($new_idwf)? $new_idwf:$this->input->post('idwf');
         if(!$this->bpm->model_exists($idwf)){
-            $folder = strip_tags($this->input->post('folder'));
-            $name = ($this->input->post('name')) ? strip_tags($this->input->post('name')) : $this->lang->line('New_Model');
+            $folder = $this->strip_tags_content($this->input->post('folder'));
+            $name = ($this->input->post('name')) ? $this->strip_tags_content($this->input->post('name')) : $this->lang->line('New_Model');
             $user = $this->user->get_user($this->idu);
             $author = $user->name . ' ' . $user->lastname;
             $wf['idwf'] = $idwf;
