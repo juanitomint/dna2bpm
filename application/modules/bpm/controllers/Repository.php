@@ -108,8 +108,8 @@ class Repository extends MX_Controller {
         }
         $idwf =($new_idwf)? $new_idwf:$this->input->post('idwf');
         if(!$this->bpm->model_exists($idwf)){
-            $folder = $this->input->post('folder');
-            $name = ($this->input->post('name')) ? $this->input->post('name') : $this->lang->line('New_Model');
+            $folder = strip_tags($this->input->post('folder'));
+            $name = ($this->input->post('name')) ? strip_tags($this->input->post('name')) : $this->lang->line('New_Model');
             $user = $this->user->get_user($this->idu);
             $author = $user->name . ' ' . $user->lastname;
             $wf['idwf'] = $idwf;
