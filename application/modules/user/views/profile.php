@@ -5,7 +5,7 @@
   <div class="form-group">
     <label class="col-sm-2 control-label"> {lang Nick} </label>
     <div class="col-sm-10">
-	    <input type="text" name="nick" class="form-control" placeholder="Nick" value="{nick}" disabled="disabled">
+	    <input type="text" id="nick" name="nick" class="form-control" placeholder="Nick" value="{nick}" disabled="disabled">
     </div>
   </div>
 

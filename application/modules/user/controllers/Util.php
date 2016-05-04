@@ -11,7 +11,7 @@ class util extends MX_Controller {
     }
 
     function Index() {
-        
+
     }
 
     //---return a json representation of a user.
@@ -35,7 +35,7 @@ class util extends MX_Controller {
          * "lastacc"
          * "id"
          * "group"
-         * 
+         *
          */
         $rtnU['idu']=$user->idu;
         $rtnU['nick']=$user->nick;
@@ -48,21 +48,31 @@ class util extends MX_Controller {
         } else {
             var_dump($rtn);
         }
-    
-        
+
+
     }
+    function checknick(){
+        $rtn=true;
+        if($this->input->post('nick')){
+            $rs=$this->user->getbynick($this->input->post('nick'));
+            $rtn=(!empty($rs))?false:true;
+        }
+        $this->output->set_content_type('json','utf-8');
+        $this->output->set_output(json_encode($rtn));
+    }
+
     function get_active_user($debug=false) {
         //---check login
-        
-        
-        
+
+
+
         if(!$this->session->userdata('loggedin')){
             show_error('Session Expired<br>', 500);
             exit;
         }
         $this->session->set_userdata('lastsee',date('H:i:s'));
         $rtnU['sess_updated']=$this->sess_update();
-        
+
         $iduser = $this->user->idu;
         $user = $this->user->get_user($iduser);
         //---Available
@@ -80,7 +90,7 @@ class util extends MX_Controller {
          * "lastacc"
          * "id"
          * "group"
-         * 
+         *
          */
         // $rtnU+=$this->session->userdata;
         $rtnU['idu']=$user->idu;
@@ -91,7 +101,7 @@ class util extends MX_Controller {
         $rtnU['ajax']=$this->input->is_ajax_request();
         $rtnU['sess_time_to_update']=$this->session->now-($this->session->userdata['last_activity'] + $this->session->sess_time_to_update);
         $rtnU['sess_time_to']=($this->session->userdata['last_activity'] + $this->session->sess_time_to_update >= $this->session->now);
-        
+
         if (!$debug) {
             $this->output->set_header('Last-Modified: '.gmdate('D, d M Y H:i:s', $last_update).' GMT');
             $this->output->set_header("Cache-Control: no-store, no-cache, must-revalidate");
@@ -102,10 +112,10 @@ class util extends MX_Controller {
         } else {
             var_dump($rtnU);
         }
-    
-        
+
+
     }
-    
+
     function sess_update()	{
 		// We only update the session every five minutes by default
     // 		if ($this->session->userdata['last_activity'] + $this->session->sess_time_to_update >= $this->session->now)
