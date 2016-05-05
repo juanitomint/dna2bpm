@@ -234,6 +234,7 @@ class Repository extends MX_Controller {
     }
 
     function dump($model, $idwf, $expand=false) {
+        $idwf=urldecode($idwf);
         $wfData['htmltitle'] = 'WF-Manager:' . $idwf;
         $wfData['theme'] = $this->config->item('theme');
         $wfData['base_url'] = $this->base_url;
@@ -249,6 +250,7 @@ class Repository extends MX_Controller {
         // echo json_encode($wfData);
     }
     function json_view($model,$idwf,$expand=false){
+        $idwf=urldecode($idwf);
         $this->load->library('ui');
         $mywf = $this->bpm->load($idwf,$expand);
         $renderData['data'] = $mywf['data'];
@@ -284,6 +286,7 @@ class Repository extends MX_Controller {
         */
 
     function save_script($idwf,$resourceId){
+        $idwf=urldecode($idwf);
         $this->user->authorize();
         $debug=false;
         $script=$this->input->post('script');
@@ -309,6 +312,7 @@ class Repository extends MX_Controller {
 
     }
     function save_model($idwf){
+        $idwf=urldecode($idwf);
         $this->user->authorize();
         $debug=false;
         $data=json_decode($this->input->post('data'));
@@ -328,6 +332,7 @@ class Repository extends MX_Controller {
 
     }
     function thumbnail($idwf, $width, $heigth) {
+        $idwf=urldecode($idwf);
         $svg = $this->bpm->svg($idwf);
         header("Content-type: image/svg+xml");
         echo '<?xml version="1.0" encoding="iso-8859-1"?>';
