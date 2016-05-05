@@ -624,7 +624,7 @@ class Repository extends MX_Controller {
             show_error("Can't access this page directly");
         }
         $idwf = $this->input->post('idwf');
-        $folder = $this->input->post('folder');
+        $folder = $this->strip_tags_content($this->input->post('folder'));
         $mywf = $this->bpm->load($idwf, false);
         $rtnObject = $this->bpm->update_folder($idwf, $folder);
         if (!$debug) {
