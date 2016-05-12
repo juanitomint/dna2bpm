@@ -6,6 +6,7 @@ $(document).ready(function(){
 var whereiam=$('#whereiam').val();
 var target=".dummy_msgs";
 
+	         
 // ajax handle
 $(document).on('click','.ajax',function(e){
 	e.preventDefault();// avoid msg open
@@ -202,6 +203,13 @@ $(document).on("submit","[name='form_search']",function(e){
 	});
 
 	
+});
+
+
+//== Turn off check all when flip pages
+
+$(document).on('click','.pagination',function(){
+	$("#check-all").iCheck("uncheck");
 });
 
 //=============== OLD
