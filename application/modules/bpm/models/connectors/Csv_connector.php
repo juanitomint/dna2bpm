@@ -3,7 +3,7 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-class csv_connector extends CI_Model {
+class Csv_connector extends CI_Model {
 
     function csv_connector() {
         parent::__construct();

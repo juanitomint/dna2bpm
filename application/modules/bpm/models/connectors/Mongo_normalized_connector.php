@@ -7,7 +7,7 @@ if (!defined('BASEPATH'))
  * ie: records will always be an array
  * 
  * */
-class mongo_normalized_connector extends CI_Model {
+class Mongo_normalized_connector extends CI_Model {
 
     function Mongo_connector() {
         parent::__construct();
@@ -24,7 +24,7 @@ class mongo_normalized_connector extends CI_Model {
                 $query = (is_array($query)) ? $query : json_decode($query);
                 ///---if array of ids convert into $in
                 if(isset($query['id'])&& is_array($query['id'])){
-                    $query['id']=array('$in'=>$query['id']);
+                    $query['id']=array('$in'=>array_values($query['id']));
                 }
                 //---select the database
                 if ($resource['datastoreref']) {
@@ -42,6 +42,9 @@ class mongo_normalized_connector extends CI_Model {
                 
                 while($arr = $rs->getNext()){
                     $arr['_id'] = null;
+                    if(isset($resource['version']) && $resource['version']=='dna2.1') {
+                        $arr['parent']=null;
+                    }
                     $rtn_arr[]=array_filter($arr);
                 }
                 return $rtn_arr;

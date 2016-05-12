@@ -7,6 +7,8 @@ function run_CollapsedSubprocess($shape, $wf, $CI) {
         echo '<H1>COLLAPSED SUBPROCESS:' . $shape->properties->name . '</H1>';
 
     $token = $CI->bpm->get_token($wf->idwf, $wf->case, $shape->resourceId);
+    $idcase = $wf->case;
+    $idwf = $wf->idwf;
     $parent['token'] = $token;
     $parent['case'] = $wf->case;
     $parent['idwf'] = $wf->idwf;
@@ -21,18 +23,17 @@ function run_CollapsedSubprocess($shape, $wf, $CI) {
         case  "Independent":
         case  "Reference":
             $data=array();
+            $data['parent']=$parent;
             $data['parent_data']=$case['data'];
                 //---check if child proceses already exists.
             if (isset($token['child'])) {
                 // ---now run child processes
-                if (isset($token ['child'])) {
                     if ($shape->properties->entry) {
                         $child_idwf = $shape->properties->entry;
                         foreach ($token['child'][$child_idwf] as $child_idcase) {
                             $this->start('model', $child_idwf, $child_idcase);
                         }
                     }
-                }
             } else {
                 //--Set token status to waiting
                 $CI->bpm->set_token($wf->idwf, $wf->case, $shape->resourceId, $shape->stencil->id, 'waiting');
@@ -47,6 +48,7 @@ function run_CollapsedSubprocess($shape, $wf, $CI) {
                         $dataStoreName=$prev_shape->properties->name;
                         }
                     }
+                    
                     switch ($shape->properties->looptype) {
                         case "Sequential"://---start one instance at a time assumes data input does not change
                             break;
@@ -65,9 +67,27 @@ function run_CollapsedSubprocess($shape, $wf, $CI) {
                                 show_error('DataStore:'.$dataStoreName.' not loaded');
                             }
                             break;
+                            
+                        /**
+                         * STANDARD JUST 1
+                         */ 
                         case "Standard":
                         default://-- "None" start just 1 child case
-                            $CI->newcase('model', $child_idwf, false, $parent, false,$data);
+                             $child_case=$CI->bpm->get_case($idcase, $child_idwf);
+                             if(!$child_case){
+                                $newcase=$CI->bpm->gen_case($child_idwf,$idcase , $data) ;
+                             } else {
+                                 //---update childcase
+                                 $childcase['data']['parent_data']=$case['data'];
+                                 $CI->bpm->save_case($child_case);
+                             }
+
+                             $case['data']['child'] = isset($case['data']['child']) ? $case['data']['child'] : array();
+                             $case['data']['child'][$child_idwf][] = $idcase;
+                             $case['data']['child'][$child_idwf]=array_unique($case['data']['child'][$child_idwf]);
+                             $CI->bpm->save_case($case);
+                            //---Start child
+                             $CI->Startcase('model', $child_idwf, $wf->case,false);
                             break;
                     }
                 }
@@ -76,7 +96,6 @@ function run_CollapsedSubprocess($shape, $wf, $CI) {
         default:
             break;
     }
-
 }
 
 function run_Subprocess($shape, $wf, $CI) {
@@ -86,6 +105,8 @@ function run_Subprocess($shape, $wf, $CI) {
     if ($debug)
         echo '<H1>SUBPROCESS:' . $shape->properties->name . '</H1>';
     $token = $CI->bpm->get_token($wf->idwf, $wf->case, $shape->resourceId);
+    if ($debug)
+        var_dump($token['status']);
     switch ($token['status']) {
         case 'waiting':
             //---check that some finish event has been reached
@@ -120,6 +141,7 @@ function run_Subprocess($shape, $wf, $CI) {
                 if (!$start_shapes)
                     show_error("The Schema doesn't have an start point");
                 //---Start all  StartNoneEvents as possible as case_subproc
+                
                 foreach ($start_shapes as $start_shape) {
                     // $CI->bpm->set_token($wf->idwf, $wf->case.'_'.$shape->properties->name, $start_shape->resourceId, $start_shape->stencil->id, 'pending');
                     $CI->bpm->set_token($wf->idwf, $wf->case, $start_shape->resourceId, $start_shape->stencil->id, 'pending');

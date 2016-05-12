@@ -100,7 +100,25 @@ class Repository extends MX_Controller {
             $this->bpm->save($idwf, $data, $svg);
         }
     }
+    function strip_tags_content($text, $tags = '', $invert = FALSE) { 
 
+      preg_match_all('/<(.+?)[\s]*\/?[\s]*>/si', trim($tags), $tags); 
+      $tags = array_unique($tags[1]); 
+        
+      if(is_array($tags) AND count($tags) > 0) { 
+        if($invert == FALSE) { 
+          return preg_replace('@<(?!(?:'. implode('|', $tags) .')\b)(\w+)\b.*?>.*?</\1>@si', '', $text);
+        } 
+        else { 
+          return preg_replace('@<('. implode('|', $tags) .')\b.*?>.*?</\1>@si', '', $text); 
+        } 
+      } 
+      elseif($invert == FALSE) { 
+        return preg_replace('@<(\w+)\b.*?>.*?</\1>@si', '', $text); 
+      } 
+      return $text; 
+    } 
+    
     function add($new_idwf=null) {
 //---check if has post
         if (!($this->input->post('idwf')or $new_idwf)) {
@@ -108,8 +126,8 @@ class Repository extends MX_Controller {
         }
         $idwf =($new_idwf)? $new_idwf:$this->input->post('idwf');
         if(!$this->bpm->model_exists($idwf)){
-            $folder = $this->input->post('folder');
-            $name = ($this->input->post('name')) ? $this->input->post('name') : $this->lang->line('New_Model');
+            $folder = $this->strip_tags_content($this->input->post('folder'));
+            $name = ($this->input->post('name')) ? $this->strip_tags_content($this->input->post('name')) : $this->lang->line('New_Model');
             $user = $this->user->get_user($this->idu);
             $author = $user->name . ' ' . $user->lastname;
             $wf['idwf'] = $idwf;
@@ -193,7 +211,7 @@ class Repository extends MX_Controller {
         );
         $data = ($mywf['data']) ? $mywf['data'] : $template;
         if (!$debug){
-            $this->output->set_header('Last-Modified: '.gmdate('D, d M Y H:i:s', $last_update).' GMT');
+            // $this->output->set_header('Last-Modified: '.gmdate('D, d M Y H:i:s', $last_update).' GMT');
             $this->output->set_header("Cache-Control: no-store, no-cache, must-revalidate");
             $this->output->set_header("Cache-Control: post-check=0, pre-check=0");
             $this->output->set_header("Pragma: no-cache");
@@ -216,6 +234,7 @@ class Repository extends MX_Controller {
     }
 
     function dump($model, $idwf, $expand=false) {
+        $idwf=urldecode($idwf);
         $wfData['htmltitle'] = 'WF-Manager:' . $idwf;
         $wfData['theme'] = $this->config->item('theme');
         $wfData['base_url'] = $this->base_url;
@@ -231,6 +250,7 @@ class Repository extends MX_Controller {
         // echo json_encode($wfData);
     }
     function json_view($model,$idwf,$expand=false){
+        $idwf=urldecode($idwf);
         $this->load->library('ui');
         $mywf = $this->bpm->load($idwf,$expand);
         $renderData['data'] = $mywf['data'];
@@ -266,6 +286,7 @@ class Repository extends MX_Controller {
         */
 
     function save_script($idwf,$resourceId){
+        $idwf=urldecode($idwf);
         $this->user->authorize();
         $debug=false;
         $script=$this->input->post('script');
@@ -291,6 +312,7 @@ class Repository extends MX_Controller {
 
     }
     function save_model($idwf){
+        $idwf=urldecode($idwf);
         $this->user->authorize();
         $debug=false;
         $data=json_decode($this->input->post('data'));
@@ -310,6 +332,7 @@ class Repository extends MX_Controller {
 
     }
     function thumbnail($idwf, $width, $heigth) {
+        $idwf=urldecode($idwf);
         $svg = $this->bpm->svg($idwf);
         header("Content-type: image/svg+xml");
         echo '<?xml version="1.0" encoding="iso-8859-1"?>';
@@ -324,8 +347,9 @@ class Repository extends MX_Controller {
     function svg($idwf) {
 //$svg = $this->bpm->svg($idwf);
 //$this->parser->parse('bpm/svg', $svg);
-
+        $idwf=urldecode($idwf);
         $mywf = $this->bpm->load($idwf,false);
+        
         $svg[] = $mywf['svg'];
 //var_dump($svg);
         $data['svg'] = str_replace('>', ">\n", $mywf['svg']);
@@ -600,7 +624,7 @@ class Repository extends MX_Controller {
             show_error("Can't access this page directly");
         }
         $idwf = $this->input->post('idwf');
-        $folder = $this->input->post('folder');
+        $folder = $this->strip_tags_content($this->input->post('folder'));
         $mywf = $this->bpm->load($idwf, false);
         $rtnObject = $this->bpm->update_folder($idwf, $folder);
         if (!$debug) {
