@@ -147,8 +147,8 @@ function run_EndNoneEvent($shape, $wf, $CI, $moveForward = true) {
     }
     //----update parent case if any
     $mycase = $CI->bpm->get_case($wf->case, $wf->idwf);
-    if (isset($mycase['parent'])) {
-        $parent = $mycase['parent'];
+    if (isset($mycase['data']['parent'])) {
+        $parent = $mycase['data']['parent'];
         // run_post($model, $idwf, $case, $resourceId)
         //echo '/bpm/engine/run_post/model/' . $parent['idwf'] . '/' . $parent['case'] . '/' . $parent['token']['resourceId'];
         //Module::run('/bpm/engine/run_post', 'model', $parent['idwf'], $parent['case'], $parent['token']['resourceId']);
