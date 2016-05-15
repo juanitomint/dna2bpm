@@ -294,25 +294,25 @@ function run_IntermediateEventCatching($shape, $wf, &$CI) {
 //---What to do if is a boundary event
     if ($is_boundary_event) {
         $inshape = $inbound[0];
-        $token = $CI->bpm->get_token($wf->idwf, $wf->case, $inshape->resourceId);
+        $inshape_token = $CI->bpm->get_token($wf->idwf, $wf->case, $inshape->resourceId);
 //---check whether the boundary activity has finished or not
-        if ($token['status'] !== 'finished') {
+        if ($inshape_token['status'] !== 'finished') {
             if ($shape->properties->boundarycancelactivity == true) {
                 if ($debug)
-                    echo "*** Canceling Task:" . $inshape->properties->name . '<hr/>';
+                    echo "*** Canceling Task:".$inshape->stencil->id.' ::' . $inshape->properties->name . '<hr/>';
 
                 $data = array('canceledBy' => $shape->resourceId, 'canceledName' => $shape->properties->name);
-//---check if is a Subprocess then cancel all included activities
+                //---check if is a Subprocess then cancel all included activities
+                //@todo dive deeper
                 if (isset($inshape->childShapes)) {
                     foreach ($inshape->childShapes as $child) {
-                        $token = $CI->bpm->get_token($wf->idwf, $wf->case, $child->resourceId);
-                        if ($token['status'] !== 'finished') {
+                        $child_token = $CI->bpm->get_token($wf->idwf, $wf->case, $child->resourceId);
+                        if ($child_token['status'] !== 'finished') {
                             $CI->bpm->set_token($wf->idwf, $wf->case, $child->resourceId, $child->stencil->id, 'canceled', $data);
                         }
                     }
                 }
 //---------------
-
                 $CI->bpm->set_token($wf->idwf, $wf->case, $inshape->resourceId, $inshape->stencil->id, 'canceled', $data);
                 $CI->bpm->movenext($shape, $wf);
                 return;
