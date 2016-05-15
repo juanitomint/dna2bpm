@@ -211,7 +211,7 @@ var mygrid = Ext.create('Ext.grid.Panel',
                             }
                         }]
                 },
-                Ext.create('Ext.grid.RowNumberer'),
+                // Ext.create('Ext.grid.RowNumberer'),
                 {
                     flex: 1,
                     text: "Date",
@@ -220,7 +220,7 @@ var mygrid = Ext.create('Ext.grid.Panel',
 
                 },
                 {
-                    flex: 1,
+                    flex: 2,
                     text: "ID",
                     dataIndex: 'id',
                     sortable: true
@@ -228,7 +228,7 @@ var mygrid = Ext.create('Ext.grid.Panel',
                 }
                 ,
                 {
-                    flex: 1,
+                    flex: 2,
                     text: "User",
                     dataIndex: 'user',
                     sortable: true
