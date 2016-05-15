@@ -321,11 +321,11 @@ class Admin extends MX_Controller {
 
         if($mywf){
             $mywf ['data'] ['idwf'] = $idwf;
-            $mywf ['data'] ['case'] = $case;
+            $mywf ['data'] ['case'] = $idcase;
             $mywf ['data'] ['folder'] = $mywf ['folder'];
             $wf = bindArrayToObject($mywf ['data']);
             // ----make it publicly available to other methods
-            $this->wf = $wf;
+            $this->engine->wf = $wf;
             $this->engine->load_data($wf,$idcase);
         }
         
@@ -333,7 +333,6 @@ class Admin extends MX_Controller {
         // $this->load->model('bpm', 'bpm_model');
         // $case = $this->bpm->get_case($idcase, $idwf);
         // $data = $this->bpm->load_case_data($case);
-        
         if (!$debug) {
             $this->output->set_content_type('json','utf-8');
             $this->output->set_output(json_encode($this->engine->data));
