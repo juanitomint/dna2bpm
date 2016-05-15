@@ -53,10 +53,10 @@ class Engine extends MX_Controller {
         /*
          * true: don't show modal msgs null: no debug
          */
-        $this->debug ['show_modal'] = null;
+        $this->debug ['dont_show_modal'] = null;
 
         // ---debug Helpers
-        $this->debug ['run_Task'] = false;
+        $this->debug ['run_Task'] = null;
         $this->debug ['run_CollapsedSubprocess'] = null;
         $this->debug ['run_Exclusive_Databased_Gateway'] = null;
         $this->debug ['run_IntermediateEventThrowing'] = null;
@@ -581,7 +581,7 @@ class Engine extends MX_Controller {
             // ---prepare UI
             $renderData ['title'] = 'Manual Task';
             //----Skip javascript if no modal asked
-            if (!$this->debug['show_modal']) {
+            if (!$this->debug['dont_show_modal']) {
                 $renderData ['js'] =array_merge(
                     $this->add_js,
                     array(
