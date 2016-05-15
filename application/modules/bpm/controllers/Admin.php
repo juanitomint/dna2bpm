@@ -315,15 +315,30 @@ class Admin extends MX_Controller {
      * @param string $idcase The id of the case
      */
     function get_data($idwf, $idcase) {
-        $debug = false;
-        $this->load->model('bpm', 'bpm_model');
-        $case = $this->bpm->get_case($idcase, $idwf);
-        $data = $this->bpm->load_case_data($case);
+        $this->load->module('bpm/engine');
+        //---check Exists.
+        $mywf = $this->bpm->load($idwf, $this->expandSubProcess);
+
+        if($mywf){
+            $mywf ['data'] ['idwf'] = $idwf;
+            $mywf ['data'] ['case'] = $case;
+            $mywf ['data'] ['folder'] = $mywf ['folder'];
+            $wf = bindArrayToObject($mywf ['data']);
+            // ----make it publicly available to other methods
+            $this->wf = $wf;
+            $this->engine->load_data($wf,$idcase);
+        }
+        
+        // $debug = false;
+        // $this->load->model('bpm', 'bpm_model');
+        // $case = $this->bpm->get_case($idcase, $idwf);
+        // $data = $this->bpm->load_case_data($case);
+        
         if (!$debug) {
             $this->output->set_content_type('json','utf-8');
-            $this->output->set_output(json_encode($data));
+            $this->output->set_output(json_encode($this->engine->data));
         } else {
-            var_dump($data);
+            var_dump($this->data);
         }
     }
 
@@ -441,5 +456,3 @@ class Admin extends MX_Controller {
     }
 
 }
-
-?>
