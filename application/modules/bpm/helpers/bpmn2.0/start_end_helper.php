@@ -249,6 +249,12 @@ function run_EndTerminateEvent($shape, $wf, $CI) {
         $data = array('canceledBy' => $shape->resourceId, 'canceledName' => $shape->properties->name);
         $token+=$data;
         $CI->bpm->save_token($token);
+        
     }
-    run_EndNoneEvent($shape, $wf, $CI);
+
+    $case = $CI->bpm->get_case($wf->case, $wf->idwf);
+    $CI->bpm->archive_case($case);
+    $CI->bpm->delete_case($wf->idwf,$wf->case);
+    // run_EndNoneEvent($shape, $wf, $CI);
+    
 }
