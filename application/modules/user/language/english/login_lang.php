@@ -26,6 +26,7 @@ $lang["mailsendpart2"]="<p>Please click the link at the bottom to reset the pass
 $lang["mailsendpart3"]="I want to reset my password";
 $lang["mailsubject"]= "DNA2 password reset system";
 $lang["mailmsg1"]="Check your email. </br> Thanks.";
+$lang["mailmsg1_error"]="It has been an error , try later</br> Thanks.";
 $lang["mailback"]="BACK";
 $lang["mailform"]="New Password Form";
 $lang["mailpassno"]="Your password must be at least 5 characters.";
