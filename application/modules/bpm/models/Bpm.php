@@ -666,7 +666,8 @@ class Bpm extends CI_Model {
         if (count($tokens)) {
             $reduced = array_reduce(
                     $tokens, function (&$result, $token) {
-                $result[$token['resourceId']] = (isset($token['status'])) ? $token['status'] : '???';
+                    if($token['resourceId'])
+                        $result[$token['resourceId']] = (isset($token['status'])) ? $token['status'] : '???';
                 return $result;
             }, array()
             );
