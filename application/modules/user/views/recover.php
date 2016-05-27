@@ -1,15 +1,10 @@
-        <div class="form-box" id="login-box">
+         <div class="form-box" id="login-box">
             <div class="header bg-navy">{lang loginMsgR}</div>
-                <form  action="{module_url}recover/send" method="post">
-                    {if {show_warn}}                
-                    <div class="alert">
-                        <button type="button" class="close" data-dismiss="alert">&times;</button>
-                        <strong>Warning!</strong> {msgcode}
-                    </div>
-                    {/if}   
+                <form  action="#" method="post" id="recover1">
+
 
                     <div class="body bg-gray">
-    				    <label>{lang type_your_email}</label>
+                        <label>{lang type_your_email}</label>
                         <div class="form-group">
                             <input type="text" name="mail" class="form-control" placeholder="{lang email}"/>
                         </div>
