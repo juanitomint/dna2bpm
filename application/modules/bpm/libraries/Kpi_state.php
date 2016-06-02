@@ -38,6 +38,8 @@ class kpi_state {
 
     function core($kpi) {
         $filter = $this->CI->kpi_model->get_filter($kpi); 
+        $status = (isset($kpi['status'])) ? $kpi['status'] : 'user';
+        $filter['status'] = $kpi['status'];
         $aquery=array(
             array('$match'=>$filter),
             array('$lookup'=>
