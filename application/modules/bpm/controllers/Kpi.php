@@ -497,7 +497,6 @@ class Kpi extends MX_Controller {
 		// $cpData ['top'] = $top;
 		 $cpData ['qtty'] = $total;
 		// ----make content
-
 		for($i = $offset; $i < $top; $i ++) {
 			$idcase = $cases [$i];
 			$case = $this->bpm->get_case ( $idcase, $kpi ['idwf'] );

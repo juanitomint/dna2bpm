@@ -31,21 +31,39 @@ class kpi_count_cases {
     }
 
     function list_cases($kpi) {
-        $filter = $this->CI->kpi_model->get_filter($kpi); 
-        $tokens = $this->CI->bpm->get_tokens_byResourceId($kpi['resourceId'], $filter,array('checkdate'=>true));
-        $cpData = $kpi;
-        $cases = array_map(function ($token) {
-            return $token['case'];
-        }, $tokens);
+        $core=$this->core($kpi);
+        foreach($core['result'] as $cc) $cases[]=$cc['case'];
         return $cases;
     }
 
     function core($kpi) {
-        $filter = $this->CI->kpi_model->get_filter($kpi);        
-        $tokens = $this->CI->bpm->get_tokens_byResourceId($kpi['resourceId'], $filter);
+        $filter = $this->CI->kpi_model->get_filter($kpi); 
+        $aquery=array(
+            array('$match'=>$filter),
+            array('$lookup'=>
+                array(
+                  "from" => "case",
+                  "localField" => "case",
+                  "foreignField" => "id",
+                  "as" => "cases"
+                ),
+            ),
+        );
+        if($kpi['filter']=='owner'){
+            $aquery[]=array('$match'=>array('case.iduser'=>$this->CI->user->idu));
+        }
+            
+        $aquery[]=array('$project'=>array('_id'=>0,'case'=>'$case'));
+        
+        $rs=$this->CI->mongowrapper->db->tokens->aggregate($aquery);
+        
+        // $tokens = $this->CI->bpm->get_tokens_byResourceId($kpi['resourceId'], $filter);
         $cpData = $kpi;
-        //var_dump($tokens);
-        $cpData['number'] = count($tokens);
+        // var_dump(json_encode($aquery),$rs);exit;
+        if($rs['ok']){
+            $cpData['result']=$rs['result'];
+            $cpData['number'] = count($rs['result']);
+        }
         return $cpData;
     }
 

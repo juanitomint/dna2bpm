@@ -36,6 +36,10 @@ Ext.create('Ext.data.Store', {
             'filter': 'idwf',
             'name': 'By Model'
         },
+        {
+            'filter': 'owner',
+            'name': 'By Case Owner'
+        },
     ]
 });
 Ext.create('Ext.data.Store', {
