@@ -50,7 +50,7 @@ class kpi_count_cases {
             ),
         );
         if($kpi['filter']=='owner'){
-            $aquery[]=array('$match'=>array('case.iduser'=>$this->CI->user->idu));
+            $aquery[]=array('$match'=>array('cases.iduser'=>$this->CI->user->idu));
         }
             
         $aquery[]=array('$project'=>array('_id'=>0,'case'=>'$case'));
