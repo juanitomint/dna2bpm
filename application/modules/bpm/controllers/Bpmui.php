@@ -114,11 +114,11 @@ class Bpmui extends MX_Controller {
 
     function ministatus($idwf, $showArr = array()) {
         $showArr = (count($showArr)) ? (array)$showArr : array(
+            'StartNoneEvent',
+            'StartMessageEvent',
             'Task',
             'Exclusive_Databased_Gateway',
-            'StartNoneEvent',
             'EndMessageEvent',
-            'StartMessageEvent',
         );
         $this->user->authorize();
         $this->lang->load('bpm/bpm');
@@ -134,7 +134,7 @@ class Bpmui extends MX_Controller {
             $data['mini'][] = $task;
         }
         $data['base_url'] = base_url();
-        $wf = $this->bpm->load('fondyfpp');
+        $wf = $this->bpm->load($idwf);
         $data+=$wf['data']['properties'];
         $data['name'] = 'Mini Status: ' . $data['name'];
         echo $this->parser->parse('bpm/widgets/ministatus', $data, true, true);
