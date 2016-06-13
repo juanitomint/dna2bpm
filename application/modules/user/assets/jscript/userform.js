@@ -23,8 +23,8 @@ function renderGroups(groupField) {
         if (groupField.value) {
                 groups = groupField.getValue().split(',');
                 for (i in groups) {
-                        value = groups[i];
-                        record = store.getAt(store.find('idgroup', value));
+                        value =  new RegExp("^" + groups[i] + "$","i");
+                        record = store.findRecord('idgroup', value);
                         if (record) {
                                 //---make a copy of the original record
                                 grid.store.add(record.copy());
