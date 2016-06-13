@@ -1711,7 +1711,7 @@ class Bpm extends CI_Model {
             }
         $parent_resources=$resources;    
         }
-        // var_dump($data);exit;
+        //  var_dump('Parent',$data);
         /*
           //----SHAPE HAS NO PARENT LANE
           else {
@@ -1729,8 +1729,8 @@ class Bpm extends CI_Model {
             //---merge assignment with specific data.
             $resources = $this->get_resources($shape, $wf);
             if (count($resources)) {
-                $data['assign'] = (isset($resources['assign'])) ? array_merge($resources['assign'], $data['assign']) : array();
-                $data['idgroup'] = (isset($resources['idgroup'])) ? array_merge($resources['idgroup'], $data['idgroup']) : array();
+                 $data['assign'] = (isset($resources['assign'])) ? array_merge($resources['assign'], $data['assign']) : $data['assign'];
+                 $data['idgroup'] = (isset($resources['idgroup'])) ? array_merge($resources['idgroup'], $data['idgroup']) : $data['idgroup'];
             } else {
                 if ($debug)
                     echo '<H3>Auto-Assign Runner no resources found, $shape->properties->resources->items is not set </H3>';
@@ -1779,7 +1779,7 @@ class Bpm extends CI_Model {
                 $data['assign'][] = $this->user->Initiator;
             }
         }
-
+        // var_dump('before',$data);
         /**
          * POST CHECK remove assign if performer is any
          */ 
@@ -1795,7 +1795,20 @@ class Bpm extends CI_Model {
             }
             
         }
+        //----now for the shape
+        if($resources ){
+            if($resources['any']){
+                if($first && $resources['any_cond']=='nextTime'){
+                 //----removeme from 
+                 $me=array_search($this->user->idu,$data['assign']);
+                 unset($data['assign'][$me]);
+                //  $data['assign'][]='any';
+                }
+            }
+            
+        }
         $data=array_filter($data);
+
         if ($debug)
             var_dump2($data);
         //----SAVE TOKEN
