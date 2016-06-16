@@ -1792,6 +1792,13 @@ class Bpm extends CI_Model {
                  unset($data['assign'][$me]);
                 //  $data['assign'][]='any';
                 }
+                
+                if($parent_resources['any_cond']=='any'){
+                     //----remove assignment
+                     unset($data['assign']);
+                }
+                
+                
             }
             
         }
@@ -1803,6 +1810,11 @@ class Bpm extends CI_Model {
                  $me=array_search($this->user->idu,$data['assign']);
                  unset($data['assign'][$me]);
                 //  $data['assign'][]='any';
+                }
+         
+                if($parent_resources['any_cond']=='any'){
+                     //----remove assignment
+                     unset($data['assign']);
                 }
             }
             
