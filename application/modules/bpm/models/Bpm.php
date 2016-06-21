@@ -1798,7 +1798,7 @@ class Bpm extends CI_Model {
                      unset($data['assign']);
                 }
                 
-                
+             $data['assign_any']=true;   
             }
             
         }
@@ -1816,6 +1816,10 @@ class Bpm extends CI_Model {
                      //----remove assignment
                      unset($data['assign']);
                 }
+            
+            $data['assign_any']=true;   
+            
+                
             }
             
         }
