@@ -38,13 +38,13 @@ class Mongo_case_connector extends CI_Model {
                 while ($arr = $rs->getNext()) {
                     //---remove _id to avoid save problems
                     $arr['_id'] = null;
-                    $rtn_arr[]=array_filter($arr);
+                    $rtn_arr[]=$arr;
                 }
                 
             } else {
                 while($arr = $rs->getNext()){
                     $arr['_id'] = null;
-                    $rtn_arr=array_filter($arr);
+                    $rtn_arr=$arr;
                 }
             }
             return $rtn_arr;
