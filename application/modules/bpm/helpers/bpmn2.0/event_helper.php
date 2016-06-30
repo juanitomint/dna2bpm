@@ -160,9 +160,9 @@ function run_IntermediateEventCatching($shape, $wf, &$CI) {
         echo '<h1> << IntermediateEventCatching:' . $shape->stencil->id .' '.$shape->properties->name. '</h1>';
     }
     $token = $CI->bpm->get_token($wf->idwf, $wf->case, $shape->resourceId);
-//---if token already canceled then exit
-    if ($token['status'] == 'canceled')
-        return;
+// //---if token already canceled then exit
+//     if ($token['status'] == 'canceled')
+//         return;
     $inbound_flow = array();
 ///----used to find by name
     $throwers_name = array();
