@@ -18,6 +18,8 @@ function run_Task($shape, $wf, $CI) {
     switch ($shape->properties->looptype) {
         case 'Standard':
             break;
+        case 'None':
+            break;
         default:
             //only excutes task 1 time
             if (in_array($resourceId, $wf->task_run)) {
