@@ -477,8 +477,8 @@ function run_IntermediateParallelMultipleEventCatching($shape, $wf, $CI) {
 //---or connected implicitly with message flow lines
     $token = $CI->bpm->get_token($wf->idwf, $wf->case, $shape->resourceId);
 //---if token already canceled then exit
-    if ($token['status'] == 'canceled')
-        return;
+    // if ($token['status'] == 'canceled')
+    //     return;
     $inbound_flow = array();
 ///----used to find by name
     $throwers_name = array();
