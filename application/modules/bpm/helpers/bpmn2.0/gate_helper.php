@@ -34,45 +34,7 @@ function run_Exclusive_Databased_Gateway($shape, $wf, $CI) {
 //    //----Get token data
 //    $token = $CI->bpm->get_token($wf->idwf, $wf->case, $shape->resourceId);
     $shape_data = array();
-////---assign gate to current user
-//    //$shape_data['assign'][] = (int) $CI->session->userdata('iduser');
-//    ////////////////////////////////////////////////////////////////////////////
-/////////////////////////EVAL EXECUTION POLICY////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////
-////--by default user is not allowed to execute this task
-////--except assign or group says otherwise
-//    $is_allowed = false;
-//    if ($debug)
-//        echo "Eval is_allowed<br/>";
-////---check if the user is assigned to the task
-//    if (isset($token['assign'])) {
-//        if (in_array($iduser, $token['assign'])) {
-//            $is_allowed = true;
-//            if ($debug)
-//                echo "is_allowed=true user is in token assign<br/>";
-//        }
-//    }
-//
-//
-////---check if user belong to the group the task is assigned to
-////---but only if the task havent been assigned to an specific user
-//    if (isset($token['idgroup']) and !isset($token['assign'])) {
-//        foreach ($user_groups as $thisgroup) {
-//            if (in_array((int) $thisgroup, $token['idgroup'])) {
-//                $is_allowed = true;
-//                if ($debug)
-//                    echo "is_allowed=true user is in token group<br/>";
-//            }
-//        }
-//    }
-//
-//
-//    if (!$is_allowed) {
-//        if ($debug)
-//            echo "is_allowed=false<br/>";
-//        return false;
-//    }
-////////////////////////////////////////////////////////////////////////////
+
     // extract((array) $CI->data);
     if ($debug)
         var_dump('DATA', (array)$CI->data);
@@ -114,16 +76,16 @@ function run_Exclusive_Databased_Gateway($shape, $wf, $CI) {
 //---replace lang true/false
                 $true = strtolower($CI->lang->line('true'));
                 $false = strtolower($CI->lang->line('false'));
-                $cond = (strtolower($cond) == $true) ? 'true' : $cond;
-                $cond = (strtolower($cond) == $false) ? 'false' : $cond;
-                $cond_type=eval("return gettype($assignment);");
+                $cond = (strtolower($cond) == $true) ? true : $cond;
+                $cond = (strtolower($cond) == $false) ? false : $cond;
+                //---Get type of assignmen
+                $cond_type=eval("extract((array) \$CI->data);return gettype($assignment);"); 
                 $streval = "extract((array) \$CI->data);\$cond='$cond';settype(\$cond,'$cond_type');return (" . $assignment . ") $op \$cond;";
 //--- post process eval
                 if (strstr($cond, ',')) {
                     $streval = "extract((array) \$CI->data);\$cond='$cond';return (in_array(" . $assignment . ",explode(',','$cond')));";
                 }
-                if ($debug)
-                    var_dump('$streval', $streval);
+
                 $result[$shape_out->resourceId]['streval'] = $streval;
                 $result[$shape_out->resourceId]['shape'] = $shape_out;
 
@@ -135,7 +97,7 @@ function run_Exclusive_Databased_Gateway($shape, $wf, $CI) {
                 if ($result[$shape_out->resourceId]['eval'])
                     $i++;
                 if ($debug) {
-                    var_dump('assignment:',$assignment,'eval:', eval("return($assignment);"),'result:', $result[$shape_out->resourceId]['eval']);
+                    var_dump(array('assignment'=>$assignment,'eval'=> eval("return($assignment);"),'streval'=> $streval,'result'=> $result[$shape_out->resourceId]['eval']));
                     echo '<hr>';
                 }
             }
