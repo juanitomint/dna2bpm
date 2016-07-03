@@ -25,7 +25,7 @@ function run_ParallelGateway($shape, $wf, $CI) {
 function run_Exclusive_Databased_Gateway($shape, $wf, $CI) {
 
     $debug = (isset($CI->debug[__FUNCTION__])) ? $CI->debug[__FUNCTION__] : false;
-    $debug = false;
+    // $debug = true;
     $iduser = (int) $CI->idu;
     $user = $CI->user->get_user($iduser);
     $user_groups = (array) $user->group;
@@ -73,9 +73,9 @@ function run_Exclusive_Databased_Gateway($shape, $wf, $CI) {
 //        return false;
 //    }
 ////////////////////////////////////////////////////////////////////////////
-    extract((array) $CI->data);
+    // extract((array) $CI->data);
     if ($debug)
-        var_dump('DATA', $CI->data);
+        var_dump('DATA', (array)$CI->data);
 //$cond=eval('return '.$shape->properties->gates_assignments.';');
 //var_dump($shape->properties->gates_assignments,$cond);
 //echo '<hr>';
@@ -102,7 +102,7 @@ function run_Exclusive_Databased_Gateway($shape, $wf, $CI) {
 //----parse $op
                 foreach ($op_map as $operation) {
                     if (strstr($cond, $operation)) {
-                        $cond = str_replace($operation, '', $cond);
+                        $cond = trim(str_replace($operation, '', $cond));
                         $op = $operation;
                         break;
                     }
@@ -116,11 +116,11 @@ function run_Exclusive_Databased_Gateway($shape, $wf, $CI) {
                 $false = strtolower($CI->lang->line('false'));
                 $cond = (strtolower($cond) == $true) ? 'true' : $cond;
                 $cond = (strtolower($cond) == $false) ? 'false' : $cond;
-
-                $streval = "return (" . $assignment . ")$op(" . (string) $cond . ");";
+                $cond_type=eval("return gettype($assignment);");
+                $streval = "extract((array) \$CI->data);\$cond='$cond';settype(\$cond,'$cond_type');return (" . $assignment . ") $op \$cond;";
 //--- post process eval
                 if (strstr($cond, ',')) {
-                    $streval = "return (in_array(" . $assignment . ",explode(',','$cond')));";
+                    $streval = "extract((array) \$CI->data);\$cond='$cond';return (in_array(" . $assignment . ",explode(',','$cond')));";
                 }
                 if ($debug)
                     var_dump('$streval', $streval);
@@ -135,7 +135,7 @@ function run_Exclusive_Databased_Gateway($shape, $wf, $CI) {
                 if ($result[$shape_out->resourceId]['eval'])
                     $i++;
                 if ($debug) {
-                    var_dump($assignment, eval("return($assignment);"), $result[$shape_out->resourceId]['eval']);
+                    var_dump('assignment:',$assignment,'eval:', eval("return($assignment);"),'result:', $result[$shape_out->resourceId]['eval']);
                     echo '<hr>';
                 }
             }
@@ -151,7 +151,7 @@ function run_Exclusive_Databased_Gateway($shape, $wf, $CI) {
                 }
             }
         }
-//exit;        
+// exit;        
 //---process all Sequences and only activate one
         if ($i == 1) {
 //----mark shape as finished
