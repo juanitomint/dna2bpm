@@ -198,6 +198,11 @@ try {
                 value: '',
                 editor: jsonEditor
             },
+            'sort_by': {
+                displayName: 'Sort By',
+                value: '',
+                editor: jsonEditor
+            },
             'filter': {
                 displayName: '<i class="icon icon-filter"></i> Filter',
                 editor: comboFilter,

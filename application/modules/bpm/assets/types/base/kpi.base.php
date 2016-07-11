@@ -14,6 +14,7 @@ $common = array(
     'locked' => 'boolean',
     'filter' => 'string',
     'filter_extra'=>'string',
+    'sort_by'=>'string',
     'resourceId' => 'string',
     'widget_type'=>'string',
     'widget'=>'string',

@@ -492,7 +492,32 @@ class Kpi extends MX_Controller {
 		// 			'class' => ($i == $page) ? 'bg-blue' : ''
 		// 	);
 		// }
-
+		/**
+		 * SORTER
+		 */
+		 $sorter=json_decode($kpi['sort_by']);
+		 foreach($cases as $key=>$idcase){
+		 	$case = $this->bpm->get_case ( $idcase, $kpi ['idwf'] );
+		 	$data[$idcase]= $this->bpm->load_case_data ( $case );
+		 	$data[$idcase]['idcase']=$idcase;
+		 	if($sorter){
+		 		foreach ($sorter as $ksort=>$direction){
+		 			$k=$this->parser->parse_string ('{'.$ksort.'}',$data[$idcase]);
+		 			$sort[$ksort][$key]=$k;
+		 		}
+		 	}
+		 	
+		 }
+		 
+		 	//---sort arrays for order
+		 	foreach ($sorter as $ksort=>$direction){
+		 			if($direction==1){
+ 						array_multisort($sort[$ksort],SORT_ASC,$cases);
+		 			}else{
+ 						array_multisort($sort[$ksort],SORT_DESC,$cases);
+		 			}
+	 		}	
+	 		
 		// $cpData ['start'] = $offset + 1;
 		// $cpData ['top'] = $top;
 		 $cpData ['qtty'] = $total;
@@ -500,7 +525,7 @@ class Kpi extends MX_Controller {
 		for($i = $offset; $i < $top; $i ++) {
 			$idcase = $cases [$i];
 			$case = $this->bpm->get_case ( $idcase, $kpi ['idwf'] );
-			$case ['data'] = $this->bpm->load_case_data ( $case );
+			$case ['data'] = $data[$idcase];
 			// ---Ensures $case['data'] exists
 			$case ['data'] = (isset ( $case ['data'] )) ? $case ['data'] : array ();
 			$token = $this->bpm->get_token ( $kpi ['idwf'], $idcase, $kpi ['resourceId'] );
@@ -808,6 +833,17 @@ class Kpi extends MX_Controller {
 			}
 		}
 	}
+	
+	function array_sort_by_column(&$arr, $col, $dir = SORT_ASC) {
+	    $sort_col = array();
+	    
+	    foreach ($arr as $key=> $row) {
+	        $sort_col[$key] = $row[$col];
+	    }
+	
+	    array_multisort($sort_col, $dir, $arr);
+	}
+
 }
 
 /* End of file kpi */
