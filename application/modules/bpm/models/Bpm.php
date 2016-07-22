@@ -1784,7 +1784,8 @@ class Bpm extends CI_Model {
          * POST CHECK remove assign if performer is any
          */ 
          //---eval any -> nextTime
-        if($parent_resources ){
+        if($parent){
+            if($parent_resources ){
             if($parent_resources['any']){
                 if($first && $parent_resources['any_cond']=='nextTime'){
                  //----removeme from 
@@ -1802,8 +1803,10 @@ class Bpm extends CI_Model {
             }
             
         }
+        }
         //----now for the shape
-        if($resources ){
+        if(isset($resources)){
+            if($resources){
             if($resources['any']){
                 if($first && $resources['any_cond']=='nextTime'){
                  //----removeme from 
@@ -1822,6 +1825,7 @@ class Bpm extends CI_Model {
                 
             }
             
+        }
         }
         $data=array_filter($data);
 
