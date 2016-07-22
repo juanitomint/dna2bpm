@@ -22,6 +22,7 @@ class Admin extends MX_Controller {
         $this->user->authorize();
         //----LOAD LANGUAGE
         $this->lang->load('library', $this->config->item('language'));
+        $this->expandSubProcess=true;
         $this->idu = $this->user->idu;
     }
 
@@ -315,6 +316,7 @@ class Admin extends MX_Controller {
      * @param string $idcase The id of the case
      */
     function get_data($idwf, $idcase) {
+        $debug = false;
         $this->load->module('bpm/engine');
         //---check Exists.
         $mywf = $this->bpm->load($idwf, $this->expandSubProcess);
