@@ -21,8 +21,8 @@
             </div>
             <div class="modal-footer">
                 <button id="closeTask" class="btn pull-left btn-danger" data-dismiss="modal" aria-hidden="true">
-                    <i class="fa fa-chevron-left fa-white"></i>
-                    {lang closeTask}
+                    <i class="fa fa-pause fa-white"></i>
+                    {lang dismissTask}
                 </button>
                 <button type="submit" id="finishTask-1" class="btn btn-success">
                     <i class="fa fa-play fa-white"></i>
