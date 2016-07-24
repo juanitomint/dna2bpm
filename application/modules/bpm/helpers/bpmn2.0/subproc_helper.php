@@ -19,11 +19,26 @@ function run_CollapsedSubprocess($shape, $wf, $CI) {
     $child_idwf = $shape->properties->entry;
     $silent = true;
     $isfinished=false;
+    $doprocess=true;
+    $casesfinished=0;
     if($debug) echo "<h2>Sub-Proc Type:{$shape->properties->subprocesstype}</h2>";
-    switch($token['status']){
-        case "waiting":
+    if($token['status']=="waiting"){
+        switch ($shape->properties->looptype) {
+                        case "Sequential"://---start one instance at a time
+                            //---let the doprocess run
+                        break;
+                        
+                        case "Parallel"://---start one instance at a time assumes data input does not change
+                            //---all instances has been started so don't let doprocess run
+                            $doprocess=false;
+                        break;
+                        
+                        default://---just one instance has been created so prevent to create more
+                            $doprocess=false;
+                        break;
+            
+        } 
             //-----check if all childs has finished.
-            $casesfinished=0;
                 $filter=array('idwf'=>$child_idwf,'id'=>array('$in'=>(array)$child_cases));
                 $cases=$CI->bpm->get_cases_byFilter($filter, array('status','idwf','id'));
                     foreach($cases as $child_case){
@@ -37,12 +52,14 @@ function run_CollapsedSubprocess($shape, $wf, $CI) {
             //----check if qtty defined is greater than or equal to finished cases
             if($casesfinished>=$shape->properties->completionquantity) {
                 $isfinished=true;
+                $doprocess=false;
             }
-            break;
-        /**
-         * STATUS any other than WAITING
-         */ 
-        default:
+    }
+        
+    /**
+     * STATUS any other than WAITING and sequential loops
+     */ 
+    if($doprocess){
         switch($shape->properties->subprocesstype){
         case  "Embedded":
             //---replace embedded
@@ -163,13 +180,14 @@ function run_CollapsedSubprocess($shape, $wf, $CI) {
             default:
             break;
     }
+        //  STATUS any other than WAITING
+    
     }
     
     /**
      * MOVENEXT OR RUN NEXT CHILD
      */ 
     if($isfinished){
-        var_dump($isfinished,$child_cases);exit;
         $CI->bpm->movenext($shape, $wf);
     } else{ 
         //----run first nonfinished child
