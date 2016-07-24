@@ -2,21 +2,48 @@
 
 function run_CollapsedSubprocess($shape, $wf, $CI) {
     $debug = (isset($CI->debug[__FUNCTION__])) ? $CI->debug[__FUNCTION__] : false;
-    // $debug=true;
+    $debug=true;
     if ($debug)
         echo '<H1>COLLAPSED SUBPROCESS:' . $shape->properties->name . '</H1>';
 
     $token = $CI->bpm->get_token($wf->idwf, $wf->case, $shape->resourceId);
+    //----get childs from token
+    $child_cases=isset($token['child'])?$token['child']:array();
+    
     $idcase = $wf->case;
     $idwf = $wf->idwf;
     $parent['token'] = $token;
     $parent['case'] = $wf->case;
     $parent['idwf'] = $wf->idwf;
     $case=$CI->bpm->get_case($wf->case, $wf->idwf);
-    $pdata=$case['data'];
+    $child_idwf = $shape->properties->entry;
     $silent = true;
+    $isfinished=false;
     if($debug) echo "<h2>Sub-Proc Type:{$shape->properties->subprocesstype}</h2>";
-    switch($shape->properties->subprocesstype){
+    switch($token['status']){
+        case "waiting":
+            //-----check if all childs has finished.
+            $casesfinished=0;
+                $filter=array('idwf'=>$child_idwf,'id'=>array('$in'=>(array)$child_cases));
+                $cases=$CI->bpm->get_cases_byFilter($filter, array('status','idwf','id'));
+                    foreach($cases as $child_case){
+                        if($child_case['status']<>'open') {
+                            $casesfinished++;
+                        } else {
+                            $stillOpen[]=$child_case['id'];
+                        }
+                    }
+            $runrun=$stillOpen[0];        
+            //----check if qtty defined is greater than or equal to finished cases
+            if($casesfinished>=$shape->properties->completionquantity) {
+                $isfinished=true;
+            }
+            break;
+        /**
+         * STATUS any other than WAITING
+         */ 
+        default:
+        switch($shape->properties->subprocesstype){
         case  "Embedded":
             //---replace embedded
             run_Subprocess($shape, $wf, $CI);        
@@ -26,19 +53,7 @@ function run_CollapsedSubprocess($shape, $wf, $CI) {
             $data=array();
             $data['parent']=$parent;
             $data['parent_data']=$case['data'];
-                //---check if child proceses already exists.
-            // if (isset($token['child'])) {
-            //     // ---now run child processes
-            //         if ($shape->properties->entry) {
-            //             $child_idwf = $shape->properties->entry;
-            //             foreach ($token['child'][$child_idwf] as $child_idcase) {
-            //                 $this->start('model', $child_idwf, $child_idcase);
-            //             }
-            //         }
-            // } else {
-                
-                //--Set token status to waiting
-                $CI->bpm->set_token($wf->idwf, $wf->case, $shape->resourceId, $shape->stencil->id, 'waiting');
+
                 if ($shape->properties->entry) {
                     $child_idwf = $shape->properties->entry;
                     /* Create new child cases
@@ -51,7 +66,9 @@ function run_CollapsedSubprocess($shape, $wf, $CI) {
                         $dataStoreName=$prev_shape->properties->name;
                         }
                     }
-                    
+                    /**
+                     * Eval LOOP
+                     */ 
                     switch ($shape->properties->looptype) {
                         case "Sequential"://---start one instance at a time assumes data input does not change
                         if($dataStoreName){
@@ -72,55 +89,50 @@ function run_CollapsedSubprocess($shape, $wf, $CI) {
                                 //----create from shape
                                 //start a case with $item as data in data['parent_data']
                                 $child_case=$CI->bpm->gen_case($child_idwf,null , $data) ;
-                                $pdata['data']['child'] = isset($pdata['data']['child']) ?(array) $pdata['data']['child'] : array();
-                                $pdata['data']['child'][$child_idwf][] = $child_case;
-                                $pdata['data']['child'][$child_idwf]=array_unique($pdata['data']['child'][$child_idwf]);
-                                $CI->bpm->update_case($idwf, $idcase, $pdata);
+                                $child_cases[] = $child_case;
                                 //---Start childs left first to start last
-                                $CI->Startcase('model', $child_idwf, $child_case,false);
-                                    
+                                $CI->Startcase('model', $child_idwf, $child_case,$silent);
+                                $runrun=$child_case;
                                 
                             }
                             break;
                         case "Parallel"://---start all instances at once
                         // echo "paralell";
                             if($dataStoreName){
+                                
                                 // loop thru data input and start a case for each one
                                 if($CI->data->$dataStoreName){
                                     foreach($CI->data->$dataStoreName as $item){
                                         //start a case with $item as data in data['parent_data']
-                                        // var_dump($item);
                                         $data['parent_data']=$item;
+                                        $child_case=$CI->bpm->gen_case($child_idwf,null , $data) ;
+                                        $child_cases[] = $child_case;
                                         //---Newcase($model, $idwf, $manual = false, $parent = null, $silent = false,$data=array())
-                                        $CI->newcase('model', $child_idwf, false, $parent, $silent,$data);
+                                        $CI->Startcase('model', $child_idwf, $child_case,$silent);
+                                        $CI->Run('model', $child_idwf, $child_case,null, $silent);
                                     }
                                 } else {
                                     show_error('DataStore:'.$dataStoreName.' not loaded');
                                 }
                             } else {
+                                
                                 //----create from shape
                                 for($i=1;$i<=$shape->properties->startquantity;$i++){
                                         //start a case with $item as data in data['parent_data']
                                         
                                         $child_case=$CI->bpm->gen_case($child_idwf,null , $data) ;
-
-                                        
-                                        $pdata['data']['child'] = isset($pdata['data']['child']) ?(array) $pdata['data']['child'] : array();
-                                        $pdata['data']['child'][$child_idwf][] = $child_case;
-                                        $pdata['data']['child'][$child_idwf]=array_unique($pdata['data']['child'][$child_idwf]);
-                                        $CI->bpm->update_case($idwf, $idcase, $pdata);
+                                        $child_cases[] = $child_case;
+                                        if($debug)  
+                                            echo "Starting: $child_idwf::$child_case <hr/>";
                                         //---Start childs left first to start last
-                                        if($i<>1){
-                                            $CI->Startcase('model', $child_idwf, $child_case,true);
-                                            $CI->Run('model', $child_idwf, $child_case,null, true);
-                                        } else {
-                                            $runrun=$child_case;
+                                        $CI->Startcase('model', $child_idwf, $child_case,true);
+                                        $CI->Run('model', $child_idwf, $child_case,null, true);
                                         }
-                                    }
-                                    
-                                    $CI->start('model', $child_idwf, $runrun,false);
+                                    //----send first case to run
+                            
                                 
                             }
+                            $runrun=$child_cases[0];
                             break;
                             
                         /**
@@ -128,30 +140,40 @@ function run_CollapsedSubprocess($shape, $wf, $CI) {
                          */ 
                         case "Standard":
                         default://-- "None" start just 1 child case
-                             $child_case=$CI->bpm->get_case($idcase, $child_idwf);
+                            //  $child_case=$CI->bpm->get_case($idcase, $child_idwf);
                              if(!$child_case){
-                                $newcase=$CI->bpm->gen_case($child_idwf,$idcase , $data) ;
+                                $idcase=$CI->bpm->gen_case($child_idwf,$idcase , $data) ;
                              } else {
                                  //---update childcase
                                  $childcase['data']['parent_data']=$case['data'];
-                                 $CI->bpm->save_case($child_case);
                              }
-                             $case=$CI->bpm->get_case($wf->case, $wf->idwf);
-                             $case['data']['child'] = isset($case['data']['child']) ? $case['data']['child'] : array();
-                             $case['data']['child'][$child_idwf][] = $idcase;
-                             $case['data']['child'][$child_idwf]=array_unique($case['data']['child'][$child_idwf]);
-                             $CI->bpm->save_case($case);
+                             $child_cases[] = $idcase;
+                             //---set this to run
+                             $runrun=$idcase;
                             //---Start child
-                             $CI->Startcase('model', $child_idwf, $wf->case,false);
+                             $CI->Startcase('model', $child_idwf, $wf->case,$silent);
                             break;
                     }
                 }
+                $case['data']['child'][$shape->resourceId][$child_idwf]= $child_cases;
+                $CI->bpm->save_case($case);
+                $CI->bpm->set_token($wf->idwf, $wf->case, $shape->resourceId, $shape->stencil->id, 'waiting',array('child'=>$child_cases));
+            break;
             
-                
-            // }//---end if token['child']
+            default:
             break;
-        default:
-            break;
+    }
+    }
+    
+    /**
+     * MOVENEXT OR RUN NEXT CHILD
+     */ 
+    if($isfinished){
+        var_dump($isfinished,$child_cases);exit;
+        $CI->bpm->movenext($shape, $wf);
+    } else{ 
+        //----run first nonfinished child
+        $CI->Run('model', $child_idwf, $runrun);
     }
 }
 

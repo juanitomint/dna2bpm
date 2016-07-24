@@ -98,7 +98,7 @@ function run_StartParallelMultipleEvent($shape, $wf, $CI) {
 function run_EndNoneEvent($shape, $wf, $CI, $moveForward = true) {
 
     $debug = (isset($CI->debug[__FUNCTION__])) ? true : false;
-//    $debug = true;
+    // $debug = true;
     if ($debug)
         echo "<h2>" . __FUNCTION__ . '</h2>';
 //----don't forward tokens if has events
@@ -151,8 +151,12 @@ function run_EndNoneEvent($shape, $wf, $CI, $moveForward = true) {
         $parent = $mycase['data']['parent'];
         // run_post($model, $idwf, $case, $resourceId)
         //echo '/bpm/engine/run_post/model/' . $parent['idwf'] . '/' . $parent['case'] . '/' . $parent['token']['resourceId'];
-        //Module::run('/bpm/engine/run_post', 'model', $parent['idwf'], $parent['case'], $parent['token']['resourceId']);
-        $CI->run_post('model', $parent['idwf'], $parent['case'], $parent['token']['resourceId']);
+        if($debug){
+            echo "RUN PARENT";
+        }
+        //$CI->run('model', $parent['idwf'], $parent['case'], $parent['token']['resourceId']);
+        redirect($CI->base_url.'bpm/engine/run/model/'.$parent['idwf'].'/'. $parent['case']);
+        // $CI->run_post('model', $parent['idwf'], $parent['case'], $parent['token']['resourceId']);
     }
 }
 
