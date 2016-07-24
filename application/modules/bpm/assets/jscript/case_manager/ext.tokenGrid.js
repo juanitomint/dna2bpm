@@ -33,7 +33,7 @@ function playShape(result) {
         resourceId = this.get('resourceId');
         gridSel = mygrid.selModel.selected.items[0];
         idcase = gridSel.get('id');
-        url = globals.base_url + 'bpm/engine/run_post/model/' + globals.idwf + '/' + idcase + '/' + resourceId;
+        url = globals.base_url + 'bpm/engine/run/model/' + globals.idwf + '/' + idcase + '/' + resourceId;
         window.open(url);
     }
 }
