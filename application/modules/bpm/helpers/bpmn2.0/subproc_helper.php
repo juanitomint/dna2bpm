@@ -2,7 +2,7 @@
 
 function run_CollapsedSubprocess($shape, $wf, $CI) {
     $debug = (isset($CI->debug[__FUNCTION__])) ? $CI->debug[__FUNCTION__] : false;
-    $debug=true;
+    // $debug=true;
     if ($debug)
         echo '<H1>COLLAPSED SUBPROCESS:' . $shape->properties->name . '</H1>';
 
@@ -23,9 +23,27 @@ function run_CollapsedSubprocess($shape, $wf, $CI) {
     $casesfinished=0;
     if($debug) echo "<h2>Sub-Proc Type:{$shape->properties->subprocesstype}</h2>";
     if($token['status']=="waiting"){
+            //-----check if all childs has finished.
+        $filter=array('idwf'=>$child_idwf,'id'=>array('$in'=>(array)$child_cases));
+        $cases=$CI->bpm->get_cases_byFilter($filter, array('status','idwf','id'));
+            foreach($cases as $child_case){
+                if($child_case['status']<>'open') {
+                    $casesfinished++;
+                } else {
+                    $stillOpen[]=$child_case['id'];
+                }
+            }
+        $runrun=$stillOpen[0];        
+            //----check if qtty defined is greater than or equal to finished cases
+        if($casesfinished>=$shape->properties->completionquantity) {
+                $isfinished=true;
+                $doprocess=false;
+            }
         switch ($shape->properties->looptype) {
                         case "Sequential"://---start one instance at a time
-                            //---let the doprocess run
+                            //---let the doprocess run only if previous instance has finished
+                            if(count($stillOpen))
+                                $doprocess=false;
                         break;
                         
                         case "Parallel"://---start one instance at a time assumes data input does not change
@@ -38,22 +56,6 @@ function run_CollapsedSubprocess($shape, $wf, $CI) {
                         break;
             
         } 
-            //-----check if all childs has finished.
-                $filter=array('idwf'=>$child_idwf,'id'=>array('$in'=>(array)$child_cases));
-                $cases=$CI->bpm->get_cases_byFilter($filter, array('status','idwf','id'));
-                    foreach($cases as $child_case){
-                        if($child_case['status']<>'open') {
-                            $casesfinished++;
-                        } else {
-                            $stillOpen[]=$child_case['id'];
-                        }
-                    }
-            $runrun=$stillOpen[0];        
-            //----check if qtty defined is greater than or equal to finished cases
-            if($casesfinished>=$shape->properties->completionquantity) {
-                $isfinished=true;
-                $doprocess=false;
-            }
     }
         
     /**
