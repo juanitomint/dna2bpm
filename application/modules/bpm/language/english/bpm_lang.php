@@ -13,6 +13,7 @@ $lang["Waiting"] = 'Waiting';
 $lang["Stoped"] = 'Stoped';
 $lang["finishTask"] = 'Mark as "Finished"';
 $lang["closeTask"] = 'Close';
+$lang["dismissTask"] = 'Later';
 $lang["claim"] = 'claim';
 $lang["refuse"] = 'refuse';
 $lang["delegate"] = 'delegate';
@@ -33,7 +34,7 @@ $lang["caseClosed"] = "This case is marked as 'closed'";
 $lang["openCases"] = "Open cases";
 $lang["closedCases"] = "Closed Cases";
 /* --WF-conditions----- */
-$lang['true'] = 'Si';
+$lang['true'] = 'Yes';
 $lang['false'] = 'No';
 /* --File ---*/
 $lang['drop_here']="Drop your files here";
