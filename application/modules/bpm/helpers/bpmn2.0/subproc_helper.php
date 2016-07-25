@@ -21,6 +21,7 @@ function run_CollapsedSubprocess($shape, $wf, $CI) {
     $isfinished=false;
     $doprocess=true;
     $casesfinished=0;
+    $stillOpen=array();
     if($debug) echo "<h2>Sub-Proc Type:{$shape->properties->subprocesstype}</h2>";
     if($token['status']=="waiting" and $shape->properties->subprocesstype<>'Embedded'){
             //-----check if all childs has finished.
@@ -33,7 +34,8 @@ function run_CollapsedSubprocess($shape, $wf, $CI) {
                     $stillOpen[]=$child_case['id'];
                 }
             }
-        $runrun=$stillOpen[0];        
+        if(count($stillOpen))
+            $runrun=$stillOpen[0];        
             //----check if qtty defined is greater than or equal to finished cases
         if($casesfinished>=$shape->properties->completionquantity) {
                 $isfinished=true;
