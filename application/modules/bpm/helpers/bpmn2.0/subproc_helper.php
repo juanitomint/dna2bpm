@@ -4,7 +4,7 @@ function run_CollapsedSubprocess($shape, $wf, $CI) {
     $debug = (isset($CI->debug[__FUNCTION__])) ? $CI->debug[__FUNCTION__] : false;
     // $debug=true;
     if ($debug)
-        echo '<H1>COLLAPSED SUBPROCESS:' . $shape->properties->name . '</H1>';
+        echo '<H1>'.__FUNCTION__.':' . $shape->properties->name . '</H1>';
 
     $token = $CI->bpm->get_token($wf->idwf, $wf->case, $shape->resourceId);
     //----get childs from token
@@ -22,7 +22,7 @@ function run_CollapsedSubprocess($shape, $wf, $CI) {
     $doprocess=true;
     $casesfinished=0;
     if($debug) echo "<h2>Sub-Proc Type:{$shape->properties->subprocesstype}</h2>";
-    if($token['status']=="waiting"){
+    if($token['status']=="waiting" and $shape->properties->subprocesstype<>'Embedded'){
             //-----check if all childs has finished.
         $filter=array('idwf'=>$child_idwf,'id'=>array('$in'=>(array)$child_cases));
         $cases=$CI->bpm->get_cases_byFilter($filter, array('status','idwf','id'));
@@ -66,6 +66,7 @@ function run_CollapsedSubprocess($shape, $wf, $CI) {
         case  "Embedded":
             //---replace embedded
             run_Subprocess($shape, $wf, $CI);        
+            return;
             break;
         case  "Independent":
         case  "Reference":
@@ -198,11 +199,10 @@ function run_CollapsedSubprocess($shape, $wf, $CI) {
 }
 
 function run_Subprocess($shape, $wf, $CI) {
-    $CI = & get_instance();
     $debug = (isset($CI->debug[__FUNCTION__])) ? $CI->debug[__FUNCTION__] : false;
-    $debug=true;
-    if ($debug)
-        echo '<H1>SUBPROCESS:' . $shape->properties->name . '</H1>';
+    // $debug=true;
+   if ($debug)
+        echo '<H1>'.__FUNCTION__.':' . $shape->properties->name . '</H1>';
     $token = $CI->bpm->get_token($wf->idwf, $wf->case, $shape->resourceId);
     if ($debug)
         var_dump($token['status']);
