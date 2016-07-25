@@ -57,6 +57,7 @@ class Engine extends MX_Controller {
 
         // ---debug Helpers
         $this->debug ['run_Task'] = null;
+        $this->debug ['run_Subprocess'] = null;
         $this->debug ['run_CollapsedSubprocess'] = null;
         $this->debug ['run_Exclusive_Databased_Gateway'] = null;
         $this->debug ['run_IntermediateEventThrowing'] = null;
