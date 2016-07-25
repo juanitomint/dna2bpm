@@ -22,6 +22,7 @@ function run_CollapsedSubprocess($shape, $wf, $CI) {
     $doprocess=true;
     $casesfinished=0;
     $stillOpen=array();
+    $DS=$CI->data;
     if($debug) echo "<h2>Sub-Proc Type:{$shape->properties->subprocesstype}</h2>";
     if($token['status']=="waiting" and $shape->properties->subprocesstype<>'Embedded'){
             //-----check if all childs has finished.
@@ -41,11 +42,30 @@ function run_CollapsedSubprocess($shape, $wf, $CI) {
                 $isfinished=true;
                 $doprocess=false;
             }
+        /**
+         * EVAL LoopCondition
+         */
+        $streval=$shape->properties->completioncondition;
+        if($streval<>''){
+             if (!strstr($streval, 'return')) {
+                    $streval = 'return(' . $streval . ');';
+                }
+///--ecxecute BE CAREFULL
+            
+        $isfinished =(bool)eval($streval);
+        }
+        
         switch ($shape->properties->looptype) {
                         case "Sequential"://---start one instance at a time
                             //---let the doprocess run only if previous instance has finished
                             if(count($stillOpen))
                                 $doprocess=false;
+                            //---eval if can exist more tha one open    
+                            //---allow the ammount loopcadinality to be open
+                            if($shape->properties->loopcardinality>count($stillOpen)) {
+                                $doprocess=true;
+                            }
+                                
                         break;
                         
                         case "Parallel"://---start one instance at a time assumes data input does not change
@@ -59,7 +79,6 @@ function run_CollapsedSubprocess($shape, $wf, $CI) {
             
         } 
     }
-        
     /**
      * STATUS any other than WAITING and sequential loops
      */ 
