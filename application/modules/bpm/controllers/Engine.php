@@ -509,7 +509,7 @@ class Engine extends MX_Controller {
         $renderData['user']=$renderData['Initiator'];
         // ---get token
         $token = $this->bpm->get_token($idwf, $idcase, $resourceId);
-
+        $renderData['token']=$token;
         // --get shape
         $shape = $this->bpm->get_shape($token ['resourceId'], $wf);
         // -check if data is loaded
