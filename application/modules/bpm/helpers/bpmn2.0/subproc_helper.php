@@ -129,7 +129,11 @@ function run_CollapsedSubprocess($shape, $wf, $CI) {
                             } else {
                                 //----create from shape
                                 //start a case with $item as data in data['parent_data']
-                                $child_case=$CI->bpm->gen_case($child_idwf,null , $data) ;
+                                if($shape->properties->subprocesstype=='Reference'){
+                                $data['iduser']=$case['iduser'];
+                                }
+                                
+                                $child_case=$CI->bpm->gen_case($child_idwf,null , $data);
                                 $child_cases[] = $child_case;
                                 //---Start childs left first to start last
                                 $CI->Startcase('model', $child_idwf, $child_case,$silent);
@@ -161,7 +165,10 @@ function run_CollapsedSubprocess($shape, $wf, $CI) {
                                 for($i=1;$i<=$shape->properties->startquantity;$i++){
                                         //start a case with $item as data in data['parent_data']
                                         
-                                        $child_case=$CI->bpm->gen_case($child_idwf,null , $data) ;
+                                       if($shape->properties->subprocesstype=='Reference'){
+                                            $data['iduser']=$case['iduser'];
+                                       }
+                                        $child_case=$CI->bpm->gen_case($child_idwf,null , $data);
                                         $child_cases[] = $child_case;
                                         if($debug)  
                                             echo "Starting: $child_idwf::$child_case <hr/>";
