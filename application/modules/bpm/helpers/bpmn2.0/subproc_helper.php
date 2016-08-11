@@ -129,12 +129,15 @@ function run_CollapsedSubprocess($shape, $wf, $CI) {
                             } else {
                                 //----create from shape
                                 //start a case with $item as data in data['parent_data']
-                                if($shape->properties->subprocesstype=='Reference'){
-                                $data['iduser']=$case['iduser'];
-                                }
                                 
                                 $child_case=$CI->bpm->gen_case($child_idwf,null , $data);
                                 $child_cases[] = $child_case;
+                                //----independent or by reference
+                                if($shape->properties->subprocesstype=='Reference'){
+                                    $this_case=$CI->bpm->get_case($child_case,$child_idwf);
+                                    $this_case['iduser']=$case['iduser'];
+                                    $CI->bpm->save_case($this_case);
+                                }
                                 //---Start childs left first to start last
                                 $CI->Startcase('model', $child_idwf, $child_case,$silent);
                                 $runrun=$child_case;
@@ -166,10 +169,16 @@ function run_CollapsedSubprocess($shape, $wf, $CI) {
                                         //start a case with $item as data in data['parent_data']
                                         
                                        if($shape->properties->subprocesstype=='Reference'){
-                                            $data['iduser']=$case['iduser'];
+                                            
                                        }
                                         $child_case=$CI->bpm->gen_case($child_idwf,null , $data);
                                         $child_cases[] = $child_case;
+                                        //----independent or by reference
+                                        if($shape->properties->subprocesstype=='Reference'){
+                                            $this_case=$CI->bpm->get_case($child_case,$child_idwf);
+                                            $this_case['iduser']=$case['iduser'];
+                                            $CI->bpm->save_case($this_case);
+                                        }
                                         if($debug)  
                                             echo "Starting: $child_idwf::$child_case <hr/>";
                                         //---Start childs left first to start last
