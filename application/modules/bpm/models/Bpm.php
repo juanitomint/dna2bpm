@@ -1654,6 +1654,10 @@ class Bpm extends CI_Model {
         if ($parent) {
             $data['parent'] = $parent->resourceId;
             //----try to get group by name
+            if($debug){
+                echo "<h2>PARENT</H2>";
+                echo 'resrouceId:\''.$parent->resourceId.'\'<br>';
+            }
 //            $group_name = $wf->idwf . '/' . $parent->properties->name;
             $group_name = $wf->folder . '/' . $parent->properties->name;
             $group = $this->group->get_byname($group_name);
@@ -1682,18 +1686,18 @@ class Bpm extends CI_Model {
                 }
                 $data['idgroup'][] = $idgroup;
             }
-            
             /*
              * TRY GET Lane Resources
              */
             $resources = $this->get_resources($parent, $wf,$case);
             if ($debug) {
-                echo "Get Resources result:<br/>";
+                echo "Get Parent Resources result:<br/>";
                 var_dump($resources);
             }
             if (count($resources)) {
                 $data['assign'] = (isset($resources['assign'])) ? array_merge($resources['assign'], $data['assign']) : $data['assign'];
                 $data['idgroup'] = (isset($resources['idgroup'])) ? array_merge($resources['idgroup'], $data['idgroup']) : $data['idgroup'];
+                
             } else {
                 //---check if owner/initiator is in the group
                 if ($debug)
@@ -1715,8 +1719,9 @@ class Bpm extends CI_Model {
                     }
                 }
             }
+            
         $parent_resources=$resources;    
-        }
+        }//---end if $parent
         //  var_dump('Parent',$data);
         /*
           //----SHAPE HAS NO PARENT LANE
@@ -1761,6 +1766,13 @@ class Bpm extends CI_Model {
                 $data['assign'] = array($this->idu);
             }
         }
+        
+        //----Override Performer
+        if(isset($parent_resources['Performer'])){
+            if($debug)
+                echo "Parent 'Performer' override!<br>";
+            $data['assign']=$parent_resources['Performer'];        
+                }
         //---clear assign
         $data['assign'] = array_unique(array_filter($data['assign']));
         //---clear idgroup
