@@ -251,6 +251,7 @@ class Bpm extends CI_Model {
     function get_token_stats($filter){
         $query=array(
             array('$match'=>$filter),
+            array('$sort'=>array('microtime'=>1)),
             array (
                 '$group' =>
                 array (
@@ -262,9 +263,11 @@ class Bpm extends CI_Model {
                   'qtty' =>array ('$sum' => 1),
                   'title' =>array ('$first' =>'$title'),
                   'type' =>array ('$first' =>'$type'),
+                  'microtime' =>array ('$first' =>'$microtime'),
 
                 ),
             ),
+            array('$sort'=>array('microtime'=>1)),
             array (
                 '$project' =>
                 array (
@@ -273,6 +276,7 @@ class Bpm extends CI_Model {
                   'qtty' => 1,
                   'title' => 1,
                   'type' => 1,
+                  'microtime' => 1,
                   '_id' => 0,
                 ),
             ),
@@ -292,8 +296,10 @@ class Bpm extends CI_Model {
                             'qtty' => '$qtty',
                         ),
                     ),
+              'microtime' =>array ('$first' =>'$microtime'),
                 ),
             ),
+            array('$sort'=>array('microtime'=>1)),
             array (
                 '$project' =>
                 array (
