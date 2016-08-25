@@ -67,7 +67,7 @@ class Bpmui extends MX_Controller {
         $models = $this->bpm->get_models();
         //----convert to arrays
         $models = array_map(function($model) {
-            $model = (array) $model;
+            // $model = (array) $model;
 
             $model['properties'] = $model['data']['properties'];
             return (array) $model;

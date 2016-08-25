@@ -44,6 +44,7 @@ class Manager extends MX_Controller {
         $wfData['base_url'] = base_url();
         $wfs = $this->bpm->get_models();
         foreach ($wfs as $wf) {
+            $wf=(object)$wf;
             $array2 = $this->bpm->load($wf);
             $array1 = $this->bpm->get_properties($wf);
             $result = array_merge($array1, $array2);

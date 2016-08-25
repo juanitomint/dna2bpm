@@ -103,6 +103,7 @@ class Admin extends MX_Controller {
         //---make tree
         $id = 2;
         foreach ($models as $model) {
+            $model=(object)$model;
             $model->folder = (property_exists($model, 'folder')) ? $model->folder : null;
             $m_arr[$model->folder . '/' . $model->idwf] = (property_exists($model, 'data')) ? $model->data['properties']['name'] : '???';
         }
@@ -172,6 +173,7 @@ class Admin extends MX_Controller {
         $models = $this->bpm->get_models(array(),array('idwf','folder','data'));
         foreach ($models as $bpm) {
             if($bpm){
+                $bpm=(object)$bpm;
             $folder = (property_exists($bpm, 'folder')) ? $bpm->folder . '/' : '';
             $name = (isset($bpm->data['properties']['name'])) ? $bpm->data['properties']['name'] : "no name";
             $m_arr[$folder . $bpm->idwf] = $name . ' [' . $bpm->idwf . ']';
@@ -387,6 +389,7 @@ class Admin extends MX_Controller {
         $result = array();
         $i = 1;
         foreach ($models as $wf) {
+            $wf=(object)$wf;
             $result[] = array(
                 'id' => $wf->idwf,
                 'idwf' => $wf->idwf,

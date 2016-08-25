@@ -680,6 +680,7 @@ class Repository extends MX_Controller {
             'data.stencilset.url' => '../../jscript/bpm-dna2/stencilsets/bpmn2.0/bpmn2.0_2.json',
         );
         foreach ($wfs as $bpm) {
+            $bpm=(object)$bpm;
             $this->bpm->update_model($bpm->idwf, $data);
             echo $bpm->idwf . ":done!<hr/>";
         }

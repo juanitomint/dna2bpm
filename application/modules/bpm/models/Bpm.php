@@ -808,13 +808,14 @@ class Bpm extends CI_Model {
         $this->toRegex($query);
         //var_dump(json_encode($query), $sort, $fields);
         //$exit;
-        $rs = $this->db
-                ->select($fields)
-                ->where($query)
-                ->order_by($sort)
-                ->get('workflow')
-                ->result();
-
+        $this->db->debug=true;
+        // $rs = $this->db
+        //         ->select($fields)
+        //         ->where($query)
+        //         ->order_by($sort)
+        //         ->get('workflow')
+        //         ->result();
+        $rs=$this->mongowrapper->db->workflow->find($query,$fields)->sort($sort);
         return $rs;
     }
 
