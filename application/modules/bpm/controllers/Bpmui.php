@@ -64,7 +64,9 @@ class Bpmui extends MX_Controller {
 
     function widget_ministatus($addIgnore = false) {
         $this->lang->load('bpm/bpm');
-        $models = $this->bpm->get_models();
+        $mymodels = $this->bpm->get_models();
+        
+        foreach($mymodels as $model)$models[]=$model;
         //----convert to arrays
         $models = array_map(function($model) {
             // $model = (array) $model;
