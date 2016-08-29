@@ -1,0 +1,27 @@
+[29-Aug-2016 20:25:43 America/Argentina/Buenos_Aires] PHP Fatal error:  Cannot access private property Cimongo::$debug in /home/juanb/www/dna2bpm/application/modules/user/models/User.php on line 155
+[29-Aug-2016 20:25:43 America/Argentina/Buenos_Aires] PHP Stack trace:
+[29-Aug-2016 20:25:43 America/Argentina/Buenos_Aires] PHP   1. {main}() /home/juanb/www/dna2bpm/index.php:0
+[29-Aug-2016 20:25:43 America/Argentina/Buenos_Aires] PHP   2. require_once() /home/juanb/www/dna2bpm/index.php:291
+[29-Aug-2016 20:25:43 America/Argentina/Buenos_Aires] PHP   3. Dashboard->__construct() /home/juanb/www/dna2bpm/system/core/CodeIgniter.php:500
+[29-Aug-2016 20:25:43 America/Argentina/Buenos_Aires] PHP   4. User->authorize() /home/juanb/www/dna2bpm/application/modules/dashboard/controllers/Dashboard.php:28
+[29-Aug-2016 20:25:43 America/Argentina/Buenos_Aires] PHP   5. User->isAdmin() /home/juanb/www/dna2bpm/application/modules/user/models/User.php:124
+[29-Aug-2016 20:26:08 America/Argentina/Buenos_Aires] PHP Fatal error:  Cannot access private property Cimongo::$debug in /home/juanb/www/dna2bpm/application/modules/user/models/User.php on line 155
+[29-Aug-2016 20:26:08 America/Argentina/Buenos_Aires] PHP Stack trace:
+[29-Aug-2016 20:26:08 America/Argentina/Buenos_Aires] PHP   1. {main}() /home/juanb/www/dna2bpm/index.php:0
+[29-Aug-2016 20:26:08 America/Argentina/Buenos_Aires] PHP   2. require_once() /home/juanb/www/dna2bpm/index.php:291
+[29-Aug-2016 20:26:08 America/Argentina/Buenos_Aires] PHP   3. Dashboard->__construct() /home/juanb/www/dna2bpm/system/core/CodeIgniter.php:500
+[29-Aug-2016 20:26:08 America/Argentina/Buenos_Aires] PHP   4. User->authorize() /home/juanb/www/dna2bpm/application/modules/dashboard/controllers/Dashboard.php:28
+[29-Aug-2016 20:26:08 America/Argentina/Buenos_Aires] PHP   5. User->isAdmin() /home/juanb/www/dna2bpm/application/modules/user/models/User.php:124
+[29-Aug-2016 20:26:30 America/Argentina/Buenos_Aires] PHP Fatal error:  Cannot access private property Cimongo::$debug in /home/juanb/www/dna2bpm/application/modules/bpm/models/Bpm.php on line 811
+[29-Aug-2016 20:26:30 America/Argentina/Buenos_Aires] PHP Stack trace:
+[29-Aug-2016 20:26:30 America/Argentina/Buenos_Aires] PHP   1. {main}() /home/juanb/www/dna2bpm/index.php:0
+[29-Aug-2016 20:26:30 America/Argentina/Buenos_Aires] PHP   2. require_once() /home/juanb/www/dna2bpm/index.php:291
+[29-Aug-2016 20:26:30 America/Argentina/Buenos_Aires] PHP   3. call_user_func_array:{/home/juanb/www/dna2bpm/system/core/CodeIgniter.php:514}() /home/juanb/www/dna2bpm/system/core/CodeIgniter.php:514
+[29-Aug-2016 20:26:30 America/Argentina/Buenos_Aires] PHP   4. Dashboard->Show() /home/juanb/www/dna2bpm/system/core/CodeIgniter.php:514
+[29-Aug-2016 20:26:30 America/Argentina/Buenos_Aires] PHP   5. Dashboard->Dashboard() /home/juanb/www/dna2bpm/application/modules/dashboard/controllers/Dashboard.php:128
+[29-Aug-2016 20:26:30 America/Argentina/Buenos_Aires] PHP   6. Dashboard->parse_config() /home/juanb/www/dna2bpm/application/modules/dashboard/controllers/Dashboard.php:177
+[29-Aug-2016 20:26:30 America/Argentina/Buenos_Aires] PHP   7. call_user_func_array:{/home/juanb/www/dna2bpm/application/modules/dashboard/controllers/Dashboard.php:360}() /home/juanb/www/dna2bpm/application/modules/dashboard/controllers/Dashboard.php:360
+[29-Aug-2016 20:26:30 America/Argentina/Buenos_Aires] PHP   8. Modules::run() /home/juanb/www/dna2bpm/application/modules/dashboard/controllers/Dashboard.php:360
+[29-Aug-2016 20:26:30 America/Argentina/Buenos_Aires] PHP   9. call_user_func_array:{/home/juanb/www/dna2bpm/application/third_party/MX/Modules.php:78}() /home/juanb/www/dna2bpm/application/third_party/MX/Modules.php:78
+[29-Aug-2016 20:26:30 America/Argentina/Buenos_Aires] PHP  10. Bpmui->widget_ministatus() /home/juanb/www/dna2bpm/application/third_party/MX/Modules.php:78
+[29-Aug-2016 20:26:30 America/Argentina/Buenos_Aires] PHP  11. Bpm->get_models() /home/juanb/www/dna2bpm/application/modules/bpm/controllers/Bpmui.php:67
