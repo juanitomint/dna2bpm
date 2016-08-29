@@ -90,6 +90,9 @@ class Kpi_model extends CI_Model {
         if (isset($kpi['filter'])) {
             switch ($kpi ['filter']) {
                 case 'group' :
+                    $filter = array(
+                        'idwf' => $kpi ['idwf'],
+                    );
                     break;
                 case 'user' :
                     $filter = array(

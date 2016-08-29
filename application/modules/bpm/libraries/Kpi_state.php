@@ -61,7 +61,7 @@ class kpi_state {
         
         // $tokens = $this->CI->bpm->get_tokens_byResourceId($kpi['resourceId'], $filter);
         $cpData = $kpi;
-        // var_dump(json_encode($aquery),$rs);exit;
+        var_dump(json_encode($aquery),$rs);exit;
         if($rs['ok']){
             $cpData['result']=$rs['result'];
             $cpData['number'] = count($rs['result']);
