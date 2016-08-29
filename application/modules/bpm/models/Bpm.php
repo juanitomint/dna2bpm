@@ -808,7 +808,7 @@ class Bpm extends CI_Model {
         $this->toRegex($query);
         //var_dump(json_encode($query), $sort, $fields);
         //$exit;
-        $this->db->debug=true;
+        // $this->db->debug=true;
         // $rs = $this->db
         //         ->select($fields)
         //         ->where($query)
