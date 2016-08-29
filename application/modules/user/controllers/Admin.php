@@ -322,6 +322,8 @@ class Admin extends MX_Controller {
             //---register the user id
             $this->session->set_userdata('iduser', (int)$idu);
             $this->session->set_userdata('impersonated', true);
+            //----clear json dashboard
+            $this->session->unset_userdata('json');
             //---register level string
             $redir = base_url() . $this->config->item('default_controller');
             //---redirect
