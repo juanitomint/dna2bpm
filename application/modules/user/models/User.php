@@ -375,7 +375,6 @@ class User extends CI_Model {
 
     function get_users($offset = 0, $limit = 50, $order = null, $query_txt = null, $idgroup = null, $match = 'both') {
         $this->db->get('users');
-
         //var_dump($start,$limit,$idgroup, $order, $idgroup);
         if ($idgroup) {
             $this->db->where_in('group', (array) $idgroup);
@@ -386,6 +385,7 @@ class User extends CI_Model {
             $this->db->or_like('name', $query_txt);
             $this->db->or_like('lastname', $query_txt);
             $this->db->or_like('email', $query_txt);
+            $this->db->or_where(array('idu'=>(int)$query_txt));
 
             if (is_numeric($query_txt)) {
                 $this->db->or_where('idu', (int) $query_txt);
@@ -398,6 +398,7 @@ class User extends CI_Model {
             $this->db->order_by($order);
         }
         $result = $this->db->get('users', $limit, $offset)->result();
+        
         return $result;
     }
 
