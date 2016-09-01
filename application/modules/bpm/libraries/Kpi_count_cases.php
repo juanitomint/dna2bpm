@@ -38,23 +38,20 @@ class kpi_count_cases {
 
     function core($kpi) {
         $filter = $this->CI->kpi_model->get_filter($kpi); 
-        $aquery=array(
-            array('$match'=>$filter),
-            array('$lookup'=>
-                array(
+        $aquery[]['$match']=$filter;
+        if($kpi['filter']=='owner'){
+            $aquery[]=array('$match'=>array('cases.iduser'=>$this->CI->user->idu));
+        }
+        $aquery[]['$lookup']=array(
                   "from" => "case",
                   "localField" => "case",
                   "foreignField" => "id",
                   "as" => "cases"
-                ),
-            ),
-        );
-        if($kpi['filter']=='owner'){
-            $aquery[]=array('$match'=>array('cases.iduser'=>$this->CI->user->idu));
-        }
+            );
             
         $aquery[]=array('$project'=>array('_id'=>0,'case'=>'$case'));
-        
+        // echo json_encode($aquery);
+        // exit;
         $rs=$this->CI->mongowrapper->db->tokens->aggregate($aquery);
         
         // $tokens = $this->CI->bpm->get_tokens_byResourceId($kpi['resourceId'], $filter);
