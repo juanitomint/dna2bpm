@@ -38,10 +38,10 @@ class kpi_count_cases {
 
     function core($kpi) {
         $filter = $this->CI->kpi_model->get_filter($kpi); 
-        $aquery[]['$match']=$filter;
         if($kpi['filter']=='owner'){
-            $aquery[]=array('$match'=>array('cases.iduser'=>$this->CI->user->idu));
+            $filter['iduser']=$this->CI->user->idu;
         }
+        $aquery[]['$match']=$filter;
         $aquery[]['$lookup']=array(
                   "from" => "case",
                   "localField" => "case",
@@ -56,7 +56,7 @@ class kpi_count_cases {
         
         // $tokens = $this->CI->bpm->get_tokens_byResourceId($kpi['resourceId'], $filter);
         $cpData = $kpi;
-        // var_dump(json_encode($aquery),$rs);exit;
+    //   echo json_encode($aquery);exit;
         if($rs['ok']){
             $cpData['result']=$rs['result'];
             $cpData['number'] = count($rs['result']);
