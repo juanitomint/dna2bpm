@@ -25,7 +25,7 @@ function run_ParallelGateway($shape, $wf, $CI) {
 function run_Exclusive_Databased_Gateway($shape, $wf, $CI) {
 
     $debug = (isset($CI->debug[__FUNCTION__])) ? $CI->debug[__FUNCTION__] : false;
-    // $debug = true;
+    $debug = true;
     $iduser = (int) $CI->idu;
     $user = $CI->user->get_user($iduser);
     $user_groups = (array) $user->group;
@@ -36,8 +36,8 @@ function run_Exclusive_Databased_Gateway($shape, $wf, $CI) {
     $shape_data = array();
 
     // extract((array) $CI->data);
-    if ($debug)
-        var_dump('DATA', (array)$CI->data);
+    // if ($debug)
+    //     var_dump('DATA', (array)$CI->data);
 //$cond=eval('return '.$shape->properties->gates_assignments.';');
 //var_dump($shape->properties->gates_assignments,$cond);
 //echo '<hr>';
@@ -74,12 +74,19 @@ function run_Exclusive_Databased_Gateway($shape, $wf, $CI) {
                     $cond = 'false';
 //$streval = "return (" . $assignment . ")==('" . (string) $shape_out->properties->conditionexpression . "');";
 //---replace lang true/false
-                $true = strtolower($CI->lang->line('true'));
-                $false = strtolower($CI->lang->line('false'));
-                $cond = (strtolower($cond) == $true) ? true : $cond;
-                $cond = (strtolower($cond) == $false) ? false : $cond;
-                //---Get type of assignmen
+                //---Get type of assignment
                 $cond_type=eval("extract((array) \$CI->data);return gettype($assignment);"); 
+                switch($cond_type){
+                    case 'bool':
+                        $true = strtolower($CI->lang->line('true'));
+                        $false = strtolower($CI->lang->line('false'));
+                        $cond = (strtolower($cond) == $true) ? true : $cond;
+                        $cond = (strtolower($cond) == $false) ? false : $cond;
+                        
+                        break;
+                    default:
+                        break;
+                }
                 $streval = "extract((array) \$CI->data);\$cond='$cond';settype(\$cond,'$cond_type');return (" . $assignment . ") $op \$cond;";
 //--- post process eval
                 if (strstr($cond, ',')) {
@@ -97,7 +104,7 @@ function run_Exclusive_Databased_Gateway($shape, $wf, $CI) {
                 if ($result[$shape_out->resourceId]['eval'])
                     $i++;
                 if ($debug) {
-                    var_dump(array('assignment'=>$assignment,'eval'=> eval("return($assignment);"),'streval'=> $streval,'result'=> $result[$shape_out->resourceId]['eval']));
+                    var_dump(array('type'=>$cond_type,'assignment'=>$assignment,'eval'=> eval("return($assignment);"),'streval'=> $streval,'result'=> $result[$shape_out->resourceId]['eval']));
                     echo '<hr>';
                 }
             }
