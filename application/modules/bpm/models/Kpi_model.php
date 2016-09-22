@@ -73,16 +73,10 @@ class Kpi_model extends CI_Model {
     }
 
     function save($kpi) {
-        if($this->get($kpi['idkpi'])){
-            //--4mongo
-            unset($kpi['_id']);
-            $query=array('idkpi'=>$kpi['idkpi']);
-            $this->db->where($query);
-            return $this->db->update('kpi',$kpi);
-        }else {
-            return $this->db->insert('kpi',$kpi);
-            
-        }
+        
+        $this->delete($kpi['idkpi']);    
+        return $this->db->insert('kpi',$kpi);
+        
     }
 
     function get_filter($kpi) {
@@ -94,14 +88,35 @@ class Kpi_model extends CI_Model {
                         'idwf' => $kpi ['idwf'],
                     );
                     break;
+                case 'owner' :
+                    //----get user cases
+                    // $rs=$this->bpm->get_cases_byFilter(
+                    //     array(
+                    //         'iduser'=>$this->user->idu,
+                    //         'idwf'=>$kpi['idwf'],
+                    //         ), array('id'));
+                    // $cases=array_map(function($item){
+                    //     return $item['id'];
+                    // }
+                    // ,$rs);
+                    
+                    $filter['iduser']=$this->user->idu;
+                    $filter['idwf'] = $kpi ['idwf'];
+                    break;
                 case 'user' :
-                    $filter = array(
+                    $query = array(
                         'idwf' => $kpi ['idwf'],
                         '$or'=>array(
                         array('iduser' => $this->idu),
                         array('assign' => $this->idu),
                             ),
                     );
+                    $rs=$this->bpm->get_tokens_byFilter($query,array('case'));
+                    $cases=array_map(function($item){
+                        return $item['case'];
+                    }
+                    ,$rs);
+                    $filter['id']=array('$in'=>$cases);
                     break;
                 default : // ---filter by idwf
                     $filter = array(
@@ -139,10 +154,13 @@ class Kpi_model extends CI_Model {
             }
         }
         ///---add resource Id if exists
-        if(isset($kpi['resourceId']))
-            $filter['resourceId']=$kpi['resourceId'];
-            
-        $filter = array_merge((array) $filter_extra, $filter);
+        if(isset($kpi['resourceId'])){
+            $filter['token_status.'.$kpi['resourceId']]=array('$exists'=>true);
+            //---if isset status then filter by token status
+            if(isset($kpi['status']) && $kpi['status']<>'')    
+                $filter['token_status.'.$kpi['resourceId']]=$kpi['status'];
+            $filter = array_merge((array) $filter_extra, $filter);
+        }
         return $filter;
     }
 

@@ -55,40 +55,44 @@ class Pagination extends MX_Controller {
     	if($paged['min']==1){
     		$class="disabled";
     		$url="#";
+            $class_b='';
     	}else{
     		$class="";
+            $class_b=$class_a;
     		$back=$paged['min']-1;
     		$url=$link.$back.'/'.$items_x_page;
     	}
-
-    	$customData['pagination'].=" <li class='$class'><a href='$url' class='prev $class_a' data-target='$ajax_target'>&laquo;</a></li>";
+        
+    	$customData['pagination'].=" <li class='$class'><a href='$url' class='prev $class_b' >&laquo;</a></li>";
     	 
     	// Pages Loop
     	for($i=$paged['min'];$i<=$paged['max'];$i++){
-    	$class=($i==$current_page)?('active'):('');
+    	   $class=($i==$current_page)?('active'):('');
     		if($i>$paged['total_pages']){
     			$class='disabled';
     			$url="#";
+                $class_b='';
     		}else{
     			$url=$link.$i.'/'.$items_x_page;
+                $class_b=$class_a;
 
     		}  	    		
-    	if($url=='#')$class_a='';
-    	$customData['pagination'].="<li class='$class'><a href='$url' class='$class_a'>$i</a></li>";
+	       $customData['pagination'].="<li class='$class'><a href='$url' class='$class_b'>$i</a></li>";
     	}
     	
     	// Arrow Next >
     	$class=($paged['max']<$paged['total_pages'])?(''):('disabled');
     	if($paged['max']<$paged['total_pages']){
     	$class="";
-    		$next=$paged['max']+1;
-			$url = $link . $next.'/'.$items_x_page;
-		} else {
-			$class = "";
+            $next=$paged['max']+1;
+            $url = $link . $next.'/'.$items_x_page;
+            $class_b=$class_a;
+        } else {
+            $class = "";
+            $class_b='';
 			$url = "#";
 		}
-		$customData ['pagination'] .= "<li class=''><a href='$url' class='next $class_a'>&raquo;</a></li>";
-
+		$customData ['pagination'] .= "<li class=''><a href='$url' class='next $class_b'>&raquo;</a></li>";
 		$customData['pagination'].='</ul>';
     	//return $paged['total_pages'];
 
