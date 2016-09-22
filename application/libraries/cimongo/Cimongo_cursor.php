@@ -91,6 +91,15 @@ class Cimongo_cursor extends Cimongo_base
 		return $this->result();
 
 	}
+	/**
+	 * Returns query results as a cursor
+	 *
+	 * @since v1.0.0
+	 */
+	public function result_cursor(){
+		return $this->_cursor;
+
+	}
 
 	/**
 	 * Returns the number of the documents fetched
