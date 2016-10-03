@@ -930,6 +930,7 @@ class Engine extends MX_Controller {
         // $debug = true;
         // $this->load_data($idwf, $idcase);
         if ($this->break_on_next) {
+            $this->bpm->update_case_token_status($idwf, $idcase);
             redirect($this->base_url . $this->config->item('default_controller'));
         }
         $renderData = array();

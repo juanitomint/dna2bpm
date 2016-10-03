@@ -312,7 +312,24 @@ function run_test($idwf,$idcase,$resourceId){
     }
     
     }
-
+    function fix_status($idwf=null){
+        $this->output->enable_profiler(true);
+        set_time_limit(3*3600);
+        $filter=array();
+        if($idwf) $filter['idwf']=$idwf;
+        // $filter=array(idwf=>'fondyfpde','id'=>'KDYD');
+        $models=$this->bpm->get_models($filter,array('idwf'));
+        foreach($models as $model){
+            $filter=array('idwf'=>$model['idwf']);
+            $cases=$this->bpm->get_cases_byFilter($filter,array('idwf','id'));
+            echo "<h1>Procesando:".$model['idwf'].':'.count($cases).'</h1>';
+            foreach($cases as $case){
+                $this->bpm->update_case_token_status($case['idwf'], $case['id']);
+                var_dump($case['idwf'].' ->'. $case['id']);
+                echo memory_get_usage();
+            }
+        }
+    }
     function save_script($idwf,$resourceId){
         $this->user->authorize();
         $debug=false;

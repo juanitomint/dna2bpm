@@ -145,6 +145,7 @@ function run_Task($shape, $wf, $CI) {
             $CI->bpm->assign($shape, $wf,$case);
             //----Get token data
             if ($CI->break_on_next) {
+                $CI->bpm->update_case_token_status($wf->idwf, $wf->case);
                 redirect($CI->base_url . $CI->config->item('default_controller'));
             }
 //              $token = $CI->bpm->get_token($wf->idwf, $wf->case, $shape->resourceId);
@@ -169,6 +170,7 @@ function run_Task($shape, $wf, $CI) {
 //---change status to manual (stops execution and wait 4 manual input)
             $CI->bpm->set_token($wf->idwf, $wf->case, $shape->resourceId, $shape->stencil->id, 'user', $data);
             if ($CI->break_on_next) {
+                $CI->bpm->update_case_token_status($wf->idwf, $wf->case);
                 redirect($CI->base_url . $CI->config->item('default_controller'));
             }
             break;
@@ -177,11 +179,13 @@ function run_Task($shape, $wf, $CI) {
             $CI->bpm->assign($shape, $wf);
             //----Get token data
             if ($CI->break_on_next) {
+                $CI->bpm->update_case_token_status($wf->idwf, $wf->case);
                 redirect($CI->base_url . $CI->config->item('default_controller'));
             }
             //---change status to manual (stops execution and wait 4 manual input)
             $CI->bpm->set_token($wf->idwf, $wf->case, $shape->resourceId, $shape->stencil->id, 'user', $data);
             if ($CI->break_on_next) {
+                $CI->bpm->update_case_token_status($wf->idwf, $wf->case);
                 redirect($CI->base_url . $CI->config->item('default_controller'));
             }
             break;
@@ -189,6 +193,7 @@ function run_Task($shape, $wf, $CI) {
         case 'Script':
 //----run the script
             if ($CI->break_on_next) {
+                $CI->bpm->update_case_token_status($wf->idwf, $wf->case);
                 redirect($CI->base_url . $CI->config->item('default_controller'));
             }
 //--->movenext on success
@@ -232,6 +237,7 @@ function run_Task($shape, $wf, $CI) {
             break;
         case 'Send':
             if ($CI->break_on_next) {
+                $CI->bpm->update_case_token_status($wf->idwf, $wf->case);
                 redirect($CI->base_url . $CI->config->item('default_controller'));
             }
             //----ASSIGN TASK to USER / GROUP
@@ -327,6 +333,7 @@ function run_Task($shape, $wf, $CI) {
             //$CI->bpm->set_token($wf->idwf, $wf->case, $shape->resourceId, $shape->stencil->id, 'manual', $data);
             $CI->bpm->movenext($shape, $wf);
             if ($CI->break_on_next) {
+                $CI->bpm->update_case_token_status($wf->idwf, $wf->case);
                 redirect($CI->base_url . $CI->config->item('default_controller'));
             }
             break;

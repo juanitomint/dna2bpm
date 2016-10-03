@@ -20,7 +20,7 @@ class tokens extends MX_Controller {
         $this->load->model('bpm');
          $this->load->helper('bpm');
         $this->load->model('user/group');
-        $this->user->authorize('ADM,WFADM');
+        $this->user->authorize();
         //----LOAD LANGUAGE
         $this->lang->load('library', $this->config->item('language'));
         $this->idu = $this->user->idu;

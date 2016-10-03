@@ -115,6 +115,7 @@ class Bpmui extends MX_Controller {
     }
 
     function ministatus($idwf, $showArr = array()) {
+
         $showArr = (count($showArr)) ? (array)$showArr : array(
             'StartNoneEvent',
             'StartMessageEvent',
@@ -129,6 +130,8 @@ class Bpmui extends MX_Controller {
         $state = $this->bpm->get_cases_stats($filter);
         $data['lang'] = $this->lang->language;
         //---las aplano un poco
+;
+        
         foreach ($state as $task) {
             $task['user'] = (isset($task['status']['user'])) ? $task['status']['user'] : 0;
             $task['finished'] = (isset($task['status']['finished'])) ? $task['status']['finished'] : 0;
@@ -136,6 +139,8 @@ class Bpmui extends MX_Controller {
             $data['mini'][] = $task;
         }
         $data['base_url'] = base_url();
+        $data['idwf'] = $idwf;
+        
         $wf = $this->bpm->load($idwf);
         $data+=$wf['data']['properties'];
         $data['name'] = 'Mini Status: ' . $data['name'];
@@ -299,12 +304,20 @@ class Bpmui extends MX_Controller {
     }
 
 
-    function widget_2doMe($chunk = 1, $pagesize = 5) {
-        //$data['lang']=$this->lang->language; ==
+    function widget_2doMe($chunk = 1, $pagesize = 5, $filter = null) {
+        //$data['lang']=$this->lang->language; ==}
+        if ($filter){
+        $query = array(
+            'assign' => $this->idu,
+            'status' => 'user',
+            'idwf' => $filter
+        );
+        }else{
         $query = array(
             'assign' => $this->idu,
             'status' => 'user'
         );
+        }
         //var_dump(json_encode($query));exit;
         $tasks = $this->bpm->get_tasks_byFilter($query, array(), array('checkdate' => 'desc'));
         $data = $this->prepare_tasks($tasks, $chunk, $pagesize);
@@ -375,13 +388,25 @@ class Bpmui extends MX_Controller {
         echo $this->parser->parse('bpm/widgets/cases_closed', $data, true, true);
     }
 
-    function widget_cases($chunk = 1, $pagesize = 5) {
+    function widget_cases($chunk = 1, $pagesize = 5, $filter = null) {
+        if ($filter){
+            $cases = $this->bpm->get_cases_byFilter(
+                array(
+            'iduser' => $this->idu,
+            'idwf' => $filter,
+            'status' => 'open',
+                ), array(), array('checkdate' => 'desc')
+        );
+            
+            
+        }else{
         $cases = $this->bpm->get_cases_byFilter(
                 array(
             'iduser' => $this->idu,
             'status' => 'open',
                 ), array(), array('checkdate' => 'desc')
         );
+        }
         $data = $this->prepare_cases($cases, $chunk, $pagesize);
         //$data['lang'] = $this->lang->language;
         $data['title'] = $this->lang->line('openCases');

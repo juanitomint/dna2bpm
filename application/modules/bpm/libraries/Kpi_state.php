@@ -31,41 +31,22 @@ class kpi_state {
 
     function list_cases($kpi) {
         $core=$this->core($kpi);
-        foreach($core['result'] as $cc) $cases[]=$cc['case'];
+        foreach($core['result'] as $cc) $cases[]=$cc['id'];
         return $cases;
 
     }
 
     function core($kpi) {
         $filter = $this->CI->kpi_model->get_filter($kpi); 
-        $status = (isset($kpi['status'])) ? $kpi['status'] : 'user';
-        $filter['status'] = $kpi['status'];
-        $aquery=array(
-            array('$match'=>$filter),
-            array('$lookup'=>
-                array(
-                  "from" => "case",
-                  "localField" => "case",
-                  "foreignField" => "id",
-                  "as" => "cases"
-                ),
-            ),
-        );
-        if($kpi['filter']=='owner'){
-            $aquery[]=array('$match'=>array('cases.iduser'=>$this->CI->user->idu));
-        }
-            
-        $aquery[]=array('$project'=>array('_id'=>0,'case'=>'$case'));
+        $filter['idwf']=$kpi['idwf'];
+        $cases=$this->CI->bpm->get_cases_byFilter($filter);
         
-        $rs=$this->CI->mongowrapper->db->tokens->aggregate($aquery);
-        
-        // $tokens = $this->CI->bpm->get_tokens_byResourceId($kpi['resourceId'], $filter);
-        $cpData = $kpi;
-        if($rs['ok']){
-            $cpData['result']=$rs['result'];
-            $cpData['number'] = count($rs['result']);
-        }
+        $cpData=$kpi;
+        $cpData['result']=$cases;
+        $cpData['number'] = count($cases);
         return $cpData;
+        // $tokens = $this->CI->bpm->get_tokens_byResourceId($kpi['resourceId'], $filter);
+        
     }
 
     function widget($kpi) {

@@ -662,22 +662,14 @@ class Bpm extends CI_Model {
                 )
         );
 //        $this->db->debug=true;
-        $tokens = $this->db
-                ->select(array('resourceId', 'status'))
-                ->where($query)
-                ->get('tokens')
-                ->result_array();
+        $tokens = $this->mongowrapper->db->tokens->find($query,array('resourceId'=>true, 'status'=>true));
 //        $this->db->debug=false;
-        //     var_dump2($idwf,$idcase,json_encode($query),$tokens);
-        if (count($tokens)) {
-            $reduced = array_reduce(
-                    $tokens, function (&$result, $token) {
+        if ($tokens->count()) {
+            foreach($tokens as $token){
                     if($token['resourceId'])
                         $result[$token['resourceId']] = (isset($token['status'])) ? $token['status'] : '???';
-                return $result;
-            }, array()
-            );
-            return $reduced;
+            }
+            return $result;
         }
         return false;
     }
