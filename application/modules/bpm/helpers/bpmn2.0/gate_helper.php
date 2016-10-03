@@ -81,6 +81,9 @@ function run_Exclusive_Databased_Gateway($shape, $wf, $CI) {
                 //---Get type of assignmen
                 $cond_type=eval("extract((array) \$CI->data);return gettype($assignment);"); 
                 $streval = "extract((array) \$CI->data);\$cond='$cond';settype(\$cond,'$cond_type');return (" . $assignment . ") $op \$cond;";
+                //---what if is an array?
+                if($cond_type=='array')
+                    $streval = "extract((array) \$CI->data);\$cond='$cond';settype(\$cond,'$cond_type');return in_array($cond," . $assignment . ");";
 //--- post process eval
                 if (strstr($cond, ',')) {
                     $streval = "extract((array) \$CI->data);\$cond='$cond';return (in_array(" . $assignment . ",explode(',','$cond')));";
