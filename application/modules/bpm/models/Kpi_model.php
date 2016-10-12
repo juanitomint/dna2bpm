@@ -155,10 +155,11 @@ class Kpi_model extends CI_Model {
         }
         ///---add resource Id if exists
         if(isset($kpi['resourceId'])){
-            $filter['token_status.'.$kpi['resourceId']]=array('$exists'=>true);
+            $filter['token_status.resourceId']=$kpi['resourceId'];
             //---if isset status then filter by token status
             if(isset($kpi['status']) && $kpi['status']<>'')    
-                $filter['token_status.'.$kpi['resourceId']]=$kpi['status'];
+                $filter['token_status.status']=$kpi['status'];
+                
             $filter = array_merge((array) $filter_extra, $filter);
         }
         return $filter;

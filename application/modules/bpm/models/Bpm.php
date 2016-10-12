@@ -663,11 +663,14 @@ class Bpm extends CI_Model {
         );
 //        $this->db->debug=true;
         $tokens = $this->mongowrapper->db->tokens->find($query,array('resourceId'=>true, 'status'=>true));
-//        $this->db->debug=false;
+
         if ($tokens->count()) {
             foreach($tokens as $token){
                     if($token['resourceId'])
-                        $result[$token['resourceId']] = (isset($token['status'])) ? $token['status'] : '???';
+                        $result[] =array(
+                            'resourceId'=>$token['resourceId'],
+                            'status'=>(isset($token['status'])) ? $token['status'] : '???',
+                        ); 
             }
             return $result;
         }

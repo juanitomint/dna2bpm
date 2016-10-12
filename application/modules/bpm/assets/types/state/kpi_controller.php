@@ -24,7 +24,7 @@ function state($kpi, $CI, $list = null) {
      * 
      */
     $filter['idwf'] = $kpi['idwf'];
-    $filter['token_status']=$kpi['resourceId'];
+    $filter['token_status.resourceId']=$kpi['resourceId'];
     //var_dump(json_encode($filter));
     
     ///----way too ineficient
