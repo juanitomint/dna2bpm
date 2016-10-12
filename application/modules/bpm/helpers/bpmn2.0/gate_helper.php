@@ -25,7 +25,7 @@ function run_ParallelGateway($shape, $wf, $CI) {
 function run_Exclusive_Databased_Gateway($shape, $wf, $CI) {
 
     $debug = (isset($CI->debug[__FUNCTION__])) ? $CI->debug[__FUNCTION__] : false;
-    $debug = true;
+    // $debug = true;
     $iduser = (int) $CI->idu;
     $user = $CI->user->get_user($iduser);
     $user_groups = (array) $user->group;
