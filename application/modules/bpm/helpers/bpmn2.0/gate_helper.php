@@ -222,6 +222,11 @@ function run_InclusiveGateway($shape, $wf, $CI) {
                     $CI->bpm->movenext($shape_out, $wf, $shape_data);
                 } else {
                     $CI->bpm->set_token($wf->idwf, $wf->case, $shape_out->resourceId, $shape_out->stencil->id, 'stoped', $shape_data);
+                    $CI->mongowrapper->db->tokens->remove(array(
+                        'idwf'=>$wf->idwf,
+                        'case'=>$wf->case,
+                        'resourceId'=> $shape_out->resourceId,
+                    ));
                 }
             }
         } else {
