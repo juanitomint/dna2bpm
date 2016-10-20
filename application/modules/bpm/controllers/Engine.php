@@ -1087,6 +1087,7 @@ class Engine extends MX_Controller {
                 $this->show_modal($this->lang->line('message'), $this->parser->parse_string($this->lang->line('noMoreTasks'), $case));
             }
         } else { // case is closed or in other state
+            if(!$this->debug['dont_show_modal'])
             $this->show_modal($this->lang->line('message'), $this->lang->line('caseClosed'));
         }
     }
