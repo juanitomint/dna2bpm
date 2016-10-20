@@ -22,10 +22,12 @@ function run_ParallelGateway($shape, $wf, $CI) {
     }
 }
 
-function run_Exclusive_Databased_Gateway($shape, $wf, $CI) {
+function run_Exclusive_Databased_Gateway($shape, $wf, &$CI) {
 
     $debug = (isset($CI->debug[__FUNCTION__])) ? $CI->debug[__FUNCTION__] : false;
     // $debug = true;
+    if($debug)
+        echo '<h1>Exclusive Gateway: '.$shape->properties->name.'</h1>';
     $iduser = (int) $CI->idu;
     $user = $CI->user->get_user($iduser);
     $user_groups = (array) $user->group;
@@ -74,26 +76,28 @@ function run_Exclusive_Databased_Gateway($shape, $wf, $CI) {
                     $cond = 'false';
 //$streval = "return (" . $assignment . ")==('" . (string) $shape_out->properties->conditionexpression . "');";
 //---replace lang true/false
+                $true = strtolower($CI->lang->line('true'));
+                $false = strtolower($CI->lang->line('false'));
                 //---Get type of assignment
                 $cond_type=eval("extract((array) \$CI->data);return gettype($assignment);"); 
                 switch($cond_type){
                     case 'bool':
-                        $true = strtolower($CI->lang->line('true'));
-                        $false = strtolower($CI->lang->line('false'));
-                        $cond = (strtolower($cond) == $true) ? true : $cond;
-                        $cond = (strtolower($cond) == $false) ? false : $cond;
+                        
                         
                         break;
                     default:
+                        $cond = (strtolower($cond) == $true) ? true : $cond;
+                        $cond = (strtolower($cond) == $false) ? false : $cond;
                         break;
                 }
-                $streval = "extract((array) \$CI->data);\$cond='$cond';settype(\$cond,'$cond_type');return (" . $assignment . ") $op \$cond;";
                 //---what if is an array?
                 if($cond_type=='array')
-                    $streval = "extract((array) \$CI->data);\$cond='$cond';settype(\$cond,'$cond_type');return in_array($cond," . $assignment . ");";
-//--- post process eval
+                    $streval = "extract((array) \$CI->data);return in_array($cond," . $assignment . ");";
+                //--- post process eval
                 if (strstr($cond, ',')) {
-                    $streval = "extract((array) \$CI->data);\$cond='$cond';return (in_array(" . $assignment . ",explode(',','$cond')));";
+                    $streval = "extract((array) \$CI->data);return (in_array(" . $assignment . ",explode(',','$cond')));";
+                } else {
+                    $streval = "extract((array) \$CI->data);settype(\$cond,'$cond_type');return (" . $assignment . ") $op \$cond;";
                 }
 
                 $result[$shape_out->resourceId]['streval'] = $streval;
@@ -107,7 +111,7 @@ function run_Exclusive_Databased_Gateway($shape, $wf, $CI) {
                 if ($result[$shape_out->resourceId]['eval'])
                     $i++;
                 if ($debug) {
-                    var_dump(array('type'=>$cond_type,'assignment'=>$assignment,'eval'=> eval("return($assignment);"),'streval'=> $streval,'result'=> $result[$shape_out->resourceId]['eval']));
+                    var_dump(array('type'=>$cond_type,'assignment'=>$assignment,'eval'=> eval("return($assignment);"),'cond'=>$cond,'streval'=> $streval,'result'=> $result[$shape_out->resourceId]['eval']));
                     echo '<hr>';
                 }
             }
@@ -168,6 +172,16 @@ function run_Exclusive_Databased_Gateway($shape, $wf, $CI) {
     }
 }
 
+/**
+ * Inclusive Gateway, can generate many tokens  for all outs that match true
+ * 
+ * @param object $shape the shape we are evaluating
+ * @param object $wf the object describing the model
+ * @param class $CI the instance of codeigniter
+ * 
+ */
+
+
 function run_InclusiveGateway($shape, $wf, $CI) {
 //---same as Exclusive but more than one outgoing can be true
 //---Incoming flow must be synchronized like in paralell.
@@ -211,7 +225,8 @@ function run_InclusiveGateway($shape, $wf, $CI) {
 //---process all Sequences and only activate one
         if ($i >= 1) {
 //----mark shape as finished
-            $CI->bpm->movenext($shape, $wf);
+            // $CI->bpm->movenext($shape, $wf);
+            $CI->bpm->set_token($wf->idwf, $wf->case, $shape->resourceId, $shape->stencil->id, 'finished');
 //-->movenext on all 'true' evals
             foreach ($result as $thisresult) {
                 $shape_out = $thisresult['shape'];
@@ -221,12 +236,12 @@ function run_InclusiveGateway($shape, $wf, $CI) {
                 if ($thisresult['eval']) {
                     $CI->bpm->movenext($shape_out, $wf, $shape_data);
                 } else {
-                    $CI->bpm->set_token($wf->idwf, $wf->case, $shape_out->resourceId, $shape_out->stencil->id, 'stoped', $shape_data);
-                    $CI->mongowrapper->db->tokens->remove(array(
-                        'idwf'=>$wf->idwf,
-                        'case'=>$wf->case,
-                        'resourceId'=> $shape_out->resourceId,
-                    ));
+                    // $CI->bpm->set_token($wf->idwf, $wf->case, $shape_out->resourceId, $shape_out->stencil->id, 'stoped', $shape_data);
+                    // $CI->mongowrapper->db->tokens->remove(array(
+                    //     'idwf'=>$wf->idwf,
+                    //     'case'=>$wf->case,
+                    //     'resourceId'=> $shape_out->resourceId,
+                    // ));
                 }
             }
         } else {
