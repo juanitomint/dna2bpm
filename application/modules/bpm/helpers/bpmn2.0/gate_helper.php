@@ -80,6 +80,8 @@ function run_Exclusive_Databased_Gateway($shape, $wf, &$CI) {
                 $false = strtolower($CI->lang->line('false'));
                 //---Get type of assignment
                 $cond_type=eval("extract((array) \$CI->data);return gettype($assignment);"); 
+                if($debug)
+                var_dump(array('$cond'=>$cond,'$assignment'=>$assignment));
                 switch($cond_type){
                     case 'bool':
                         
@@ -88,6 +90,12 @@ function run_Exclusive_Databased_Gateway($shape, $wf, &$CI) {
                     default:
                         $cond = (strtolower($cond) == $true) ? true : $cond;
                         $cond = (strtolower($cond) == $false) ? false : $cond;
+                        
+                        if($debug){
+                            echo "<hr>POST lang convert<br>";
+                            var_dump(array('$cond'=>$cond));
+                            echo "<hr>";
+                        }
                         break;
                 }
                 //---what if is an array?
@@ -111,6 +119,7 @@ function run_Exclusive_Databased_Gateway($shape, $wf, &$CI) {
                 if ($result[$shape_out->resourceId]['eval'])
                     $i++;
                 if ($debug) {
+                    echo ">> EVAL<br>";
                     var_dump(array('type'=>$cond_type,'assignment'=>$assignment,'eval'=> eval("return($assignment);"),'cond'=>$cond,'streval'=> $streval,'result'=> $result[$shape_out->resourceId]['eval']));
                     echo '<hr>';
                 }
