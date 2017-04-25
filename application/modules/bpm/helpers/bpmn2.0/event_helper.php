@@ -247,10 +247,12 @@ function run_IntermediateEventCatching($shape, $wf, &$CI) {
     
     $is_normal_flow = false;
     $is_boundary_event = false;
+    $is_conditional_event=false;
 //----handle BOUNDARY and NORMAL FLOW different
 //---1st analyze if it's normal or boundary
     if (count($inbound) == 1) {
         $inshape = $inbound[0];
+        
         if (in_array($inshape->stencil->id, array('Task', 'Subprocess'))) {
 //---it's an event attached to a task
             $is_boundary_event = true;
@@ -340,8 +342,20 @@ function run_IntermediateEventCatching($shape, $wf, &$CI) {
     if ($has_finished) {
         if ($debug)
             echo '<h1>HAS FINISHED TRUE</h1>';
+        //---Experimental:: set pending if conditional
+        $previous_shapes=$CI->bpm->get_previous($shape->resourceId, $wf);
+               $previous=$previous_shapes[0];
+        //----check if it fires EventBasedGateway
+        //----2do message bus emmit/push message finished
+        if(in_array($previous->stencil->id,array('EventbasedGateway'))){
+        	
+            $CI->bpm->set_token($wf->idwf, $wf->case, $previous->resourceId, $previous->stencil->id, 'pending');
+            var_dump('previous -> pending');exit;
+        }
         $CI->bpm->movenext($shape, $wf);
         //----cancel boundary if exists
+        
+        
         
     } else {
         if ($debug)
@@ -386,7 +400,15 @@ function run_IntermediateTimerEvent($shape, $wf, $CI) {
             if ($debug)
                 var_dump2(date('Y-m-d H:i:s', mktime()), $token['trigger'], mktime() > strtotime($token['trigger']));
 
-            if (mktime() >= strtotime($token['trigger'])) {
+            if (time() >= strtotime($token['trigger'])) {
+            	//----check if it fires EventBasedGateway
+               //----2do message bus emmit/push message finished
+               $previous_shapes=$CI->bpm->get_previous($shape->resourceId, $wf);
+               $previous=$previous_shapes[0];
+               
+               if(in_array($previous->stencil->id,array('EventbasedGateway'))){
+               $CI->bpm->set_token($wf->idwf, $wf->case, $previous->resourceId, $previous->stencil->id, 'pending');
+        }
                 $CI->bpm->movenext($shape, $wf);
             }
             break;

@@ -303,11 +303,15 @@ function run_EventbasedGateway($shape, $wf, $CI) {
     $has_finished = true;
     $flows=$CI->bpm->get_outgoing_shapes($shape, $wf);
     $cancel_events=false;
+            if($debug) 
+            echo "<h1>TRIGGERS</h1>";    
     foreach ($flows as $flow) {
             $trigger_resourceId=$flow->outgoing->{0}->resourceId;
             $token_trigger=$CI->bpm->get_token($wf->idwf, $wf->case, $trigger_resourceId);
-            // var_dump2($token_trigger);
-            //---if not exists the initialize tokens for engine
+            if($debug) {
+            var_dump2($trigger_resourceId,$token_trigger);
+            } 
+            //---if not exists then initialize tokens for engine
             if(!$token_trigger){
                 $shape_trigger=$CI->bpm->get_shape($trigger_resourceId, $wf);
                 //$CI->bpm->movenext($shape_trigger,$wf);
@@ -331,9 +335,18 @@ function run_EventbasedGateway($shape, $wf, $CI) {
             }
             
         }
+        
+    //---put me to waiting till next run
+    $CI->bpm->set_token($wf->idwf, $wf->case, $shape->resourceId, $shape->stencil->id, 'waiting');
+    
     //---process cancelations
     if($cancel_events){
-        if($debug) echo "process Cancelations<br/>";
+        if($debug){
+        
+        echo "process Cancelations<br/>";
+        var_dump($triggers);
+        } 
+            
         $data = array('canceledBy' => $shape->resourceId, 'canceledName' => $shape->properties->name);
         foreach($triggers as $arr){
             $flow=$arr['flow'];
@@ -343,4 +356,7 @@ function run_EventbasedGateway($shape, $wf, $CI) {
         //---now set $shape as finished
         $CI->bpm->set_token($wf->idwf, $wf->case, $shape->resourceId, $shape->stencil->id, 'finished');
     }
+
+
+    
 }
