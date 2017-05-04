@@ -684,9 +684,9 @@ class Bpm extends CI_Model {
         if (!isset($token['assign']))
             $token['assign'] = array();
         //---merge user arrays
-        $token['assign']+=$users;
+        $token['assign']=array_merge($users,$token['assign']);
         //---ensure uniqness
-        array_unique($token['assign']);
+        $token['assign']=array_unique($token['assign']);
         $this->save_token($token);
     }
 
