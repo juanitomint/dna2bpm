@@ -680,11 +680,9 @@ class Bpm extends CI_Model {
     function assign_task($token, $users) {
         //---this function is for manually assign a certain task
         //--- can be invoked from script tasks.
-        //---check if property exists
-        if (!isset($token['assign']))
-            $token['assign'] = array();
-        //---merge user arrays
-        $token['assign']=array_merge($users,$token['assign']);
+        
+        //---overwrite user array and ensure is array
+        $token['assign']=(array)$users;
         //---ensure uniqness
         $token['assign']=array_unique($token['assign']);
         $this->save_token($token);
