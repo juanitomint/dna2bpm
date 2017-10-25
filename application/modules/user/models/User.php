@@ -46,15 +46,14 @@ class User extends CI_Model {
     }
 
     function hash($str) {
-        return md5($str);
+        return password_hash($str, PASSWORD_DEFAULT);
     }
 
     ////-----update last access
     private function update_lastacc($idu = null) {
         if ($idu) {
-            $query = array('lastacc' => date('Y-m-d H:i:s'));
-            $criteria = array('idu' => $idu);
-            $this->db->update('users', $query, $criteria);
+                $user = array('idu' => $idu,'lastacc' => date('Y-m-d H:i:s'));
+                $this->put_user($user);
         }
     }
 
@@ -63,18 +62,37 @@ class User extends CI_Model {
     }
 
     function authenticate($username = '', $password = '') {
+
         //----MD5 is used for password hashing
-        if ($username == '' or $password == '') {
+        if(empty($username) || empty($password) )
             return false;
-        }
-        $query = array('nick' => $username, 'passw' => $this->hash($password));
-        $thisUser = $this->db->select(array('idu'))->get_where('users', $query)->result();
-        if (isset($thisUser[0])) {
-            $thisUser = $thisUser[0]; //---get first an d only first
+        //5c7614f3846ee06e2ba97c095d6511e1
+        $query = array('nick' => $username);       
+        $thisUser = $this->db->select(array('idu','passw'))->get_where('users', $query)->row();
+
+        if(empty($thisUser))return;
+        $is_md5=preg_match('/^[a-f0-9]{32}$/', $thisUser->passw);
+        if($is_md5){
+            //=== MD5 - Deprecated
+            if($thisUser->passw==md5($password)){
+                //=== Login OK
+                $hash=$this->hash($password);
+                //== hash update 
+                $user = array('idu' => $thisUser->idu,'passw' => $hash);
+                $this->put_user($user);
+                $this->update_lastacc($thisUser->idu);
+                return $thisUser->idu;
+            }else{
+                return false;
+            }
+
+           // 
+        }else{
+           //=== Password_hash ready
+            $passwOk=password_verify($password,$thisUser->passw);
             $this->update_lastacc($thisUser->idu);
-            return $thisUser->idu;
-        } else {
-            return false;
+            return ($passwOk)?($thisUser->idu):(false);
+
         }
     }
 
