@@ -2,7 +2,7 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-class Mongowrapper extends Mongo {
+class Mongowrapper extends MongoClient {
 
     var $db;
 
