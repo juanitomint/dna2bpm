@@ -68,17 +68,18 @@ class Bpmui extends MX_Controller {
         
         foreach($mymodels as $model)$models[]=$model;
         //----convert to arrays
-        $models = array_map(function($model) {
+        
+        $models =($models)? array_map(function($model) {
             // $model = (array) $model;
 
             $model['properties'] = $model['data']['properties'];
             return (array) $model;
-        }, $models);
+        }, $models):array();
         //----get folders
-        $folders = array_unique(array_map(function($model) {
+        $folders =($models) ? array_unique(array_map(function($model) {
                     if (isset($model['folder']))
                         return $model['folder'];
-                }, $models));
+                }, $models)):array();
         sort($folders);
         //-----make 2 level tree
         foreach ($folders as $folder) {
