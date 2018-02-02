@@ -97,12 +97,22 @@ class Setup extends MX_Controller {
         $cpData['environment']=ENVIRONMENT;
         $folder=APPPATH.'config/'.ENVIRONMENT;
         //----copy autoload
-        if (copy(APPPATH.'config/autoload.php.pre',$folder.'/autoload.php')) {
+        if (copy(APPPATH.'config/autoload.post.php',$folder.'/autoload.php')) {
                     $badge = '<span class="label label-success pull-right">OK</span>';
                 } else {
                     $badge = '<span class="label label-warning pull-right">Not Writable</span>';
                 }
                 $cpData['msgcode'][] = array('msg' => 'New autoload... ' . $badge);
+        
+        //----copy routes
+        if (copy(APPPATH.'config/routes.post.php',$folder.'/routes.php')) {
+                    $badge = '<span class="label label-success pull-right">OK</span>';
+                } else {
+                    $badge = '<span class="label label-warning pull-right">Not Writable</span>';
+                }
+                $cpData['msgcode'][] = array('msg' => 'New routes... ' . $badge);
+                        
+                
         redirect($this->module_url.'users');
     }
     /**

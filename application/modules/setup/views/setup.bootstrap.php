@@ -51,7 +51,7 @@
                         <div class="form-group">
                             <label class=" control-label" for="mongodbhost">MongoDB Host</label>
                             <div class="">
-                                <input id="mongodbhost" name="cimongo[host]" type="text" value="localhost" class="form-control input-md" required="">
+                                <input id="mongodbhost" name="cimongo[host]" type="text" value="mongo" class="form-control input-md" required="">
                                 <span class="help-block">The hostname wich will host your mongo database</span>
                             </div>
                         </div>
