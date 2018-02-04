@@ -21,6 +21,8 @@ $config['auto_assign_admin']=true;
 $config['make_thumbnails']=false;
 // Choose whether to make backups or not
 $config['make_model_backup']=true;
+// File path
+$config['bpm_file_path']="application/modules/bpm/assets/files/";
 //---Task time parameters
 //---Days before change
 $config['task_ok']=15;
