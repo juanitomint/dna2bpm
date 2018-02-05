@@ -18,7 +18,7 @@ class Setup extends CI_Controller {
             'images/avatar',
             'images/model',
             'images/png',
-            'images/svg',
+            'bpm/assets/files/svg',
             'images/zip',
         );
     }

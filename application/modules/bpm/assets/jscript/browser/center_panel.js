@@ -80,7 +80,7 @@ var ModelExport= Ext.create('Ext.Action', {
         //---only do something if its leaf=model
         if(n && n.isLeaf()){
             frame = body.createChild({
-                src:globals.base_url+'images/zip/'+n.data.id+'.zip',
+                src:globals.base_url+'bpm/assets/files/images/zip/'+n.data.id+'.zip',
                 tag:'iframe',
                 cls:'x-hidden',
                 id:'hiddenform-iframe',
@@ -130,7 +130,7 @@ var ModelView = Ext.create('Ext.Action', {
         
         if(n && n.isLeaf()){
             url= globals.module_url+'repository/view/model/'+n.data.id;
-            url= globals.base_url+'images/svg/'+n.data.id+'.svg';
+            url= globals.base_url+'bpm/assets/files/images/svg/'+n.data.id+'.svg';
             window.open(url);
         }
     }

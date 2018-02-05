@@ -8,7 +8,7 @@ class Bpm_simple extends Toast {
         parent::Toast(__FILE__);
         $this->load->model('bpm/bpm');
         $this->zips = APPPATH . 'modules/test/assets/zip/';
-        $this->zips = FCPATH . 'images/zip/';
+        $this->zips = FCPATH . $config["bpm_file_path"]."zip/";
         // Load any models, libraries etc. you need here
     }
 

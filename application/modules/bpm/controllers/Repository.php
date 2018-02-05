@@ -395,7 +395,7 @@ class Repository extends MX_Controller {
         $data+=$wf['data']['properties'];
 //var_dump($wfData);
 //---read model SVG
-        $data['svgfile'] = "images/svg/$idwf.svg";
+        $data['svgfile'] = "bpm/assets/files/images/svg/$idwf.svg";
         // $data['SVG'] = htmlspecialchars(read_file($data['svgfile']));
          $data['css'] = array(
             $this->module_url . 'assets/css/view-model.css'=>'view model CSS'
@@ -480,7 +480,7 @@ class Repository extends MX_Controller {
             $data['tokens'][] = $token;
         }
 //---read model SVG
-        $data['svgfile'] = "images/svg/$idwf.svg";
+        $data['svgfile'] = "bpm/assets/files/images/svg/$idwf.svg";
         $data['SVG'] = htmlspecialchars(read_file($data['svgfile']));
 //$data['SVG'] = str_replace('black', 'green', $data['SVG']);
 //---OUTPUT AS XML
@@ -518,7 +518,8 @@ class Repository extends MX_Controller {
         $this->load->helper('form');
         $this->load->helper('url');
         $this->load->helper('file');
-        $filePath = "images/zip/";
+        $path = APPPATH."modules/bpm/assets/files/images/";
+        $filePath = $path."zip/";
         //@todo better warning manager
         try {
             if (!is_dir($filePath)) {
@@ -528,7 +529,7 @@ class Repository extends MX_Controller {
             var_dump($e);
         }
 //---handle  the upload
-        $config['upload_path'] = './' . $filePath;
+        $config['upload_path'] =  $filePath;
 
         $config['allowed_types'] = 'zip';
         $config['overwrite'] = true;
@@ -553,7 +554,7 @@ class Repository extends MX_Controller {
 
                 $zip = new ZipArchive;
                 if ($zip->open($file_import) === true) {
-                    $zip->extractTo('./');
+                    $zip->extractTo(APPPATH."modules/bpm/assets/files/");
                     $zip->close();
                 } else {
                     $err = true;
@@ -562,8 +563,8 @@ class Repository extends MX_Controller {
                 }
                 if (!$err) {
                     $idwf = $upload_data['raw_name'];
-                    $filename = "images/model/$idwf.json";
-                    $filename_svg = "images/svg/$idwf.svg";
+                    $filename = $path."model/$idwf.json";
+                    $filename_svg = $path."svg/$idwf.svg";
                     $model = $this->bpm->model_exists($idwf);
 
                     $svg = read_file($filename_svg);
@@ -584,7 +585,7 @@ class Repository extends MX_Controller {
                             $rs = $this->bpm->save_raw($thisModel);
                         }
                     } else {
-                        $rtnObject['msg'] = "Error reading $file_import";
+                        $rtnObject['msg'] = "Error reading $filename";
                         $rtnObject['success'] = false;
                     }
                 }//---not error

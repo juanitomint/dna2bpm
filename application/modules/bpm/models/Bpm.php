@@ -175,9 +175,11 @@ class Bpm extends CI_Model {
         //---update modification date
         unset($mywf['_id']);
         $wf_back = $mywf;
+        $path = APPPATH."modules/bpm/assets/files/images/";
         //----if set make a zip backup of actual model
-        if ($this->config->item('make_model_backup') && is_file("images/zip/$idwf.zip")) {
-            copy("images/zip/$idwf.zip", "images/zip/$idwf-BACKUP-" . date('Y-m-d-H-i-s') . ".zip");
+        if ($this->config->item('make_model_backup') && 
+        is_file($path."zip/$idwf.zip")) {
+            copy($path."zip/$idwf.zip", $path."zip/$idwf-BACKUP-" . date('Y-m-d-H-i-s') . ".zip");
         }
         $data->properties->modificationdate = date('Y-m-d') . 'T00:00:00';
         $mywf['idwf'] = $idwf;
@@ -386,8 +388,8 @@ class Bpm extends CI_Model {
 
     function save_model_file($idwf, $data) {
         $this->load->helper('file');
-        $path = 'images/model/';
-        $filename = $path . $idwf . '.json';
+        $path = APPPATH."modules/bpm/assets/files/images/";
+        $filename = $path .'model/'.$idwf . '.json';
         write_file($filename, json_encode($data));
     }
 
@@ -401,10 +403,10 @@ class Bpm extends CI_Model {
         $phantom_path = APPPATH . 'modules/bpm/assets/jscript/phantomjs-1.9.7-linux-x86_64';
         $resize = '-resize 30%';
         $crop = '-crop 720x720+0+0';
-        $path = 'images/svg/';
-        $path_thumb = 'images/png/';
-        $filename = $path . $idwf . '.svg';
-        $filename_thumb = $path_thumb . $idwf . '.png';
+        $path = APPPATH."modules/bpm/assets/files/images/";
+        $path_thumb = $path.'png/';
+        $filename = $path .'svg/'. $idwf . '.svg';
+        $filename_thumb = $path.'png/' . $idwf . '.png';
         $filename_crop = $path_thumb . $idwf . '-cropped.png';
         $filename_thumb_small = $path_thumb . $idwf . '-small.png';
 
@@ -435,22 +437,36 @@ class Bpm extends CI_Model {
 
     function zip_model($idwf, $data) {
         $zip = new ZipArchive();
-        $filename = $idwf . ".zip";
-        $path = 'images/zip/';
-        $svg = 'images/svg/' . $idwf . '.svg';
-        $filename_thumb_small = 'images/png/' . $idwf . '-small.png';
-
-        if ($zip->open($path . $filename, ZIPARCHIVE::CREATE) !== TRUE) {
-            exit("cannot open <$filename>\n");
+        $path = APPPATH."modules/bpm/assets/files/images/";
+        $filePath=$path.'zip/';
+        $filename =$filePath. $idwf . ".zip";
+        //@todo better warning manager
+        try {
+            if (!is_dir($filePath)) {
+                mkdir($filePath, 0777, true);
+            }
+        } catch (Exception $e) {
+            var_dump($e);
         }
-        //---add the model file
-        $zip->addFromString('images/model/' . $idwf . ".json", json_encode($data));
-        //---add SVG diagram
-        $zip->addFile($svg);
-        //---Add thumbnail
-        if (is_file($filename_thumb_small))
-            $zip->addFile($filename_thumb_small);
-        $zip->close();
+        chdir(APPPATH."modules/bpm/assets/files/");
+        $svg  = 'images/svg/' . $idwf . '.svg';
+        $model= 'images/model/' . $idwf . ".json";
+        $filename_thumb_small = 'images/png/' . $idwf . '-small.png';
+        try {
+             $zip->open($filename, ZIPARCHIVE::CREATE);
+            //---add the model file
+            $zip->addFromString($model, json_encode($data));
+            //---add SVG diagram
+            $zip->addFile($svg);
+            //---Add thumbnail
+            if (is_file($filename_thumb_small))
+                $zip->addFile($filename_thumb_small);
+            $zip->close();
+        } catch (Exception $e) {
+            var_dump($e);
+        } 
+        
+        
     }
 
     function delete($idwf) {
@@ -2039,6 +2055,7 @@ class Bpm extends CI_Model {
     function import($file_import, $overwrite = true, $folder = 'General') {
         $this->load->helper('file');
         $data = pathinfo($file_import);
+        // var_dump($data);
         /*
          * array (size=4)
           'dirname' => string 'images/zip' (length=10)
@@ -2049,7 +2066,7 @@ class Bpm extends CI_Model {
         $err = false;
         $zip = new ZipArchive;
         if ($zip->open($file_import) === true) {
-            $zip->extractTo('./');
+            $zip->extractTo(APPPATH."modules/bpm/assets/files/");
             $zip->close();
         } else {
             $err = true;
@@ -2058,21 +2075,20 @@ class Bpm extends CI_Model {
         }
         if (!$err) {
             $idwf = $data['filename'];
-            $filename = "images/model/$idwf.json";
-            $filename_svg = "images/svg/$idwf.svg";
+            $filename     = APPPATH."modules/bpm/assets/files/images/"."model/$idwf.json";
+            $filename_svg =APPPATH."modules/bpm/assets/files/images/". "svg/$idwf.svg";
             $model = $this->bpm->model_exists($idwf);
 
-            $svg = read_file($filename_svg);
             if ($raw = read_file($filename)) {
                 $data = json_decode($raw, false);
 //---if exists set the internal id of the old one
                 $thisModel['idwf'] = $idwf;
                 $thisModel['data'] = $data;
                 $thisModel['folder'] = $folder;
-                $thisModel['svg'] = $svg;
+                $thisModel['svg'] = read_file($filename_svg);
                 if ($model) {
                     $this->bpm->save($idwf, $data, $svg);
-                    $rtnObject['msg'] = "Imported OK! Updated existing model: $idwf";
+                    $rtnObject['msg'] = "Imported OK! Updated existing model: $idwf:";
                     $rtnObject['success'] = true;
                 } else {
                     $rtnObject['msg'] = "Imported OK! New Model Created: $idwf";
@@ -2084,6 +2100,7 @@ class Bpm extends CI_Model {
                 $rtnObject['success'] = false;
             }
         }//---not error
+        // var_dump($err);exit;
         return $rtnObject;
     }
 

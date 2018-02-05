@@ -16,10 +16,10 @@ class Setup extends MX_Controller {
         $this->module_url = base_url() . $this->router->fetch_module() . '/';
         $this->writable_folders = array(
             'images/avatar',
-            'images/model',
-            'images/png',
-            'images/svg',
-            'images/zip',
+            APPPATH.'modules/bpm/assets/files/images/model',
+            APPPATH.'modules/bpm/assets/files/images/png',
+            APPPATH.'modules/bpm/assets/files/bpm/assets/files/svg',
+            APPPATH.'modules/bpm/assets/files/images/zip',
         );
     }
     
