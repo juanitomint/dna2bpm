@@ -136,8 +136,15 @@ function run_EndNoneEvent($shape, $wf, $CI, $moveForward = true) {
     }
     //----Set status 4 Case
     //---close process if all end events have been finished (or canceled)
-    $active_tokens = $CI->bpm->get_pending($wf->idwf, $wf->case, array('user', 'waiting', 'pending'), array());
-    if (count($active_tokens) == 0) {
+    $filter=array (
+        'case'=>$wf->case,
+        'idwf'=>$wf->idwf,
+        'status'=> array('$in'=>array('user', 'waiting', 'pending')),
+        );
+
+    $active_tokens = $CI->bpm->get_tokens_byFilter_count($filter); 
+
+    if ($active_tokens == 0) {
         $CI->bpm->update_case($wf->idwf, $wf->case, array(
             'status' => 'closed',
             'closer' => $shape->resourceId,
@@ -247,7 +254,13 @@ function run_EndTerminateEvent($shape, $wf, $CI) {
     /**
      * @todo Cancel all pending tasks and close
      */
-    $active_tokens = $CI->bpm->get_pending($wf->idwf, $wf->case, array('user', 'waiting', 'pending','open'));
+        $filter=array (
+        'case'=>$wf->case,
+        'idwf'=>$wf->idwf,
+        'status'=> array('$in'=>array('user', 'waiting', 'pending','open')),
+        );
+
+    $active_tokens = $CI->bpm->get_tokens_byFilter($filter); 
     foreach ($active_tokens as $token) {
         $token['status'] = 'canceled';
         $data = array('canceledBy' => $shape->resourceId, 'canceledName' => $shape->properties->name);
