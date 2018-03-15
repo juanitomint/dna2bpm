@@ -176,10 +176,12 @@ class Setup extends MX_Controller {
         }
         $cpData['msgcode'][] = array('msg' => "Checking Permissions: the folders below has to have write permission to the user runing the site, usually www-data");
         foreach ($this->writable_folders as $folder) {
+            //---try to create folder
+            @mkdir($folder, 0777, TRUE);
             if (is_writable($folder)) {
                 $badge = '<span class="label label-success pull-right">OK</span>';
             } else {
-                $badge = '<span class="label label-warning pull-right">Not Writable</span>';
+                $badge = '<span class="label label-error pull-right">Not Writable</span>';
             }
             $cpData['msgcode'][] = array('msg' => $folder . '   ' . $badge);
         }
