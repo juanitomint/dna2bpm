@@ -1,0 +1,22 @@
+{
+    "createdBy": "Gabriel Fojo <trialvd@gmail.com>",
+    "title": "Dashboard Formio",
+    "view": "layout_clean",
+    "icon": "fa-users",
+    "zones": [{
+        "widgets": [{
+            "title": "Formio Test",
+            "module": "formio",
+            "controller": "Formio",
+            "function": "formio_poc"
+        }]
+    }],
+  "css": [{
+      "{base_url}formio/assets/css/formio.full.min.css": "Formio"
+  }],
+  "js": [{
+      
+      "{base_url}formio/assets/jscript/formio.full.min.js": "Formio",
+      "{base_url}formio/assets/jscript/app_poc.js": "Formio init"
+  }]
+}
