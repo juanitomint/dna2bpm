@@ -33,6 +33,8 @@ class Engine extends MX_Controller {
         // ----LOAD LANGUAGE
         $this->lang->load('library', $this->config->item('language'));
         $this->lang->load('bpm', $this->config->item('language'));
+        //----set inproc (whter we are being called form outside or new instance)
+        $this->inproc=false;
         // ---Set the shapes that will be digged
         $this->digInto = array(
             'Pool',
@@ -56,6 +58,7 @@ class Engine extends MX_Controller {
         $this->debug ['dont_show_modal'] = null;
 
         // ---debug Helpers
+        $this->debug ['get_pending'] = null;
         $this->debug ['run_Task'] = null;
         $this->debug ['run_Subprocess'] = null;
         $this->debug ['run_CollapsedSubprocess'] = null;
@@ -106,7 +109,7 @@ class Engine extends MX_Controller {
 
     function Newcase($model, $idwf, $manual = false, $parent = null, $silent = false, $data = array()) {
         // ---Gen new case ID
-        $idcase = $this->bpm->gen_case($idwf);
+        $idcase = $this->bpm->gen_case($idwf,null,$data);
         if ($manual) {
             $mycase = $this->bpm->get_case($idcase, $idwf);
             $mycase ['run_manual'] = true;
@@ -237,13 +240,20 @@ class Engine extends MX_Controller {
              * Start procesing pending tokens
              */
             $open = $this->bpm->get_tokens_byFilter($filter);
-            while ($i <= 100 and $open = $this->bpm->get_tokens_byFilter($filter)) {
+            while ($i <= 100 and $open = $this->bpm->get_tokens_byFilter($filter,
+            array(), //---fields
+            
+            array( // ----Order
+                'status'=>true,
+                'checkdate'=>true
+                )
+                )) {
                 if ($debug)
                     echo "<h1>Step:$i</h1>";
                 $i ++;
                 foreach ($open as $token) {
                     // ---only call tokens that correspond to user.
-                    // var_dump($token);
+                    //  var_dump($token);
                     $resourceId = $token ['resourceId'];
 
                     if (!in_array($resourceId, $wf->prevent_run)) {
@@ -303,6 +313,24 @@ class Engine extends MX_Controller {
 
     }
 
+    function post($token_id,$external_origin='unknown',$external_id=null) {
+        /** Check security **/
+    if($token=$this->bpm->get_token_byid($token_id)) {
+        $idcase=$token['case'];
+        $idwf=$token['idwf'];
+        /// check token sanity
+        $case=$this->bpm->get_case($idcase, $idwf);
+        $case['data']['external'][$external_origin][$token['resourceId']]=$external_id;
+        $this->bpm->save_case($case);
+        //---Run Run post
+        $this->run_post('model',$token['idwf'],$token['case'],$token['resourceId']);
+    
+        
+    } else {
+        show_error('Token not found',500);
+    }
+        
+    }
     function run_post($model, $idwf, $case, $resourceId) {
         $debug = (isset($this->debug [__FUNCTION__])) ? $this->debug [__FUNCTION__] : false;
         if ($debug)
@@ -928,6 +956,7 @@ class Engine extends MX_Controller {
         $debug = (isset($this->debug [__FUNCTION__])) ? $this->debug [__FUNCTION__] : false;
         // if no filter passed then set default to me
         // $debug = true;
+        if($debug) echo"<h1>get_pending($model, $idwf, $idcase,$run_resourceId);";
         // $this->load_data($idwf, $idcase);
         if ($this->break_on_next) {
             $this->bpm->update_case_token_status($idwf, $idcase);
@@ -948,6 +977,9 @@ class Engine extends MX_Controller {
         }
         // ----Load Case
         $case = $this->bpm->get_case($idcase, $idwf);
+        if (isset($case ['parent'])) {
+            $has_parent =true;
+        }
         // ----set manual flag 4 test
         $run_manual = (isset($case ['run_manual'])) ? $case ['run_manual'] : false;
         // var_dump('case',$case,'run_manual',$run_manual);
@@ -1075,7 +1107,6 @@ class Engine extends MX_Controller {
                                 'user_lock' => $user_lock ['name'] . ' ' . $user_lock ['lastname'],
                                 'time' => date($this->lang->line('dateTimeFmt'), strtotime($token ['lockedDate']))
                             );
-
                             $this->show_modal($this->lang->line('message'), $this->parser->parse_string($this->lang->line('taskLocked'), $msg_data));
                         }
                         break;
@@ -1084,10 +1115,25 @@ class Engine extends MX_Controller {
                 // ---load no pending taks
                 $renderData ['name'] = $this->lang->line('message');
                 $renderData ['documentation'] = $this->parser->parse_string($this->lang->line('noMoreTasks'), $case);
-                $this->show_modal($this->lang->line('message'), $this->parser->parse_string($this->lang->line('noMoreTasks'), $case));
+			    if(!$this->inproc){ 
+                    $this->show_modal($this->lang->line('message'), $this->parser->parse_string($this->lang->line('noMoreTasks'), $case));
+			    
+			     } else {
+			     //---get pending parent
+                 $idwfp=$case['data']['parent']['idwf'];
+                $idcasep=$case['data']['parent']['case'];
+			     $this->run_filter =  array(
+                'idwf' => $idwfp,
+                'case' => $idcasep,
+                //---exclude 'waiting'
+                'status' => array('$in'=>array('pending')
+                ));
+			         $this->inproc=false;
+			         $this->run($model,$idwfp,$idcasep);
+			     }
+			
             }
         } else { // case is closed or in other state
-            if(!$this->debug['dont_show_modal'])
             $this->show_modal($this->lang->line('message'), $this->lang->line('caseClosed'));
         }
     }
