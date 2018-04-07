@@ -54,7 +54,7 @@ class Setup extends MX_Controller {
         
         ///--check if dir exists already (should be check index.php for enviroment)
         if (!file_exists($folder)) {
-        mkdir($folder);
+        @mkdir($folder);
         }
         
         if (is_writable($folder)) {
