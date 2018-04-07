@@ -402,13 +402,15 @@ function run_IntermediateTimerEvent($shape, $wf, $CI) {
 
             if (time() >= strtotime($token['trigger'])) {
             	//----check if it fires EventBasedGateway
-               //----2do message bus emmit/push message finished
+               
                $previous_shapes=$CI->bpm->get_previous($shape->resourceId, $wf);
                $previous=$previous_shapes[0];
                
                if(in_array($previous->stencil->id,array('EventbasedGateway'))){
                $CI->bpm->set_token($wf->idwf, $wf->case, $previous->resourceId, $previous->stencil->id, 'pending');
-        }
+               }
+                
+                run_IntermediateEventCatching($shape, $wf, $CI);
                 $CI->bpm->movenext($shape, $wf);
             }
             break;
