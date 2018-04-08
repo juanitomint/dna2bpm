@@ -24,6 +24,10 @@ class Bpm extends CI_Model {
         $this->idu = $this->user->idu;
         $this->load->library('cimongo/cimongo');
         $this->db = $this->cimongo;
+        //---define history database
+        $this->db_history= new $this->cimongo;
+        $this->db_history->switch_db(($this->config->item('db')).'_history');
+        
         $this->load->config('bpm/config');
     }
 
@@ -1421,12 +1425,13 @@ class Bpm extends CI_Model {
         $data += array('idcase' => $idcase, 'idwf' => $idwf);
 
         if(!($data['type']=='SequenceFlow' and $data['status']=='pending'))
-            $this->db->insert('tokens.history',$data);
+            $this->db_history->insert('tokens.history',$data);
+            
     }
 
     function get_token_history($idwf,$idcase){
         $query=array('idcase' => $idcase, 'idwf' => $idwf);
-        return $this->db->get_where('tokens.history',$query)->result_array();
+        return $this->db_history->get_where('tokens.history',$query)->result_array();
     }
     function movenext($shape_src, $wf, $token = array(), $process_out = true) {
         $debug = (isset($this->debug[__FUNCTION__])) ? $this->debug[__FUNCTION__] : false;
