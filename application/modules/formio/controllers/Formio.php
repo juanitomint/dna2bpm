@@ -44,6 +44,7 @@ class Formio extends MX_Controller {
             'src'    => $src,
             'action' => $action,
         ];
+        
         $this->load->view('index.php', $form_urls);
     }
 
@@ -66,15 +67,14 @@ class Formio extends MX_Controller {
             //--- Check if key exists
             if (isset($case['data']['external']['formio'][$token['resourceId']])) {
                 $customData['global_js']['src']= "http://localhost:3001/form/$form_id/submission/".$case['data']['external']['formio'][$token['resourceId']];
-                $customData['global_js']['src']= "http://localhost:3001/form/5ab83b6c3a47f101c06f20b4/submission/5ab8dd9f3a47f101c06f20b9";
             } 
         }
         $customData['global_js']['idwf']=  $idwf;
         $customData['global_js']['idcase']= $idcase;
         $customData['global_js']['token_id']= $token_id;
         $customData['global_js']['action']="http://localhost:3001/form/$form_id/submission/?live=1";
-        $customData['global_js']['action_post']=$this->base_url."bpm/engine/post/$token_id/formio/";
-            // var_dump($customData);exit;
+        // $customData['global_js']['action_post']=$this->base_url."bpm/engine/post/$token_id/formio/";
+            //  var_dump($customData);exit;
 	    //----pasar params al dashboard usar la url para el render 
 		Modules::run('dashboard/dashboard', 'formio/json/formio_poc.json',null,$customData);
      }
