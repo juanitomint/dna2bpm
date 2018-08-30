@@ -562,7 +562,7 @@ class Repository extends MX_Controller {
                     $rtnObject['success'] = false;
                 }
                 if (!$err) {
-                    $idwf = $upload_data['raw_name'];
+                    $idwf = str_replace('.zip','',$upload_data['client_name']);
                     $filename = $path."model/$idwf.json";
                     $filename_svg = $path."svg/$idwf.svg";
                     $model = $this->bpm->model_exists($idwf);
