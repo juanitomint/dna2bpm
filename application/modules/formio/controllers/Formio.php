@@ -62,7 +62,6 @@ class Formio extends MX_Controller {
             $this->load->model('bpm/bpm');
             ///---get resrourceId
             $token=$this->bpm->get_token_byid($token_id);
-            
             $case=$this->bpm->get_case($idcase,$idwf);
             //--- Check if key exists
             if (isset($case['data']['external']['formio'][$token['resourceId']])) {
@@ -72,6 +71,7 @@ class Formio extends MX_Controller {
         $customData['global_js']['idwf']=  $idwf;
         $customData['global_js']['idcase']= $idcase;
         $customData['global_js']['token_id']= $token_id;
+        $customData['global_js']['title']= $token['title'];
         $customData['global_js']['action']="http://localhost:3001/form/$form_id/submission/?live=1";
         $customData['global_js']['action_post']=$this->base_url."bpm/engine/post/$token_id/formio/";
             //  var_dump($customData);exit;
