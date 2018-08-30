@@ -73,7 +73,7 @@ class Formio extends MX_Controller {
         $customData['global_js']['idcase']= $idcase;
         $customData['global_js']['token_id']= $token_id;
         $customData['global_js']['action']="http://localhost:3001/form/$form_id/submission/?live=1";
-        // $customData['global_js']['action_post']=$this->base_url."bpm/engine/post/$token_id/formio/";
+        $customData['global_js']['action_post']=$this->base_url."bpm/engine/post/$token_id/formio/";
             //  var_dump($customData);exit;
 	    //----pasar params al dashboard usar la url para el render 
 		Modules::run('dashboard/dashboard', 'formio/json/formio_poc.json',null,$customData);
