@@ -17,7 +17,7 @@ ini_set('display_errors', 1);
 | environments.
 |
 */
-$config['base_url']	= "http://localhost/dna2bpm/";
+$config['base_url']	= "http://localhost/";
 
 /*
 |--------------------------------------------------------------------------
