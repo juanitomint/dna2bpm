@@ -1,0 +1,23 @@
+version: "3"
+services:
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+
+  web:
+    image: juanitomint/php7
+    ports:
+      - "80:80"
+    volumes:
+      - ./:/var/www/html
+
+
+# uncomment  the block below to enable an itegrated c9 editor on port 9022
+#   editor:
+#     image: juanitomint/c9collab:php
+#     volumes:
+#         - ./www/dna2bpm:/workspace
+#         - ./ssh/:/root/.ssh
+#     ports:
+#       - "9022:80"
