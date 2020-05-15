@@ -2,6 +2,10 @@ version: "3"
 services:
   mongo:
     image: mongo:latest
+    environment: 
+      MONGO_INITDB_ROOT_USERNAME: dna2bpmuser
+      #change the password below and keep it for installation
+      MONGO_INITDB_ROOT_PASSWORD: "kukekakuke50"
     ports:
       - "27017:27017"
 
@@ -14,10 +18,10 @@ services:
 
 
 # uncomment  the block below to enable an itegrated c9 editor on port 9022
-#   editor:
-#     image: juanitomint/c9collab:php
-#     volumes:
-#         - ./www/dna2bpm:/workspace
-#         - ./ssh/:/root/.ssh
-#     ports:
-#       - "9022:80"
+  # editor:
+  #   image: juanitomint/c9collab:php7
+  #   volumes:
+  #       - ./:/workspace
+  #       - ./ssh/:/root/.ssh
+  #   ports:
+  #     - "9022:80"

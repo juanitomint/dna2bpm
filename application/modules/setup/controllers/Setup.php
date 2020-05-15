@@ -134,6 +134,15 @@ class Setup extends MX_Controller {
         $this->load->model('user/group');
         $this->load->model('user/rbac');
         $this->config->load('user/config');
+        // //---testo
+        // $m = new MongoClient('mongodb://german:judio@mongo:27017');
+        // $db = $m->comedy;
+        // $collection = $db->cartoons;
+        // $document = array( "title" => "Calvin and Hobbes", "author" => "Bill Watterson" );
+        // $collection->insert($document);
+        // $q=$collection->find();
+        // var_dump($q);
+        // exit;
         $cpData['title'] = 'Setup Users Page';
         $cpData['authUrl'] = base_url() . 'user/authenticate';
         $cpData['base_url'] = $this->base_url;
@@ -168,7 +177,9 @@ class Setup extends MX_Controller {
             $adm['group'] = array($this->config->item('groupAdmin')); //---group that user belong
 
             $adm['checkdate'] = date('Y-m-d h:i:s');
-            $this->user->save($adm);
+            // var_dump ($this->user);exit;
+
+            $this->user->add($adm);
             $cpData['msgcode'][] = array('msg' => 'Created Admin user:');
             $cpData['msgcode'][] = array('msg' => "Nick: " . $adm['nick'] . '<br/>password: admin<br/>Name: ' . $adm['name'] . '<br/>Last Name: ' . $adm['lastname']);
         } else {

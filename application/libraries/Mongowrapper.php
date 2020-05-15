@@ -21,11 +21,12 @@ class Mongowrapper extends MongoClient {
         $mongodb_uri="mongodb://$server:$port";
         $options=array();
         if ($user <> '' and $password <> '') {
-            $mongodb_uri="mongodb://$user:$password@$server:$port/$dbname";
+            $mongodb_uri="mongodb://$user:$password@$server:$port";
         }
         // Initialize Mongo
+        // var_dump($mongodb_uri);
         try{
-            parent::__construct($server);
+            parent::__construct($mongodb_uri);
         }    
         catch (MongoConnectionException $e){
             show_error($e->getMessage().'<hr><p>Check your config file ('.ENVIRONMENT.'/cimongo.php) or run the setup wizard again</p>');

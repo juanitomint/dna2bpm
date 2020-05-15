@@ -76,7 +76,7 @@
                         <div class="form-group">
                             <label class=" control-label" for="mongodbuser">MongoDB user</label>
                             <div class="">
-                                <input id="mongodbuser" name="cimongo[user]" type="text" placeholder="user" class="form-control input-md">
+                                <input id="mongodbuser" name="cimongo[user]" type="text" value="dna2bpmuser" placeholder="user" class="form-control input-md">
                                 <span class="help-block">Leave it blank if no user</span>
                             </div>
                         </div>
@@ -85,8 +85,8 @@
                         <div class="form-group">
                             <label class=" control-label" for="mongodbpassword">MongoDB Password</label>
                             <div class="">
-                                <input id="mongodbpassword" name="cimongo[pass]" type="password" placeholder="" class="form-control input-md">
-                                <span class="help-block">Leave it blank if no password</span>
+                                <input id="mongodbpassword" name="cimongo[pass]" type="password" value="kukekakuke50" placeholder="" class="form-control input-md">
+                                <span class="help-block">change to same value as in docker-compose if needed</span>
                             </div>
                         </div>
 
