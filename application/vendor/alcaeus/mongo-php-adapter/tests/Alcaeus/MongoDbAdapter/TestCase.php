@@ -139,7 +139,7 @@ abstract class TestCase extends BaseTestCase
             /* command not found */
             if ($e->getCode() == 59) {
                 $this->markTestSkipped(
-                  'This test require the mongo daemon to be started with the test flag: --setParameter enableTestCommands=1'
+                    'This test require the mongo daemon to be started with the test flag: --setParameter enableTestCommands=1'
                 );
             }
         }
@@ -153,18 +153,19 @@ abstract class TestCase extends BaseTestCase
     /**
      * @param bool $condition
      */
-    protected function skipTestUnless($condition)
+    protected function skipTestUnless($condition, $message = null)
     {
-        $this->skipTestIf(! $condition);
+        $this->skipTestIf(! $condition, $message);
     }
 
     /**
      * @param bool $condition
+     * @param string|null $message
      */
-    protected function skipTestIf($condition)
+    protected function skipTestIf($condition, $message = null)
     {
         if ($condition) {
-            $this->markTestSkipped('Test only applies when running against mongo-php-adapter');
+            $this->markTestSkipped($message !== null ? $message : 'Test only applies when running against mongo-php-adapter');
         }
     }
 
@@ -183,7 +184,11 @@ abstract class TestCase extends BaseTestCase
     protected function getFeatureCompatibilityVersion()
     {
         $featureCompatibilityVersion = $this->getClient()->selectDB('admin')->command(['getParameter' => true, 'featureCompatibilityVersion' => true]);
-        return isset($featureCompatibilityVersion['featureCompatibilityVersion']) ? $featureCompatibilityVersion['featureCompatibilityVersion'] : '3.2';
+        if (! isset($featureCompatibilityVersion['featureCompatibilityVersion'])) {
+            return '3.2';
+        }
+
+        return isset($featureCompatibilityVersion['featureCompatibilityVersion']['version']) ? $featureCompatibilityVersion['featureCompatibilityVersion']['version'] : $featureCompatibilityVersion['featureCompatibilityVersion'];
     }
 
     /**
@@ -199,6 +204,6 @@ abstract class TestCase extends BaseTestCase
 
         // Check featureCompatibilityFlag
         $compatibilityVersion = $this->getFeatureCompatibilityVersion();
-        return $compatibilityVersion === '3.4' ? self::INDEX_VERSION_2 : self::INDEX_VERSION_1;
+        return version_compare($compatibilityVersion, '3.4', '>=') ? self::INDEX_VERSION_2 : self::INDEX_VERSION_1;
     }
 }

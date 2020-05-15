@@ -4,6 +4,8 @@ namespace Alcaeus\MongoDbAdapter\Tests\Mongo;
 
 use Alcaeus\MongoDbAdapter\Tests\TestCase;
 use Alcaeus\MongoDbAdapter\TypeConverter;
+use Countable;
+use MongoCursorInterface;
 use MongoDB\Driver\ReadPreference;
 use MongoDB\Model\BSONDocument;
 use MongoDB\Operation\Find;
@@ -200,7 +202,8 @@ class MongoCursorTest extends TestCase
 
     public static function getCursorOptions()
     {
-        function getMissingOptionCallback($optionName) {
+        function getMissingOptionCallback($optionName)
+        {
             return function ($value) use ($optionName) {
                 return
                     is_array($value) &&
@@ -208,7 +211,8 @@ class MongoCursorTest extends TestCase
             };
         }
 
-        function getBasicCheckCallback($expected, $optionName) {
+        function getBasicCheckCallback($expected, $optionName)
+        {
             return function ($value) use ($expected, $optionName) {
                 return
                     is_array($value) &&
@@ -217,7 +221,8 @@ class MongoCursorTest extends TestCase
             };
         }
 
-        function getModifierCheckCallback($expected, $modifierName) {
+        function getModifierCheckCallback($expected, $modifierName)
+        {
             return function ($value) use ($expected, $modifierName) {
                 return
                     is_array($value) &&
@@ -511,6 +516,19 @@ class MongoCursorTest extends TestCase
         ];
 
         $this->assertArraySubset($expected, $cursor->explain());
+    }
+
+    public function testInterfaces()
+    {
+        $collection = $this->getCollection();
+        $cursor = $collection->find();
+
+        $this->assertInstanceOf(MongoCursorInterface::class, $cursor);
+
+        // The countable interface is necessary for compatibility with PHP 7.3+, but not implemented by MongoCursor
+        if (! extension_loaded('mongo')) {
+            $this->assertInstanceOf(Countable::class, $cursor);
+        }
     }
 
 
