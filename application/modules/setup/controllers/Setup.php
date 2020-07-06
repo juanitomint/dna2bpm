@@ -169,7 +169,7 @@ class Setup extends MX_Controller {
             $adm = array();
             $adm['idu'] = 1;
             $adm['nick'] = 'admin';
-            $adm['passw'] = md5('admin');
+            $adm['passw'] = 'admin';
             $adm['name'] = 'System';
             $adm['lastname'] = 'Administrator';
             $adm['perm'] = array('ADM');

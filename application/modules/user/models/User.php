@@ -30,7 +30,7 @@ class User extends CI_Model {
             //---add previous data not submited _id & iduser
             $user_data+=$user;
             //---Preserves password if not set, else make a hash
-            $user_data['passw'] = ($user_data['passw'] == '') ? $user['passw'] : md5($user_data['passw']);
+            $user_data['passw'] = ($user_data['passw'] == '') ? $user['passw'] : $this->hash($user_data['passw']);
 
             $result = $this->save($user_data);
             //var_dump($result);
