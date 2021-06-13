@@ -1,7 +1,10 @@
 version: "3"
+volumes: 
+   models_zip:
+    
 services:
   mongo:
-    image: mongo:latest
+    image: mongo:4.0
     environment: 
       MONGO_INITDB_ROOT_USERNAME: dna2bpmuser
       #change the password below and keep it for installation
@@ -10,11 +13,12 @@ services:
       - "27017:27017"
 
   web:
-    image: juanitomint/php7
+    image: juanitomint/dna2bpm:latest
     ports:
       - "80:80"
+
     volumes:
-      - ./:/var/www/html
+      - models_zip:/var/www/html/application/modules/bpm/assets/files/images/zip
 
 
 # uncomment  the block below to enable an itegrated c9 editor on port 9022

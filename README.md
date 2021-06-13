@@ -25,17 +25,20 @@ MongoDB
 php5
 php5-mongo MongoDB database driver
 
-### Install
-clone repository 
-change the password for mongo in docker-compose.yml
+### RUN local
+clone repository (or just copy docker-compose file)
 ``` 
 docker-compose up -d
 ``` 
-then go to localhost/setup to start the setup wizard
+then go to http://localhost/setup to start the setup wizard
 
-
+### Build Image
+for an stand -alone image
+```
+docker build -t $DOCKER_IMAGENAME:$VERSION .
+```
 ### Version
-Beta 0.9.8
+Beta 0.9.10
 
 ### Change Log
 https://gitlab.com/dna2/origin/commits/development
