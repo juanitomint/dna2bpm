@@ -54,7 +54,9 @@ class Setup extends MX_Controller {
         
         ///--check if dir exists already (should be check index.php for enviroment)
         if (!file_exists($folder)) {
-        @mkdir($folder);
+        mkdir($folder);
+        $badge = '<span class="label label-success pull-right">OK</span>';
+        $cpData['msgcode'][] = array('msg' => "Creating $folder" . '   ' . $badge);
         }
         
         if (is_writable($folder)) {
