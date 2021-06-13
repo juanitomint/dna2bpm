@@ -194,7 +194,7 @@ class Setup extends MX_Controller {
             if (is_writable($folder)) {
                 $badge = '<span class="label label-success pull-right">OK</span>';
             } else {
-                $badge = '<span class="label label-error pull-right">Not Writable</span>';
+                $badge = '<span class="label label-danger pull-right">Not Writable</span>';
             }
             $cpData['msgcode'][] = array('msg' => $folder . '   ' . $badge);
         }
@@ -249,7 +249,7 @@ class Setup extends MX_Controller {
         } else {
             $cpData['msgcode'][] = array('msg' => "file not exists");
         }
-        $cpData['msgcode'][] = array('msg' => "Click <a href='".base_url()."user/login'>>>here<<</a> to log-in");
+        $cpData['msgcode'][] = array('msg' => "Click <a class='btn btn-primary' href='".base_url()."user/login'>>>here<<</a> to log-in");
         $this->ui->compose('setup/step2.bootstrap.php', 'setup/bootstrap3.ui.php', $cpData);
     }
     
