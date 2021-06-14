@@ -1,0 +1,18 @@
+version: "3"
+services:
+  mongo:
+    image: mongo:latest
+    environment: 
+      MONGO_INITDB_ROOT_USERNAME: dna2bpmuser
+      #change the password below and keep it for installation
+      MONGO_INITDB_ROOT_PASSWORD: "kukekakuke50"
+    ports:
+      - "27017:27017"
+
+  web:
+    image: juanitomint/php7
+    ports:
+      - "80:80"
+    volumes:
+      - ./:/var/www/html
+      

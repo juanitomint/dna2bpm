@@ -32,13 +32,27 @@ docker-compose up -d
 ``` 
 then go to http://localhost/setup to start the setup wizard
 
+### Development
+Run 
+```
+docker-compose -f ./docker-compose-develop.yml up -d
+```
+you will need to grant write permission to these folders
+images/avatarNot Writable
+application/modules/bpm/assets/files/images/model
+application/modules/bpm/assets/files/images/png
+application/modules/bpm/assets/files/bpm/assets/files/svg
+application/modules/bpm/assets/files/images/zip
+
+you can check if permissions are right in http://localhost/setup/users
+
 ### Build Image
 for an stand -alone image
 ```
 docker build -t $DOCKER_IMAGENAME:$VERSION .
 ```
 ### Version
-Beta 0.9.10
+Beta 0.9.11
 
 ### Change Log
 https://gitlab.com/dna2/origin/commits/development
